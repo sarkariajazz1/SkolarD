@@ -1,0 +1,3 @@
+Rating: tutor not fixed, course is fixed, show the priority list based on ratings of specific course
+Time: tutor not fixed, time slot is fixed, show PL based on time closest to the time slot set by the query.
+Tutor: course is fixed, rating based on tutors overall rating of all courses taught
