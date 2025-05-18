@@ -1,8 +1,8 @@
-package skolarD.persistence.stub;
+package skolard.persistence.stub;
 
-import skolarD.persistence.SessionPersistence;
-import skolarD.persistence.StudentPersistence;
-import skolarD.persistence.TutorPersistence;
+import skolard.persistence.SessionPersistence;
+import skolard.persistence.StudentPersistence;
+import skolard.persistence.TutorPersistence;
 
 public class StubFactory {
     

@@ -1,4 +1,4 @@
-package skolarD.persistence;
+package skolard.persistence;
 
 public interface SessionPersistence {
     

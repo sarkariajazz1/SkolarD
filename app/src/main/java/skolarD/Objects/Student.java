@@ -1,4 +1,4 @@
-package skolarD.objects;
+package skolard.objects;
 
 import java.util.List;
 

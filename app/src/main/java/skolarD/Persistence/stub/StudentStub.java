@@ -1,4 +1,4 @@
-package skolarD.persistence.stub;
+package skolard.persistence.stub;
 
 public class StudentStub {
     

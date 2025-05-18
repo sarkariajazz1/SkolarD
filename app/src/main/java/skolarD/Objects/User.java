@@ -1,4 +1,4 @@
-package skolarD.objects;
+package skolard.objects;
 
 public abstract class User {
     protected String id;
