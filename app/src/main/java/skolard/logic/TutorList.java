@@ -1,4 +1,4 @@
-package skolardtmp.logictmp;
+package skolard.logic;
 
 public class TutorList<T> extends PriorityList<T> {
 

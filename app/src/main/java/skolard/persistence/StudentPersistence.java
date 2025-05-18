@@ -1,4 +1,4 @@
-package skolardtmp.persistencetmp;
+package skolard.persistence;
 
 public interface StudentPersistence {
     
