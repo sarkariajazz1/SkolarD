@@ -1,5 +1,5 @@
 
 
-public class RatingList {
+public class RatingList<T> extends PriorityList<T> {
     
 }
