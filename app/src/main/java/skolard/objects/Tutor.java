@@ -1,12 +1,13 @@
-package skolard.objects;
+package skolardtmp.objectstmp;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.OptionalDouble;
 
 public class Tutor extends User {
     private String bio;
-    private ArrayList<String> courses; // Courses they offer tutoring in
-    private Map<String, String> courseGrades; // Course code → Grade
+    private ArrayList<String> courses;
+    private Map<String, String> courseGrades;
 
     public Tutor(String id, String name, String email, String bio,
                  ArrayList<String> courses, Map<String, String> courseGrades) {
@@ -17,7 +18,7 @@ public class Tutor extends User {
     }
 
     public String getBio() {
-    return bio;
+        return bio;
     }
 
     public void setBio(String bio) {
@@ -48,4 +49,15 @@ public class Tutor extends User {
         return this.courseGrades.getOrDefault(course, "N/A");
     }
 
+    // Method to calculate average rating
+    public double getAverageRating() {
+        if (courseGrades == null || courseGrades.isEmpty()) return 0.0;
+        
+        OptionalDouble average = courseGrades.values().stream()
+                .filter(grade -> grade.matches("\\d+"))
+                .mapToInt(Integer::parseInt)
+                .average();
+
+        return average.orElse(0.0);
+    }
 }
