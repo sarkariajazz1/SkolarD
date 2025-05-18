@@ -1,4 +1,4 @@
-package skolard.objects;
+package skolardtmp.objectstmp;
 
 import java.time.LocalDateTime;
 
@@ -8,13 +8,15 @@ public class Session {
     private Student student;
     private LocalDateTime dateTime;
     private int durationMinutes;
+    private String courseName; // New field
 
-    public Session(String sessionId, Tutor tutor, Student student, LocalDateTime dateTime, int durationMinutes) {
+    public Session(String sessionId, Tutor tutor, Student student, LocalDateTime dateTime, int durationMinutes, String courseName) {
         this.sessionId = sessionId;
         this.tutor = tutor;
         this.student = student;
         this.dateTime = dateTime;
         this.durationMinutes = durationMinutes;
+        this.courseName = courseName;
     }
 
     public String getSessionId() {
@@ -57,4 +59,21 @@ public class Session {
         this.durationMinutes = durationMinutes;
     }
 
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    @Override
+    public String toString() {
+        return "Session{" +
+                "sessionId='" + sessionId + '\'' +
+                ", tutor=" + tutor.getName() +
+                ", courseName='" + courseName + '\'' +
+                ", duration=" + durationMinutes +
+                " minutes}";
+    }
 }
