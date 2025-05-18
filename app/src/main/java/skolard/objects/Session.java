@@ -9,6 +9,7 @@ public class Session {
     private LocalDateTime dateTime;
     private int durationMinutes;
     private String courseName; // New field
+    private boolean booked;
 
     public Session(String sessionId, Tutor tutor, Student student, LocalDateTime dateTime, int durationMinutes, String courseName) {
         this.sessionId = sessionId;
@@ -17,6 +18,7 @@ public class Session {
         this.dateTime = dateTime;
         this.durationMinutes = durationMinutes;
         this.courseName = courseName;
+        this.booked = false;
     }
 
     public String getSessionId() {
@@ -58,7 +60,12 @@ public class Session {
     public void setDurationMinutes(int durationMinutes) {
         this.durationMinutes = durationMinutes;
     }
-
+    
+    public boolean isBooked() {
+        return booked;
+    
+    }
+    
     public String getCourseName() {
         return courseName;
     }
