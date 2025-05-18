@@ -1,3 +1,5 @@
+package skolarD.objects;
+
 import java.time.LocalDateTime;
 
 public class Session {
