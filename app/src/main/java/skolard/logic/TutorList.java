@@ -3,7 +3,7 @@ package skolard.logic;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import skolardtmp.objectstmp.Session;
+import skolard.objects.Session;
 
 public class TutorList extends PriorityList<Session> {
     

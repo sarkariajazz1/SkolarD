@@ -1,4 +1,4 @@
-package skolardtmp.objectstmp;
+package skolard.objects;
 
 import java.time.LocalDateTime;
 
