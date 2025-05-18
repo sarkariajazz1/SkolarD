@@ -1,4 +1,4 @@
-package skolard.objects;
+package skolard.objects;// updated package names
 
 import java.time.LocalDateTime;
 
