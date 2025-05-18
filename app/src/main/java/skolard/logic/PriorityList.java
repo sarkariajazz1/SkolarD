@@ -1,8 +1,9 @@
-package skolard.logic;
+package skolardtmp.logictmp;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-
 public class PriorityList<T> {
     protected List<T> items;
 
@@ -49,6 +50,13 @@ public class PriorityList<T> {
     // Clear the entire list
     public void clear() {
         items.clear();
+    }
+
+    // Sort the list using a custom sorting function
+    public void sort(Comparator<? super T> comparator) {
+        if (comparator != null) {
+            items.sort(comparator);
+        }
     }
 
     @Override
