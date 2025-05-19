@@ -22,7 +22,7 @@ public class Student extends User {
         this.pastSessions = pastSessions;
     }
 
-    public void setUpcomingSessions(List<Session> upcomingSessions){
-        this.upcomingSessions = upcomingSessions;
+    public void setUpcomingSession(Session upcomingSessions){
+        this.upcomingSessions.add(upcomingSessions);
     }
 }
