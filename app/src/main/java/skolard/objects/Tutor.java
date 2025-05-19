@@ -64,7 +64,7 @@ public class Tutor extends User {
         return average.orElse(0.0);
     }
 
-        public void addUpcomingSession(Session session) {
+        public void setUpcomingSession(Session session) {
         this.upcomingSessions.add(session);
         System.out.println("Session " + session.getSessionId() + " added to tutor " + getName() + "'s upcoming sessions.");
     }
