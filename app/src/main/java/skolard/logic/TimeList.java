@@ -14,7 +14,7 @@ public class TimeList extends PriorityList<Session> {
     }
 
     //Return sessions that are within the student's time range
-    public List<Session> filterSessionsByStudentTimeRange(LocalDateTime studentStart, LocalDateTime studentEnd) {
+    public List<Session> filterByStudentTimeRange(LocalDateTime studentStart, LocalDateTime studentEnd) {
         return items.stream()
                 .filter(session ->
                         !session.getStartDateTime().isBefore(studentStart) &&
