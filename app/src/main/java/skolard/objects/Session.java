@@ -73,7 +73,16 @@ public class Session {
     public void setCourseName(String courseName) {
         this.courseName = courseName;
     }
-
+    //     public void bookSession(Student student) {
+    //     if (this.booked) {
+    //         throw new IllegalStateException("This session is already booked.");
+    //     }
+    //     this.booked = true;
+    //     this.student = student;
+    //     this.tutor.addUpcomingSession(this);
+    //     student.addUpcomingSession(this);
+    //     System.out.println("Session " + sessionId + " booked by " + student.getName());
+    // }
     @Override
     public String toString() {
         return "Session{" +

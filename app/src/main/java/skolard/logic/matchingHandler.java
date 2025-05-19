@@ -1,7 +1,8 @@
 package skolard.logic;
 
+import java.util.ArrayList;
+import java.util.List;
 import skolard.objects.Session;
-import skolard.objects.Student;
 
 public class matchingHandler {
     // main decision making class
@@ -23,8 +24,45 @@ public class matchingHandler {
         }
         availableSessions.addItem(session);
     }
-    //TODO: implement the logic to match the student to the tutor
-    public void matchStudentToTutor(Student student, String courseName){}
 
-    
+// List all available sessions for a specific course (automatically sorted)
+public List<Session> getAvailableSessions(String courseName) {
+        if (courseName == null || courseName.isEmpty()) {
+            throw new IllegalArgumentException("Course name cannot be null or empty.");
+        }
+        List<Session> matchingSessions = new ArrayList<>();
+        for (Session session : availableSessions.getAllItems()) {
+            if (session.getCourseName().equalsIgnoreCase(courseName) && !session.isBooked()) {
+                matchingSessions.add(session);
+            }
+        }
+        // Sort 
+        availableSessions.sort(null);
+        
+        return matchingSessions;
+    }
+
+    // // Book a selected session
+    // public void bookSession(Session session, Student student) {
+    //     if (session == null || student == null) {
+    //         throw new IllegalArgumentException("Session and student cannot be null.");
+    //     }
+
+    //     if (!session.isBooked()) {
+    //         session.bookSession(student);
+    //         System.out.println("Session " + session.getSessionId() + " booked successfully for " + student.getName());
+    //     } else {
+    //         System.out.println("Session " + session.getSessionId() + " is already booked.");
+    //     }
+    // }
+
+        // Clear all available sessions
+    public void clearSessions() {
+        availableSessions.clear();
+    }
+
+    @Override
+    public String toString() {
+        return availableSessions.toString();
+    }
 }

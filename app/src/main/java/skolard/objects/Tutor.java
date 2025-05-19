@@ -1,6 +1,7 @@
 package skolard.objects;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.OptionalDouble;
 
@@ -8,6 +9,7 @@ public class Tutor extends User {
     private String bio;
     private ArrayList<String> courses;
     private Map<String, String> courseGrades;
+    private List<Session> upcomingSessions;
 
     public Tutor(String id, String name, String email, String bio,
                  ArrayList<String> courses, Map<String, String> courseGrades) {
@@ -15,6 +17,7 @@ public class Tutor extends User {
         this.bio = bio;
         this.courses = courses;
         this.courseGrades = courseGrades;
+        this.upcomingSessions = new ArrayList<>();
     }
 
     public String getBio() {
@@ -59,5 +62,14 @@ public class Tutor extends User {
                 .average();
 
         return average.orElse(0.0);
+    }
+
+        public void addUpcomingSession(Session session) {
+        this.upcomingSessions.add(session);
+        System.out.println("Session " + session.getSessionId() + " added to tutor " + getName() + "'s upcoming sessions.");
+    }
+
+    public List<Session> getUpcomingSessions() {
+        return upcomingSessions;
     }
 }
