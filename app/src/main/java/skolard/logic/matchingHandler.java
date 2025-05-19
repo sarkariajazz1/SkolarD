@@ -3,6 +3,7 @@ package skolard.logic;
 import java.util.ArrayList;
 import java.util.List;
 import skolard.objects.Session;
+import skolard.objects.Student;
 
 public class matchingHandler {
     // main decision making class
@@ -37,24 +38,24 @@ public List<Session> getAvailableSessions(String courseName) {
             }
         }
         // Sort 
-        availableSessions.sort(null);
+        matchingSessions.sort(null);
         
         return matchingSessions;
     }
 
-    // // Book a selected session
-    // public void bookSession(Session session, Student student) {
-    //     if (session == null || student == null) {
-    //         throw new IllegalArgumentException("Session and student cannot be null.");
-    //     }
+    // Book a selected session
+    public void bookSession(Session session, Student student) {
+        if (session == null || student == null) {
+            throw new IllegalArgumentException("Session and student cannot be null.");
+        }
 
-    //     if (!session.isBooked()) {
-    //         session.bookSession(student);
-    //         System.out.println("Session " + session.getSessionId() + " booked successfully for " + student.getName());
-    //     } else {
-    //         System.out.println("Session " + session.getSessionId() + " is already booked.");
-    //     }
-    // }
+        if (!session.isBooked()) {
+            session.bookSession(student);
+            System.out.println("Session " + session.getSessionId() + " booked successfully for " + student.getName());
+        } else {
+            System.out.println("Session " + session.getSessionId() + " is already booked.");
+        }
+    }
 
         // Clear all available sessions
     public void clearSessions() {
