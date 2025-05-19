@@ -1,18 +1,16 @@
 package skolard.logic;
 
+import java.util.ArrayList;
+import java.util.Map;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * ProfileHandler manages viewing and modifying profile data
  * for users in the SkolarD platform, specifically Students and Tutors.
  */
-public class ProfileHandler {
+public class profileHandler {
 
     /**
      * Returns the basic profile information (name and email) of any user.
