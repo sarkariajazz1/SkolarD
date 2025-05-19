@@ -16,11 +16,13 @@ repositories {
 }
 
 dependencies {
-    // Use JUnit test framework.
-    testImplementation libs.junit
-
-    // This dependency is used by the application.
-    implementation libs.guava
+    // Use JUnit 4 for testing
+    testImplementation 'junit:junit:4.13.2'
+    
+    // Add Guava for utility functions (if needed)
+    implementation 'com.google.guava:guava:32.1.1-jre'
+    
+    // Add any other project-specific dependencies here
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -32,5 +34,41 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'org.example.App'
+    mainClass = 'skolard.App'
+}
+
+// Java toolchain configuration for Java 23
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(23)
+    }
+}
+
+// Custom test settings
+test {
+    useJUnit()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+// Enable incremental compilation for faster builds
+tasks.withType(JavaCompile) {
+    options.incremental = true
+}
+
+// Optional: Include source and Javadoc jars
+tasks.register("sourcesJar", Jar) {
+    archiveClassifier.set("sources")
+    from sourceSets.main.allSource
+}
+
+tasks.register("javadocJar", Jar) {
+    archiveClassifier.set("javadoc")
+    from tasks.javadoc
+}
+
+artifacts {
+    archives tasks.sourcesJar
+    archives tasks.javadocJar
 }
