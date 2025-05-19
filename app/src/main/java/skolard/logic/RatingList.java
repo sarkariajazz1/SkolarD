@@ -1,7 +1,6 @@
 package skolard.logic;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import skolard.objects.Session;
 
