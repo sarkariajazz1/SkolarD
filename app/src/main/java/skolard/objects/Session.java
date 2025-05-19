@@ -6,17 +6,17 @@ public class Session {
     private String sessionId;
     private Tutor tutor;
     private Student student;
-    private LocalDateTime dateTime;
-    private int durationMinutes;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
     private String courseName; // New field
     private boolean booked;
 
-    public Session(String sessionId, Tutor tutor, Student student, LocalDateTime dateTime, int durationMinutes, String courseName) {
+    public Session(String sessionId, Tutor tutor, Student student, LocalDateTime startDateTime, LocalDateTime endDateTime, String courseName) {
         this.sessionId = sessionId;
         this.tutor = tutor;
         this.student = student;
-        this.dateTime = dateTime;
-        this.durationMinutes = durationMinutes;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
         this.courseName = courseName;
         this.booked = false;
     }
@@ -45,20 +45,20 @@ public class Session {
         this.student = student;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
     }
 
-    public int getDurationMinutes() {
-        return durationMinutes;
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
     }
 
-    public void setDurationMinutes(int durationMinutes) {
-        this.durationMinutes = durationMinutes;
+    public void getEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
     }
     
     public boolean isBooked() {
@@ -89,7 +89,7 @@ public class Session {
                 "sessionId='" + sessionId + '\'' +
                 ", tutor=" + tutor.getName() +
                 ", courseName='" + courseName + '\'' +
-                ", duration=" + durationMinutes +
-                " minutes}";
+                ", startDateTime=" + startDateTime + '\'' +
+                ", endDateTime=" + endDateTime;
     }
 }
