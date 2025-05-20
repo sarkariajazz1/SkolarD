@@ -1,10 +1,7 @@
-
 import org.junit.Before;
 import org.junit.Test;
-import java.util.List;
-import java.util.Comparator;
 
-import static org.junit.Assert.*;
+import skolard.logic.PriorityList;
 
 
 public class PriorityListTest {
