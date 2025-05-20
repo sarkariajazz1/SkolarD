@@ -1,98 +1,134 @@
 package skolard.persistence.stub;
 
 import skolard.objects.Session;
+import skolard.objects.Student;
+import skolard.objects.Tutor;
 import skolard.persistence.SessionPersistence;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
- * In-memory (stub) implementation of SessionPersistence.
- * This class stores sessions in a list and simulates a database for testing or development purposes.
+ * Stub implementation of SessionPersistence that stores session data in-memory using a HashMap.
+ * This is useful for testing and development without needing a real database.
  */
 public class SessionStub implements SessionPersistence {
 
-    // Internal list acting as our fake database
-    private final List<Session> sessions = new ArrayList<>();
+    private Map<String, Session> sessions;       // Stores sessions by their unique ID
+    private static int sessionCounter = 1;       // Used to generate unique session IDs
 
-    /**
-     * Add a new session to the in-memory list.
-     * Ensures no duplicate session IDs are inserted.
-     *
-     * @param session the Session to add
-     */
+    public SessionStub() {
+        confirmCreation();       // Ensure map is initialized
+        addSampleSessions();     // Populate with fake data
+    }
+
+    // Initialize the internal session map if not already done
+    private void confirmCreation() {
+        if (sessions == null) {
+            sessions = new HashMap<>();
+        }
+    }
+
+    // Generate and add some fake sessions to simulate real data
+    private void addSampleSessions() {
+        Tutor tutor1 = new Tutor("tutor1", "Amrit Singh", "amrit@skolard.ca",
+                "CS & Math Tutor", new ArrayList<>(List.of("COMP 1010", "MATH 1500")),
+                Map.of("COMP 1010", "A+", "MATH 1500", "A"));
+
+        Tutor tutor2 = new Tutor("tutor2", "Sukhdeep Kaur", "sukhdeep@skolard.ca",
+                "Physics tutor", new ArrayList<>(List.of("PHYS 1050")),
+                Map.of("PHYS 1050", "A"));
+
+        Student student1 = new Student("student1", "Raj Gill", "raj@skolard.ca");
+        Student student2 = new Student("student2", "Simran Dhillon", "simran@skolard.ca");
+
+        // Create sessions
+        Session s1 = new Session(generateSessionId(), tutor1, null,
+                LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).plusHours(1),
+                "COMP 1010");
+
+        Session s2 = new Session(generateSessionId(), tutor2, student2,
+                LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(2).plusHours(1),
+                "PHYS 1050");
+        s2.bookSession(student2);
+
+        Session s3 = new Session(generateSessionId(), tutor1, student1,
+                LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(3).plusHours(1),
+                "MATH 1500");
+        s3.bookSession(student1);
+
+        // Add to in-memory DB
+        addSession(s1);
+        addSession(s2);
+        addSession(s3);
+    }
+
+    // Generate a unique session ID
+    private String generateSessionId() {
+        return "S" + sessionCounter++;
+    }
+
     @Override
     public void addSession(Session session) {
+        confirmCreation();
         if (session == null) {
             throw new IllegalArgumentException("Session cannot be null.");
         }
-        if (getSessionById(session.getSessionId()) != null) {
-            throw new IllegalArgumentException("Session ID already exists: " + session.getSessionId());
+        if (sessions.containsKey(session.getSessionId())) {
+            throw new IllegalArgumentException("Session already exists with ID: " + session.getSessionId());
         }
-        sessions.add(session);
+        sessions.put(session.getSessionId(), session);
     }
 
-    /**
-     * Find a session by its unique session ID.
-     *
-     * @param sessionId the ID to search for
-     * @return the Session object if found, or null
-     */
     @Override
     public Session getSessionById(String sessionId) {
-        return sessions.stream()
-                .filter(s -> s.getSessionId().equals(sessionId))
-                .findFirst()
-                .orElse(null);
+        confirmCreation();
+        return sessions.get(sessionId);
     }
 
-    /**
-     * Return all sessions in the system.
-     * Returns an unmodifiable view to prevent external changes.
-     *
-     * @return list of all sessions
-     */
     @Override
     public List<Session> getAllSessions() {
-        return Collections.unmodifiableList(sessions);
+        confirmCreation();
+        return new ArrayList<>(sessions.values());
     }
 
-    /**
-     * Retrieve all sessions associated with a specific tutor ID.
-     *
-     * @param tutorId the tutor's unique ID
-     * @return list of sessions where tutor matches
-     */
     @Override
     public List<Session> getSessionsByTutorId(String tutorId) {
-        return sessions.stream()
-                .filter(s -> s.getTutor() != null && s.getTutor().getId().equals(tutorId))
-                .collect(Collectors.toList());
+        confirmCreation();
+        return sessions.values().stream()
+                .filter(s -> s.getTutor().getId().equals(tutorId))
+                .toList();
     }
 
-    /**
-     * Retrieve all sessions associated with a specific student ID.
-     *
-     * @param studentId the student's unique ID
-     * @return list of sessions where student matches
-     */
     @Override
     public List<Session> getSessionsByStudentId(String studentId) {
-        return sessions.stream()
+        confirmCreation();
+        return sessions.values().stream()
                 .filter(s -> s.getStudent() != null && s.getStudent().getId().equals(studentId))
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    /**
-     * Remove a session from the system using its ID.
-     * If the session ID does not exist, nothing is removed.
-     *
-     * @param sessionId the ID of the session to remove
-     */
     @Override
     public void removeSession(String sessionId) {
-        sessions.removeIf(s -> s.getSessionId().equals(sessionId));
+        confirmCreation();
+        if (!sessions.containsKey(sessionId)) {
+            throw new IllegalArgumentException("Cannot remove non-existent session ID: " + sessionId);
+        }
+        sessions.remove(sessionId);
+    }
+
+    // Optional helper for clearing data
+    public void deleteAllSessions() {
+        this.sessions = new HashMap<>();
+    }
+
+    // Optional helper for resetting the stub entirely
+    public void close() {
+        this.sessions = null;
+    }
+
+    // Not used here, but included for compatibility with file-based interfaces
+    public String getFilePath() {
+        return "";
     }
 }
