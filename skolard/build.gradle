@@ -17,3 +17,22 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['skolard/src/main/java']
+        }
+        resources {
+            srcDirs = ['skolard/src/main/resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['skolard/src/test/java']
+        }
+        resources {
+            srcDirs = ['skolard/src/test/resources']
+        }
+    }
+}
