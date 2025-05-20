@@ -1,18 +1,13 @@
 package skolard.logic;//package solr.logic;
 
-import skolard.logic.RatingList;
-import skolard.objects.Session;
-import skolard.objects.Tutor;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import skolard.objects.Session;
+import skolard.objects.Tutor;
 
 public class RatingListTest {
     private RatingList ratingList;
