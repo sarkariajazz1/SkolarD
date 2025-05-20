@@ -1,6 +1,5 @@
 package skolard.persistence.stub;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +10,7 @@ import skolard.persistence.StudentPersistence;
 
 public class StudentStub implements StudentPersistence {
     private Map<String, Student> students;
-    private int uniqueID = 0;
+    private static int uniqueID = 0;
 
     public StudentStub() {
         confirmCreation();
@@ -58,7 +57,7 @@ public class StudentStub implements StudentPersistence {
     public void updateStudent(Student updatedStudent) {
         confirmCreation();
 
-        if(!students.containsKey(updatedStudent.getEmail())) {
+        if(students.containsKey(updatedStudent.getEmail())) {
             students.replace(updatedStudent.getEmail(), updatedStudent);
         } 
     }
