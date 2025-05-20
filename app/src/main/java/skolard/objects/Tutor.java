@@ -20,6 +20,10 @@ public class Tutor extends User {
         this.upcomingSessions = new ArrayList<>();
     }
 
+    public String getName(){
+        return name;
+    }
+    
     public String getBio() {
         return bio;
     }
