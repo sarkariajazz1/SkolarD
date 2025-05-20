@@ -1,4 +1,4 @@
-package skolard.logic;
+//package skolard.logic;
 
 import skolard.logic.RatingList;
 import skolard.objects.Session;
