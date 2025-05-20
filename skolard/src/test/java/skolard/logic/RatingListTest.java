@@ -1,4 +1,4 @@
-import skolard.logic.RatingList;
+package skolard.logic;
 
 public class RatingListTest {
     
