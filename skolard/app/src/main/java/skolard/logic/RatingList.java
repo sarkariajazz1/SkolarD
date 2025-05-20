@@ -3,7 +3,6 @@ package skolard.logic;
 import java.util.List;
 
 import skolard.objects.Session;
-import skolard.objects.Tutor;
 
 public class RatingList extends PriorityList<Session> {
 
