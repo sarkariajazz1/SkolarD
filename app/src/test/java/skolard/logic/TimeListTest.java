@@ -19,7 +19,7 @@ public class TimeListTest {
     }
     
     @Test
-    void testFilterSessionsWithinTimeRange() {
+    public void testFilterSessionsWithinTimeRange() {
         Session s1 = new Session(null,null,null,
                 LocalDateTime.of(2025, 5, 20, 9, 0),
                 LocalDateTime.of(2025, 5, 20, 10, 0), "Math");
@@ -45,7 +45,7 @@ public class TimeListTest {
     }
 
     @Test
-    void testNoSessionsInRange() {
+    public void testNoSessionsInRange() {
         Session outOfRange = new Session(null,null,null,
                 LocalDateTime.of(2025, 5, 20, 6, 0),
                 LocalDateTime.of(2025, 5, 20, 7, 0), "Math");
@@ -61,7 +61,7 @@ public class TimeListTest {
     }
 
     @Test
-    void testEmptySessionList() {
+    public void testEmptySessionList() {
         List<Session> result = timeList.filterByStudentTimeRange(
                 LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Math");
         assertTrue(result.isEmpty());

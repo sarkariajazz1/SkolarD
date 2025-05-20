@@ -52,6 +52,7 @@ public class profileHandler {
         }
 
         // If user is a student, display session-related info
+        // For now, only shows how many past sessions or upcoming. May show more specific details in the future.
         if (user instanceof Student student) {
             int upcoming = student.getUpcomingSessions() != null ? student.getUpcomingSessions().size() : 0;
             int past = student.getPastSessions() != null ? student.getPastSessions().size() : 0;

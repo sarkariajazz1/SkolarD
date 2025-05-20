@@ -15,12 +15,12 @@ public class RatingListTest {
     private RatingList ratingList;
 
     @Before
-    void setUp() {
+    public void setUp() {
         ratingList = new RatingList();
     }
 
     @Test
-    void testSortByBestCourseRating() {
+    public void testSortByBestCourseRating() {
         // Arrange
         Tutor tutor1 = new Tutor("","Alice", "", "", null, null);
         tutor1.addCourseGrade("Math", "3.0");
