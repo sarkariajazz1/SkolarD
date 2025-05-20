@@ -13,7 +13,7 @@ public class TutorList extends PriorityList<Session> {
     }
 
     // Override the sort method to sort by overall tutor rating by default
-// Override the sort method to use a manual swap approach
+    // Override the sort method 
     @Override
     public void sort(Comparator<? super Session> comparator) {
         if (comparator != null) {
