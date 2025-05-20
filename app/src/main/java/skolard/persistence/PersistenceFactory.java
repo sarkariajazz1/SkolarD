@@ -11,10 +11,10 @@ public class PersistenceFactory {
     public static void initialize(PersistenceType type, boolean seed) {
         switch(type) {
             case PROD, TEST -> {
-                
+
             }
             case STUB -> fallBackToStub();
-
+        }
     }
 
     private static void fallBackToStub() {
