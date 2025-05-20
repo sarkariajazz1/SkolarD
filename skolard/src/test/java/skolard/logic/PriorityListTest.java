@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-//import skolard.logic.PriorityList; for JUnit 4
+//import skolard.logic.PriorityList;// for JUnit 4
 
 public class PriorityListTest {
     private PriorityList<String> priorityList;
