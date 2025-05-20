@@ -2,9 +2,7 @@ package skolard.logic;
 
 import org.junit.Before;
 import org.junit.Test;
-import skolard.objects.Tutor;
-import skolard.objects.Session;
-import skolard.objects.Student;
+import skolard.objects.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
