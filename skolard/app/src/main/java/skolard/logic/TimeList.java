@@ -14,21 +14,21 @@ public class TimeList extends PriorityList<Session> {
         super();
     }
 
-    //Return sessions that are within the student's time range
-    public List<Session> filterByStudentTimeRange(LocalDateTime studentStart, LocalDateTime studentEnd, String courseName){
-        if (items.isEmpty()){
-            return Collections.emptyList();
-        } else if (studentStart == null || studentEnd == null || courseName.equals(null) || courseName.equals("")){
-            return Collections.emptyList();
-        }
-
-        return items.stream()
-                .filter(session -> session.getCourseName().equalsIgnoreCase(courseName))
-                .filter(session ->
-                        !session.getStartDateTime().isBefore(studentStart) &&
-                                !session.getEndDateTime().isAfter(studentEnd))
-                .collect(Collectors.toList());
+public List<Session> filterByStudentTimeRange(LocalDateTime studentStart, LocalDateTime studentEnd, String courseName) {
+    if (items.isEmpty()) {
+        return Collections.emptyList();
+    } else if (studentStart == null || studentEnd == null || courseName == null || courseName.isEmpty()) {
+        return Collections.emptyList();
     }
+
+    return items.stream()
+            .filter(session -> session.getCourseName().equalsIgnoreCase(courseName))
+            .filter(session ->
+                    !session.getEndDateTime().isBefore(studentStart) &&
+                    !session.getStartDateTime().isAfter(studentEnd))
+            .collect(Collectors.toList());
+}
+
 
 }
 
