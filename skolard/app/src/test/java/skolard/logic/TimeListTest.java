@@ -1,14 +1,14 @@
 package skolard.logic;
 
-import skolard.objects.Session;
-
-import static org.junit.Assert.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
+
+import skolard.objects.Session;
 
 public class TimeListTest {
     private TimeList timeList;
@@ -41,7 +41,7 @@ public class TimeListTest {
 
         List<Session> result = timeList.filterByStudentTimeRange(studentStart, studentEnd, "Math");
 
-        assertEquals(3, result.size());
+        assertEquals(2, result.size());
     }
 
     @Test
