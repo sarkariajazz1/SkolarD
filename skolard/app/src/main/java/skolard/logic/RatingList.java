@@ -5,21 +5,37 @@ import java.util.List;
 
 import skolard.objects.Session;
 
+/**
+ * A specialized PriorityList that ranks sessions based on
+ * the tutor's grade in a particular course. Sessions with higher
+ * numeric grades appear earlier in the list.
+ */
 public class RatingList extends PriorityList<Session> {
 
+    /**
+     * Default constructor that initializes the internal session list.
+     */
     public RatingList() {
         super();
     }
 
+    /**
+     * Sorts the list of sessions based on the tutor's grade for the given course.
+     * Only sessions for the specified course with valid numeric grades are considered.
+     * Uses bubble sort for demonstration purposes.
+     *
+     * @param course The course for which sessions should be ranked
+     * @return Sorted list of matching sessions (highest grade first)
+     */
     public List<Session> sortByBestCourseRating(String course) {
         if (items.isEmpty() || course == null || course.trim().isEmpty()) {
-            return Collections.emptyList(); // Safely return empty list
+            return Collections.emptyList(); // Return empty list if no valid input
         }
 
-        // Filter in-place
+        // Remove any sessions that don’t match the course or are missing grades
         filterSessionToCourse(course);
 
-        // Sort using bubble sort based on tutor grade for the course
+        // Perform bubble sort based on parsed numeric grade values
         for (int i = 0; i < items.size(); i++) {
             for (int j = 0; j < items.size() - 1; j++) {
                 Session s1 = items.get(j);
@@ -31,7 +47,7 @@ public class RatingList extends PriorityList<Session> {
                 double rating2 = parseOrFallback(grade2);
 
                 if (rating1 < rating2) {
-                    swap(j, j + 1);
+                    swap(j, j + 1); // Swap if the left one is worse
                 }
             }
         }
@@ -39,7 +55,13 @@ public class RatingList extends PriorityList<Session> {
         return items;
     }
 
-    // Converts grade to double, or defaults to 1.0 if non-numeric
+    /**
+     * Converts a string grade to a double. If the grade is not numeric,
+     * returns a default fallback value of 1.0.
+     *
+     * @param grade The grade to parse
+     * @return Numeric representation of the grade, or 1.0 if invalid
+     */
     private double parseOrFallback(String grade) {
         try {
             return Double.parseDouble(grade);
@@ -48,14 +70,25 @@ public class RatingList extends PriorityList<Session> {
         }
     }
 
-    // Bubble-swap helper
+    /**
+     * Swaps two sessions in the list at the specified indices.
+     *
+     * @param i First index
+     * @param j Second index
+     */
     private void swap(int i, int j) {
         Session temp = items.get(i);
         items.set(i, items.get(j));
         items.set(j, temp);
     }
 
-    // Remove sessions not matching course name or with no grade
+    /**
+     * Filters the list in place, keeping only sessions that:
+     * - Match the given course name (case insensitive)
+     * - Have a non-null, numeric grade
+     *
+     * @param course The course to filter by
+     */
     private void filterSessionToCourse(String course) {
         int i = 0;
         while (i < items.size()) {
@@ -67,9 +100,9 @@ public class RatingList extends PriorityList<Session> {
             boolean missingGrade = grade == null || grade.equalsIgnoreCase("N/A");
 
             if (courseMismatch || missingGrade) {
-                items.remove(i);
+                items.remove(i); // Remove invalid session
             } else {
-                i++;
+                i++; // Move to next only if not removed
             }
         }
     }
