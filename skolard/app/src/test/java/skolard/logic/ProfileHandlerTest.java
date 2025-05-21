@@ -1,18 +1,19 @@
 package skolard.logic;
 
-import skolard.logic.profileHandler;
-import skolard.objects.Student;
-import skolard.objects.Tutor;
-import skolard.objects.Session;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
+import skolard.objects.Session;
+import skolard.objects.Student;
+import skolard.objects.Tutor;
 
 
 public class ProfileHandlerTest {
@@ -30,8 +31,8 @@ public class ProfileHandlerTest {
         mockTutor.setCourseGrades(grades);
 
         mockStudent = new Student("0000002", "Bob Student", "bobstudent@myumanitoba.ca");
-        Session pastSession = new Session("1", null, null, null, null, null, null);
-        Session upcomingSession = new Session("2", null, null, null, null, null, null);
+        Session pastSession = new Session("1", null, null, null, null, null);
+        Session upcomingSession = new Session("2", null, null, null, null, null);
         mockStudent.setUpcomingSessions(List.of(upcomingSession));
         mockStudent.setPastSessions(List.of(pastSession));
     }

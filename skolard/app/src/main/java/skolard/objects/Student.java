@@ -25,4 +25,8 @@ public class Student extends User {
     public void setUpcomingSession(Session upcomingSessions){
         this.upcomingSessions.add(upcomingSessions);
     }
+
+        public void setUpcomingSessions(List<Session> upcomingSessions) {
+        this.upcomingSessions.addAll(upcomingSessions);
+    }
 }
