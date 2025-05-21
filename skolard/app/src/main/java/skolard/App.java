@@ -11,11 +11,9 @@ import skolard.objects.Tutor;
 public class App {
     public static void main(String[] args) {
         LocalDateTime dateTime = LocalDateTime.now();
-        Tutor tutor1 = new Tutor("t1", "Alice", "alice@example.com", "Experienced math tutor",
-                new ArrayList<>(), Map.of("MATH101", "85", "CS102", "90"));
-
-        Student student1 = new Student("s1", "David", "david@example.com");
-        //Session session1 = new Session("s1", tutor1, null, dateTime, 60, "MATH101");
+        
+        // Step 1: Initialize DB connection, uses stub for iteration 1
+        PersistenceFactory.initialize(PersistenceType.STUB, false);
 
         matchingHandler matcher = new matchingHandler(new TutorList());
         //matcher.addSession(session1);
