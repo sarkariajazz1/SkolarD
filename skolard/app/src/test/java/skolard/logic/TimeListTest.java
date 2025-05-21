@@ -3,39 +3,44 @@ package skolard.logic;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
 import skolard.objects.Session;
 
+/**
+ * Unit tests for the TimeList class.
+ * Ensures time-based session filtering works correctly.
+ */
 public class TimeListTest {
     private TimeList timeList;
 
     @Before
     public void setUp() {
-        timeList = new TimeList();
+        timeList = new TimeList(); // Fresh instance for each test
     }
-    
+
     @Test
     public void testFilterSessionsWithinTimeRange() {
-        Session s1 = new Session(null,null,null,
+        // Setup: Create 3 sessions (2 should match range)
+        Session s1 = new Session(null, null, null,
                 LocalDateTime.of(2025, 5, 20, 9, 0),
                 LocalDateTime.of(2025, 5, 20, 10, 0), "Math");
 
-        Session s2 = new Session(null,null,null,
+        Session s2 = new Session(null, null, null,
                 LocalDateTime.of(2025, 5, 20, 11, 0),
                 LocalDateTime.of(2025, 5, 20, 12, 0), "Math");
 
-        Session s3 = new Session(null,null,null,
+        Session s3 = new Session(null, null, null,
                 LocalDateTime.of(2025, 5, 20, 13, 0),
-                LocalDateTime.of(2025, 5, 20, 14, 0),"Math");
+                LocalDateTime.of(2025, 5, 20, 14, 0), "Math");
 
         timeList.addItem(s1);
         timeList.addItem(s2);
         timeList.addItem(s3);
 
+        // Range that overlaps with s2 and s3
         LocalDateTime studentStart = LocalDateTime.of(2025, 5, 20, 10, 30);
         LocalDateTime studentEnd = LocalDateTime.of(2025, 5, 20, 13, 30);
 
@@ -46,7 +51,7 @@ public class TimeListTest {
 
     @Test
     public void testNoSessionsInRange() {
-        Session outOfRange = new Session(null,null,null,
+        Session outOfRange = new Session(null, null, null,
                 LocalDateTime.of(2025, 5, 20, 6, 0),
                 LocalDateTime.of(2025, 5, 20, 7, 0), "Math");
 
