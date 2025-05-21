@@ -35,10 +35,17 @@ public class ProfileHandler {
     }
 
     public Student addStudent(String name, String email) {
-        user.getId(),
-                user.getName(),
-                user.getEmail(),
-                "Edit your bio..."
+        String id = "-1";
+        Student newStudent = new Student(id, name, email);
+        
+        return studentPersistence.addStudent(newStudent);
+    }
+
+    public Tutor addTutor(String name, String email) {
+        String id = "-1";
+        Tutor newTutor = new Tutor(id, name, email, "Edit your bio...");
+        
+        return tutorPersistence.addTutor(newTutor);
     }
 
     /**
@@ -138,30 +145,5 @@ public class ProfileHandler {
             tutor.getCourses().remove(course);                 // Remove course name
             tutor.getCourseGrades().remove(course);            // Remove associated grade
         }
-    }
-
-    /**
-     * Promotes a basic User to a Tutor by creating a Tutor object.
-     * Initializes with a blank bio, empty course list, and no grades.
-     */
-    public Tutor promoteToTutor(User user) {
-        return new Tutor(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                "Edit your bio...",                  // Placeholder bio
-                new ArrayList<>(),                   // Empty course list
-                new java.util.HashMap<>()            // Empty course-grade mapping
-        );
-    }
-
-    /**
-     * Promotes a basic User to a Student by creating a Student object.
-     * Initializes empty lists for past sessions (upcoming sessions are added via Session class).
-     */
-    public Student promoteToStudent(User user) {
-        Student s = new Student(user.getId(), user.getName(), user.getEmail());
-        s.setPastSessions(new ArrayList<>());    // Initialize empty past session list
-        return s;
     }
 }
