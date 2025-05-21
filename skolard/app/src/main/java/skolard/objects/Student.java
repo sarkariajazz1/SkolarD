@@ -1,5 +1,6 @@
 package skolard.objects;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Student extends User {
@@ -8,6 +9,8 @@ public class Student extends User {
 
     public Student(String id, String name, String email) {
         super(id, name, email);
+        this.pastSessions = new ArrayList();
+        this.upcomingSessions = new ArrayList();
     }
 
     public List<Session> getPastSessions(){
