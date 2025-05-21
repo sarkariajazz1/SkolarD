@@ -2,6 +2,7 @@ package skolard.logic;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import skolard.objects.Session;
 import skolard.objects.Student;
 
