@@ -33,7 +33,7 @@ public class ProfileHandlerTest {
      */
     @Before
     public void setUp() {
-        PersistenceFactory.initialize(PersistenceType.STUB, false);
+        PersistenceFactory.initializeStubPersistence();
         profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(), 
             PersistenceFactory.getTutorPersistence());
 
