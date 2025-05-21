@@ -39,14 +39,14 @@ public class ProfileHandlerTest {
 
     @Test
     public void testViewBasicProfile_Tutor() {
-        String result = profileHandler.viewBasicProfile(mockTutor);
+        String result = ProfileHandler.viewBasicProfile(mockTutor);
         assertTrue(result.contains("Name: Alice Tutor"));
         assertTrue(result.contains("Email: alicetutor@myumanitoba.ca"));
     }
 
 @Test
 public void testViewFullProfile_Tutor() {
-    String result = profileHandler.viewFullProfile(mockTutor);
+    String result = ProfileHandler.viewFullProfile(mockTutor);
     assertTrue(result.contains("Bio: Experienced in Math and Physics"));
     assertTrue(result.contains("Courses Taken: Math 101, Physics 202"));
     assertTrue(result.contains("Grades:"));
@@ -57,27 +57,27 @@ public void testViewFullProfile_Tutor() {
 
     @Test
     public void testViewFullProfile_Student() {
-        String result = profileHandler.viewFullProfile(mockStudent);
+        String result = ProfileHandler.viewFullProfile(mockStudent);
         assertTrue(result.contains("Upcoming Sessions: 1"));
         assertTrue(result.contains("Past Sessions: 1"));
     }
 
     @Test
     public void testUpdateBio() {
-        profileHandler.updateBio(mockTutor, "Updated Bio");
+        ProfileHandler.updateBio(mockTutor, "Updated Bio");
         assertEquals("Updated Bio", mockTutor.getBio());
     }
 
     @Test
     public void testAddTutoringCourse_NewCourse() {
-        profileHandler.addTutoringCourse(mockTutor, "Chemistry 303", "3.5");
+        ProfileHandler.addTutoringCourse(mockTutor, "Chemistry 303", "3.5");
         assertTrue(mockTutor.getCourses().contains("Chemistry 303"));
         assertEquals("3.5", mockTutor.getCourseGrades().get("Chemistry 303"));
     }
 
     @Test
     public void testRemoveTutoringCourse() {
-        profileHandler.removeTutoringCourse(mockTutor, "Math 101");
+        ProfileHandler.removeTutoringCourse(mockTutor, "Math 101");
         assertFalse(mockTutor.getCourses().contains("Math 101"));
         assertFalse(mockTutor.getCourseGrades().containsKey("Math 101"));
     }
