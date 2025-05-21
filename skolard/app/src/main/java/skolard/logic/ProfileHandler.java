@@ -21,13 +21,38 @@ public class ProfileHandler {
         this.studentPersistence = studentPersistence;
         this.tutorPersistence = tutorPersistence; 
     }
+
+    public User getUser(String email) {
+        User user = null;
+
+        user = studentPersistence.getStudentByEmail(email);
+
+        if(user == null) {
+            user = tutorPersistence.getTutorByEmail(email);
+        }
+         
+        return user;
+    }
+
+    public Student addStudent(String name, String email) {
+        user.getId(),
+                user.getName(),
+                user.getEmail(),
+                "Edit your bio..."
+    }
+
     /**
      * Returns the basic profile information (name and email) of any user.
      * This works for both students and tutors.
      */
-    public static String viewBasicProfile(User user) {
+    public String viewBasicProfile(User user) {
+
+        if(user != null) { 
         return "Name: " + user.getName() + "\n"
                 + "Email: " + user.getEmail() + "\n";
+        }
+
+        return "";
     }
 
     /**
@@ -36,50 +61,55 @@ public class ProfileHandler {
      * - For Tutors: bio, courses taken (with grades), and average rating.
      * - For Students: number of upcoming and past sessions.
      */
-    public static String viewFullProfile(User user) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(viewBasicProfile(user)); // Start with name and email
+    public String viewFullProfile(User user) {
 
-        // If user is a tutor, display tutor-specific details
-        if (user instanceof Tutor) {
-            Tutor tutor = (Tutor) user;
-            sb.append("Bio: ").append(tutor.getBio()).append("\n");
+        if(user != null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(viewBasicProfile(user)); // Start with name and email
 
-            // Courses represent ones the tutor has previously taken
-            sb.append("Courses Taken: ").append(String.join(", ", tutor.getCourses())).append("\n");
+            // If user is a tutor, display tutor-specific details
+            if (user instanceof Tutor) {
+                Tutor tutor = (Tutor) user;
+                sb.append("Bio: ").append(tutor.getBio()).append("\n");
 
-            // Show grades for each course
-            Map<String, String> courseGrades = tutor.getCourseGrades();
-            if (!courseGrades.isEmpty()) {
-                sb.append("Grades: \n");
-                for (String course : courseGrades.keySet()) {
-                    sb.append(" - ").append(course).append(": ").append(courseGrades.get(course)).append("\n");
+                // Courses represent ones the tutor has previously taken
+                sb.append("Courses Taken: ").append(String.join(", ", tutor.getCourses())).append("\n");
+
+                // Show grades for each course
+                Map<String, String> courseGrades = tutor.getCourseGrades();
+                if (!courseGrades.isEmpty()) {
+                    sb.append("Grades: \n");
+                    for (String course : courseGrades.keySet()) {
+                        sb.append(" - ").append(course).append(": ").append(courseGrades.get(course)).append("\n");
+                    }
                 }
+
+                // Display tutor's average rating (based on numeric grades only)
+                sb.append("Average Rating: ").append(tutor.getAverageRating()).append("\n");
             }
 
-            // Display tutor's average rating (based on numeric grades only)
-            sb.append("Average Rating: ").append(tutor.getAverageRating()).append("\n");
+            // If user is a student, display session-related info
+            if (user instanceof Student) {
+                Student s = (Student) user;
+                int upcoming = s.getUpcomingSessions() != null ? s.getUpcomingSessions().size() : 0;
+                int past = s.getPastSessions() != null ? s.getPastSessions().size() : 0;
+                sb.append("Upcoming Sessions: ").append(upcoming).append("\n");
+                sb.append("Past Sessions: ").append(past).append("\n");
+            }
+            return sb.toString();
         }
-
-        // If user is a student, display session-related info
-        if (user instanceof Student) {
-            Student s = (Student) user;
-            int upcoming = s.getUpcomingSessions() != null ? s.getUpcomingSessions().size() : 0;
-            int past = s.getPastSessions() != null ? s.getPastSessions().size() : 0;
-            sb.append("Upcoming Sessions: ").append(upcoming).append("\n");
-            sb.append("Past Sessions: ").append(past).append("\n");
-        }
-
-        return sb.toString();
+        return "";
     }
 
     /**
      * Allows a tutor to update their personal bio.
      */
-    public static void updateBio(User user, String newBio) {
+    public void updateBio(User user, String newBio) {
+
         if (user instanceof Tutor) {
-            Tutor tutor= (Tutor) user;
+            Tutor tutor = (Tutor) user;
             tutor.setBio(newBio);
+            tutorPersistence.updateTutor(tutor);
         }
     }
 
@@ -87,7 +117,7 @@ public class ProfileHandler {
      * Adds a new course (that the tutor has taken) along with the grade.
      * If the course already exists, the grade will be updated.
      */
-    public static void addTutoringCourse(User user, String course, String grade) {
+    public void addTutoringCourse(User user, String course, String grade) {
         if (user instanceof Tutor) {
             Tutor tutor= (Tutor) user;
             // Add course if it's not already listed
@@ -102,7 +132,7 @@ public class ProfileHandler {
     /**
      * Removes a course from the tutor's list of completed courses and deletes its grade.
      */
-    public static void removeTutoringCourse(User user, String course) {
+    public void removeTutoringCourse(User user, String course) {
         if (user instanceof Tutor) {
             Tutor tutor= (Tutor) user;
             tutor.getCourses().remove(course);                 // Remove course name
@@ -114,7 +144,7 @@ public class ProfileHandler {
      * Promotes a basic User to a Tutor by creating a Tutor object.
      * Initializes with a blank bio, empty course list, and no grades.
      */
-    public static Tutor promoteToTutor(User user) {
+    public Tutor promoteToTutor(User user) {
         return new Tutor(
                 user.getId(),
                 user.getName(),
@@ -129,7 +159,7 @@ public class ProfileHandler {
      * Promotes a basic User to a Student by creating a Student object.
      * Initializes empty lists for past sessions (upcoming sessions are added via Session class).
      */
-    public static Student promoteToStudent(User user) {
+    public Student promoteToStudent(User user) {
         Student s = new Student(user.getId(), user.getName(), user.getEmail());
         s.setPastSessions(new ArrayList<>());    // Initialize empty past session list
         return s;
