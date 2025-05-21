@@ -10,7 +10,7 @@ import skolard.objects.User;
  * ProfileHandler manages viewing and modifying profile data
  * for users in the SkolarD platform, specifically Students and Tutors.
  */
-public class profileHandler {
+public class ProfileHandler {
 
     /**
      * Returns the basic profile information (name and email) of any user.

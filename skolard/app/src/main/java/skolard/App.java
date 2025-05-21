@@ -8,7 +8,7 @@ import skolard.persistence.PersistenceType;
 import skolard.presentation.ui.ProfileView;
 import skolard.presentation.ui.MatchingView;
 import skolard.logic.TutorList;
-import skolard.logic.matchingHandler;
+import skolard.logic.MatchingHandler;
 
 public class App {
     public static void main(String[] args) {
@@ -21,7 +21,7 @@ public class App {
         });
 
         LocalDateTime dateTime = LocalDateTime.now();
-        matchingHandler matcher = new matchingHandler(new TutorList());
+        MatchingHandler matcher = new MatchingHandler(new TutorList());
 
     }
 }

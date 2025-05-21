@@ -6,17 +6,17 @@ import java.util.List;
 import skolard.objects.Session;
 import skolard.objects.Student;
 
-public class matchingHandler {
+public class MatchingHandler {
     // main decision making class
     // this class will be used to match the tutor and student
     private PriorityList<Session> availableSessions;
 
-    public matchingHandler(){
+    public MatchingHandler(){
         //Can be instance of any other class that extends PriorityList
         this.availableSessions = new TutorList();
     }
 
-    public matchingHandler(PriorityList<Session> sessionList){
+    public MatchingHandler(PriorityList<Session> sessionList){
         this.availableSessions = sessionList;
     }
 

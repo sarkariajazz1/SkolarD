@@ -3,7 +3,7 @@ package skolard.presentation;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import skolard.logic.profileHandler;
+import skolard.logic.ProfileHandler;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
@@ -54,17 +54,17 @@ public class ProfileController {
 
     /** Show the basic profile (name & email) for any user. */
     public String viewBasicProfile(User user) {
-        return profileHandler.viewBasicProfile(user);
+        return ProfileHandler.viewBasicProfile(user);
     }
 
     /** Show the full profile (courses, grades, bio) for any user. */
     public String viewFullProfile(User user) {
-        return profileHandler.viewFullProfile(user);
+        return ProfileHandler.viewFullProfile(user);
     }
 
     /** Update a user’s bio and persist the change. */
     public void updateBio(User user, String newBio) {
-        profileHandler.updateBio(user, newBio);
+        ProfileHandler.updateBio(user, newBio);
         if (user instanceof Student) {
             mockStudent.updateStudent((Student) user);
         } else if (user instanceof Tutor) {
@@ -74,26 +74,26 @@ public class ProfileController {
 
     /** Add a new course‐grade entry to a tutor and persist. */
     public void addTutoringCourse(Tutor tutor, String course, String grade) {
-        profileHandler.addTutoringCourse(tutor, course, grade);
+        ProfileHandler.addTutoringCourse(tutor, course, grade);
         mockTutor.updateTutor(tutor);
     }
 
     /** Remove a course from a tutor’s profile and persist. */
     public void removeTutoringCourse(Tutor tutor, String course) {
-        profileHandler.removeTutoringCourse(tutor, course);
+        ProfileHandler.removeTutoringCourse(tutor, course);
         mockTutor.updateTutor(tutor);
     }
 
     /** Promote a generic User to a Student object (in memory). */
     public Student promoteToStudent(User user) {
-        Student s = profileHandler.promoteToStudent(user);
+        Student s = ProfileHandler.promoteToStudent(user);
         mockStudent.addStudent(s);
         return s;
     }
 
     /** Promote a generic User to a Tutor object (in memory). */
     public Tutor promoteToTutor(User user) {
-        Tutor t = profileHandler.promoteToTutor(user);
+        Tutor t = ProfileHandler.promoteToTutor(user);
         mockTutor.addTutor(t);
         return t;
     }
