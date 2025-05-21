@@ -56,6 +56,12 @@ public class TutorStub implements TutorPersistence {
     }
 
     @Override
+    public Tutor getTutorByEmail(String email) {
+        confirmCreation();
+        return tutors.get(email);
+    }
+
+    @Override
     public void deleteTutorByEmail(String email) {
         confirmCreation();
 

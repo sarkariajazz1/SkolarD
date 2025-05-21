@@ -16,6 +16,8 @@ public interface StudentPersistence {
      */
     List<Student> getAllStudents();
 
+    Student getStudentByEmail(String email);
+
     /**
      * Add a new student to the system.
      *

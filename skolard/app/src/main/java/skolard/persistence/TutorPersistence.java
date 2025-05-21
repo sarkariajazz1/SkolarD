@@ -16,6 +16,8 @@ public interface TutorPersistence {
      */
     List<Tutor> getAllTutors();
 
+    Tutor getTutorByEmail(String email);
+
     /**
      * Add a new tutor to the system.
      *

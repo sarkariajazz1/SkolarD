@@ -44,6 +44,12 @@ public class StudentStub implements StudentPersistence {
     }
 
     @Override
+    public Student getStudentByEmail(String email) {
+        confirmCreation();
+        return students.get(email);
+    }
+
+    @Override
     public void deleteStudentByEmail(String email) {
         confirmCreation();
 
