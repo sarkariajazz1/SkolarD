@@ -5,134 +5,116 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import skolard.objects.Tutor;
-import skolard.persistence.TutorPersistence;
+import skolard.objects.Student;
+import skolard.persistence.StudentPersistence;
 
 /**
- * In-memory stub implementation of TutorPersistence.
- * This simulates storing tutor data without needing a real database.
+ * In-memory stub implementation of StudentPersistence.
+ * Used for development and testing without needing a real database.
  */
-public class TutorStub implements TutorPersistence {
+public class StudentStub implements StudentPersistence {
 
-    private Map<String, Tutor> tutors;           // Map to hold tutors keyed by email
-    private static int uniqueID = 0;             // ID counter to assign unique IDs to tutors
+    private Map<String, Student> students;      // Map of students keyed by email
+    private static int uniqueID = 0;            // Counter for assigning unique IDs
 
     /**
-     * Constructor initializes the in-memory structure and populates it with sample data.
+     * Constructor initializes student storage and adds demo data.
      */
-    public TutorStub() {
+    public StudentStub() {
         confirmCreation();
-        addSampleTutor();
+        addSampleStudents();
     }
 
     /**
-     * Ensures the tutors map is initialized before use.
+     * Ensures the students map is initialized before use.
      */
     private void confirmCreation() {
-        if(tutors == null) {
-            tutors = new HashMap<>();
+        if(students == null) {
+            students = new HashMap<>();
         }
     }
 
     /**
-     * Adds a sample tutor with two courses and example grades.
-     * This is for demonstration and testing purposes only.
+     * Adds a few predefined student accounts for testing purposes.
      */
-    private void addSampleTutor() {
-        String course1 = "COMP 1010";
-        String course2 = "COMP 3350";
-        ArrayList<String> courses = new ArrayList<String>();
-        Map<String, String> courseGrades = new HashMap<>();
-
-        courses.add(course1);
-        courses.add(course2);
-
-        courseGrades.put(course1, "A");
-        courseGrades.put(course2, "B+");
-
-        addTutor(new Tutor("" + uniqueID++, "Yab Matt", "mattyab@myumanitoba.ca",
-                "", courses, courseGrades));
+    private void addSampleStudents() {
+        addStudent(new Student("" + uniqueID++, "Matt Yab", "yabm@myumanitoba.ca"));
+        addStudent(new Student("" + uniqueID++, "Group Six", "sixg@myumanitoba.ca"));
+        addStudent(new Student("" + uniqueID++, "John Wick", "wickj@myumanitoba.ca"));
     }
 
     /**
-     * Adds a tutor if a tutor with the same email already exists.
-     * (This logic may need revision — typically you'd only add if email is NOT present.)
+     * Adds a new student if they don't already exist.
      *
-     * @param tutor The tutor to add
-     * @return The newly created tutor object, or null if not added
+     * @param student Student to add
+     * @return The new student object, or null if email already exists
      */
-    public Tutor addTutor(Tutor tutor) {
+    public Student addStudent(Student student) {
         confirmCreation();
 
-        Tutor newTutor = null;
+        Student newStudent = null;
 
-        if(tutors.containsKey(tutor.getEmail())) {
-            newTutor = new Tutor("" + uniqueID++, tutor.getName(), tutor.getEmail(),
-                    tutor.getBio(), tutor.getCourses(), tutor.getCourseGrades());
-
-            tutors.put(newTutor.getEmail(), newTutor);
+        if(students.containsKey(student.getEmail())) {
+            newStudent = new Student("" + uniqueID++, student.getName(), student.getEmail());
+            students.put(newStudent.getEmail(), newStudent);
         }
 
-        return newTutor;
+        return newStudent;
     }
 
     /**
-     * Retrieves a tutor by their email address.
+     * Retrieves a student by their email address.
      *
-     * @param email The tutor's email
-     * @return The Tutor object if found, else null
+     * @param email The student's email
+     * @return Student object if found, otherwise null
      */
     @Override
-    public Tutor getTutorByEmail(String email) {
+    public Student getStudentByEmail(String email) {
         confirmCreation();
-        return tutors.get(email);
+        return students.get(email);
     }
 
     /**
-     * Deletes a tutor from the map using their email.
+     * Deletes a student record using their email.
      *
-     * @param email Email of the tutor to be removed
+     * @param email Email of the student to delete
      */
     @Override
-    public void deleteTutorByEmail(String email) {
+    public void deleteStudentByEmail(String email) {
         confirmCreation();
-        if(tutors.containsKey(email)) {
-            tutors.remove(email);
+        if(students.containsKey(email)) {
+            students.remove(email);
         }
     }
 
     /**
-     * Updates a tutor's record if they already exist.
+     * Updates a student record if it already exists.
      *
-     * @param updatedTutor The new version of the tutor object
+     * @param updatedStudent Updated student object
      */
     @Override
-    public void updateTutor(Tutor updatedTutor) {
+    public void updateStudent(Student updatedStudent) {
         confirmCreation();
-        if(tutors.containsKey(updatedTutor.getEmail())) {
-            tutors.replace(updatedTutor.getEmail(), updatedTutor);
+        if(students.containsKey(updatedStudent.getEmail())) {
+            students.replace(updatedStudent.getEmail(), updatedStudent);
         }
     }
 
     /**
-     * Returns a list of all tutors currently stored in memory.
+     * Retrieves all students in the system.
      *
-     * @return List of Tutor objects
+     * @return List of Student objects
      */
     @Override
-    public List<Tutor> getAllTutors() {
+    public List<Student> getAllStudents() {
         confirmCreation();
-        List<Tutor> tutorList = new ArrayList<>();
-        for (Tutor tutor : tutors.values()) {
-            tutorList.add(tutor);
-        }
-        return tutorList;
+        return new ArrayList<>(students.values());
     }
 
     /**
-     * Clears all tutor records from memory (optional helper).
+     * Clears all student records from memory.
      */
     public void close() {
-        this.tutors = null;
+        this.students = null;
     }
 }
