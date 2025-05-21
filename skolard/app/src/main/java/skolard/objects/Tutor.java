@@ -5,11 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.OptionalDouble;
 
+/**
+ * Represents a tutor who offers sessions to students.
+ * Tutors list courses they've taken and grades received.
+ */
 public class Tutor extends User {
-    private String bio;
-    private ArrayList<String> courses;
-    private Map<String, String> courseGrades;
-    private List<Session> upcomingSessions;
+    private String bio;                            // Short description about the tutor
+    private ArrayList<String> courses;             // List of course names the tutor has completed
+    private Map<String, String> courseGrades;      // Map of course name to grade received
+    private List<Session> upcomingSessions;        // List of upcoming sessions this tutor is scheduled for
 
     public Tutor(String id, String name, String email, String bio,
                  ArrayList<String> courses, Map<String, String> courseGrades) {
@@ -20,6 +24,7 @@ public class Tutor extends User {
         this.upcomingSessions = new ArrayList<>();
     }
 
+    // Alternate constructor (used when courses or grades may be added later)
     public Tutor(String id, String name, String email, String bio) {
         super(id, name, email);
         this.bio = bio;
@@ -52,26 +57,29 @@ public class Tutor extends User {
         this.courseGrades = courseGrades;
     }
 
+    // Adds or updates a course and the grade the tutor received
     public void addCourseGrade(String course, String grade) {
         this.courseGrades.put(course, grade);
     }
 
+    // Returns the grade for a given course, or "N/A" if not found
     public String getGradeForCourse(String course) {
         return this.courseGrades.getOrDefault(course, "N/A");
     }
 
-    // Method to calculate average rating
+    // Calculates and returns the average of numeric grades
     public double getAverageRating() {
         if (courseGrades == null || courseGrades.isEmpty()) return 0.0;
 
         OptionalDouble average = courseGrades.values().stream()
-                .filter(grade -> grade.matches("\\d+"))
+                .filter(grade -> grade.matches("\\d+"))       // Accepts only numeric grades
                 .mapToInt(Integer::parseInt)
                 .average();
 
         return average.orElse(0.0);
     }
 
+    // Adds a session to the tutor’s upcoming schedule
     public void setUpcomingSession(Session session) {
         this.upcomingSessions.add(session);
         System.out.println("Session " + session.getSessionId() + " added to tutor " + getName() + "'s upcoming sessions.");

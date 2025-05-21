@@ -3,14 +3,17 @@ package skolard.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a student user who can book and attend sessions.
+ */
 public class Student extends User {
-    private List<Session> pastSessions    = new ArrayList<>();
-    private List<Session> upcomingSessions = new ArrayList<>();
+    private List<Session> pastSessions = new ArrayList<>();       // List of sessions the student has already completed
+    private List<Session> upcomingSessions = new ArrayList<>();   // List of future sessions the student has booked
 
     public Student(String id, String name, String email) {
         super(id, name, email);
-        this.pastSessions = new ArrayList();
-        this.upcomingSessions = new ArrayList();
+        this.pastSessions = new ArrayList();      // Initialize past sessions
+        this.upcomingSessions = new ArrayList();  // Initialize upcoming sessions
     }
 
     public List<Session> getPastSessions() {
@@ -25,16 +28,16 @@ public class Student extends User {
         this.pastSessions = pastSessions;
     }
 
-    // rename this to "addUpcomingSession" to match what it actually does
+    // Adds a single session to the upcoming list
     public void addUpcomingSession(Session session) {
         upcomingSessions.add(session);
     }
 
-    public void setUpcomingSession(Session session) {
+    // Currently does nothing; consider removing or replacing
+    public void setUpcomingSession(Session session) { }
 
-    }
-
-        public void setUpcomingSessions(List<Session> upcomingSessions) {
+    // Adds multiple sessions to the upcoming session list
+    public void setUpcomingSessions(List<Session> upcomingSessions) {
         this.upcomingSessions.addAll(upcomingSessions);
     }
 }

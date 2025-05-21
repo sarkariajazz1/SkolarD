@@ -1,5 +1,10 @@
 package skolard.objects;
 
+
+/**
+ * Abstract base class representing a general user of the system.
+ * This class is extended by both Student and Tutor.
+ */
 public abstract class User {
     protected String id;
     protected String name;

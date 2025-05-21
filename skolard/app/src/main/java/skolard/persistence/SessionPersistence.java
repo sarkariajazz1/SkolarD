@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Interface that defines the required operations for managing Session data.
- * This abstraction allows you to use either a real database or a stub implementation.
+ * This abstraction allows for both real and stub database implementations.
  */
 public interface SessionPersistence {
 

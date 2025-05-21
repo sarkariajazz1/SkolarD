@@ -1,17 +1,21 @@
-package skolard.objects;// updated package names
+package skolard.objects; // updated package names
 
 import java.time.LocalDateTime;
 
+/**
+ * Represents a tutoring session scheduled between a tutor and a student.
+ */
 public class Session {
-    private String sessionId;
-    private Tutor tutor;
-    private Student student;
-    private LocalDateTime startDateTime;
-    private LocalDateTime endDateTime;
-    private String courseName; // New field
-    private boolean booked;
+    private String sessionId;                     // Unique identifier for this session
+    private Tutor tutor;                          // Tutor leading the session
+    private Student student;                      // Student attending the session (null if not booked)
+    private LocalDateTime startDateTime;          // Start time of the session
+    private LocalDateTime endDateTime;            // End time of the session
+    private String courseName;                    // Course associated with this session
+    private boolean booked;                       // Flag to indicate if the session has been booked
 
-    public Session(String sessionId, Tutor tutor, Student student, LocalDateTime startDateTime, LocalDateTime endDateTime, String courseName) {
+    public Session(String sessionId, Tutor tutor, Student student,
+                   LocalDateTime startDateTime, LocalDateTime endDateTime, String courseName) {
         this.sessionId = sessionId;
         this.tutor = tutor;
         this.student = student;
@@ -63,7 +67,6 @@ public class Session {
 
     public boolean isBooked() {
         return booked;
-
     }
 
     public String getCourseName() {
@@ -73,6 +76,13 @@ public class Session {
     public void setCourseName(String courseName) {
         this.courseName = courseName;
     }
+
+    /**
+     * Marks the session as booked and sets the student.
+     * Also adds this session to the student's and tutor’s upcoming sessions.
+     *
+     * @param student the student booking the session
+     */
     public void bookSession(Student student) {
         if (this.booked) {
             throw new IllegalStateException("This session is already booked.");
@@ -83,6 +93,7 @@ public class Session {
         student.setUpcomingSession(this);
         System.out.println("Session " + sessionId + " booked by " + student.getName());
     }
+
     @Override
     public String toString() {
         return "Session{" +
