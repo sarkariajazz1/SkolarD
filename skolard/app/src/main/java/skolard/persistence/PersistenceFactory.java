@@ -11,7 +11,7 @@ public class PersistenceFactory {
     public static void initialize(PersistenceType type, boolean seed) {
         switch(type) {
             case PROD, TEST -> {
-
+                fallBackToStub(); //Will always use stub for iteration 1
             }
             case STUB -> fallBackToStub();
         }
