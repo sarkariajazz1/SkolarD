@@ -1,13 +1,11 @@
 package skolard.logic;
 
-import java.util.ArrayList;
 import java.util.Map;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
-import skolard.persistence.stub.StudentStub;
 
 /**
  * ProfileHandler manages viewing and modifying profile data
