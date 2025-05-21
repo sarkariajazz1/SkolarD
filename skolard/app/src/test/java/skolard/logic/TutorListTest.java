@@ -9,17 +9,26 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
+/**
+ * Unit tests for TutorList, which handles sessions and sorting by tutor ratings.
+ */
 public class TutorListTest {
 
     private TutorList tutorList;
     private Session session1, session2, session3;
 
+    /**
+     * Helper to create a tutor with a simulated numeric rating as string
+     */
     private Tutor createTutor(String name, double numericRating) {
         Map<String, String> grades = new HashMap<>();
         grades.put("COMP1010", String.valueOf((int)(numericRating * 10))); // e.g., 4.8 -> "48"
         return new Tutor(UUID.randomUUID().toString(), name, name + "@email.com", "Bio", new ArrayList<>(Arrays.asList("COMP1010")), grades);
     }
 
+    /**
+     * Helper to create a session
+     */
     private Session createSession(String id, String course, Tutor tutor) {
         return new Session(
                 id,
@@ -31,6 +40,9 @@ public class TutorListTest {
         );
     }
 
+    /**
+     * Initializes the TutorList with sample sessions.
+     */
     @Before
     public void setUp() {
         tutorList = new TutorList();
@@ -48,6 +60,9 @@ public class TutorListTest {
         tutorList.addItem(session3);
     }
 
+    /**
+     * Tests default sorting by average tutor rating.
+     */
     @Test
     public void testDefaultSortByTutorRating() {
         tutorList.sort(null);
@@ -57,14 +72,12 @@ public class TutorListTest {
         assertEquals("Bob", sorted.get(2).getTutor().getName());
     }
 
+    /**
+     * Verifies sorting using a custom comparator (e.g., by name).
+     */
     @Test
     public void testCustomSortComparatorByName() {
-        tutorList.sort(new Comparator<Session>() {
-            @Override
-            public int compare(Session s1, Session s2) {
-                return s1.getTutor().getName().compareTo(s2.getTutor().getName());
-            }
-        });
+        tutorList.sort((s1, s2) -> s1.getTutor().getName().compareTo(s2.getTutor().getName()));
 
         List<Session> sorted = tutorList.getAllItems();
         assertEquals("Alice", sorted.get(0).getTutor().getName());
@@ -72,6 +85,9 @@ public class TutorListTest {
         assertEquals("Charlie", sorted.get(2).getTutor().getName());
     }
 
+    /**
+     * Tests that course-based filtering works.
+     */
     @Test
     public void testGetSessionsForCourse() {
         List<Session> result = tutorList.getSessionsForCourse("COMP1010");
@@ -81,23 +97,32 @@ public class TutorListTest {
         }
     }
 
+    /**
+     * Tests sorting by tutor ratings within a single course.
+     */
     @Test
     public void testGetSessionsByTutorSorted() {
         List<Session> result = tutorList.getSessionsByTutor("COMP1010");
         assertEquals(2, result.size());
-        assertEquals("Alice", result.get(0).getTutor().getName()); // 4.8 > 4.2
+        assertEquals("Alice", result.get(0).getTutor().getName()); // 48 > 42
         assertEquals("Bob", result.get(1).getTutor().getName());
     }
 
+    /**
+     * Verifies no errors occur on an empty tutor list.
+     */
     @Test
     public void testEmptyTutorList() {
         TutorList emptyList = new TutorList();
-        emptyList.sort(null); // should not throw
+        emptyList.sort(null);
         assertTrue(emptyList.getAllItems().isEmpty());
         assertTrue(emptyList.getSessionsForCourse("ANY").isEmpty());
         assertTrue(emptyList.getSessionsByTutor("ANY").isEmpty());
     }
 
+    /**
+     * Ensures the toString method returns session data.
+     */
     @Test
     public void testToStringContainsSessions() {
         String str = tutorList.toString();
@@ -105,6 +130,9 @@ public class TutorListTest {
         assertTrue(str.contains("COMP2140"));
     }
 
+    /**
+     * Tests behavior when two tutors have identical ratings.
+     */
     @Test
     public void testSortWithEqualRatings() {
         Tutor t1 = createTutor("Tom", 4.5);
@@ -117,12 +145,14 @@ public class TutorListTest {
         list.addItem(s1);
         list.addItem(s2);
 
-        list.sort(null); // Should not crash
-
+        list.sort(null);
         List<Session> result = list.getAllItems();
         assertEquals(2, result.size());
     }
 
+    /**
+     * Gracefully handle sessions with null tutor field.
+     */
     @Test
     public void testNullTutorHandlingGracefully() {
         TutorList list = new TutorList();

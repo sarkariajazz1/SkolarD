@@ -6,15 +6,24 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Unit tests for the PriorityList class using JUnit.
+ * Verifies behavior for common operations such as add, remove, and clear.
+ */
 public class PriorityListTest {
     private PriorityList<String> priorityList;
 
+    /**
+     * Initializes a fresh PriorityList instance before each test.
+     */
     @Before
     public void setUp() {
-        // Correctly initialize the PriorityList
         priorityList = new PriorityList<>();
     }
 
+    /**
+     * Tests that items are added correctly and in the expected order.
+     */
     @Test
     public void testAddItem() {
         priorityList.addItem("Alice");
@@ -24,6 +33,9 @@ public class PriorityListTest {
         assertEquals("Bob", priorityList.getItem(1));
     }
 
+    /**
+     * Tests that removing an item actually removes it from the list.
+     */
     @Test
     public void testRemoveItem() {
         priorityList.addItem("Alice");
@@ -33,6 +45,9 @@ public class PriorityListTest {
         assertEquals("Bob", priorityList.getItem(0));
     }
 
+    /**
+     * Verifies the isEmpty method for both empty and non-empty states.
+     */
     @Test
     public void testIsEmpty() {
         assertTrue(priorityList.isEmpty());
@@ -40,6 +55,9 @@ public class PriorityListTest {
         assertFalse(priorityList.isEmpty());
     }
 
+    /**
+     * Ensures that the clear method removes all items from the list.
+     */
     @Test
     public void testClear() {
         priorityList.addItem("Alice");
@@ -48,6 +66,9 @@ public class PriorityListTest {
         assertTrue(priorityList.isEmpty());
     }
 
+    /**
+     * Verifies that getAllItems returns the full, unmodifiable list.
+     */
     @Test
     public void testGetAllItems() {
         priorityList.addItem("Alice");

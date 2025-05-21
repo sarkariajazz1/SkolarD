@@ -5,36 +5,47 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import skolard.objects.Session;
 
+/**
+ * Unit tests for the TimeList class.
+ * Validates filtering sessions by time range and course name.
+ */
 public class TimeListTest {
     private TimeList timeList;
 
+    /**
+     * Helper method to quickly create a session.
+     */
     private Session createSession(LocalDateTime start, LocalDateTime end, String courseName){
         return new Session("", null, null, start, end, courseName);
     }
 
+    /**
+     * Initializes a fresh TimeList before each test.
+     */
     @Before
     public void setUp() {
         timeList = new TimeList();
     }
-    
+
+    /**
+     * Tests that sessions falling within a student's availability are returned.
+     */
     @Test
     public void testFilterSessionsWithinTimeRange() {
-        //Valid session
-        Session s1 = createSession( LocalDateTime.of(2025, 5, 20, 9, 0),
-                LocalDateTime.of(2025, 5, 20, 10, 0), "Math");
+        Session s1 = createSession(LocalDateTime.of(2025, 5, 20, 9, 0),
+                                   LocalDateTime.of(2025, 5, 20, 10, 0), "Math");
 
-        //Valid session
         Session s2 = createSession(LocalDateTime.of(2025, 5, 20, 11, 0),
-                LocalDateTime.of(2025, 5, 20, 12, 0), "Math");
+                                   LocalDateTime.of(2025, 5, 20, 12, 0), "Math");
 
-        //Invalid session
         Session s3 = createSession(LocalDateTime.of(2025, 5, 20, 13, 0),
-                LocalDateTime.of(2025, 5, 20, 14, 0),"Math");
+                                   LocalDateTime.of(2025, 5, 20, 14, 0), "Math");
 
         timeList.addItem(s1);
         timeList.addItem(s2);
@@ -48,10 +59,13 @@ public class TimeListTest {
         assertEquals(2, result.size());
     }
 
+    /**
+     * Tests behavior when no sessions match the time range.
+     */
     @Test
     public void testNoSessionsInRange() {
         Session outOfRange = createSession(LocalDateTime.of(2025, 5, 20, 6, 0),
-                LocalDateTime.of(2025, 5, 20, 7, 0), "Math");
+                                           LocalDateTime.of(2025, 5, 20, 7, 0), "Math");
 
         timeList.addItem(outOfRange);
 
@@ -63,6 +77,9 @@ public class TimeListTest {
         assertTrue(result.isEmpty());
     }
 
+    /**
+     * Returns empty list if the session list is empty.
+     */
     @Test
     public void testEmptySessionList() {
         List<Session> result = timeList.filterByStudentTimeRange(
