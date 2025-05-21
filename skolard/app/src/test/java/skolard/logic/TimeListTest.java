@@ -13,6 +13,10 @@ import skolard.objects.Session;
 public class TimeListTest {
     private TimeList timeList;
 
+    private Session createSession(LocalDateTime start, LocalDateTime end, String courseName){
+        return new Session("", null, null, start, end, courseName);
+    }
+
     @Before
     public void setUp() {
         timeList = new TimeList();
@@ -20,16 +24,16 @@ public class TimeListTest {
     
     @Test
     public void testFilterSessionsWithinTimeRange() {
-        Session s1 = new Session(null,null,null,
-                LocalDateTime.of(2025, 5, 20, 9, 0),
+        //Valid session
+        Session s1 = createSession( LocalDateTime.of(2025, 5, 20, 9, 0),
                 LocalDateTime.of(2025, 5, 20, 10, 0), "Math");
 
-        Session s2 = new Session(null,null,null,
-                LocalDateTime.of(2025, 5, 20, 11, 0),
+        //Valid session
+        Session s2 = createSession(LocalDateTime.of(2025, 5, 20, 11, 0),
                 LocalDateTime.of(2025, 5, 20, 12, 0), "Math");
 
-        Session s3 = new Session(null,null,null,
-                LocalDateTime.of(2025, 5, 20, 13, 0),
+        //Invalid session
+        Session s3 = createSession(LocalDateTime.of(2025, 5, 20, 13, 0),
                 LocalDateTime.of(2025, 5, 20, 14, 0),"Math");
 
         timeList.addItem(s1);
@@ -46,8 +50,7 @@ public class TimeListTest {
 
     @Test
     public void testNoSessionsInRange() {
-        Session outOfRange = new Session(null,null,null,
-                LocalDateTime.of(2025, 5, 20, 6, 0),
+        Session outOfRange = createSession(LocalDateTime.of(2025, 5, 20, 6, 0),
                 LocalDateTime.of(2025, 5, 20, 7, 0), "Math");
 
         timeList.addItem(outOfRange);
