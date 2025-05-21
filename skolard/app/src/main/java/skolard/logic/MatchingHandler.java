@@ -12,12 +12,12 @@ public class MatchingHandler {
     private PriorityList<Session> availableSessions;
 
     // Default constructor uses TutorList (sorted by tutor rating)
-    public matchingHandler() {
+    public  MatchingHandler() {
         this.availableSessions = new TutorList();
     }
 
     // Alternate constructor with custom priority list
-    public matchingHandler(PriorityList<Session> sessionList) {
+    public  MatchingHandler(PriorityList<Session> sessionList) {
         this.availableSessions = sessionList;
     }
 

@@ -7,6 +7,7 @@ import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import static org.junit.Assert.*;
 
 public class MatchingHandlerTest {
 
-    private matchingHandler handler;
+    private MatchingHandler handler;
     private Tutor tutor;
     private Student student;
     private Session session1;
@@ -22,7 +23,7 @@ public class MatchingHandlerTest {
 
     @Before
     public void setUp() {
-        handler = new matchingHandler();
+        handler = new MatchingHandler();
 
         tutor = new Tutor("t1", "Tutor One", "tutor1@email.com", "Bio");
         tutor.addCourseGrade("COMP1010", "4.0");
