@@ -5,18 +5,25 @@ import java.util.List;
 
 import skolard.objects.Session;
 import skolard.objects.Student;
+import skolard.persistence.PersistenceFactory;
+import skolard.persistence.PersistenceType;
+import skolard.persistence.SessionPersistence;
 
 public class MatchingHandler {
-    // main decision making class
-    // this class will be used to match the tutor and student
     private PriorityList<Session> availableSessions;
 
-    public MatchingHandler(){
-        //Can be instance of any other class that extends PriorityList
+    public MatchingHandler() {
         this.availableSessions = new TutorList();
+
+        // Load sessions from stub (persistence layer)
+        SessionPersistence sessionDao = PersistenceFactory.getSessionPersistence();
+
+        for (Session s : sessionDao.getAllSessions()) {
+            this.availableSessions.addItem(s);
+        }
     }
 
-    public MatchingHandler(PriorityList<Session> sessionList){
+    public MatchingHandler(PriorityList<Session> sessionList) {
         this.availableSessions = sessionList;
     }
 
@@ -27,24 +34,22 @@ public class MatchingHandler {
         availableSessions.addItem(session);
     }
 
-    // List all available sessions for a specific course (automatically sorted)
     public List<Session> getAvailableSessions(String courseName) {
         if (courseName == null || courseName.isEmpty()) {
             throw new IllegalArgumentException("Course name cannot be null or empty.");
         }
+
         List<Session> matchingSessions = new ArrayList<>();
         for (Session session : availableSessions.getAllItems()) {
             if (session.getCourseName().equalsIgnoreCase(courseName) && !session.isBooked()) {
                 matchingSessions.add(session);
             }
         }
-        // Sort
-        matchingSessions.sort(null);
 
+        matchingSessions.sort(null); // uses natural order
         return matchingSessions;
     }
 
-    // Book a selected session
     public void bookSession(Session session, Student student) {
         if (session == null || student == null) {
             throw new IllegalArgumentException("Session and student cannot be null.");
@@ -58,7 +63,6 @@ public class MatchingHandler {
         }
     }
 
-    // Clear all available sessions
     public void clearSessions() {
         availableSessions.clear();
     }

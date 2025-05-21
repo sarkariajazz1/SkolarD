@@ -3,41 +3,42 @@ package skolard.persistence;
 import skolard.persistence.stub.StubFactory;
 
 public class PersistenceFactory {
-
     private static SessionPersistence sessionPersistence;
     private static StudentPersistence studentPersistence;
     private static TutorPersistence tutorPersistence;
 
-    public static void initialize(PersistenceType type, boolean seed) {
-        switch(type) {
-            case PROD, TEST -> {
-                fallBackToStub(); //Will always use stub for iteration 1
-            }
-            case STUB -> fallBackToStub();
+    public static <T> T getPersistence(PersistenceType type, Class<T> clazz) {
+        if (type == PersistenceType.STUB) {
+            return StubFactory.getStub(clazz);
         }
+
+        throw new UnsupportedOperationException("Only STUB persistence is supported.");
     }
 
-    private static void fallBackToStub() {
-        sessionPersistence = StubFactory.createSessionPersistence();
-        studentPersistence = StubFactory.createStudentPersistence();
-        tutorPersistence = StubFactory.createTutorPersistence();
+    public static void initializeStubPersistence() {
+        sessionPersistence = StubFactory.getStub(SessionPersistence.class);
+        studentPersistence = StubFactory.getStub(StudentPersistence.class);
+        tutorPersistence = StubFactory.getStub(TutorPersistence.class);
     }
 
     public static SessionPersistence getSessionPersistence() {
+        if (sessionPersistence == null) {
+            initializeStubPersistence();
+        }
         return sessionPersistence;
     }
 
     public static StudentPersistence getStudentPersistence() {
+        if (studentPersistence == null) {
+            initializeStubPersistence();
+        }
         return studentPersistence;
     }
 
     public static TutorPersistence getTutorPersistence() {
+        if (tutorPersistence == null) {
+            initializeStubPersistence();
+        }
         return tutorPersistence;
-    }
-
-    public static void reset() {
-        sessionPersistence = null;
-        studentPersistence = null;
-        tutorPersistence = null;
     }
 }
