@@ -5,13 +5,22 @@ import java.util.Map;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
+import skolard.persistence.StudentPersistence;
+import skolard.persistence.TutorPersistence;
+import skolard.persistence.stub.StudentStub;
 
 /**
  * ProfileHandler manages viewing and modifying profile data
  * for users in the SkolarD platform, specifically Students and Tutors.
  */
 public class ProfileHandler {
+    private StudentPersistence studentPersistence;
+    private TutorPersistence tutorPersistence;
 
+    public ProfileHandler(StudentPersistence studentPersistence, TutorPersistence tutorPersistence) {
+        this.studentPersistence = studentPersistence;
+        this.tutorPersistence = tutorPersistence; 
+    }
     /**
      * Returns the basic profile information (name and email) of any user.
      * This works for both students and tutors.
