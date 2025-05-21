@@ -9,27 +9,35 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 /**
- * Stub implementation of SessionPersistence that stores session data in-memory using a HashMap.
- * This is useful for testing and development without needing a real database.
+ * Stub implementation of SessionPersistence that stores session data in memory.
+ * This allows development and testing without requiring a real database backend.
  */
 public class SessionStub implements SessionPersistence {
 
-    private Map<String, Session> sessions;       // Stores sessions by their unique ID
-    private static int sessionCounter = 1;       // Used to generate unique session IDs
+    private Map<String, Session> sessions;     // Stores all sessions keyed by session ID
+    private static int sessionCounter = 1;     // Counter for generating unique session IDs
 
+    /**
+     * Constructor initializes the session map and loads sample data.
+     */
     public SessionStub() {
-        confirmCreation();       // Ensure map is initialized
-        addSampleSessions();     // Populate with fake data
+        confirmCreation();
+        addSampleSessions();
     }
 
-    // Initialize the internal session map if not already done
+    /**
+     * Ensures the internal session map is created.
+     */
     private void confirmCreation() {
         if (sessions == null) {
             sessions = new HashMap<>();
         }
     }
 
-    // Generate and add some fake sessions to simulate real data
+    /**
+     * Populates the stub with pre-defined example sessions.
+     * This includes booked and unbooked sessions with mock data.
+     */
     private void addSampleSessions() {
         Tutor tutor1 = new Tutor("tutor1", "Amrit Singh", "amrit@skolard.ca",
                 "CS & Math Tutor", new ArrayList<>(List.of("COMP 1010", "MATH 1500")),
@@ -42,7 +50,6 @@ public class SessionStub implements SessionPersistence {
         Student student1 = new Student("student1", "Raj Gill", "raj@skolard.ca");
         Student student2 = new Student("student2", "Simran Dhillon", "simran@skolard.ca");
 
-        // Create sessions
         Session s1 = new Session(generateSessionId(), tutor1, null,
                 LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).plusHours(1),
                 "COMP 1010");
@@ -57,17 +64,25 @@ public class SessionStub implements SessionPersistence {
                 "MATH 1500");
         s3.bookSession(student1);
 
-        // Add to in-memory DB
         addSession(s1);
         addSession(s2);
         addSession(s3);
     }
 
-    // Generate a unique session ID
+    /**
+     * Generates a new session ID (e.g., "S1", "S2", etc.).
+     *
+     * @return A unique session ID
+     */
     private String generateSessionId() {
         return "S" + sessionCounter++;
     }
 
+    /**
+     * Adds a session to the in-memory store.
+     *
+     * @param session The session to add
+     */
     @Override
     public void addSession(Session session) {
         confirmCreation();
@@ -80,18 +95,35 @@ public class SessionStub implements SessionPersistence {
         sessions.put(session.getSessionId(), session);
     }
 
+    /**
+     * Retrieves a session by its ID.
+     *
+     * @param sessionId The session's unique ID
+     * @return The matching session, or null
+     */
     @Override
     public Session getSessionById(String sessionId) {
         confirmCreation();
         return sessions.get(sessionId);
     }
 
+    /**
+     * Gets a list of all sessions currently stored.
+     *
+     * @return List of all sessions
+     */
     @Override
     public List<Session> getAllSessions() {
         confirmCreation();
         return new ArrayList<>(sessions.values());
     }
 
+    /**
+     * Retrieves sessions taught by a specific tutor.
+     *
+     * @param tutorId The tutor's unique ID
+     * @return List of sessions associated with that tutor
+     */
     @Override
     public List<Session> getSessionsByTutorId(String tutorId) {
         confirmCreation();
@@ -100,6 +132,12 @@ public class SessionStub implements SessionPersistence {
                 .toList();
     }
 
+    /**
+     * Retrieves sessions booked by a specific student.
+     *
+     * @param studentId The student's unique ID
+     * @return List of sessions associated with that student
+     */
     @Override
     public List<Session> getSessionsByStudentId(String studentId) {
         confirmCreation();
@@ -108,6 +146,11 @@ public class SessionStub implements SessionPersistence {
                 .toList();
     }
 
+    /**
+     * Removes a session from the in-memory store.
+     *
+     * @param sessionId The ID of the session to remove
+     */
     @Override
     public void removeSession(String sessionId) {
         confirmCreation();
@@ -117,12 +160,16 @@ public class SessionStub implements SessionPersistence {
         sessions.remove(sessionId);
     }
 
-    // Optional helper for clearing data
+    /**
+     * Clears all sessions from memory (optional).
+     */
     public void deleteAllSessions() {
         this.sessions = new HashMap<>();
     }
 
-    // Optional helper for resetting the stub entirely
+    /**
+     * Destroys the internal session store (optional helper).
+     */
     public void close() {
         this.sessions = null;
     }
