@@ -7,13 +7,13 @@ import java.util.List;
  * Represents a student user who can book and attend sessions.
  */
 public class Student extends User {
-    private List<Session> pastSessions = new ArrayList<>();       // List of sessions the student has already completed
-    private List<Session> upcomingSessions = new ArrayList<>();   // List of future sessions the student has booked
+    private List<Session> pastSessions;       // List of sessions the student has already completed
+    private List<Session> upcomingSessions;   // List of future sessions the student has booked
 
     public Student(String id, String name, String email) {
         super(id, name, email);
-        this.pastSessions = new ArrayList();      // Initialize past sessions
-        this.upcomingSessions = new ArrayList();  // Initialize upcoming sessions
+        this.pastSessions = new ArrayList<Session>();      // Initialize past sessions
+        this.upcomingSessions = new ArrayList<Session>();  // Initialize upcoming sessions
     }
 
     public List<Session> getPastSessions() {
