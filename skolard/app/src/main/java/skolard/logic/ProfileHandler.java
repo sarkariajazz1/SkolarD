@@ -46,6 +46,14 @@ public class ProfileHandler {
         return tutorPersistence.addTutor(newTutor);
     }
 
+    public void updateTutor(Tutor updatedTutor) {
+        tutorPersistence.updateTutor(updatedTutor);
+    }
+
+    public void updateStudent(Student updatedStudent) {
+        studentPersistence.updateStudent(updatedStudent);
+    }
+
     /**
      * Returns the basic profile information (name and email) of any user.
      * This works for both students and tutors.

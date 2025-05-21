@@ -15,12 +15,15 @@ import org.junit.Test;
 import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
+import skolard.persistence.PersistenceFactory;
+import skolard.persistence.PersistenceType;
 
 /**
  * Unit tests for the ProfileHandler class.
  * Verifies profile viewing and editing logic for Student and Tutor objects.
  */
 public class ProfileHandlerTest {
+    private ProfileHandler profileHandler;
     private Student mockStudent;
     private Tutor mockTutor;
 
@@ -30,19 +33,27 @@ public class ProfileHandlerTest {
      */
     @Before
     public void setUp() {
-        mockTutor = new Tutor("0000001", "Alice Tutor", "alicetutor@myumanitoba.ca",
+        PersistenceFactory.initialize(PersistenceType.STUB, false);
+        profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(), 
+            PersistenceFactory.getTutorPersistence());
+
+        Tutor mockTutor = new Tutor("0000001", "Alice Tutor", "alicetutor@myumanitoba.ca",
                             "Experienced in Math and Physics", null, null);
+        profileHandler.addTutor(mockTutor.getName(), mockTutor.getEmail());
         mockTutor.setCourses(new ArrayList<>(List.of("Math 101", "Physics 202")));
         Map<String, String> grades = new HashMap<>();
         grades.put("Math 101", "4.0");
         grades.put("Physics 202", "3.0");
         mockTutor.setCourseGrades(grades);
+        profileHandler.updateTutor(mockTutor);
 
-        mockStudent = new Student("0000002", "Bob Student", "bobstudent@myumanitoba.ca");
+        Student mockStudent = new Student("0000002", "Bob Student", "bobstudent@myumanitoba.ca");
+        profileHandler.addStudent(mockStudent.getName(), mockStudent.getEmail());
         Session pastSession = new Session("1", null, null, null, null, null);
         Session upcomingSession = new Session("2", null, null, null, null, null);
         mockStudent.setUpcomingSessions(List.of(upcomingSession));
         mockStudent.setPastSessions(List.of(pastSession));
+        profileHandler.updateStudent(mockStudent);
     }
 
     /**
@@ -50,7 +61,7 @@ public class ProfileHandlerTest {
      */
     @Test
     public void testViewBasicProfile_Tutor() {
-        String result = ProfileHandler.viewBasicProfile(mockTutor);
+        String result = profileHandler.viewBasicProfile(mockTutor);
         assertTrue(result.contains("Name: Alice Tutor"));
         assertTrue(result.contains("Email: alicetutor@myumanitoba.ca"));
     }
@@ -60,7 +71,7 @@ public class ProfileHandlerTest {
      */
     @Test
     public void testViewFullProfile_Tutor() {
-        String result = ProfileHandler.viewFullProfile(mockTutor);
+        String result = profileHandler.viewFullProfile(mockTutor);
         assertTrue(result.contains("Bio: Experienced in Math and Physics"));
         assertTrue(result.contains("Courses Taken: Math 101, Physics 202"));
         assertTrue(result.contains("Grades:"));
@@ -74,7 +85,7 @@ public class ProfileHandlerTest {
      */
     @Test
     public void testViewFullProfile_Student() {
-        String result = ProfileHandler.viewFullProfile(mockStudent);
+        String result = profileHandler.viewFullProfile(mockStudent);
         assertTrue(result.contains("Upcoming Sessions: 1"));
         assertTrue(result.contains("Past Sessions: 1"));
     }
@@ -84,7 +95,7 @@ public class ProfileHandlerTest {
      */
     @Test
     public void testUpdateBio() {
-        ProfileHandler.updateBio(mockTutor, "Updated Bio");
+        profileHandler.updateBio(mockTutor, "Updated Bio");
         assertEquals("Updated Bio", mockTutor.getBio());
     }
 
@@ -93,7 +104,7 @@ public class ProfileHandlerTest {
      */
     @Test
     public void testAddTutoringCourse_NewCourse() {
-        ProfileHandler.addTutoringCourse(mockTutor, "Chemistry 303", "3.5");
+        profileHandler.addTutoringCourse(mockTutor, "Chemistry 303", "3.5");
         assertTrue(mockTutor.getCourses().contains("Chemistry 303"));
         assertEquals("3.5", mockTutor.getCourseGrades().get("Chemistry 303"));
     }
@@ -103,7 +114,7 @@ public class ProfileHandlerTest {
      */
     @Test
     public void testRemoveTutoringCourse() {
-        ProfileHandler.removeTutoringCourse(mockTutor, "Math 101");
+        profileHandler.removeTutoringCourse(mockTutor, "Math 101");
         assertFalse(mockTutor.getCourses().contains("Math 101"));
         assertFalse(mockTutor.getCourseGrades().containsKey("Math 101"));
     }
