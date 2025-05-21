@@ -6,14 +6,14 @@ import skolard.persistence.TutorPersistence;
 
 public class StubFactory {
     public static SessionPersistence createSessionPersistence() {
-        return new SessionStub(); // in-memory note persistence
+        return new SessionStub(); // in-memory session persistence
     }
 
     public static StudentPersistence createStudentPersistence() {
-        return new StudentStub(); // in-memory category persistence
+        return new StudentStub(); // in-memory student persistence
     }
 
     public static TutorPersistence createTutorPersistence() {
-        return new TutorStub(); // in-memory category persistence
+        return new TutorStub(); // in-memory tutor persistence
     }
 }

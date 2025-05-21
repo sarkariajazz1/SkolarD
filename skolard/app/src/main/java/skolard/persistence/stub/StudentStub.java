@@ -72,4 +72,8 @@ public class StudentStub implements StudentPersistence {
         }
         return studentList;
     }
+
+    public void close() {
+        this.students = null;
+    }
 }

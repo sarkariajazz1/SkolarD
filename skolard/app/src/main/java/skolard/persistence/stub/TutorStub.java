@@ -84,4 +84,8 @@ public class TutorStub implements TutorPersistence {
         }
         return tutorList;
     }
+
+    public void close() {
+        this.tutors = null;
+    }
 }

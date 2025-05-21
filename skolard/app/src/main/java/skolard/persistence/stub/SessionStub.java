@@ -126,9 +126,4 @@ public class SessionStub implements SessionPersistence {
     public void close() {
         this.sessions = null;
     }
-
-    // Not used here, but included for compatibility with file-based interfaces
-    public String getFilePath() {
-        return "";
-    }
 }
