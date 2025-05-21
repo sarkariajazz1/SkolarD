@@ -1,12 +1,9 @@
 package skolard;
 
-import java.time.LocalDateTime;
 import javax.swing.SwingUtilities;
 
 import skolard.persistence.PersistenceFactory;
 import skolard.presentation.SkolardApp;
-import skolard.logic.TutorList;
-import skolard.logic.MatchingHandler;
 
 /**
  * Main entry point for the SkolarD application.
@@ -20,9 +17,5 @@ public class App {
 
         // Launch the Swing GUI in the event-dispatch thread
         SwingUtilities.invokeLater(SkolardApp::new);
-
-        // Example use of logic classes (not required for UI)
-        LocalDateTime dateTime = LocalDateTime.now();
-        MatchingHandler matcher = new MatchingHandler(new TutorList());
     }
 }
