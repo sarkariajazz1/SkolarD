@@ -31,10 +31,11 @@ public class TimeList extends PriorityList<Session> {
      * @return A list of sessions that match both time and course criteria
      */
     public List<Session> filterByStudentTimeRange(LocalDateTime studentStart, LocalDateTime studentEnd, String courseName) {
-        // Return empty list if the session list is empty or input is invalid
-        if (items.isEmpty()) {
-            return Collections.emptyList();
-        } else if (studentStart == null || studentEnd == null || courseName == null || courseName.isEmpty()) {
+        // Return empty list if the session list is empty or inputs are invalid
+        if (items.isEmpty() 
+            || studentStart == null 
+            || studentEnd == null 
+            || courseName == null || courseName.isEmpty()){
             return Collections.emptyList();
         }
 
