@@ -5,81 +5,134 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import skolard.objects.Student;
-import skolard.persistence.StudentPersistence;
+import skolard.objects.Tutor;
+import skolard.persistence.TutorPersistence;
 
-public class StudentStub implements StudentPersistence {
-    private Map<String, Student> students;
-    private static int uniqueID = 0;
+/**
+ * In-memory stub implementation of TutorPersistence.
+ * This simulates storing tutor data without needing a real database.
+ */
+public class TutorStub implements TutorPersistence {
 
-    public StudentStub() {
+    private Map<String, Tutor> tutors;           // Map to hold tutors keyed by email
+    private static int uniqueID = 0;             // ID counter to assign unique IDs to tutors
+
+    /**
+     * Constructor initializes the in-memory structure and populates it with sample data.
+     */
+    public TutorStub() {
         confirmCreation();
-
-        addSampleStudents();
+        addSampleTutor();
     }
 
+    /**
+     * Ensures the tutors map is initialized before use.
+     */
     private void confirmCreation() {
-        if(students == null) {
-            students = new HashMap<>();
+        if(tutors == null) {
+            tutors = new HashMap<>();
         }
     }
 
-    private void addSampleStudents() {
-        addStudent(new Student("" + uniqueID++, "Matt Yab", "yabm@myumanitoba.ca"));
-        addStudent(new Student("" + uniqueID++, "Group Six", "sixg@myumanitoba.ca"));
-        addStudent(new Student("" + uniqueID++, "John Wick", "wickj@myumanitoba.ca"));
+    /**
+     * Adds a sample tutor with two courses and example grades.
+     * This is for demonstration and testing purposes only.
+     */
+    private void addSampleTutor() {
+        String course1 = "COMP 1010";
+        String course2 = "COMP 3350";
+        ArrayList<String> courses = new ArrayList<String>();
+        Map<String, String> courseGrades = new HashMap<>();
+
+        courses.add(course1);
+        courses.add(course2);
+
+        courseGrades.put(course1, "A");
+        courseGrades.put(course2, "B+");
+
+        addTutor(new Tutor("" + uniqueID++, "Yab Matt", "mattyab@myumanitoba.ca",
+                "", courses, courseGrades));
     }
 
-    public Student addStudent(Student student) {
+    /**
+     * Adds a tutor if a tutor with the same email already exists.
+     * (This logic may need revision — typically you'd only add if email is NOT present.)
+     *
+     * @param tutor The tutor to add
+     * @return The newly created tutor object, or null if not added
+     */
+    public Tutor addTutor(Tutor tutor) {
         confirmCreation();
 
-        Student newStudent = null;
+        Tutor newTutor = null;
 
-        if(students.containsKey(student.getEmail())) {
-            newStudent = new Student("" + uniqueID++, student.getName(), student.getEmail());
-            students.put(newStudent.getEmail(), newStudent);
+        if(tutors.containsKey(tutor.getEmail())) {
+            newTutor = new Tutor("" + uniqueID++, tutor.getName(), tutor.getEmail(),
+                    tutor.getBio(), tutor.getCourses(), tutor.getCourseGrades());
+
+            tutors.put(newTutor.getEmail(), newTutor);
         }
 
-        return newStudent;
+        return newTutor;
     }
 
+    /**
+     * Retrieves a tutor by their email address.
+     *
+     * @param email The tutor's email
+     * @return The Tutor object if found, else null
+     */
     @Override
-    public Student getStudentByEmail(String email) {
+    public Tutor getTutorByEmail(String email) {
         confirmCreation();
-        return students.get(email);
+        return tutors.get(email);
     }
 
+    /**
+     * Deletes a tutor from the map using their email.
+     *
+     * @param email Email of the tutor to be removed
+     */
     @Override
-    public void deleteStudentByEmail(String email) {
+    public void deleteTutorByEmail(String email) {
         confirmCreation();
-
-        if(students.containsKey(email)) {
-            students.remove(email);
+        if(tutors.containsKey(email)) {
+            tutors.remove(email);
         }
     }
 
-
+    /**
+     * Updates a tutor's record if they already exist.
+     *
+     * @param updatedTutor The new version of the tutor object
+     */
     @Override
-    public void updateStudent(Student updatedStudent) {
+    public void updateTutor(Tutor updatedTutor) {
         confirmCreation();
-
-        if(students.containsKey(updatedStudent.getEmail())) {
-            students.replace(updatedStudent.getEmail(), updatedStudent);
+        if(tutors.containsKey(updatedTutor.getEmail())) {
+            tutors.replace(updatedTutor.getEmail(), updatedTutor);
         }
     }
 
+    /**
+     * Returns a list of all tutors currently stored in memory.
+     *
+     * @return List of Tutor objects
+     */
     @Override
-    public List<Student> getAllStudents() {
+    public List<Tutor> getAllTutors() {
         confirmCreation();
-
-        List<Student> studentList = new ArrayList<Student>();
-        for (Student student : students.values()) {
-            studentList.add(student);
+        List<Tutor> tutorList = new ArrayList<>();
+        for (Tutor tutor : tutors.values()) {
+            tutorList.add(tutor);
         }
-        return studentList;
+        return tutorList;
     }
 
+    /**
+     * Clears all tutor records from memory (optional helper).
+     */
     public void close() {
-        this.students = null;
+        this.tutors = null;
     }
 }
