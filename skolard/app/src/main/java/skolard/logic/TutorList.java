@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import skolard.objects.Session;
 
+/**
+ * TutorList is a PriorityList that supports sorting tutoring sessions
+ * based on tutor quality and filtering by course.
+ */
 public class TutorList extends PriorityList<Session> {
 
     // Default constructor
@@ -12,12 +16,14 @@ public class TutorList extends PriorityList<Session> {
         super();
     }
 
-    // Override the sort method to sort by overall tutor rating by default
-    // Override the sort method 
+    /**
+     * Overrides the default sort method. If no comparator is given, sessions
+     * are sorted by the average rating of their assigned tutor.
+     */
     @Override
     public void sort(Comparator<? super Session> comparator) {
         if (comparator != null) {
-            // Custom comparator-based sorting
+            // Use custom comparator
             for (int i = 0; i < items.size(); i++) {
                 for (int j = 0; j < items.size() - 1; j++) {
                     if (comparator.compare(items.get(j), items.get(j + 1)) > 0) {
@@ -26,7 +32,7 @@ public class TutorList extends PriorityList<Session> {
                 }
             }
         } else {
-            // Default sorting by overall average tutor rating
+            // Default to sorting by tutor rating
             for (int i = 0; i < items.size(); i++) {
                 for (int j = 0; j < items.size() - 1; j++) {
                     Session s1 = items.get(j);
@@ -41,26 +47,35 @@ public class TutorList extends PriorityList<Session> {
             }
         }
     }
-    // Swap function
+
+    // Helper to swap two items in the list
     private void swap(int i, int j) {
         Session temp = items.get(i);
         items.set(i, items.get(j));
         items.set(j, temp);
     }
 
-    // Get sessions for a specific course without sorting
+    /**
+     * Returns sessions that match a specific course without sorting.
+     * @param courseName the course name to filter by
+     * @return list of sessions
+     */
     public List<Session> getSessionsForCourse(String courseName) {
         return items.stream()
-                .filter(session -> session.getCourseName().equalsIgnoreCase(courseName))
-                .collect(Collectors.toList());
+            .filter(session -> session.getCourseName().equalsIgnoreCase(courseName))
+            .collect(Collectors.toList());
     }
 
-    // Get sessions for a specific course, sorted by tutor rating
+    /**
+     * Returns sessions for a course, sorted by the tutor's average rating.
+     * @param courseName course name
+     * @return sorted list of sessions
+     */
     public List<Session> getSessionsByTutor(String courseName) {
         return items.stream()
-                .filter(session -> session.getCourseName().equalsIgnoreCase(courseName))
-                .sorted((s1, s2) -> Double.compare(s2.getTutor().getAverageRating(), s1.getTutor().getAverageRating()))
-                .collect(Collectors.toList());
+            .filter(session -> session.getCourseName().equalsIgnoreCase(courseName))
+            .sorted((s1, s2) -> Double.compare(s2.getTutor().getAverageRating(), s1.getTutor().getAverageRating()))
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -68,5 +83,3 @@ public class TutorList extends PriorityList<Session> {
         return items.toString();
     }
 }
-
-

@@ -2,24 +2,34 @@ package skolard.logic;
 
 import java.util.Collections;
 import java.util.List;
-
 import skolard.objects.Session;
 
+/**
+ * RatingList is a specialized PriorityList that sorts tutoring sessions
+ * based on the tutor's grade for a specific course.
+ */
 public class RatingList extends PriorityList<Session> {
 
+    // Default constructor
     public RatingList() {
         super();
     }
 
+    /**
+     * Filters and sorts sessions by best tutor course grade.
+     * Grades must be numeric (e.g., "3.0"). Non-numeric grades fallback to 1.0.
+     *
+     * @param course the name of the course to sort sessions for
+     * @return a sorted list of sessions, or an empty list if none match
+     */
     public List<Session> sortByBestCourseRating(String course) {
         if (items.isEmpty() || course == null || course.trim().isEmpty()) {
-            return Collections.emptyList(); // Safely return empty list
+            return Collections.emptyList();
         }
 
-        // Filter in-place
-        filterSessionToCourse(course);
+        filterSessionToCourse(course);  // remove irrelevant or unqualified sessions
 
-        // Sort using bubble sort based on tutor grade for the course
+        // Bubble sort based on numeric grade values
         for (int i = 0; i < items.size(); i++) {
             for (int j = 0; j < items.size() - 1; j++) {
                 Session s1 = items.get(j);
@@ -39,29 +49,29 @@ public class RatingList extends PriorityList<Session> {
         return items;
     }
 
-    // Converts grade to double, or defaults to 1.0 if non-numeric
+    // Helper method to safely convert grades to doubles
     private double parseOrFallback(String grade) {
         try {
             return Double.parseDouble(grade);
         } catch (NumberFormatException e) {
-            return 1.0;
+            return 1.0; // fallback for non-numeric grades
         }
     }
 
-    // Bubble-swap helper
+    // Swaps two sessions in the list
     private void swap(int i, int j) {
         Session temp = items.get(i);
         items.set(i, items.get(j));
         items.set(j, temp);
     }
 
-    // Remove sessions not matching course name or with no grade
+    // Filters out sessions that don't match the course or have invalid grades
     private void filterSessionToCourse(String course) {
         int i = 0;
         while (i < items.size()) {
             Session session = items.get(i);
             boolean courseMismatch = session.getCourseName() == null ||
-                    !session.getCourseName().equalsIgnoreCase(course);
+                                     !session.getCourseName().equalsIgnoreCase(course);
 
             String grade = session.getTutor().getGradeForCourse(course);
             boolean missingGrade = grade == null || grade.equalsIgnoreCase("N/A");
@@ -74,5 +84,3 @@ public class RatingList extends PriorityList<Session> {
         }
     }
 }
-
-

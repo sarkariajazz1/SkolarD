@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+/**
+ * A generic class for managing prioritized lists.
+ * Supports sorting, adding, and removing items.
+ */
 public class PriorityList<T> {
     protected List<T> items;
 
@@ -64,5 +69,3 @@ public class PriorityList<T> {
         return items.toString();
     }
 }
-
-

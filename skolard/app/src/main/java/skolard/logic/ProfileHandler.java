@@ -15,93 +15,109 @@ public class ProfileHandler {
     private StudentPersistence studentPersistence;
     private TutorPersistence tutorPersistence;
 
+    /**
+     * Constructor to inject dependencies for persistence.
+     * @param studentPersistence interface to manage student data.
+     * @param tutorPersistence interface to manage tutor data.
+     */
     public ProfileHandler(StudentPersistence studentPersistence, TutorPersistence tutorPersistence) {
         this.studentPersistence = studentPersistence;
         this.tutorPersistence = tutorPersistence; 
     }
 
+    /**
+     * Attempts to fetch a user (student or tutor) by email.
+     * @param email email of the user.
+     * @return User object if found, null otherwise.
+     */
     public User getUser(String email) {
-        User user = null;
-
-        user = studentPersistence.getStudentByEmail(email);
-
-        if(user == null) {
+        User user = studentPersistence.getStudentByEmail(email);
+        if (user == null) {
             user = tutorPersistence.getTutorByEmail(email);
         }
-         
         return user;
     }
 
+    /**
+     * Adds a new student to the persistence layer.
+     * @param name student's name
+     * @param email student's email
+     * @return the created Student object
+     */
     public Student addStudent(String name, String email) {
-        String id = "-1";
+        String id = "-1"; // placeholder ID
         Student newStudent = new Student(id, name, email);
-        
         return studentPersistence.addStudent(newStudent);
     }
 
+    /**
+     * Adds a new tutor to the persistence layer.
+     * @param name tutor's name
+     * @param email tutor's email
+     * @return the created Tutor object
+     */
     public Tutor addTutor(String name, String email) {
-        String id = "-1";
+        String id = "-1"; // placeholder ID
         Tutor newTutor = new Tutor(id, name, email, "Edit your bio...");
-        
         return tutorPersistence.addTutor(newTutor);
     }
 
+    /**
+     * Updates a tutor's profile in the persistence layer.
+     */
     public void updateTutor(Tutor updatedTutor) {
         tutorPersistence.updateTutor(updatedTutor);
     }
 
+    /**
+     * Updates a student's profile in the persistence layer.
+     */
     public void updateStudent(Student updatedStudent) {
         studentPersistence.updateStudent(updatedStudent);
     }
 
     /**
-     * Returns the basic profile information (name and email) of any user.
-     * This works for both students and tutors.
+     * Returns a user's basic profile: name and email.
+     * @param user User instance (either student or tutor)
+     * @return formatted string or empty string if null
      */
     public String viewBasicProfile(User user) {
-
-        if(user != null) { 
-        return "Name: " + user.getName() + "\n"
-                + "Email: " + user.getEmail() + "\n";
+        if (user != null) {
+            return "Name: " + user.getName() + "\n"
+                 + "Email: " + user.getEmail() + "\n";
         }
-
         return "";
     }
 
     /**
-     * Displays the full profile details based on the user's type.
-     * Includes:
-     * - For Tutors: bio, courses taken (with grades), and average rating.
-     * - For Students: number of upcoming and past sessions.
+     * Returns a user's full profile depending on type (Tutor or Student).
+     * @param user User object
+     * @return a detailed string with all relevant profile data
      */
     public String viewFullProfile(User user) {
-
-        if(user != null) {
+        if (user != null) {
             StringBuilder sb = new StringBuilder();
-            sb.append(viewBasicProfile(user)); // Start with name and email
+            sb.append(viewBasicProfile(user)); // common info
 
-            // If user is a tutor, display tutor-specific details
+            // Tutor-specific fields
             if (user instanceof Tutor) {
                 Tutor tutor = (Tutor) user;
                 sb.append("Bio: ").append(tutor.getBio()).append("\n");
-
-                // Courses represent ones the tutor has previously taken
                 sb.append("Courses Taken: ").append(String.join(", ", tutor.getCourses())).append("\n");
 
-                // Show grades for each course
                 Map<String, String> courseGrades = tutor.getCourseGrades();
                 if (!courseGrades.isEmpty()) {
                     sb.append("Grades: \n");
                     for (String course : courseGrades.keySet()) {
-                        sb.append(" - ").append(course).append(": ").append(courseGrades.get(course)).append("\n");
+                        sb.append(" - ").append(course)
+                          .append(": ").append(courseGrades.get(course)).append("\n");
                     }
                 }
 
-                // Display tutor's average rating (based on numeric grades only)
                 sb.append("Average Rating: ").append(tutor.getAverageRating()).append("\n");
             }
 
-            // If user is a student, display session-related info
+            // Student-specific fields
             if (user instanceof Student) {
                 Student s = (Student) user;
                 int upcoming = s.getUpcomingSessions() != null ? s.getUpcomingSessions().size() : 0;
@@ -109,48 +125,51 @@ public class ProfileHandler {
                 sb.append("Upcoming Sessions: ").append(upcoming).append("\n");
                 sb.append("Past Sessions: ").append(past).append("\n");
             }
+
             return sb.toString();
         }
         return "";
     }
 
     /**
-     * Allows a tutor to update their personal bio.
+     * Updates a tutor's bio if the user is an instance of Tutor.
+     * @param user User instance
+     * @param newBio updated biography string
      */
     public void updateBio(User user, String newBio) {
-
         if (user instanceof Tutor) {
             Tutor tutor = (Tutor) user;
             tutor.setBio(newBio);
-            tutorPersistence.updateTutor(tutor);
+            tutorPersistence.updateTutor(tutor); // persist change
         }
     }
 
     /**
-     * Adds a new course (that the tutor has taken) along with the grade.
-     * If the course already exists, the grade will be updated.
+     * Adds or updates a course and grade for a tutor.
+     * @param user User instance
+     * @param course course name
+     * @param grade grade received
      */
     public void addTutoringCourse(User user, String course, String grade) {
         if (user instanceof Tutor) {
-            Tutor tutor= (Tutor) user;
-            // Add course if it's not already listed
+            Tutor tutor = (Tutor) user;
             if (!tutor.getCourses().contains(course)) {
                 tutor.getCourses().add(course);
             }
-            // Add or update grade for the course
             tutor.addCourseGrade(course, grade);
         }
     }
 
     /**
-     * Removes a course from the tutor's list of completed courses and deletes its grade.
+     * Removes a course and its grade from a tutor’s profile.
+     * @param user User instance
+     * @param course course name to be removed
      */
     public void removeTutoringCourse(User user, String course) {
         if (user instanceof Tutor) {
-            Tutor tutor= (Tutor) user;
-            tutor.getCourses().remove(course);                 // Remove course name
-            tutor.getCourseGrades().remove(course);            // Remove associated grade
+            Tutor tutor = (Tutor) user;
+            tutor.getCourses().remove(course);
+            tutor.getCourseGrades().remove(course);
         }
     }
 }
-
