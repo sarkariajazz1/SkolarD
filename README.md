@@ -1,4 +1,4 @@
-#  Vision Statement
+#  SkolarD
 
 SkolarD is a tutoring application designed for post-secondary students to book in-person tutoring sessions easily and conveniently. Through the app, students can search for tutors based on the courses they teach and also by their teaching style. Once a tutor is selected, the student can view their availability, and schedule a session at a convenient time for both parties. Students can also directly message the tutor for any questions or concerns.
 
