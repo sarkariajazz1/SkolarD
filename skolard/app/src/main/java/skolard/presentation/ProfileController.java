@@ -22,10 +22,8 @@ public class ProfileController {
 
     /** Default constructor wires in the STUB implementations. */
     public ProfileController() {
-        this.mockStudent = PersistenceFactory.getPersistence(
-                PersistenceType.STUB, StudentPersistence.class);
-        this.mockTutor   = PersistenceFactory.getPersistence(
-                PersistenceType.STUB, TutorPersistence.class);
+        this.mockStudent = PersistenceFactory.getStudentPersistence();
+        this.mockTutor   = PersistenceFactory.getTutorPersistence();
     }
 
     /** Returns all students in the system. */
@@ -48,7 +46,7 @@ public class ProfileController {
 
     /** Find a tutor by their email address (case‐insensitive). */
     public Tutor getTutorByEmail(String email) {
-        return tutorDao.getAllTutors().stream()
+        return mockTutor.getAllTutors().stream()
                 .filter(t -> t.getEmail().equalsIgnoreCase(email))
                 .findFirst()
                 .orElse(null);
@@ -70,20 +68,20 @@ public class ProfileController {
         if (user instanceof Student) {
             mockStudent.updateStudent((Student) user);
         } else if (user instanceof Tutor) {
-            tutorDao.updateTutor((Tutor) user);
+            mockTutor.updateTutor((Tutor) user);
         }
     }
 
     /** Add a new course‐grade entry to a tutor and persist. */
     public void addTutoringCourse(Tutor tutor, String course, String grade) {
         profileHandler.addTutoringCourse(tutor, course, grade);
-        tutorDao.updateTutor(tutor);
+        mockTutor.updateTutor(tutor);
     }
 
     /** Remove a course from a tutor’s profile and persist. */
     public void removeTutoringCourse(Tutor tutor, String course) {
         profileHandler.removeTutoringCourse(tutor, course);
-        tutorDao.updateTutor(tutor);
+        mockTutor.updateTutor(tutor);
     }
 
     /** Promote a generic User to a Student object (in memory). */
@@ -96,7 +94,7 @@ public class ProfileController {
     /** Promote a generic User to a Tutor object (in memory). */
     public Tutor promoteToTutor(User user) {
         Tutor t = profileHandler.promoteToTutor(user);
-        tutorDao.addTutor(t);
+        mockTutor.addTutor(t);
         return t;
     }
 }
