@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Student extends User {
-    private List<Session> pastSessions;
-    private List<Session> upcomingSessions;
+    private List<Session> pastSessions    = new ArrayList<>();
+    private List<Session> upcomingSessions = new ArrayList<>();
 
     public Student(String id, String name, String email) {
         super(id, name, email);
@@ -13,20 +13,25 @@ public class Student extends User {
         this.upcomingSessions = new ArrayList();
     }
 
-    public List<Session> getPastSessions(){
+    public List<Session> getPastSessions() {
         return pastSessions;
     }
 
-    public List<Session> getUpcomingSessions(){
+    public List<Session> getUpcomingSessions() {
         return upcomingSessions;
     }
 
-    public void setPastSessions(List<Session> pastSessions){
+    public void setPastSessions(List<Session> pastSessions) {
         this.pastSessions = pastSessions;
     }
 
-    public void setUpcomingSession(Session upcomingSessions){
-        this.upcomingSessions.add(upcomingSessions);
+    // rename this to "addUpcomingSession" to match what it actually does
+    public void addUpcomingSession(Session session) {
+        upcomingSessions.add(session);
+    }
+
+    public void setUpcomingSession(Session session) {
+
     }
 
         public void setUpcomingSessions(List<Session> upcomingSessions) {
