@@ -1,77 +1,76 @@
 package skolard.logic;
 
+import java.util.Collections;
 import java.util.List;
 
 import skolard.objects.Session;
 
 public class RatingList extends PriorityList<Session> {
 
-    // Default constructor
     public RatingList() {
         super();
     }
 
-    public List<Session> sortByBestCourseRating(String course){
-        if(items.isEmpty()){
-            return null; //Must change to something more appropriate
-        } else if(items.size() > 1){
+    public List<Session> sortByBestCourseRating(String course) {
+        if (items.isEmpty() || course == null || course.trim().isEmpty()) {
+            return Collections.emptyList(); // Safely return empty list
+        }
 
-            filterSessionToCourse(course);
+        // Filter in-place
+        filterSessionToCourse(course);
 
-            //Iterates through list to sort sessions based on tutor grades in descending order
-            for (int i = 0; i < items.size(); i++) {
-                for (int j = 0; j < items.size() - 1; j++) {
-                    Session s1 = items.get(j);
-                    Session s2 = items.get(j+1);
-                    String tutorRatingOne = s1.getTutor().getGradeForCourse(course);
-                    String tutorRatingTwo = s2.getTutor().getGradeForCourse(course);
+        // Sort using bubble sort based on tutor grade for the course
+        for (int i = 0; i < items.size(); i++) {
+            for (int j = 0; j < items.size() - 1; j++) {
+                Session s1 = items.get(j);
+                Session s2 = items.get(j + 1);
+                String grade1 = s1.getTutor().getGradeForCourse(course);
+                String grade2 = s2.getTutor().getGradeForCourse(course);
 
+                double rating1 = parseOrFallback(grade1);
+                double rating2 = parseOrFallback(grade2);
 
-                    double ratingOne;
-                    double ratingTwo;
-
-                    //Attempt to get the ratings and if not parsable, default rating is 1.0 for non-appropriate ratings
-                    try{
-                        ratingOne = Double.parseDouble(tutorRatingOne);
-                    }catch (NumberFormatException e){
-                        ratingOne = 1.0;
-                    }
-
-                    try{
-                        ratingTwo = Double.parseDouble(tutorRatingTwo);
-                    }catch (NumberFormatException e){
-                        ratingTwo = 1.0;
-                    }
-
-                    if (ratingOne < ratingTwo) {
-                        swap(j, j + 1);
-                    }
+                if (rating1 < rating2) {
+                    swap(j, j + 1);
                 }
             }
         }
+
         return items;
     }
 
-    //Swapping function for sorting algorithm
+    // Converts grade to double, or defaults to 1.0 if non-numeric
+    private double parseOrFallback(String grade) {
+        try {
+            return Double.parseDouble(grade);
+        } catch (NumberFormatException e) {
+            return 1.0;
+        }
+    }
+
+    // Bubble-swap helper
     private void swap(int i, int j) {
         Session temp = items.get(i);
         items.set(i, items.get(j));
         items.set(j, temp);
     }
 
-    private void filterSessionToCourse(String course){
-        int index = 0;
+    // Remove sessions not matching course name or with no grade
+    private void filterSessionToCourse(String course) {
+        int i = 0;
+        while (i < items.size()) {
+            Session session = items.get(i);
+            boolean courseMismatch = session.getCourseName() == null ||
+                    !session.getCourseName().equalsIgnoreCase(course);
 
-        //Removes sessions that are not for the specified course
-        while(index < items.size()){
-            Session session = items.get(index);
-            String tutorRating = session.getTutor().getGradeForCourse(course);
-            if(tutorRating.equals("N/A")){
-                items.remove(session);
-            }else{
-                index++;
+            String grade = session.getTutor().getGradeForCourse(course);
+            boolean missingGrade = grade == null || grade.equalsIgnoreCase("N/A");
+
+            if (courseMismatch || missingGrade) {
+                items.remove(i);
+            } else {
+                i++;
             }
         }
     }
-
 }
