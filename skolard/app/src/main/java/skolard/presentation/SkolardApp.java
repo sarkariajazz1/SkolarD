@@ -2,7 +2,7 @@ package skolard.presentation;
 
 import javax.swing.*;
 import java.awt.*;
-
+//
 public class SkolardApp extends JFrame {
     public SkolardApp() {
         super("SkolarD - Dashboard");
@@ -27,3 +27,7 @@ public class SkolardApp extends JFrame {
         setVisible(true);
     }
 }
+
+
+
+

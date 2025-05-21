@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ProfileView extends JFrame {
+
     private final JTextField emailField = new JTextField(20);
     private final JTextArea profileArea = new JTextArea(15, 40);
     private final JButton fetchBtn = new JButton("View Profile");
