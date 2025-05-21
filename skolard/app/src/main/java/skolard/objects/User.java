@@ -1,9 +1,13 @@
 package skolard.objects;
 
+/**
+ * Abstract base class representing a general user in SkolarD.
+ * Can be extended into Student or Tutor.
+ */
 public abstract class User {
-    protected String id;
-    protected String name;
-    protected String email;
+    protected String id;      // Unique identifier
+    protected String name;    // Display name
+    protected String email;   // Contact email
 
     public User(String id, String name, String email) {
         this.id = id;
@@ -34,7 +38,4 @@ public abstract class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
 }
-
-

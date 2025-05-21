@@ -5,10 +5,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.OptionalDouble;
 
+/**
+ * Represents a tutor in the SkolarD platform.
+ * Stores bio, courses taken, grades, and upcoming sessions.
+ */
 public class Tutor extends User {
     private String bio;
     private ArrayList<String> courses;
-    private Map<String, String> courseGrades;
+    private Map<String, String> courseGrades; // Mapping of course name to grade
     private List<Session> upcomingSessions;
 
     public Tutor(String id, String name, String email, String bio,
@@ -52,26 +56,32 @@ public class Tutor extends User {
         this.courseGrades = courseGrades;
     }
 
+    // Add or update a grade for a course
     public void addCourseGrade(String course, String grade) {
         this.courseGrades.put(course, grade);
     }
 
+    // Retrieve grade for a specific course
     public String getGradeForCourse(String course) {
         return this.courseGrades.getOrDefault(course, "N/A");
     }
 
-    // Method to calculate average rating
+    /**
+     * Calculates the average rating based on numeric grades.
+     * Ignores non-numeric grades like A/B+ etc.
+     */
     public double getAverageRating() {
         if (courseGrades == null || courseGrades.isEmpty()) return 0.0;
 
         OptionalDouble average = courseGrades.values().stream()
-                .filter(grade -> grade.matches("\\d+"))
+                .filter(grade -> grade.matches("\\d+")) // Only numeric strings
                 .mapToInt(Integer::parseInt)
                 .average();
 
         return average.orElse(0.0);
     }
 
+    // Adds a session to the tutor's upcoming sessions
     public void setUpcomingSession(Session session) {
         this.upcomingSessions.add(session);
         System.out.println("Session " + session.getSessionId() + " added to tutor " + getName() + "'s upcoming sessions.");
@@ -81,5 +91,3 @@ public class Tutor extends User {
         return upcomingSessions;
     }
 }
-
-
