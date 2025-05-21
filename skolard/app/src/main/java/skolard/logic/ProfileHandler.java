@@ -17,7 +17,7 @@ public class ProfileHandler {
 
     public ProfileHandler(StudentPersistence studentPersistence, TutorPersistence tutorPersistence) {
         this.studentPersistence = studentPersistence;
-        this.tutorPersistence = tutorPersistence;
+        this.tutorPersistence = tutorPersistence; 
     }
 
     public User getUser(String email) {
@@ -28,22 +28,30 @@ public class ProfileHandler {
         if(user == null) {
             user = tutorPersistence.getTutorByEmail(email);
         }
-
+         
         return user;
     }
 
     public Student addStudent(String name, String email) {
         String id = "-1";
         Student newStudent = new Student(id, name, email);
-
+        
         return studentPersistence.addStudent(newStudent);
     }
 
     public Tutor addTutor(String name, String email) {
         String id = "-1";
         Tutor newTutor = new Tutor(id, name, email, "Edit your bio...");
-
+        
         return tutorPersistence.addTutor(newTutor);
+    }
+
+    public void updateTutor(Tutor updatedTutor) {
+        tutorPersistence.updateTutor(updatedTutor);
+    }
+
+    public void updateStudent(Student updatedStudent) {
+        studentPersistence.updateStudent(updatedStudent);
     }
 
     /**
@@ -52,9 +60,9 @@ public class ProfileHandler {
      */
     public String viewBasicProfile(User user) {
 
-        if(user != null) {
-            return "Name: " + user.getName() + "\n"
-                    + "Email: " + user.getEmail() + "\n";
+        if(user != null) { 
+        return "Name: " + user.getName() + "\n"
+                + "Email: " + user.getEmail() + "\n";
         }
 
         return "";
@@ -145,5 +153,4 @@ public class ProfileHandler {
         }
     }
 }
-
 
