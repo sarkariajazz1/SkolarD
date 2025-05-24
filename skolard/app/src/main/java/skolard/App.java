@@ -2,7 +2,9 @@ package skolard;
 
 import javax.swing.SwingUtilities;
 
+import skolard.logic.ProfileHandler;
 import skolard.persistence.PersistenceFactory;
+import skolard.persistence.PersistenceType;
 import skolard.presentation.SkolardApp;
 
 /**
@@ -12,8 +14,11 @@ import skolard.presentation.SkolardApp;
 public class App {
     public static void main(String[] args) {
 
-        // Initialize the stub-based data system (used during development)
-        PersistenceFactory.initializeStubPersistence();
+        // Initialize the data system
+        PersistenceFactory.initialize(PersistenceType.STUB, false);
+
+        ProfileHandler profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(), 
+            PersistenceFactory.getTutorPersistence());
 
         // Launch the Swing GUI in the event-dispatch thread
         SwingUtilities.invokeLater(SkolardApp::new);
