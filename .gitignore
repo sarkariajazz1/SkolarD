@@ -7,7 +7,7 @@
 /bin/
 
 # Gradle files
-.gradle/
+/.gradle/
 skolard/.gradle/
 **/build/
 
