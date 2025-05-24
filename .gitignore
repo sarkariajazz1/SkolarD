@@ -8,7 +8,9 @@
 
 # Gradle files
 .gradle/
+skolard/.gradle/
 **/build/
+
 
 # VSCode settings
 .vscode/
