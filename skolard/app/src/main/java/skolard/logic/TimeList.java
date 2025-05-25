@@ -25,9 +25,7 @@ public class TimeList extends PriorityList<Session> {
      * @return a list of sessions that match the criteria
      */
     public List<Session> filterByStudentTimeRange(LocalDateTime studentStart, LocalDateTime studentEnd, String courseName) {
-        if (items.isEmpty()) {
-            return Collections.emptyList();
-        } else if (studentStart == null || studentEnd == null || courseName == null || courseName.isEmpty()) {
+        if (items.isEmpty() ||studentStart == null || studentEnd == null || courseName == null || courseName.isEmpty()) {
             return Collections.emptyList();
         }
 
