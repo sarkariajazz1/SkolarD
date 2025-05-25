@@ -12,8 +12,8 @@ import skolard.objects.Session;
 public class TimeList extends PriorityList<Session> {
 
     // Default constructor
-    public TimeList() {
-        super();
+    public TimeList(List<Session> sessions) {
+        items = sessions;
     }
 
     /**
