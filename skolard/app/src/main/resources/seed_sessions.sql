@@ -1,13 +1,5 @@
 BEGIN TRANSACTION;
 
-<<<<<<< HEAD
-INSERT OR IGNORE INTO session (id, tutorEmail, studentEmail, startTime, endTime, courseID)
-VALUES (1, 'jane@skolard.ca', 'alice@example.com', '2025-06-01T10:00', '2025-06-01T11:00', 'COMP101');
-
-INSERT OR IGNORE INTO session (id, tutorEmail, studentEmail, startTime, endTime, courseID)
-VALUES (2, 'john@skolard.ca', 'bob@example.com', '2025-06-02T14:00', '2025-06-02T15:00', 'MATH200');
-
-=======
 INSERT OR IGNORE INTO session (id, tutorEmail, studentEmail, startTime, endTime, courseID) VALUES
 (2, 'sukhdeep@example.com', NULL, '2025-06-11T09:00', '2025-06-11T10:00', 'COMP1010'),
 (3, 'sukhdeep@example.com', NULL, '2025-06-11T11:00', '2025-06-11T12:00', 'COMP1010'),
@@ -63,5 +55,4 @@ INSERT OR IGNORE INTO session (id, tutorEmail, studentEmail, startTime, endTime,
 (43, 'alice@example.com', 'maria@example.com', '2025-05-05T14:00', '2025-05-05T15:00', 'COMP2140'),
 (44, 'li@example.com', 'bob@example.com', '2025-05-06T15:00', '2025-05-06T16:00', 'COMP3020'),
 (45, 'sukhdeep@example.com', 'amrit@example.com', '2025-05-07T16:00', '2025-05-07T17:00', 'COMP4350');
->>>>>>> dev
 COMMIT;

@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import skolard.utils.PasswordUtil;
 import skolard.objects.Student;
 import skolard.persistence.StudentPersistence;
+import skolard.utils.PasswordUtil;
 
 /**
  * In-memory stub implementation of StudentPersistence.
@@ -48,18 +48,8 @@ public class StudentStub implements StudentPersistence {
      * @return The new student object, or null if email already exists
      */
     public Student addStudent(Student student) {
-<<<<<<< HEAD
-        confirmCreation();
-
-        Student newStudent = null;
-
-        if(!students.containsKey(student.getEmail())) {
-            newStudent = new Student(student.getName(), student.getEmail());
-            students.put(newStudent.getEmail(), newStudent);
-=======
         if (students.containsKey(student.getEmail())) {
             throw new RuntimeException("Student account already exists");
->>>>>>> dev
         }
         students.put(student.getEmail(), student); // Store original object with password
         return student;
@@ -105,16 +95,7 @@ public class StudentStub implements StudentPersistence {
      */
     @Override
     public List<Student> getAllStudents() {
-<<<<<<< HEAD
-        confirmCreation();
-        List<Student> studentList = new ArrayList<>();
-        for (Student student : students.values()) {
-            studentList.add(student);
-        }
-        return studentList;
-=======
         return new ArrayList<>(students.values());
->>>>>>> dev
     }
 
     /**

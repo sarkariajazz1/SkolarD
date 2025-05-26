@@ -38,20 +38,11 @@ public class TutorStub implements TutorPersistence {
     private void addSampleTutors() {
         String course1 = "COMP 1010";
         String course2 = "COMP 3350";
-<<<<<<< HEAD
-        ArrayList<String> courses = new ArrayList<String>();
-        Map<String, Double> courseGrades = new HashMap<>();
-=======
->>>>>>> dev
 
         Map<String, Double> courses = new HashMap<>();
         courses.put(course1, 4.0);
         courses.put(course2, 3.5);
 
-<<<<<<< HEAD
-        courseGrades.put(course1, 4.0);
-        courseGrades.put(course2, 3.5);
-=======
         Tutor sampleTutor = new Tutor(
                 "Yab Matt",
                 "mattyab@myumanitoba.ca",
@@ -59,7 +50,6 @@ public class TutorStub implements TutorPersistence {
                 "Experienced in Java and C++ tutoring.",
                 courses
         );
->>>>>>> dev
 
         addTutor(sampleTutor);
     }
