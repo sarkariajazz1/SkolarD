@@ -28,13 +28,8 @@ public class PriorityList<T> {
     }
 
     public void removeItem(T item) {
-<<<<<<< HEAD:skolard/app/src/main/java/skolard/logic/PriorityList.java
-        if (items.contains(item)) {
-            items.remove(item);
-=======
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null.");
->>>>>>> dev:skolard/app/src/main/java/skolard/logic/matching/PriorityList.java
         }
         items.remove(item);
     }
