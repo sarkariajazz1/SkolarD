@@ -33,11 +33,11 @@ public class ProfileHandlerTest {
      */
     @Before
     public void setUp() {
-        PersistenceFactory.initializeStubPersistence();
+        PersistenceFactory.initialize(PersistenceType.STUB, false);
         profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(), 
             PersistenceFactory.getTutorPersistence());
 
-        Tutor mockTutor = new Tutor("0000001", "Alice Tutor", "alicetutor@myumanitoba.ca",
+        Tutor mockTutor = new Tutor("Alice Tutor", "alicetutor@myumanitoba.ca",
                             "Experienced in Math and Physics", null, null);
         profileHandler.addTutor(mockTutor.getName(), mockTutor.getEmail());
         mockTutor.setCourses(new ArrayList<>(List.of("Math 101", "Physics 202")));
@@ -47,10 +47,10 @@ public class ProfileHandlerTest {
         mockTutor.setCourseGrades(grades);
         profileHandler.updateTutor(mockTutor);
 
-        Student mockStudent = new Student("0000002", "Bob Student", "bobstudent@myumanitoba.ca");
+        Student mockStudent = new Student("Bob Student", "bobstudent@myumanitoba.ca");
         profileHandler.addStudent(mockStudent.getName(), mockStudent.getEmail());
-        Session pastSession = new Session("1", null, null, null, null, null);
-        Session upcomingSession = new Session("2", null, null, null, null, null);
+        Session pastSession = new Session(1, null, null, null, null, null);
+        Session upcomingSession = new Session(2, null, null, null, null, null);
         mockStudent.setUpcomingSessions(List.of(upcomingSession));
         mockStudent.setPastSessions(List.of(pastSession));
         profileHandler.updateStudent(mockStudent);
