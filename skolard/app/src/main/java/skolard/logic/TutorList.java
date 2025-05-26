@@ -15,6 +15,10 @@ public class TutorList extends PriorityList<Session> {
     public TutorList() {
         super();
     }
+    
+    public TutorList(List<Session> sessions){
+        items = sessions;
+    }
 
     /**
      * Overrides the default sort method. If no comparator is given, sessions
