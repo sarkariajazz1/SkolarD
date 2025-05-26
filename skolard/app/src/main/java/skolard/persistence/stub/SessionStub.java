@@ -31,16 +31,16 @@ public class SessionStub implements SessionPersistence {
 
     // Generate and add some fake sessions to simulate real data
     private void addSampleSessions() {
-        Tutor tutor1 = new Tutor("tutor1", "Amrit Singh", "amrit@skolard.ca",
+        Tutor tutor1 = new Tutor("Amrit Singh", "amrit@skolard.ca",
                 "CS & Math Tutor", new ArrayList<>(List.of("COMP 1010", "MATH 1500")),
                 Map.of("COMP 1010", "A+", "MATH 1500", "A"));
 
-        Tutor tutor2 = new Tutor("tutor2", "Sukhdeep Kaur", "sukhdeep@skolard.ca",
+        Tutor tutor2 = new Tutor("Sukhdeep Kaur", "sukhdeep@skolard.ca",
                 "Physics tutor", new ArrayList<>(List.of("PHYS 1050")),
                 Map.of("PHYS 1050", "A"));
 
-        Student student1 = new Student("student1", "Raj Gill", "raj@skolard.ca");
-        Student student2 = new Student("student2", "Simran Dhillon", "simran@skolard.ca");
+        Student student1 = new Student("Raj Gill", "raj@skolard.ca");
+        Student student2 = new Student("Simran Dhillon", "simran@skolard.ca");
 
         // Create sessions
         Session s1 = new Session(generateSessionId(), tutor1, null,
@@ -93,18 +93,18 @@ public class SessionStub implements SessionPersistence {
     }
 
     @Override
-    public List<Session> getSessionsByTutorId(String tutorId) {
+    public List<Session> getSessionsByTutorId(String tutorEmail) {
         confirmCreation();
         return sessions.values().stream()
-                .filter(s -> s.getTutor().getId().equals(tutorId))
+                .filter(s -> s.getTutor().getEmail().equals(tutorEmail))
                 .toList();
     }
 
     @Override
-    public List<Session> getSessionsByStudentId(String studentId) {
+    public List<Session> getSessionsByStudentId(String studentEmail) {
         confirmCreation();
         return sessions.values().stream()
-                .filter(s -> s.getStudent() != null && s.getStudent().getId().equals(studentId))
+                .filter(s -> s.getStudent() != null && s.getStudent().getEmail().equals(studentEmail))
                 .toList();
     }
 
