@@ -14,8 +14,8 @@ import java.util.*;
  */
 public class SessionStub implements SessionPersistence {
 
-    private Map<String, Session> sessions;       // Stores sessions by their unique ID
-    private static int sessionCounter = 1;       // Used to generate unique session IDs
+    private Map<Integer, Session> sessions;       // Stores sessions by their unique ID
+    private static int sessionCounter = 0;       // Used to generate unique session IDs
 
     public SessionStub() {
         confirmCreation();       // Ensure map is initialized
@@ -31,16 +31,16 @@ public class SessionStub implements SessionPersistence {
 
     // Generate and add some fake sessions to simulate real data
     private void addSampleSessions() {
-        Tutor tutor1 = new Tutor("tutor1", "Amrit Singh", "amrit@skolard.ca",
+        Tutor tutor1 = new Tutor("Amrit Singh", "amrit@skolard.ca",
                 "CS & Math Tutor", new ArrayList<>(List.of("COMP 1010", "MATH 1500")),
                 Map.of("COMP 1010", "A+", "MATH 1500", "A"));
 
-        Tutor tutor2 = new Tutor("tutor2", "Sukhdeep Kaur", "sukhdeep@skolard.ca",
+        Tutor tutor2 = new Tutor("Sukhdeep Kaur", "sukhdeep@skolard.ca",
                 "Physics tutor", new ArrayList<>(List.of("PHYS 1050")),
                 Map.of("PHYS 1050", "A"));
 
-        Student student1 = new Student("student1", "Raj Gill", "raj@skolard.ca");
-        Student student2 = new Student("student2", "Simran Dhillon", "simran@skolard.ca");
+        Student student1 = new Student("Raj Gill", "raj@skolard.ca");
+        Student student2 = new Student("Simran Dhillon", "simran@skolard.ca");
 
         // Create sessions
         Session s1 = new Session(generateSessionId(), tutor1, null,
@@ -64,8 +64,8 @@ public class SessionStub implements SessionPersistence {
     }
 
     // Generate a unique session ID
-    private String generateSessionId() {
-        return "S" + sessionCounter++;
+    private int generateSessionId() {
+        return sessionCounter++;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class SessionStub implements SessionPersistence {
     }
 
     @Override
-    public Session getSessionById(String sessionId) {
+    public Session getSessionById(int sessionId) {
         confirmCreation();
         return sessions.get(sessionId);
     }
@@ -93,23 +93,23 @@ public class SessionStub implements SessionPersistence {
     }
 
     @Override
-    public List<Session> getSessionsByTutorId(String tutorId) {
+    public List<Session> getSessionsByTutorEmail(String tutorEmail) {
         confirmCreation();
         return sessions.values().stream()
-                .filter(s -> s.getTutor().getId().equals(tutorId))
+                .filter(s -> s.getTutor().getEmail().equals(tutorEmail))
                 .toList();
     }
 
     @Override
-    public List<Session> getSessionsByStudentId(String studentId) {
+    public List<Session> getSessionsByStudentEmail(String studentEmail) {
         confirmCreation();
         return sessions.values().stream()
-                .filter(s -> s.getStudent() != null && s.getStudent().getId().equals(studentId))
+                .filter(s -> s.getStudent() != null && s.getStudent().getEmail().equals(studentEmail))
                 .toList();
     }
 
     @Override
-    public void removeSession(String sessionId) {
+    public void removeSession(int sessionId) {
         confirmCreation();
         if (!sessions.containsKey(sessionId)) {
             throw new IllegalArgumentException("Cannot remove non-existent session ID: " + sessionId);
