@@ -14,8 +14,8 @@ import java.util.*;
  */
 public class SessionStub implements SessionPersistence {
 
-    private Map<String, Session> sessions;       // Stores sessions by their unique ID
-    private static int sessionCounter = 1;       // Used to generate unique session IDs
+    private Map<Integer, Session> sessions;       // Stores sessions by their unique ID
+    private static int sessionCounter = 0;       // Used to generate unique session IDs
 
     public SessionStub() {
         confirmCreation();       // Ensure map is initialized
@@ -64,8 +64,8 @@ public class SessionStub implements SessionPersistence {
     }
 
     // Generate a unique session ID
-    private String generateSessionId() {
-        return "S" + sessionCounter++;
+    private int generateSessionId() {
+        return sessionCounter++;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class SessionStub implements SessionPersistence {
     }
 
     @Override
-    public Session getSessionById(String sessionId) {
+    public Session getSessionById(int sessionId) {
         confirmCreation();
         return sessions.get(sessionId);
     }
@@ -93,7 +93,7 @@ public class SessionStub implements SessionPersistence {
     }
 
     @Override
-    public List<Session> getSessionsByTutorId(String tutorEmail) {
+    public List<Session> getSessionsByTutorEmail(String tutorEmail) {
         confirmCreation();
         return sessions.values().stream()
                 .filter(s -> s.getTutor().getEmail().equals(tutorEmail))
@@ -101,7 +101,7 @@ public class SessionStub implements SessionPersistence {
     }
 
     @Override
-    public List<Session> getSessionsByStudentId(String studentEmail) {
+    public List<Session> getSessionsByStudentEmail(String studentEmail) {
         confirmCreation();
         return sessions.values().stream()
                 .filter(s -> s.getStudent() != null && s.getStudent().getEmail().equals(studentEmail))
@@ -109,7 +109,7 @@ public class SessionStub implements SessionPersistence {
     }
 
     @Override
-    public void removeSession(String sessionId) {
+    public void removeSession(int sessionId) {
         confirmCreation();
         if (!sessions.containsKey(sessionId)) {
             throw new IllegalArgumentException("Cannot remove non-existent session ID: " + sessionId);

@@ -23,7 +23,7 @@ public interface SessionPersistence {
      * @param sessionId the ID of the session
      * @return the Session object if found, otherwise null
      */
-    Session getSessionById(String sessionId);
+    Session getSessionById(int sessionId);
 
     /**
      * Retrieve all sessions currently stored in the system.
@@ -38,7 +38,7 @@ public interface SessionPersistence {
      * @param tutorId the unique ID of the tutor
      * @return a list of sessions where the tutor matches the given ID
      */
-    List<Session> getSessionsByTutorId(String tutorId);
+    List<Session> getSessionsByTutorEmail(String tutorEmail);
 
     /**
      * Get all sessions booked by a specific student.
@@ -46,14 +46,14 @@ public interface SessionPersistence {
      * @param studentId the unique ID of the student
      * @return a list of sessions where the student matches the given ID
      */
-    List<Session> getSessionsByStudentId(String studentId);
+    List<Session> getSessionsByStudentEmail(String studentEmail);
 
     /**
      * Remove a session from the system using its ID.
      *
      * @param sessionId the ID of the session to remove
      */
-    void removeSession(String sessionId);
+    void removeSession(int sessionId);
 }
 
 
