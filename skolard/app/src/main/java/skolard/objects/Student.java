@@ -13,8 +13,8 @@ public class Student extends User {
 
     public Student(String name, String email) {
         super(name, email);
-        this.pastSessions = new ArrayList<Session>();
-        this.upcomingSessions = new ArrayList<Session>();
+        this.pastSessions = new ArrayList<>();
+        this.upcomingSessions = new ArrayList<>();
     }
 
     public List<Session> getPastSessions() {

@@ -28,8 +28,8 @@ public class Tutor extends User {
         super(name, email);
         this.bio = bio;
         this.courses = new ArrayList<String>();
-        this.courseGrades = new java.util.HashMap<String,String>();
-        this.upcomingSessions = new ArrayList<Session>();
+        this.courseGrades = new java.util.HashMap<>();
+        this.upcomingSessions = new ArrayList<>();
     }
 
     public String getBio() {
