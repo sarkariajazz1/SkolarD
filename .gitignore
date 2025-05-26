@@ -2,7 +2,7 @@
 *.class
 
 # Build directories
-/build/
+/skolard/app/build/
 /out/
 /bin/
 
