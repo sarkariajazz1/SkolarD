@@ -1,6 +1,5 @@
 package skolard.logic;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import skolard.objects.Session;
