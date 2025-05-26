@@ -27,34 +27,34 @@
 //     private Student mockStudent;
 //     private Tutor mockTutor;
 
-//     /**
-//      * Sets up a mock tutor and student before each test.
-//      * Initializes with sample courses, grades, and sessions.
-//      */
-//     @Before
-//     public void setUp() {
-//         PersistenceFactory.initializeStubPersistence();
-//         profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(), 
-//             PersistenceFactory.getTutorPersistence());
+    /**
+     * Sets up a mock tutor and student before each test.
+     * Initializes with sample courses, grades, and sessions.
+     */
+    @Before
+    public void setUp() {
+        PersistenceFactory.initialize(PersistenceType.STUB, false);
+        profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(), 
+            PersistenceFactory.getTutorPersistence());
 
-//         Tutor mockTutor = new Tutor("0000001", "Alice Tutor", "alicetutor@myumanitoba.ca",
-//                             "Experienced in Math and Physics", null, null);
-//         profileHandler.addTutor(mockTutor.getName(), mockTutor.getEmail());
-//         mockTutor.setCourses(new ArrayList<>(List.of("Math 101", "Physics 202")));
-//         Map<String, String> grades = new HashMap<>();
-//         grades.put("Math 101", "4.0");
-//         grades.put("Physics 202", "3.0");
-//         mockTutor.setCourseGrades(grades);
-//         profileHandler.updateTutor(mockTutor);
+        Tutor mockTutor = new Tutor("Alice Tutor", "alicetutor@myumanitoba.ca",
+                            "Experienced in Math and Physics", null, null);
+        profileHandler.addTutor(mockTutor.getName(), mockTutor.getEmail());
+        mockTutor.setCourses(new ArrayList<>(List.of("Math 101", "Physics 202")));
+        Map<String, String> grades = new HashMap<>();
+        grades.put("Math 101", "4.0");
+        grades.put("Physics 202", "3.0");
+        mockTutor.setCourseGrades(grades);
+        profileHandler.updateTutor(mockTutor);
 
-//         Student mockStudent = new Student("0000002", "Bob Student", "bobstudent@myumanitoba.ca");
-//         profileHandler.addStudent(mockStudent.getName(), mockStudent.getEmail());
-//         Session pastSession = new Session("1", null, null, null, null, null);
-//         Session upcomingSession = new Session("2", null, null, null, null, null);
-//         mockStudent.setUpcomingSessions(List.of(upcomingSession));
-//         mockStudent.setPastSessions(List.of(pastSession));
-//         profileHandler.updateStudent(mockStudent);
-//     }
+        Student mockStudent = new Student("Bob Student", "bobstudent@myumanitoba.ca");
+        profileHandler.addStudent(mockStudent.getName(), mockStudent.getEmail());
+        Session pastSession = new Session(1, null, null, null, null, null);
+        Session upcomingSession = new Session(2, null, null, null, null, null);
+        mockStudent.setUpcomingSessions(List.of(upcomingSession));
+        mockStudent.setPastSessions(List.of(pastSession));
+        profileHandler.updateStudent(mockStudent);
+    }
 
 //     /**
 //      * Tests that basic profile info (name and email) is displayed correctly.
