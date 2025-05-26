@@ -23,7 +23,7 @@ public interface SessionPersistence {
      * @param sessionId the ID of the session
      * @return the Session object if found, otherwise null
      */
-    Session getSessionById(String sessionId);
+    Session getSessionById(int sessionId);
 
     /**
      * Retrieve all sessions currently stored in the system.
