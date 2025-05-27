@@ -1,0 +1,7 @@
+baseURL = "/faq/"
+languageCode = "en-us"
+title = "SkolarD FAQ"
+theme = "PaperMod"
+
+[params]
+  defaultTheme = "light"
