@@ -9,7 +9,7 @@ public class ConnectionManager {
     public static void initialize(String dbPath) throws Exception {
         if (connection != null) return;
 
-        Class.forName("org.sqlite.JDBC"); // ✅ This is where JDBC is loaded
+        Class.forName("org.sqlite.JDBC"); //This is where JDBC is loaded
         connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
     }
 

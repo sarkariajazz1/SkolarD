@@ -65,7 +65,7 @@ public class PersistenceFactory {
     private static StudentPersistence studentPersistence;
     private static TutorPersistence tutorPersistence;
     private static SessionPersistence sessionPersistence;
-
+    private static MessagePersistence messagePersistence;
     public static void initialize(PersistenceType type, boolean seed) {
         if (studentPersistence != null || tutorPersistence != null || sessionPersistence != null) return;
 
@@ -119,6 +119,9 @@ public class PersistenceFactory {
         return sessionPersistence;
     }
 
+    public static MessagePersistence getMessagePersistence() {
+        return messagePersistence;
+    }
     public static void reset() {
         ConnectionManager.close();
         studentPersistence = null;
