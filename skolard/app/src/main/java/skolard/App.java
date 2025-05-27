@@ -1,12 +1,12 @@
 package skolard;
 
+import java.util.List;
+
 import javax.swing.SwingUtilities;
-import skolard.logic.ProfileHandler;
+
 import skolard.objects.Student;
 import skolard.persistence.PersistenceFactory;
 import skolard.persistence.PersistenceType;
-
-import java.util.List;
 
 /**
  * Main entry point for the SkolarD application.

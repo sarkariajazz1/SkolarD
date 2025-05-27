@@ -5,9 +5,9 @@ import java.util.List;
 
 import skolard.persistence.sqlite.MessageDB;
 import skolard.persistence.sqlite.SchemaInitializer;
+import skolard.persistence.sqlite.SessionDB;
 import skolard.persistence.sqlite.StudentDB;
 import skolard.persistence.sqlite.TutorDB;
-import skolard.persistence.sqlite.SessionDB;
 import skolard.persistence.stub.StubFactory;
 
 public class PersistenceFactory {

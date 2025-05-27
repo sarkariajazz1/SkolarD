@@ -1,35 +1,33 @@
 package skolard.objects;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.OptionalDouble;
+
+import skolard.logic.utils.GradeUtil;
 
 /**
  * Represents a tutor in the SkolarD platform.
- * Stores bio, courses taken, grades, and upcoming sessions.
+ * Stores bio, courses taught, string-based grades, and upcoming sessions.
  */
 public class Tutor extends User {
     private String bio;
-    private ArrayList<String> courses;
-    private Map<String, String> courseGrades; // Mapping of course name to grade
+    private List<String> courses;
+    private Map<String, String> courseGrades; // course → string grade (e.g., "A", "95")
     private List<Session> upcomingSessions;
 
     public Tutor(String name, String email, String bio,
-                 ArrayList<String> courses, Map<String, String> courseGrades) {
+                 List<String> courses, Map<String, String> courseGrades) {
         super(name, email);
         this.bio = bio;
-        this.courses = courses;
-        this.courseGrades = courseGrades;
+        this.courses = courses != null ? courses : new ArrayList<>();
+        this.courseGrades = courseGrades != null ? courseGrades : new HashMap<>();
         this.upcomingSessions = new ArrayList<>();
     }
 
     public Tutor(String name, String email, String bio) {
-        super(name, email);
-        this.bio = bio;
-        this.courses = new ArrayList<String>();
-        this.courseGrades = new java.util.HashMap<>();
-        this.upcomingSessions = new ArrayList<>();
+        this(name, email, bio, new ArrayList<>(), new HashMap<>());
     }
 
     public String getBio() {
@@ -40,11 +38,11 @@ public class Tutor extends User {
         this.bio = bio;
     }
 
-    public ArrayList<String> getCourses() {
+    public List<String> getCourses() {
         return courses;
     }
 
-    public void setCourses(ArrayList<String> courses) {
+    public void setCourses(List<String> courses) {
         this.courses = courses;
     }
 
@@ -56,35 +54,34 @@ public class Tutor extends User {
         this.courseGrades = courseGrades;
     }
 
-    // Add or update a grade for a course
     public void addCourseGrade(String course, String grade) {
         this.courseGrades.put(course, grade);
     }
 
-    // Retrieve grade for a specific course
     public String getGradeForCourse(String course) {
         return this.courseGrades.getOrDefault(course, "N/A");
     }
 
-    /**
-     * Calculates the average rating based on numeric grades.
-     * Ignores non-numeric grades like A/B+ etc.
-     */
-    public double getAverageRating() {
-        if (courseGrades == null || courseGrades.isEmpty()) return 0.0;
+public double getAverageRating() {
+    double total = 0.0;
+    int count = 0;
 
-        OptionalDouble average = courseGrades.values().stream()
-                .filter(grade -> grade.matches("\\d+")) // Only numeric strings
-                .mapToInt(Integer::parseInt)
-                .average();
-
-        return average.orElse(0.0);
+    for (String grade : courseGrades.values()) {
+        double numeric = GradeUtil.toNumeric(grade);
+        if (numeric >= 0) {
+            total += numeric;
+            count++;
+        }
     }
+    return count > 0 ? total / count : 0.0;
+}
 
-    // Adds a session to the tutor's upcoming sessions
     public void setUpcomingSession(Session session) {
-        this.upcomingSessions.add(session);
-        System.out.println("Session " + session.getSessionId() + " added to tutor " + getName() + "'s upcoming sessions.");
+        if (!upcomingSessions.contains(session)) {
+            this.upcomingSessions.add(session);
+            System.out.println("Session " + session.getSessionId() +
+                " added to tutor " + getName() + "'s upcoming sessions.");
+        }
     }
 
     public List<Session> getUpcomingSessions() {

@@ -1,0 +1,24 @@
+baseURL = "/faq/"
+relativeURLs = true
+canonifyURLs = true
+languageCode = "en-us"
+title = "SkolarD FAQ"
+theme = "PaperMod"
+
+
+
+[params]
+  defaultTheme = "light"
+  ShowBreadCrumbs = true
+  ShowReadingTime = false
+  disableScrollToTop = false
+  ShowCodeCopyButtons = true
+
+  [params.homeInfoParams]
+    Title = "Welcome to SkolarD FAQ"
+    Content = "Browse answers to common questions from students and tutors."
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+mainSections = ["faq"]
