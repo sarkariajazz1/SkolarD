@@ -148,13 +148,14 @@ public class ProfileHandler {
      * @param course course name
      * @param grade grade received
      */
-    public void addTutoringCourse(Tutor tutor, String course, String grade){
-        String courseAllLower = course.toLowerCase();
-        
-        if (!tutor.getCourses().contains(courseAllLower)) {
-            tutor.getCourses().add(courseAllLower);
+    public void addTutoringCourse(User user, String course, String grade) {
+        if (user instanceof Tutor) {
+            Tutor tutor = (Tutor) user;
+            if (!tutor.getCourses().contains(course)) {
+                tutor.getCourses().add(course);
+            }
+            tutor.addCourseGrade(course, grade);
         }
-        tutor.addCourseGrade(courseAllLower, grade);
     }
 
     /**
@@ -162,8 +163,11 @@ public class ProfileHandler {
      * @param user User instance
      * @param course course name to be removed
      */
-    public void removeTutoringCourse(Tutor tutor, String course) {
-        tutor.getCourses().remove(course.toLowerCase());
-        tutor.getCourseGrades().remove(course.toLowerCase());
+    public void removeTutoringCourse(User user, String course) {
+        if (user instanceof Tutor) {
+            Tutor tutor = (Tutor) user;
+            tutor.getCourses().remove(course);
+            tutor.getCourseGrades().remove(course);
+        }
     }
 }

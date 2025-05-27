@@ -16,21 +16,17 @@ public class PriorityList<T> {
         this.items = new ArrayList<>();
     }
 
-    // Add a single item to the list if it's not already present
+    // Add a single item to the list
     public void addItem(T item) {
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null.");
         }
-        if (!items.contains(item)) {
-            items.add(item);
-        }
+        items.add(item);
     }
 
-    // Remove a single item from the list if it exists
+    // Remove a single item from the list
     public void removeItem(T item) {
-        if (items.contains(item)) {
         items.remove(item);
-        }
     }
 
     // Get an item at a specific index
@@ -66,5 +62,10 @@ public class PriorityList<T> {
         if (comparator != null) {
             items.sort(comparator);
         }
+    }
+
+    @Override
+    public String toString() {
+        return items.toString();
     }
 }
