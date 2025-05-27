@@ -53,7 +53,7 @@ public class StudentStub implements StudentPersistence {
 
         Student newStudent = null;
 
-        if(students.containsKey(student.getEmail())) {
+        if(!students.containsKey(student.getEmail())) {
             newStudent = new Student(student.getName(), student.getEmail());
             students.put(newStudent.getEmail(), newStudent);
         }
@@ -107,7 +107,11 @@ public class StudentStub implements StudentPersistence {
     @Override
     public List<Student> getAllStudents() {
         confirmCreation();
-        return new ArrayList<>(students.values());
+        List<Student> studentList = new ArrayList<>();
+        for (Student student : students.values()) {
+            studentList.add(student);
+        }
+        return studentList;
     }
 
     /**

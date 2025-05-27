@@ -1,0 +1,100 @@
+package skolard.persistence.stub;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import skolard.exceptions.MessageExistsException;
+import skolard.objects.Message;
+import skolard.persistence.MessagePersistence;
+
+public class MessageStub implements MessagePersistence{
+    private Map<Integer, Message> messages;
+    private static int uniqueID = 0;
+
+    public MessageStub() {
+        confirmCreation();
+
+        // Sample Messages for testing
+        addSampleMessages();
+    }
+
+    private void confirmCreation() {
+        if(messages == null) {
+            messages = new HashMap<>();
+        }
+    }
+
+    private void addSampleMessages() {
+        addMessage(new Message(uniqueID++, LocalDateTime.of(2025, 5, 26, 11, 30, 0), 
+            "yabm@myumanitoba.ca", "mattyab@myumanitoba.ca", "Hello"));
+        addMessage(new Message(uniqueID++, LocalDateTime.of(2025, 5, 26, 11, 32, 0), 
+             "mattyab@myumanitoba.ca", "yabm@myumanitoba.ca","Hi!"));
+        addMessage(new Message(uniqueID++, LocalDateTime.of(2025, 5, 26, 11, 35, 0), 
+            "yabm@myumanitoba.ca", "mattyab@myumanitoba.ca", "Can you tutor me?"));
+    }
+
+    private boolean messageHistory(Message message, String studentEmail, String tutorEmail) {
+        return (message.getReceiverEmail() == studentEmail && message.getSenderEmail() == tutorEmail)
+            || (message.getReceiverEmail() == tutorEmail && message.getSenderEmail() == studentEmail);
+    }
+
+    public Message addMessage(Message message) {
+        confirmCreation();
+        if(messages.containsKey(message.getMessageId())) {
+            throw new MessageExistsException("Updated Existing Message, that was an update, not an add");
+        }
+
+        Message newMessage = new Message(uniqueID++, message.getTimeSent(), 
+            message.getSenderEmail(), message.getReceiverEmail(), message.getMessage());
+        messages.put(newMessage.getMessageId(), newMessage);
+        return newMessage;
+    }
+
+    @Override
+    public List<Message> getMessageHistory(String studentEmail, String tutorEmail) {
+        confirmCreation();
+        List<Message> messageList = new ArrayList<Message>();
+        for (Message message : messages.values()) {
+            if(messageHistory(message, studentEmail, tutorEmail)) {
+                messageList.add(message);
+            }
+        }
+        return messageList;
+    }
+
+    @Override
+    public void deleteMessageById(int id) {
+        confirmCreation();
+        if(messages.containsKey(id)) {
+            messages.remove(id);
+        } else {
+            throw new MessageExistsException("Cannot delete a Message that doesn't exist");
+        }
+    }
+
+    @Override
+    public void updateMessage(Message updatedMessage) {
+        confirmCreation();
+        if(!messages.containsKey(updatedMessage.getMessageId())) {
+            throw new MessageExistsException("Cannot update a Message that does not exist.");
+        } 
+        messages.replace(updatedMessage.getMessageId(), updatedMessage);
+    }
+
+    @Override
+    public void deleteMessageHistory(String studentEmail, String tutorEmail) {
+        for(Message message : messages.values()) {
+            if(messageHistory(message, studentEmail, tutorEmail)) {
+                messages.remove(message.getMessageId());
+            }
+        }
+    }
+
+    public void close() {
+        this.messages = null;
+    }
+
+}
