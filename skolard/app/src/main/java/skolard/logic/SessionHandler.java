@@ -23,11 +23,20 @@ public class SessionHandler {
         }
     }
 
-    public void bookSession(User user, int sessionID){
+    public void bookASession(User user, int sessionID){
         if(user instanceof Student){
             Student student = (Student) user;
             Session session = sessionPersistence.getSessionById(sessionID);
-            session.bookSession(student);
+            if(!session.isBooked()){
+                session.bookSession(student);
+            } else{
+                if(session.getStudent().equals(user)){
+                    throw new IllegalArgumentException("Session is already booked");
+                } else{
+                    throw new IllegalArgumentException("Session is already booked by someone else");
+                }
+            }
+            
         }
     }
 }
