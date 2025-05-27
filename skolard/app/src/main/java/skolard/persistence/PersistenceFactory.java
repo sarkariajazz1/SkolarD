@@ -7,7 +7,7 @@ public class PersistenceFactory {
     private static StudentPersistence studentPersistence;
     private static TutorPersistence tutorPersistence;
     private static SessionPersistence sessionPersistence;
-
+    private static MessagePersistence messagePersistence;
     public static void initialize(PersistenceType type, boolean seed) {
         switch(type) {
             case PROD, TEST -> {
@@ -33,6 +33,10 @@ public class PersistenceFactory {
 
     public static SessionPersistence getSessionPersistence() {
         return sessionPersistence;
+    }
+
+    public static MessagePersistence getMessagePersistence() {
+        return messagePersistence;
     }
 
     public static void reset() {
