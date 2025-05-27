@@ -45,8 +45,7 @@ public class ProfileHandler {
      * @return the created Student object
      */
     public Student addStudent(String name, String email) {
-        String id = "-1"; // placeholder ID
-        Student newStudent = new Student(id, name, email);
+        Student newStudent = new Student(name, email);
         return studentPersistence.addStudent(newStudent);
     }
 
@@ -57,8 +56,7 @@ public class ProfileHandler {
      * @return the created Tutor object
      */
     public Tutor addTutor(String name, String email) {
-        String id = "-1"; // placeholder ID
-        Tutor newTutor = new Tutor(id, name, email, "Edit your bio...");
+        Tutor newTutor = new Tutor(name, email, "Edit your bio...");
         return tutorPersistence.addTutor(newTutor);
     }
 

@@ -1,26 +1,24 @@
 package skolard.persistence.stub;
 
+import skolard.persistence.SessionPersistence;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
-import skolard.persistence.SessionPersistence;
 
 public class StubFactory {
-    private static final StudentStub studentStub = new StudentStub();
-    private static final TutorStub tutorStub = new TutorStub();
-    private static final SessionStub sessionStub = new SessionStub();
+    
+    public static StudentPersistence createStudentPersistence() {
+        return new StudentStub(); // in-memory student persistence
+    }
 
-    public static <T> T getStub(Class<T> clazz) {
-        if (clazz.equals(StudentPersistence.class)) {
-            return clazz.cast(studentStub);
-        } else if (clazz.equals(TutorPersistence.class)) {
-            return clazz.cast(tutorStub);
-        } else if (clazz.equals(SessionPersistence.class)) {
-            return clazz.cast(sessionStub);
-        } else {
-            throw new IllegalArgumentException("No stub available for class: " + clazz.getName());
-        }
+    public static TutorPersistence createTutorPersistence() {
+        return new TutorStub(); // in-memory tutor persistence
+    }
+
+    public static SessionPersistence createSessionPersistence() {
+        return new SessionStub(); // in-memory session persistence
     }
 }
+
 
 
 

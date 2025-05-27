@@ -2,13 +2,15 @@
 *.class
 
 # Build directories
-/build/
+/skolard/app/build/
 /out/
 /bin/
 
 # Gradle files
-.gradle/
+/.gradle/
+skolard/.gradle/
 **/build/
+
 
 # VSCode settings
 .vscode/

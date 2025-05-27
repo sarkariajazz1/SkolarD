@@ -11,8 +11,8 @@ import skolard.objects.Session;
 public class RatingList extends PriorityList<Session> {
 
     // Default constructor
-    public RatingList() {
-        super();
+    public RatingList(List<Session> sessions) {
+        items = sessions;
     }
 
     /**

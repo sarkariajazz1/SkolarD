@@ -15,19 +15,19 @@ public class Tutor extends User {
     private Map<String, String> courseGrades; // Mapping of course name to grade
     private List<Session> upcomingSessions;
 
-    public Tutor(String id, String name, String email, String bio,
+    public Tutor(String name, String email, String bio,
                  ArrayList<String> courses, Map<String, String> courseGrades) {
-        super(id, name, email);
+        super(name, email);
         this.bio = bio;
         this.courses = courses;
         this.courseGrades = courseGrades;
         this.upcomingSessions = new ArrayList<>();
     }
 
-    public Tutor(String id, String name, String email, String bio) {
-        super(id, name, email);
+    public Tutor(String name, String email, String bio) {
+        super(name, email);
         this.bio = bio;
-        this.courses = new ArrayList<>();
+        this.courses = new ArrayList<String>();
         this.courseGrades = new java.util.HashMap<>();
         this.upcomingSessions = new ArrayList<>();
     }

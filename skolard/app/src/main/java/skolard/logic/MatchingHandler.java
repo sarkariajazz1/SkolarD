@@ -1,5 +1,6 @@
 package skolard.logic;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,20 +51,45 @@ public class MatchingHandler {
     /**
      * Filters and returns sessions that match a course and are not booked.
      */
-    public List<Session> getAvailableSessions(String courseName) {
+    public List<Session> getAvailableSessions(String filter, String courseName, LocalDateTime start, LocalDateTime end) {
         if (courseName == null || courseName.isEmpty()) {
             throw new IllegalArgumentException("Course name cannot be null or empty.");
         }
 
-        List<Session> matchingSessions = new ArrayList<>();
+        List<Session> matchingSessions = addNonBookedSessions(courseName);
+
+        switch (filter) {
+            case "Rate":
+                RatingList rateList = new RatingList(matchingSessions);
+                matchingSessions = rateList.sortByBestCourseRating(courseName);
+                break;
+        
+            case "Time":
+                TimeList timeList = new TimeList(matchingSessions);
+                matchingSessions = timeList.filterByStudentTimeRange(start, end, courseName);
+                break;
+            case "Tutor":
+                TutorList tutorList = new TutorList(matchingSessions);
+                matchingSessions = tutorList.getSessionsByTutor(courseName);
+                break;
+        }
+
+        return matchingSessions;
+    }
+
+    /**
+     * Takes out only the non booked sessions out of the available sessions
+     */
+    public List<Session> addNonBookedSessions(String courseName){
+        List<Session> sessions = new ArrayList<>();
+
         for (Session session : availableSessions.getAllItems()) {
             if (session.getCourseName().equalsIgnoreCase(courseName) && !session.isBooked()) {
-                matchingSessions.add(session);
+                sessions.add(session);
             }
         }
 
-        matchingSessions.sort(null); // Natural order (if Comparable is implemented)
-        return matchingSessions;
+        return sessions;
     }
 
     /**
