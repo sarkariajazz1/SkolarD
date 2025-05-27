@@ -29,7 +29,7 @@ public class PriorityList<T> {
     // Remove a single item from the list if it exists
     public void removeItem(T item) {
         if (items.contains(item)) {
-        items.remove(item);
+            items.remove(item);
         }
     }
 
