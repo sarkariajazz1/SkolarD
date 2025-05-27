@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import skolard.logic.utils.GradeUtil;
+
 /**
  * Represents a tutor in the SkolarD platform.
  * Stores bio, courses taught, string-based grades, and upcoming sessions.
@@ -65,15 +67,12 @@ public double getAverageRating() {
     int count = 0;
 
     for (String grade : courseGrades.values()) {
-        try {
-            double numeric = Double.parseDouble(grade);
+        double numeric = GradeUtil.toNumeric(grade);
+        if (numeric >= 0) {
             total += numeric;
             count++;
-        } catch (NumberFormatException e) {
-            // skip non-numeric grades (e.g., "A", "B+")
         }
     }
-
     return count > 0 ? total / count : 0.0;
 }
 
