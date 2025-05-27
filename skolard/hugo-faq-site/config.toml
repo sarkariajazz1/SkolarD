@@ -5,3 +5,16 @@ theme = "PaperMod"
 
 [params]
   defaultTheme = "light"
+  homeInfoParams = { Title = "Welcome to SkolarD FAQ", Content = "Browse answers to common questions below." }
+  ShowBreadCrumbs = true
+  ShowReadingTime = false
+  disableScrollToTop = false
+  ShowCodeCopyButtons = true
+
+# Enables the rendering of content inside _index.md (like your /faq/_index.md)
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+# Optional: set your main content section for PaperMod
+mainSections = ["faq"]
+

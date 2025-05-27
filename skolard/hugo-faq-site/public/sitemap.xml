@@ -2,29 +2,29 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>/faq/faq/booking/</loc>
+    <loc>//localhost:1313///faq/faq/booking/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/faq/contact-support/</loc>
+    <loc>//localhost:1313///faq/faq/contact-support/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/faq/</loc>
+    <loc>//localhost:1313///faq/faq/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/faq/getting-started/</loc>
+    <loc>//localhost:1313///faq/faq/getting-started/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/</loc>
+    <loc>//localhost:1313///faq/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/faq/troubleshooting/</loc>
+    <loc>//localhost:1313///faq/faq/troubleshooting/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/faq/tutor-guide/</loc>
+    <loc>//localhost:1313///faq/faq/tutor-guide/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/categories/</loc>
+    <loc>//localhost:1313///faq/categories/</loc>
   </url><url>
-    <loc>/faq/tags/</loc>
+    <loc>//localhost:1313///faq/tags/</loc>
   </url>
 </urlset>

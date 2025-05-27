@@ -1,6 +1,7 @@
 ---
 title: "Frequently Asked Questions"
 description: "Common questions from students and tutors"
+layout: "list"
 ---
 
 Welcome to the **SkolarD FAQ**! Choose a topic below to get started:

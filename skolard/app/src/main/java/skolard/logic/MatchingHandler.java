@@ -50,6 +50,7 @@ public class MatchingHandler {
 
     /**
      * Filters and returns sessions that match a course and are not booked.
+     * Applies additional filters such as rating, time range, or tutor.
      */
     public List<Session> getAvailableSessions(String filter, String courseName, LocalDateTime start, LocalDateTime end) {
         if (courseName == null || courseName.isEmpty()) {
@@ -63,11 +64,12 @@ public class MatchingHandler {
                 RatingList rateList = new RatingList(matchingSessions);
                 matchingSessions = rateList.sortByBestCourseRating(courseName);
                 break;
-        
+
             case "Time":
                 TimeList timeList = new TimeList(matchingSessions);
                 matchingSessions = timeList.filterByStudentTimeRange(start, end, courseName);
                 break;
+
             case "Tutor":
                 TutorList tutorList = new TutorList(matchingSessions);
                 matchingSessions = tutorList.getSessionsByTutor(courseName);
@@ -78,9 +80,17 @@ public class MatchingHandler {
     }
 
     /**
-     * Takes out only the non booked sessions out of the available sessions
+     * Overloaded version for simple course-only search with no filter.
+     * Returns all non-booked sessions for the given course.
      */
-    public List<Session> addNonBookedSessions(String courseName){
+    public List<Session> getAvailableSessions(String courseName) {
+        return addNonBookedSessions(courseName);
+    }
+
+    /**
+     * Extracts only the non-booked sessions that match the given course.
+     */
+    public List<Session> addNonBookedSessions(String courseName) {
         List<Session> sessions = new ArrayList<>();
 
         for (Session session : availableSessions.getAllItems()) {
