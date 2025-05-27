@@ -1,54 +1,51 @@
 package skolard.logic;
 
+import java.util.ArrayList;
 import java.util.List;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
 import skolard.objects.Session;
 import skolard.objects.Tutor;
 
-/**
- * Unit tests for the RatingList class.
- * Tests sorting logic based on tutor course grades.
- */
 public class RatingListTest {
 
-    private RatingList ratingList;
+    private List<Session> sessionPool;
 
     @Before
     public void setUp() {
-        ratingList = new RatingList(); // Initialize the list before each test
+        sessionPool = new ArrayList<>();
     }
 
     // Helper to create a Tutor with a single course and grade
     private Tutor createTutor(String name, String course, String grade) {
-        Tutor tutor = new Tutor("", name, "", "");
+        Tutor tutor = new Tutor(name, name + "@mail.com", "Test Bio");
         tutor.addCourseGrade(course, grade);
         return tutor;
     }
 
     // Helper to create a Session object
-    private Session createSession(String id, Tutor tutor, String course) {
+    private Session createSession(int id, Tutor tutor, String course) {
         return new Session(id, tutor, null, null, null, course);
     }
 
     @Test
     public void testSortByBestCourseRating_ValidAndInvalidGrades() {
-        // Setup: 2 valid grades and 1 invalid
         Tutor tutor1 = createTutor("Alice", "Math", "3.0");
-        Tutor tutor2 = createTutor("Bob", "Math", "A");    // non-numeric grade
+        Tutor tutor2 = createTutor("Bob", "Math", "A");    // Non-numeric
         Tutor tutor3 = createTutor("Charlie", "Math", "5.0");
 
-        // Create sessions and add them
-        ratingList.addItem(createSession("s1", tutor1, "Math"));
-        ratingList.addItem(createSession("s2", tutor2, "Math"));
-        ratingList.addItem(createSession("s3", tutor3, "Math"));
+        sessionPool.add(createSession(1, tutor1, "Math"));
+        sessionPool.add(createSession(2, tutor2, "Math"));
+        sessionPool.add(createSession(3, tutor3, "Math"));
 
-        // Act: Sort by course rating
+        RatingList ratingList = new RatingList(sessionPool);
         List<Session> sorted = ratingList.sortByBestCourseRating("Math");
 
-        // Assert: Expect Charlie > Alice > Bob
         assertEquals(3, sorted.size());
         assertEquals("Charlie", sorted.get(0).getTutor().getName());
         assertEquals("Alice", sorted.get(1).getTutor().getName());
@@ -58,11 +55,12 @@ public class RatingListTest {
     @Test
     public void testSortByBestCourseRating_MissingGradeFilteredOut() {
         Tutor tutor1 = createTutor("Alice", "Math", "3.0");
-        Tutor tutor2 = createTutor("Bob", "Math", "N/A"); // Should be ignored
+        Tutor tutor2 = createTutor("Bob", "Math", "N/A");
 
-        ratingList.addItem(createSession("s1", tutor1, "Math"));
-        ratingList.addItem(createSession("s2", tutor2, "Math"));
+        sessionPool.add(createSession(1, tutor1, "Math"));
+        sessionPool.add(createSession(2, tutor2, "Math"));
 
+        RatingList ratingList = new RatingList(sessionPool);
         List<Session> sorted = ratingList.sortByBestCourseRating("Math");
 
         assertEquals(1, sorted.size());
@@ -71,21 +69,25 @@ public class RatingListTest {
 
     @Test
     public void testSortByBestCourseRating_AllInvalidGrades() {
-        // All tutors have non-numeric grades
-        ratingList.addItem(createSession("s1", createTutor("Alice", "Math", "B"), "Math"));
-        ratingList.addItem(createSession("s2", createTutor("Bob", "Math", "A"), "Math"));
+        Tutor tutor1 = createTutor("Alice", "Math", "B");
+        Tutor tutor2 = createTutor("Bob", "Math", "A");
 
+        sessionPool.add(createSession(1, tutor1, "Math"));
+        sessionPool.add(createSession(2, tutor2, "Math"));
+
+        RatingList ratingList = new RatingList(sessionPool);
         List<Session> sorted = ratingList.sortByBestCourseRating("Math");
 
         assertEquals(2, sorted.size());
-        // Order unchanged since all grades fallback to 1.0
-        assertEquals("Alice", sorted.get(0).getTutor().getName());
+        assertEquals("Alice", sorted.get(0).getTutor().getName()); // original order preserved
         assertEquals("Bob", sorted.get(1).getTutor().getName());
     }
 
     @Test
     public void testSortByBestCourseRating_EmptyList() {
+        RatingList ratingList = new RatingList(sessionPool); // still empty
         List<Session> sorted = ratingList.sortByBestCourseRating("Math");
+
         assertNotNull(sorted);
         assertTrue(sorted.isEmpty());
     }
@@ -93,27 +95,33 @@ public class RatingListTest {
     @Test
     public void testSortByBestCourseRating_NoCourseMatch() {
         Tutor tutor = createTutor("Alice", "COMP2140", "4.0");
-        ratingList.addItem(createSession("s1", tutor, "COMP2140"));
+        sessionPool.add(createSession(1, tutor, "COMP2140"));
 
+        RatingList ratingList = new RatingList(sessionPool);
         List<Session> sorted = ratingList.sortByBestCourseRating("Math");
+
         assertTrue(sorted.isEmpty());
     }
 
     @Test
     public void testSortByBestCourseRating_NullCourseName() {
         Tutor tutor = createTutor("Alice", "Math", "4.0");
-        ratingList.addItem(createSession("s1", tutor, "Math"));
+        sessionPool.add(createSession(1, tutor, "Math"));
 
+        RatingList ratingList = new RatingList(sessionPool);
         List<Session> sorted = ratingList.sortByBestCourseRating(null);
+
         assertTrue(sorted.isEmpty());
     }
 
     @Test
     public void testSortByBestCourseRating_EmptyCourseName() {
         Tutor tutor = createTutor("Alice", "Math", "4.0");
-        ratingList.addItem(createSession("s1", tutor, "Math"));
+        sessionPool.add(createSession(1, tutor, "Math"));
 
+        RatingList ratingList = new RatingList(sessionPool);
         List<Session> sorted = ratingList.sortByBestCourseRating("");
+
         assertTrue(sorted.isEmpty());
     }
 }
