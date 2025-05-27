@@ -1,9 +1,7 @@
 BEGIN TRANSACTION;
 
-INSERT OR IGNORE INTO tutor (name, email, bio)
-VALUES ('Jane Smith', 'jane@skolard.ca', 'Math enthusiast');
-
-INSERT OR IGNORE INTO tutor (name, email, bio)
-VALUES ('John Doe', 'john@skolard.ca', 'CS PhD');
+INSERT OR IGNORE INTO tutor (email, name, bio) VALUES
+('sukhdeep@example.com', 'Sukhdeep Kaur', 'Math tutor with 5 years of experience.'),
+('amrit@example.com', 'Amrit Singh', 'Expert in physics and calculus.');
 
 COMMIT;
