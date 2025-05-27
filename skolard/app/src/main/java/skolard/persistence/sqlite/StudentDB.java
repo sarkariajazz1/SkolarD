@@ -18,14 +18,13 @@ public class StudentDB implements StudentPersistence {
     @Override
     public List<Student> getAllStudents() {
         List<Student> students = new ArrayList<>();
-        String sql = "SELECT id, name, email FROM student";
+        String sql = "SELECT name, email FROM student";
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 students.add(new Student(
-                    rs.getString("id"),
                     rs.getString("name"),
                     rs.getString("email")
                 ));
@@ -40,7 +39,7 @@ public class StudentDB implements StudentPersistence {
 
     @Override
     public Student getStudentByEmail(String email) {
-        String sql = "SELECT id, name, email FROM student WHERE email = ?";
+        String sql = "SELECT name, email FROM student WHERE email = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
@@ -48,14 +47,13 @@ public class StudentDB implements StudentPersistence {
 
             if (rs.next()) {
                 return new Student(
-                    rs.getString("id"),
                     rs.getString("name"),
                     rs.getString("email")
                 );
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error finding student", e);
+            throw new RuntimeException("Error finding student by email", e);
         }
 
         return null;
@@ -63,12 +61,11 @@ public class StudentDB implements StudentPersistence {
 
     @Override
     public Student addStudent(Student newStudent) {
-        String sql = "INSERT INTO student (id, name, email) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO student (name, email) VALUES (?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, newStudent.getId());
-            stmt.setString(2, newStudent.getName());
-            stmt.setString(3, newStudent.getEmail());
+            stmt.setString(1, newStudent.getName());
+            stmt.setString(2, newStudent.getEmail());
             stmt.executeUpdate();
             return newStudent;
 
@@ -92,12 +89,11 @@ public class StudentDB implements StudentPersistence {
 
     @Override
     public void updateStudent(Student updatedStudent) {
-        String sql = "UPDATE student SET name = ?, id = ? WHERE email = ?";
+        String sql = "UPDATE student SET name = ? WHERE email = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, updatedStudent.getName());
-            stmt.setString(2, updatedStudent.getId());
-            stmt.setString(3, updatedStudent.getEmail());
+            stmt.setString(2, updatedStudent.getEmail());
             stmt.executeUpdate();
 
         } catch (SQLException e) {

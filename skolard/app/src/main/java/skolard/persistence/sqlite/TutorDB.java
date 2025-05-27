@@ -18,14 +18,13 @@ public class TutorDB implements TutorPersistence {
     @Override
     public List<Tutor> getAllTutors() {
         List<Tutor> tutors = new ArrayList<>();
-        String sql = "SELECT id, name, email, bio FROM tutor";
+        String sql = "SELECT name, email, bio FROM tutor";
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 tutors.add(new Tutor(
-                    rs.getString("id"),
                     rs.getString("name"),
                     rs.getString("email"),
                     rs.getString("bio")
@@ -41,7 +40,7 @@ public class TutorDB implements TutorPersistence {
 
     @Override
     public Tutor getTutorByEmail(String email) {
-        String sql = "SELECT id, name, email, bio FROM tutor WHERE email = ?";
+        String sql = "SELECT name, email, bio FROM tutor WHERE email = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
@@ -49,7 +48,6 @@ public class TutorDB implements TutorPersistence {
 
             if (rs.next()) {
                 return new Tutor(
-                    rs.getString("id"),
                     rs.getString("name"),
                     rs.getString("email"),
                     rs.getString("bio")
@@ -57,7 +55,7 @@ public class TutorDB implements TutorPersistence {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error finding tutor", e);
+            throw new RuntimeException("Error finding tutor by email", e);
         }
 
         return null;
@@ -65,13 +63,12 @@ public class TutorDB implements TutorPersistence {
 
     @Override
     public Tutor addTutor(Tutor newTutor) {
-        String sql = "INSERT INTO tutor (id, name, email, bio) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO tutor (name, email, bio) VALUES (?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, newTutor.getId());
-            stmt.setString(2, newTutor.getName());
-            stmt.setString(3, newTutor.getEmail());
-            stmt.setString(4, newTutor.getBio());
+            stmt.setString(1, newTutor.getName());
+            stmt.setString(2, newTutor.getEmail());
+            stmt.setString(3, newTutor.getBio());
             stmt.executeUpdate();
             return newTutor;
 
@@ -95,13 +92,12 @@ public class TutorDB implements TutorPersistence {
 
     @Override
     public void updateTutor(Tutor updatedTutor) {
-        String sql = "UPDATE tutor SET name = ?, id = ?, bio = ? WHERE email = ?";
+        String sql = "UPDATE tutor SET name = ?, bio = ? WHERE email = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, updatedTutor.getName());
-            stmt.setString(2, updatedTutor.getId());
-            stmt.setString(3, updatedTutor.getBio());
-            stmt.setString(4, updatedTutor.getEmail());
+            stmt.setString(2, updatedTutor.getBio());
+            stmt.setString(3, updatedTutor.getEmail());
             stmt.executeUpdate();
 
         } catch (SQLException e) {

@@ -1,26 +1,40 @@
 package skolard;
 
 import javax.swing.SwingUtilities;
-
 import skolard.logic.ProfileHandler;
+import skolard.objects.Student;
 import skolard.persistence.PersistenceFactory;
 import skolard.persistence.PersistenceType;
-import skolard.presentation.SkolardApp;
+
+import java.util.List;
 
 /**
  * Main entry point for the SkolarD application.
- * Initializes the stub persistence layer and launches the dashboard.
+ * Initializes the persistence layer and prints students from the database.
  */
 public class App {
     public static void main(String[] args) {
+        // ✅ Initialize real DB (set to true to seed sample data)
+        PersistenceFactory.initialize(PersistenceType.PROD, true);
 
-        // Initialize the data system
-        PersistenceFactory.initialize(PersistenceType.STUB, false);
+        // Optional: load and print students from DB to verify seeding
+        try {
+            List<Student> students = PersistenceFactory.getStudentPersistence().getAllStudents();
+            System.out.println("? Students in database:");
+            for (Student s : students) {
+                System.out.println("- " + s.getName() + " (" + s.getEmail() + ")");
+            }
+        } catch (Exception e) {
+            System.err.println("? Failed to query students: " + e.getMessage());
+            e.printStackTrace();
+        }
 
-        ProfileHandler profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(), 
-            PersistenceFactory.getTutorPersistence());
+        // Launch the GUI (if needed)
+        SwingUtilities.invokeLater(() -> {
+            new skolard.presentation.SkolardApp();
+        });
 
-        // Launch the Swing GUI in the event-dispatch thread
-        SwingUtilities.invokeLater(SkolardApp::new);
+        // ✅ Safely close connection after usage (if appropriate)
+       //ersistenceFactory.reset(); // ← Enable only if you want to shut down DB after GUI closes
     }
 }

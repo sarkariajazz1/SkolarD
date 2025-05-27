@@ -29,7 +29,7 @@ public class SessionDB implements SessionPersistence {
         String sql = "INSERT INTO session (id, tutorEmail, studentEmail, startTime, endTime, courseID) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, session.getSessionId());
+            stmt.setInt(1, session.getSessionId());
             stmt.setString(2, session.getTutor().getEmail());
             stmt.setString(3, session.getStudent().getEmail());
             stmt.setString(4, session.getStartDateTime().toString());
@@ -42,11 +42,11 @@ public class SessionDB implements SessionPersistence {
     }
 
     @Override
-    public Session getSessionById(String sessionId) {
+    public Session getSessionById(int sessionId) {
         String sql = "SELECT * FROM session WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, sessionId);
+            stmt.setInt(1, sessionId);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
@@ -80,12 +80,12 @@ public class SessionDB implements SessionPersistence {
     }
 
     @Override
-    public List<Session> getSessionsByTutorId(String tutorId) {
+    public List<Session> getSessionsByTutorEmail(String tutorEmail) {
         List<Session> sessions = new ArrayList<>();
         String sql = "SELECT * FROM session WHERE tutorEmail = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, tutorId);
+            stmt.setString(1, tutorEmail);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -100,12 +100,12 @@ public class SessionDB implements SessionPersistence {
     }
 
     @Override
-    public List<Session> getSessionsByStudentId(String studentId) {
+    public List<Session> getSessionsByStudentEmail(String studentEmail) {
         List<Session> sessions = new ArrayList<>();
         String sql = "SELECT * FROM session WHERE studentEmail = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, studentId);
+            stmt.setString(1, studentEmail);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -120,11 +120,11 @@ public class SessionDB implements SessionPersistence {
     }
 
     @Override
-    public void removeSession(String sessionId) {
+    public void removeSession(int sessionId) {
         String sql = "DELETE FROM session WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, sessionId);
+            stmt.setInt(1, sessionId);
             stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -134,7 +134,7 @@ public class SessionDB implements SessionPersistence {
 
     // Helper method to construct a Session object from a ResultSet
     private Session fromResultSet(ResultSet rs) throws SQLException {
-        String id = rs.getString("id");
+        int id = rs.getInt("id");
         String tutorEmail = rs.getString("tutorEmail");
         String studentEmail = rs.getString("studentEmail");
         String startTime = rs.getString("startTime");
