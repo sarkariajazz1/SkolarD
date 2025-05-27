@@ -14,27 +14,17 @@ import skolard.persistence.PersistenceType;
  */
 public class App {
     public static void main(String[] args) {
-        // Initialize real DB (set to true to seed sample data)
+        // Initialize the persistence layer with PROD mode
+        // The second argument 'true' indicates that seed SQL files should be executed
         PersistenceFactory.initialize(PersistenceType.PROD, true);
 
-        // Optional: load and print students from DB to verify seeding
-        try {
-            List<Student> students = PersistenceFactory.getStudentPersistence().getAllStudents();
-            System.out.println("? Students in database:");
-            for (Student s : students) {
-                System.out.println("- " + s.getName() + " (" + s.getEmail() + ")");
-            }
-        } catch (Exception e) {
-            System.err.println("? Failed to query students: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        // Launch the GUI (if needed)
+        // Launch the GUI on the Event Dispatch Thread (recommended for Swing applications)
         SwingUtilities.invokeLater(() -> {
             new skolard.presentation.SkolardApp();
         });
 
-        // Safely close connection after usage (if appropriate)
-       //ersistenceFactory.reset(); // ← Enable only if you want to shut down DB after GUI closes
+        // Use this to close the database connection and reset persistence
+        // Uncomment if you're terminating the application manually or running non-GUI tests (currently makes the code crash)
+        // PersistenceFactory.reset(); // ← Enable only if you want to shut down DB after GUI closes
     }
 }

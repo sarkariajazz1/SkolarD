@@ -12,18 +12,29 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * SQLite-based implementation of SessionPersistence.
+ * Handles CRUD operations for tutoring sessions in the database.
+ */
 public class SessionDB implements SessionPersistence {
 
     private final Connection connection;
     private final StudentPersistence studentPersistence;
     private final TutorPersistence tutorPersistence;
 
+    /**
+     * Constructor that takes in a database connection and references to
+     * student and tutor persistence to resolve foreign key relations.
+     */
     public SessionDB(Connection connection, StudentPersistence studentPersistence, TutorPersistence tutorPersistence) {
         this.connection = connection;
         this.studentPersistence = studentPersistence;
         this.tutorPersistence = tutorPersistence;
     }
 
+    /**
+     * Inserts a new session into the database.
+     */
     @Override
     public void addSession(Session session) {
         String sql = "INSERT INTO session (id, tutorEmail, studentEmail, startTime, endTime, courseID) VALUES (?, ?, ?, ?, ?, ?)";
@@ -41,6 +52,9 @@ public class SessionDB implements SessionPersistence {
         }
     }
 
+    /**
+     * Retrieves a specific session by its ID.
+     */
     @Override
     public Session getSessionById(int sessionId) {
         String sql = "SELECT * FROM session WHERE id = ?";
@@ -50,16 +64,19 @@ public class SessionDB implements SessionPersistence {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return fromResultSet(rs);
+                return fromResultSet(rs); // Convert row to Session object
             }
 
         } catch (SQLException e) {
             throw new RuntimeException("Error retrieving session", e);
         }
 
-        return null;
+        return null; // Not found
     }
 
+    /**
+     * Retrieves all sessions from the database.
+     */
     @Override
     public List<Session> getAllSessions() {
         List<Session> sessions = new ArrayList<>();
@@ -79,6 +96,9 @@ public class SessionDB implements SessionPersistence {
         return sessions;
     }
 
+    /**
+     * Retrieves all sessions for a specific tutor based on their email.
+     */
     @Override
     public List<Session> getSessionsByTutorEmail(String tutorEmail) {
         List<Session> sessions = new ArrayList<>();
@@ -99,6 +119,9 @@ public class SessionDB implements SessionPersistence {
         return sessions;
     }
 
+    /**
+     * Retrieves all sessions for a specific student based on their email.
+     */
     @Override
     public List<Session> getSessionsByStudentEmail(String studentEmail) {
         List<Session> sessions = new ArrayList<>();
@@ -119,6 +142,9 @@ public class SessionDB implements SessionPersistence {
         return sessions;
     }
 
+    /**
+     * Deletes a session from the database based on its ID.
+     */
     @Override
     public void removeSession(int sessionId) {
         String sql = "DELETE FROM session WHERE id = ?";
@@ -132,7 +158,10 @@ public class SessionDB implements SessionPersistence {
         }
     }
 
-    // Helper method to construct a Session object from a ResultSet
+    /**
+     * Helper method that converts a ResultSet row into a Session object.
+     * Resolves tutor and student using their respective persistence layers.
+     */
     private Session fromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String tutorEmail = rs.getString("tutorEmail");
