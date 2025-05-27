@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
  * Tracks scheduling details and booking status.
  */
 public class Session {
-    private String sessionId; // Unique identifier for the session
+    private int sessionId; // Unique identifier for the session
     private Tutor tutor;      // Tutor assigned to the session
     private Student student;  // Student attending the session
     private LocalDateTime startDateTime; // When the session starts
@@ -15,7 +15,7 @@ public class Session {
     private String courseName;           // Course associated with the session
     private boolean booked;              // Whether the session is booked
 
-    public Session(String sessionId, Tutor tutor, Student student, LocalDateTime startDateTime, LocalDateTime endDateTime, String courseName) {
+    public Session(int sessionId, Tutor tutor, Student student, LocalDateTime startDateTime, LocalDateTime endDateTime, String courseName) {
         this.sessionId = sessionId;
         this.tutor = tutor;
         this.student = student;
@@ -25,11 +25,11 @@ public class Session {
         this.booked = false; // Default to unbooked
     }
 
-    public String getSessionId() {
+    public int getSessionId() {
         return sessionId;
     }
 
-    public void setSessionId(String sessionId) {
+    public void setSessionId(int sessionId) {
         this.sessionId = sessionId;
     }
 

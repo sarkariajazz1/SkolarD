@@ -15,7 +15,6 @@ import skolard.persistence.TutorPersistence;
 public class TutorStub implements TutorPersistence {
 
     private Map<String, Tutor> tutors;           // Map to hold tutors keyed by email
-    private static int uniqueID = 0;             // ID counter to assign unique IDs to tutors
 
     /**
      * Constructor initializes the in-memory structure and populates it with sample data.
@@ -50,7 +49,7 @@ public class TutorStub implements TutorPersistence {
         courseGrades.put(course1, "A");
         courseGrades.put(course2, "B+");
 
-        addTutor(new Tutor("" + uniqueID++, "Yab Matt", "mattyab@myumanitoba.ca",
+        addTutor(new Tutor("Yab Matt", "mattyab@myumanitoba.ca",
                 "", courses, courseGrades));
     }
 
@@ -68,7 +67,6 @@ public class TutorStub implements TutorPersistence {
         // Only add the tutor if they don't already exist
         if (!tutors.containsKey(tutor.getEmail())) {
             Tutor newTutor = new Tutor(
-                    "" + uniqueID++,
                     tutor.getName(),
                     tutor.getEmail(),
                     tutor.getBio(),

@@ -15,7 +15,6 @@ import skolard.persistence.StudentPersistence;
 public class StudentStub implements StudentPersistence {
 
     private Map<String, Student> students;      // Map of students keyed by email
-    private static int uniqueID = 0;            // Counter for assigning unique IDs
 
     /**
      * Constructor initializes student storage and adds demo data.
@@ -38,9 +37,9 @@ public class StudentStub implements StudentPersistence {
      * Adds a few predefined student accounts for testing purposes.
      */
     private void addSampleStudents() {
-        addStudent(new Student("" + uniqueID++, "Matt Yab", "yabm@myumanitoba.ca"));
-        addStudent(new Student("" + uniqueID++, "Group Six", "sixg@myumanitoba.ca"));
-        addStudent(new Student("" + uniqueID++, "John Wick", "wickj@myumanitoba.ca"));
+        addStudent(new Student("Matt Yab", "yabm@myumanitoba.ca"));
+        addStudent(new Student("Group Six", "sixg@myumanitoba.ca"));
+        addStudent(new Student("John Wick", "wickj@myumanitoba.ca"));
     }
 
     /**
@@ -55,7 +54,7 @@ public class StudentStub implements StudentPersistence {
         Student newStudent = null;
 
         if(students.containsKey(student.getEmail())) {
-            newStudent = new Student("" + uniqueID++, student.getName(), student.getEmail());
+            newStudent = new Student(student.getName(), student.getEmail());
             students.put(newStudent.getEmail(), newStudent);
         }
 

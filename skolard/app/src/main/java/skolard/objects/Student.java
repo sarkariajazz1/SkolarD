@@ -8,13 +8,13 @@ import java.util.List;
  * Stores past and upcoming tutoring sessions.
  */
 public class Student extends User {
-    private List<Session> pastSessions = new ArrayList<>();
-    private List<Session> upcomingSessions = new ArrayList<>();
+    private List<Session> pastSessions;
+    private List<Session> upcomingSessions;
 
-    public Student(String id, String name, String email) {
-        super(id, name, email);
-        this.pastSessions = new ArrayList();
-        this.upcomingSessions = new ArrayList();
+    public Student(String name, String email) {
+        super(name, email);
+        this.pastSessions = new ArrayList<>();
+        this.upcomingSessions = new ArrayList<>();
     }
 
     public List<Session> getPastSessions() {
