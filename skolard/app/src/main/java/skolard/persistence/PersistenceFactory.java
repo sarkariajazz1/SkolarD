@@ -21,6 +21,7 @@ public class PersistenceFactory {
         studentPersistence = StubFactory.createStudentPersistence();
         tutorPersistence = StubFactory.createTutorPersistence();
         sessionPersistence = StubFactory.createSessionPersistence();
+        //messagePersistence = StubFactory.createMessagePersistence();
     }
 
     public static StudentPersistence getStudentPersistence() {
