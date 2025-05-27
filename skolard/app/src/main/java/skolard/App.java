@@ -1,12 +1,12 @@
 package skolard;
 
+import java.util.List;
+
 import javax.swing.SwingUtilities;
-import skolard.logic.ProfileHandler;
+
 import skolard.objects.Student;
 import skolard.persistence.PersistenceFactory;
 import skolard.persistence.PersistenceType;
-
-import java.util.List;
 
 /**
  * Main entry point for the SkolarD application.
@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class App {
     public static void main(String[] args) {
-        // ✅ Initialize real DB (set to true to seed sample data)
+        // Initialize real DB (set to true to seed sample data)
         PersistenceFactory.initialize(PersistenceType.PROD, true);
 
         // Optional: load and print students from DB to verify seeding
@@ -34,7 +34,7 @@ public class App {
             new skolard.presentation.SkolardApp();
         });
 
-        // ✅ Safely close connection after usage (if appropriate)
+        // Safely close connection after usage (if appropriate)
        //ersistenceFactory.reset(); // ← Enable only if you want to shut down DB after GUI closes
     }
 }
