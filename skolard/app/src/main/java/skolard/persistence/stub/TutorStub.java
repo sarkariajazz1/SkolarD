@@ -41,13 +41,13 @@ public class TutorStub implements TutorPersistence {
         String course1 = "COMP 1010";
         String course2 = "COMP 3350";
         ArrayList<String> courses = new ArrayList<String>();
-        Map<String, String> courseGrades = new HashMap<>();
+        Map<String, Double> courseGrades = new HashMap<>();
 
         courses.add(course1);
         courses.add(course2);
 
-        courseGrades.put(course1, "A");
-        courseGrades.put(course2, "B+");
+        courseGrades.put(course1, 4.0);
+        courseGrades.put(course2, 3.5);
 
         addTutor(new Tutor("Yab Matt", "mattyab@myumanitoba.ca",
                 "", courses, courseGrades));
