@@ -26,16 +26,30 @@ public class ProfileHandler {
     }
 
     /**
-     * Attempts to fetch a user (student or tutor) by email.
+     * Attempts to fetch a tutor by email.
      * @param email email of the user.
-     * @return User object if found, null otherwise.
+     * @return Tutor object if found, null otherwise.
      */
-    public User getUser(String email) {
-        User user = studentPersistence.getStudentByEmail(email);
-        if (user == null) {
-            user = tutorPersistence.getTutorByEmail(email);
+    public Tutor getTutor(String email) {
+        Tutor tutor = null;
+        if (email.equals(null) || email.equals("")) {
+            tutor = tutorPersistence.getTutorByEmail(email);
         }
-        return user;
+        return tutor;
+    }
+
+    /**
+     * Attempts to fetch a student by email.
+     * @param email email of the user.
+     * @return Student object if found, null otherwise.
+     */
+    public Student getStudent(String email){
+        Student student = null;
+        if(!email.equals(null) || !email.equals("")){
+            student = studentPersistence.getStudentByEmail(email);
+        }
+
+        return student;
     }
 
     /**

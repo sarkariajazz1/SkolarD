@@ -57,7 +57,7 @@ public class ProfileView extends JFrame {
         fetchBtn.addActionListener(e -> {
             String email = emailField.getText().trim();
             if (!email.isEmpty()) {
-                currentUser = handler.getUser(email);
+                currentUser = handler.getTutor(email);
                 profileArea.setText(currentUser != null
                     ? handler.viewFullProfile(currentUser)
                     : "No user found with that email.");
