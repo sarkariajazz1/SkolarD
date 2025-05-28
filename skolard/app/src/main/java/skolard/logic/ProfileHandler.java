@@ -127,7 +127,7 @@ public class ProfileHandler {
                 sb.append("Bio: ").append(tutor.getBio()).append("\n");
                 sb.append("Courses Taken: ").append(String.join(", ", tutor.getCourses())).append("\n");
 
-                Map<String, String> courseGrades = tutor.getCourseGrades();
+                Map<String, Double> courseGrades = tutor.getCourseGrades();
                 if (!courseGrades.isEmpty()) {
                     sb.append("Grades: \n");
                     for (String course : courseGrades.keySet()) {
