@@ -1,104 +1,114 @@
-// package skolard.logic;
+package skolard.logic;
 
-// import static org.junit.Assert.assertEquals;
-// import static org.junit.Assert.assertFalse;
-// import static org.junit.Assert.assertTrue;
-// import org.junit.Before;
-// import org.junit.Test;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
-// /**
-//  * Unit tests for the PriorityList class using String elements.
-//  * Ensures correct behavior for add, remove, clear, and retrieval operations.
-//  */
-// public class PriorityListTest {
-//     private PriorityList<String> priorityList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import org.junit.Before;
+import org.junit.Test;
 
-//     /**
-//      * Set up a fresh PriorityList instance before each test.
-//      */
-//     @Before
-//     public void setUp() {
-//         // Correctly initialize the PriorityList
-//         priorityList = new PriorityList<>();
-//     }
+public class PriorityListTest {
+    private PriorityList<String> priorityList;
 
-//     /**
-//      * Test adding items to the list and retrieving them by index.
-//      * Verifies both size and element order.
-//      */
-//     @Test
-//     public void testAddItem() {
-//         priorityList.addItem("Alice");
-//         priorityList.addItem("Bob");
+    @Before
+    public void setUp() {
+        priorityList = new PriorityList<>();
+    }
 
-//         // Verify the size of the list after adding
-//         assertEquals(2, priorityList.size());
+    @Test
+    public void testAddItemAndSize() {
+        // initially empty
+        assertEquals(0, priorityList.size());
+        // add two distinct items
+        priorityList.addItem("Alice");
+        priorityList.addItem("Bob");
+        assertEquals(2, priorityList.size());
+        // duplicate add should have no effect
+        priorityList.addItem("Alice");
+        assertEquals(2, priorityList.size());
+    }
 
-//         // Check order of insertion
-//         assertEquals("Alice", priorityList.getItem(0));
-//         assertEquals("Bob", priorityList.getItem(1));
-//     }
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddNullItem() {
+        priorityList.addItem(null);
+    }
 
-//     /**
-//      * Test removing an item from the list and checking the resulting contents.
-//      */
-//     @Test
-//     public void testRemoveItem() {
-//         priorityList.addItem("Alice");
-//         priorityList.addItem("Bob");
+    @Test
+    public void testGetItemValidIndex() {
+        priorityList.addItem("One");
+        priorityList.addItem("Two");
+        assertEquals("One", priorityList.getItem(0));
+        assertEquals("Two", priorityList.getItem(1));
+    }
 
-//         // Remove one item
-//         priorityList.removeItem("Alice");
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testGetItemNegativeIndex() {
+        priorityList.getItem(-1);
+    }
 
-//         // Check that the size is reduced and correct item remains
-//         assertEquals(1, priorityList.size());
-//         assertEquals("Bob", priorityList.getItem(0));
-//     }
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testGetItemTooLargeIndex() {
+        priorityList.addItem("X");
+        priorityList.getItem(1);
+    }
 
-//     /**
-//      * Test isEmpty() method before and after adding elements.
-//      */
-//     @Test
-//     public void testIsEmpty() {
-//         // Should be empty initially
-//         assertTrue(priorityList.isEmpty());
+    @Test
+    public void testRemoveItem() {
+        priorityList.addItem("A");
+        priorityList.addItem("B");
+        // remove existing
+        priorityList.removeItem("A");
+        assertEquals(1, priorityList.size());
+        assertFalse(priorityList.getAllItems().contains("A"));
+        // removing non-existent does nothing
+        priorityList.removeItem("Z");
+        assertEquals(1, priorityList.size());
+        assertTrue(priorityList.getAllItems().contains("B"));
+    }
 
-//         // Add one element
-//         priorityList.addItem("Alice");
+    @Test
+    public void testIsEmptyAndClear() {
+        assertTrue(priorityList.isEmpty());
+        priorityList.addItem("Item");
+        assertFalse(priorityList.isEmpty());
+        priorityList.clear();
+        assertTrue(priorityList.isEmpty());
+        assertEquals(0, priorityList.size());
+    }
 
-//         // Now the list should not be empty
-//         assertFalse(priorityList.isEmpty());
-//     }
+    @Test
+    public void testGetAllItemsUnmodifiable() {
+        priorityList.addItem("X");
+        List<String> all = priorityList.getAllItems();
+        assertEquals(1, all.size());
+        try {
+            all.add("Y");
+            fail("Expected UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+    }
 
-//     /**
-//      * Test clearing the list and verifying it becomes empty.
-//      */
-//     @Test
-//     public void testClear() {
-//         priorityList.addItem("Alice");
-//         priorityList.addItem("Bob");
+    @Test
+    public void testSortWithComparator() {
+        priorityList.addItem("Charlie");
+        priorityList.addItem("Alice");
+        priorityList.addItem("Bob");
+        // sort alphabetically
+        priorityList.sort(Comparator.naturalOrder());
+        List<String> sorted = priorityList.getAllItems();
+        assertEquals(Arrays.asList("Alice", "Bob", "Charlie"), sorted);
+    }
 
-//         // Clear the list
-//         priorityList.clear();
-
-//         // Verify it's now empty
-//         assertTrue(priorityList.isEmpty());
-//     }
-
-//     /**
-//      * Test retrieving all items as an unmodifiable list.
-//      * Ensures the correct elements are returned.
-//      */
-//     @Test
-//     public void testGetAllItems() {
-//         priorityList.addItem("Alice");
-//         priorityList.addItem("Bob");
-
-//         // Confirm the list size
-//         assertEquals(2, priorityList.getAllItems().size());
-
-//         // Check contents
-//         assertTrue(priorityList.getAllItems().contains("Alice"));
-//         assertTrue(priorityList.getAllItems().contains("Bob"));
-//     }
-// }
+    @Test
+    public void testSortWithNullComparatorDoesNothing() {
+        priorityList.addItem("B");
+        priorityList.addItem("A");
+        priorityList.sort(null);  // should leave order unchanged
+        assertEquals(Arrays.asList("B", "A"), priorityList.getAllItems());
+    }
+}
