@@ -6,7 +6,6 @@ import java.util.List;
 
 import skolard.objects.Session;
 import skolard.objects.Student;
-import skolard.persistence.PersistenceFactory;
 import skolard.persistence.SessionPersistence;
 
 /**
@@ -14,28 +13,13 @@ import skolard.persistence.SessionPersistence;
  * Responsible for loading sessions and allowing booking.
  */
 public class MatchingHandler {
-    private PriorityList<Session> availableSessions;
-
-    /**
-     * Default constructor that initializes available sessions
-     * by loading them from the persistence layer (SessionStub).
-     */
-    public MatchingHandler() {
-        this.availableSessions = new TutorList(); // default to using TutorList
-
-        SessionPersistence sessionDao = PersistenceFactory.getSessionPersistence();
-
-        // Load all sessions from the stub database
-        for (Session s : sessionDao.getAllSessions()) {
-            this.availableSessions.addItem(s);
-        }
-    }
+    private SessionPersistence sessionDB;
 
     /**
      * Constructor for dependency injection of a custom session list.
      */
-    public MatchingHandler(PriorityList<Session> sessionList) {
-        this.availableSessions = sessionList;
+    public MatchingHandler(SessionPersistence sessionPersistence) {
+        this.sessionDB = sessionPersistence;
     }
 
     /**
@@ -45,7 +29,7 @@ public class MatchingHandler {
         if (session == null) {
             throw new IllegalArgumentException("Session cannot be null.");
         }
-        availableSessions.addItem(session);
+        sessionDB.addSession(session);
     }
 
     /**
@@ -91,9 +75,10 @@ public class MatchingHandler {
      * Extracts only the non-booked sessions that match the given course.
      */
     public List<Session> addNonBookedSessions(String courseName) {
+        List<Session> allSessions = sessionDB.getAllSessions();
         List<Session> sessions = new ArrayList<>();
 
-        for (Session session : availableSessions.getAllItems()) {
+        for (Session session : allSessions) {
             if (session.getCourseName().equalsIgnoreCase(courseName) && !session.isBooked()) {
                 sessions.add(session);
             }
@@ -113,21 +98,22 @@ public class MatchingHandler {
 
         if (!session.isBooked()) {
             session.bookSession(student);
+            sessionDB.updateSession(session);
             System.out.println("Session " + session.getSessionId() + " booked successfully for " + student.getName());
         } else {
             System.out.println("Session " + session.getSessionId() + " is already booked.");
         }
     }
 
-    /**
-     * Clears all sessions from the in-memory list.
-     */
-    public void clearSessions() {
-        availableSessions.clear();
-    }
-
     @Override
     public String toString() {
-        return availableSessions.toString();
+        List<Session> sessions = sessionDB.getAllSessions();
+        PriorityList<Session> sessionPriority = new PriorityList<>();
+        
+        for (Session s : sessions) {
+            sessionPriority.addItem(s);
+        }
+
+        return sessionPriority.toString();
     }
 }

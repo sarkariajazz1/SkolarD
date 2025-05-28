@@ -20,7 +20,7 @@ public class StubFactory {
     }
 
     public static MessagePersistence createMessagePersistence() {
-        return new MessageStub();
+        return new MessageStub(); // in-memory message persistence
     }
 }
 
