@@ -2,10 +2,10 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Tags on SkolarD FAQ</title>
-    <link>/faq/tags/</link>
+    <link>https://skolard.help.com/tags/</link>
     <description>Recent content in Tags on SkolarD FAQ</description>
     <generator>Hugo -- 0.147.5</generator>
     <language>en-us</language>
-    <atom:link href="/faq/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://skolard.help.com/tags/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
