@@ -11,3 +11,5 @@ The key value of SkolarD lies within matching students with tutors who best fit 
 The SkolarD is envisioned to be a website that is easily accessible for everyone to use, in the future it would extend to mobile applications. Students can view and book sessions, while tutors can manage their course listings and availability. Any personal information and conversations between students and tutors will remain private to them.
 
 SkolarD will be considered successful if 10,000 students download the app in the first year and at least half of those students booked tutoring sessions. Additionally, the success will also be measured through the positive feedback from students, the frequent usage of the app, and improvements in academic confidence and performance reported by students using the app.
+
+The Architecture of SkolarD can be found here: https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/tree/dev/docs/architecture?ref_type=heads
