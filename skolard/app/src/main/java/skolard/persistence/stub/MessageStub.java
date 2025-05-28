@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import skolard.exceptions.MessageExistsException;
 import skolard.objects.Message;
 import skolard.persistence.MessagePersistence;
 
@@ -44,7 +43,7 @@ public class MessageStub implements MessagePersistence{
     public Message addMessage(Message message) {
         confirmCreation();
         if(messages.containsKey(message.getMessageId())) {
-            throw new MessageExistsException("Updated Existing Message, that was an update, not an add");
+            throw new RuntimeException("Updated Existing Message, that was an update, not an add");
         }
 
         Message newMessage = new Message(uniqueID++, message.getTimeSent(), 
@@ -71,7 +70,7 @@ public class MessageStub implements MessagePersistence{
         if(messages.containsKey(id)) {
             messages.remove(id);
         } else {
-            throw new MessageExistsException("Cannot delete a Message that doesn't exist");
+            throw new RuntimeException("Cannot delete a Message that doesn't exist");
         }
     }
 
@@ -79,7 +78,7 @@ public class MessageStub implements MessagePersistence{
     public void updateMessage(Message updatedMessage) {
         confirmCreation();
         if(!messages.containsKey(updatedMessage.getMessageId())) {
-            throw new MessageExistsException("Cannot update a Message that does not exist.");
+            throw new RuntimeException("Cannot update a Message that does not exist.");
         } 
         messages.replace(updatedMessage.getMessageId(), updatedMessage);
     }
