@@ -51,7 +51,7 @@ public class SchemaInitializer {
         // Table for associating tutors with courses they've taken and grades (many-to-many)
         String createTutorCourseTable = "CREATE TABLE IF NOT EXISTS tutorCourse (" +
                 "tutorEmail TEXT NOT NULL," +                  // Email of the tutor
-                "grade TEXT," +                                // Grade achieved in the course
+                "grade REAL," +                                // Grade achieved in the course
                 "courseID TEXT NOT NULL," +                    // Course ID
                 "PRIMARY KEY(tutorEmail, courseID)," +         // Composite key to avoid duplicates
                 "FOREIGN KEY(courseID) REFERENCES courses(id)," +
