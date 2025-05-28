@@ -6,7 +6,6 @@ import java.util.List;
 
 import skolard.objects.Session;
 import skolard.objects.Student;
-import skolard.persistence.PersistenceFactory;
 import skolard.persistence.SessionPersistence;
 
 /**
@@ -14,22 +13,8 @@ import skolard.persistence.SessionPersistence;
  * Responsible for loading sessions and allowing booking.
  */
 public class MatchingHandler {
+    private SessionPersistence sessionDB;
     private PriorityList<Session> availableSessions;
-
-    /**
-     * Default constructor that initializes available sessions
-     * by loading them from the persistence layer (SessionStub).
-     */
-    public MatchingHandler() {
-        this.availableSessions = new TutorList(); // default to using TutorList
-
-        SessionPersistence sessionDao = PersistenceFactory.getSessionPersistence();
-
-        // Load all sessions from the stub database
-        for (Session s : sessionDao.getAllSessions()) {
-            this.availableSessions.addItem(s);
-        }
-    }
 
     /**
      * Constructor for dependency injection of a custom session list.
