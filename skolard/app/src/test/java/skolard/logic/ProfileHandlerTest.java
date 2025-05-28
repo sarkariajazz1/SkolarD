@@ -41,9 +41,9 @@ public class ProfileHandlerTest {
                             "Experienced in Math and Physics", null, null);
         profileHandler.addTutor(mockTutor.getName(), mockTutor.getEmail());
         mockTutor.setCourses(new ArrayList<>(List.of("Math 101", "Physics 202")));
-        Map<String, String> grades = new HashMap<>();
-        grades.put("Math 101", "4.0");
-        grades.put("Physics 202", "3.0");
+        Map<String, Double> grades = new HashMap<>();
+        grades.put("Math 101", 4.0);
+        grades.put("Physics 202", 3.0);
         mockTutor.setCourseGrades(grades);
         profileHandler.updateTutor(mockTutor);
 

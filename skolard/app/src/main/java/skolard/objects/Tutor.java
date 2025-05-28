@@ -14,11 +14,12 @@ import skolard.logic.utils.GradeUtil;
 public class Tutor extends User {
     private String bio;
     private List<String> courses;
-    private Map<String, String> courseGrades; // course → string grade (e.g., "A", "95")
+    private Map<String, Double> courseGrades; // course → string grade (e.g., "A", "95")
+    private List<Session> pastSessions;
     private List<Session> upcomingSessions;
 
     public Tutor(String name, String email, String bio,
-                 List<String> courses, Map<String, String> courseGrades) {
+                 List<String> courses, Map<String, Double> courseGrades) {
         super(name, email);
         this.bio = bio;
         this.courses = courses != null ? courses : new ArrayList<>();
@@ -46,35 +47,39 @@ public class Tutor extends User {
         this.courses = courses;
     }
 
-    public Map<String, String> getCourseGrades() {
+    public Map<String, Double> getCourseGrades() {
         return courseGrades;
     }
 
-    public void setCourseGrades(Map<String, String> courseGrades) {
+    public void setCourseGrades(Map<String, Double> courseGrades) {
         this.courseGrades = courseGrades;
     }
 
     public void addCourseGrade(String course, String grade) {
-        this.courseGrades.put(course, grade);
+        try {
+            Double courseGrade = Double.parseDouble(grade);
+            this.courseGrades.put(course, courseGrade);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Grade is not a double");
+        }
+        
     }
 
-    public String getGradeForCourse(String course) {
-        return this.courseGrades.getOrDefault(course, "N/A");
+    public Double getGradeForCourse(String course) {
+        return this.courseGrades.getOrDefault(course, 1.0);
     }
 
-public double getAverageRating() {
-    double total = 0.0;
-    int count = 0;
+    public double getAverageRating() {
+        double total = 0.0;
+        int count = 0;
 
-    for (String grade : courseGrades.values()) {
-        double numeric = GradeUtil.toNumeric(grade);
-        if (numeric >= 0) {
-            total += numeric;
+        for (double grade : courseGrades.values()) {
+            total += grade;
             count++;
         }
+
+        return count > 0 ? total / count : 0.0;
     }
-    return count > 0 ? total / count : 0.0;
-}
 
     public void setUpcomingSession(Session session) {
         if (!upcomingSessions.contains(session)) {
@@ -86,5 +91,9 @@ public double getAverageRating() {
 
     public List<Session> getUpcomingSessions() {
         return upcomingSessions;
+    }
+    
+    public List<Session> getPastSessions(){
+        return pastSessions;
     }
 }

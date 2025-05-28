@@ -4,6 +4,7 @@ import java.util.Map;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
+import skolard.persistence.PersistenceFactory;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
 
@@ -16,6 +17,15 @@ public class ProfileHandler {
     private TutorPersistence tutorPersistence;
 
     /**
+     * Constructor using default persistence implementations.
+     */
+    public ProfileHandler() {
+        // TO DO
+        this.studentPersistence = PersistenceFactory.getStudentPersistence();
+        this.tutorPersistence = PersistenceFactory.getTutorPersistence();
+    }
+
+    /**
      * Constructor to inject dependencies for persistence.
      * @param studentPersistence interface to manage student data.
      * @param tutorPersistence interface to manage tutor data.
@@ -25,39 +35,53 @@ public class ProfileHandler {
         this.tutorPersistence = tutorPersistence; 
     }
 
+
+
     /**
-     * Attempts to fetch a user (student or tutor) by email.
+     * Attempts to fetch a tutor by email.
      * @param email email of the user.
-     * @return User object if found, null otherwise.
+     * @return Tutor object if found, null otherwise.
      */
-    public User getUser(String email) {
-        User user = studentPersistence.getStudentByEmail(email);
-        if (user == null) {
-            user = tutorPersistence.getTutorByEmail(email);
+    public Tutor getTutor(String email) {
+        Tutor tutor = null;
+        if (!email.equals(null) || !email.isEmpty()) {
+            tutor = tutorPersistence.getTutorByEmail(email.toLowerCase());
         }
-        return user;
+        return tutor;
+    }
+
+    /**
+     * Attempts to fetch a student by email.
+     * @param email email of the user.
+     * @return Student object if found, null otherwise.
+     */
+    public Student getStudent(String email){
+        Student student = null;
+        if(!email.equals(null) || !email.isEmpty()){
+            student = studentPersistence.getStudentByEmail(email.toLowerCase());
+        }
+
+        return student;
     }
 
     /**
      * Adds a new student to the persistence layer.
      * @param name student's name
      * @param email student's email
-     * @return the created Student object
      */
-    public Student addStudent(String name, String email) {
-        Student newStudent = new Student(name, email);
-        return studentPersistence.addStudent(newStudent);
+    public void addStudent(String name, String email) {
+        Student newStudent = new Student(name, email.toLowerCase());
+        studentPersistence.addStudent(newStudent);
     }
 
     /**
      * Adds a new tutor to the persistence layer.
      * @param name tutor's name
      * @param email tutor's email
-     * @return the created Tutor object
      */
-    public Tutor addTutor(String name, String email) {
-        Tutor newTutor = new Tutor(name, email, "Edit your bio...");
-        return tutorPersistence.addTutor(newTutor);
+    public void addTutor(String name, String email) {
+        Tutor newTutor = new Tutor(name, email.toLowerCase(), "Edit your bio...");
+        tutorPersistence.addTutor(newTutor);
     }
 
     /**
@@ -103,7 +127,7 @@ public class ProfileHandler {
                 sb.append("Bio: ").append(tutor.getBio()).append("\n");
                 sb.append("Courses Taken: ").append(String.join(", ", tutor.getCourses())).append("\n");
 
-                Map<String, String> courseGrades = tutor.getCourseGrades();
+                Map<String, Double> courseGrades = tutor.getCourseGrades();
                 if (!courseGrades.isEmpty()) {
                     sb.append("Grades: \n");
                     for (String course : courseGrades.keySet()) {

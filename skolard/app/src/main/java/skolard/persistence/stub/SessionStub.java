@@ -33,11 +33,11 @@ public class SessionStub implements SessionPersistence {
     private void addSampleSessions() {
         Tutor tutor1 = new Tutor("Amrit Singh", "amrit@skolard.ca",
                 "CS & Math Tutor", new ArrayList<>(List.of("COMP 1010", "MATH 1500")),
-                Map.of("COMP 1010", "A+", "MATH 1500", "A"));
+                Map.of("COMP 1010", 4.5, "MATH 1500", 4.0));
 
         Tutor tutor2 = new Tutor("Sukhdeep Kaur", "sukhdeep@skolard.ca",
                 "Physics tutor", new ArrayList<>(List.of("PHYS 1050")),
-                Map.of("PHYS 1050", "A"));
+                Map.of("PHYS 1050", 4.0));
 
         Student student1 = new Student("Raj Gill", "raj@skolard.ca");
         Student student2 = new Student("Simran Dhillon", "simran@skolard.ca");
