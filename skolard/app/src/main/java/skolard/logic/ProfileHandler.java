@@ -70,7 +70,7 @@ public class ProfileHandler {
      * @param email student's email
      */
     public void addStudent(String name, String email) {
-        Student newStudent = new Student(name, email);
+        Student newStudent = new Student(name, email.toLowerCase());
         studentPersistence.addStudent(newStudent);
     }
 
@@ -80,7 +80,7 @@ public class ProfileHandler {
      * @param email tutor's email
      */
     public void addTutor(String name, String email) {
-        Tutor newTutor = new Tutor(name, email, "Edit your bio...");
+        Tutor newTutor = new Tutor(name, email.toLowerCase(), "Edit your bio...");
         tutorPersistence.addTutor(newTutor);
     }
 
