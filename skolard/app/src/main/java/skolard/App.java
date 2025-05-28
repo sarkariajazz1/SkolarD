@@ -4,7 +4,8 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
-import skolard.objects.Student;
+import skolard.logic.MatchingHandler;
+import skolard.logic.ProfileHandler;
 import skolard.persistence.PersistenceFactory;
 import skolard.persistence.PersistenceType;
 
@@ -18,13 +19,14 @@ public class App {
         // The second argument 'true' indicates that seed SQL files should be executed
         PersistenceFactory.initialize(PersistenceType.PROD, true);
 
+        ProfileHandler profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(), 
+            PersistenceFactory.getTutorPersistence());
+        MatchingHandler matchingHandler = new MatchingHandler(PersistenceFactory.getSessionPersistence());    
+
         // Launch the GUI on the Event Dispatch Thread (recommended for Swing applications)
         SwingUtilities.invokeLater(() -> {
-            new skolard.presentation.SkolardApp();
+            new skolard.presentation.SkolardApp(profileHandler, matchingHandler);
         });
-
-        // Use this to close the database connection and reset persistence
-        // Uncomment if you're terminating the application manually or running non-GUI tests (currently makes the code crash)
-        // PersistenceFactory.reset(); // ← Enable only if you want to shut down DB after GUI closes
     }
 }
+
