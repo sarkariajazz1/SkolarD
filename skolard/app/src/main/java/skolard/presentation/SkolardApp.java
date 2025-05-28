@@ -13,7 +13,7 @@ import java.awt.*;
 public class SkolardApp extends JFrame {
 
     public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler) {
-        super("SkolarD - Dashboard"); 
+        super("SkolarD - Dashboard");
 
         setLayout(new BorderLayout());
 
@@ -28,8 +28,10 @@ public class SkolardApp extends JFrame {
 
         // Open Profile View
         profileBtn.addActionListener(e -> new ProfileView(profileHandler));
+        profileBtn.addActionListener(e -> new ProfileView(profileHandler));
 
         // Open Matching View
+        matchBtn.addActionListener(e -> new MatchingView(matchingHandler));
         matchBtn.addActionListener(e -> new MatchingView(matchingHandler));
 
         setDefaultCloseOperation(EXIT_ON_CLOSE); // Full app exits
