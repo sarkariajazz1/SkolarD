@@ -29,10 +29,6 @@ public class Session {
         return sessionId;
     }
 
-    public void setSessionId(int sessionId) {
-        this.sessionId = sessionId;
-    }
-
     public Tutor getTutor() {
         return tutor;
     }
