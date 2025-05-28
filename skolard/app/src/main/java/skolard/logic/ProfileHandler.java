@@ -1,5 +1,8 @@
 package skolard.logic;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
@@ -99,7 +102,17 @@ public class ProfileHandler {
      * @param email student's email
      */
     public void addStudent(String name, String email) {
-        Student newStudent = new Student(name, email.toLowerCase());
+        if (name == null || name.trim().length() < 2) {
+            throw new IllegalArgumentException("Name must be at least 2 characters");
+        }
+        if (!EmailUtil.isValid(email)) {
+            throw new IllegalArgumentException("Invalid email address");
+        }
+        String key = email.trim().toLowerCase();
+        // if (studentPersistence.emailExists(key)) {
+        //     throw new IllegalArgumentException("A student with this email already exists");
+        // }
+        Student newStudent = new Student(name.trim(), key);
         studentPersistence.addStudent(newStudent);
     }
 
@@ -109,7 +122,25 @@ public class ProfileHandler {
      * @param email tutor's email
      */
     public void addTutor(String name, String email) {
-        Tutor newTutor = new Tutor(name, email.toLowerCase(), "Edit your bio...");
+        if (name == null || name.trim().length() < 2) {
+            throw new IllegalArgumentException("Name must be at least 2 characters");
+        }
+        if (!EmailUtil.isValid(email)) {
+            throw new IllegalArgumentException("Invalid email address");
+        }
+        //String key = email.trim().toLowerCase();
+        // if (tutorPersistence.emailExists(key)) {
+        //     throw new IllegalArgumentException("A tutor with this email already exists");
+        // }
+                // Construct using the existing multi-arg constructor
+        Tutor newTutor = new Tutor(
+            null,                // id assigned by persistence
+            name.trim(),
+            
+            "Edit your bio...",// default bio
+            new ArrayList<>(),   // courses list
+            new HashMap<>()      // course grades map
+        );
         tutorPersistence.addTutor(newTutor);
     }
 
