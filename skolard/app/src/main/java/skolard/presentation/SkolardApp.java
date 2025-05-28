@@ -1,15 +1,23 @@
 package skolard.presentation;
 
 import javax.swing.*;
+
+import skolard.logic.MatchingHandler;
+import skolard.logic.ProfileHandler;
+
 import java.awt.*;
 
 /**
  * The main dashboard window of SkolarD that allows navigation to other views.
  */
 public class SkolardApp extends JFrame {
+    private ProfileHandler profileHandler;
+    private MatchingHandler matchingHandler;
 
-    public SkolardApp() {
+    public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler) {
         super("SkolarD - Dashboard");
+        this.profileHandler = profileHandler;
+        this.matchingHandler = matchingHandler; 
 
         setLayout(new BorderLayout());
 
@@ -23,10 +31,10 @@ public class SkolardApp extends JFrame {
         add(buttonPanel, BorderLayout.CENTER);
 
         // Open Profile View
-        profileBtn.addActionListener(e -> new ProfileView());
+        profileBtn.addActionListener(e -> new ProfileView(profileHandler));
 
         // Open Matching View
-        matchBtn.addActionListener(e -> new MatchingView());
+        matchBtn.addActionListener(e -> new MatchingView(matchingHandler));
 
         setDefaultCloseOperation(EXIT_ON_CLOSE); // Full app exits
         setSize(400, 150);

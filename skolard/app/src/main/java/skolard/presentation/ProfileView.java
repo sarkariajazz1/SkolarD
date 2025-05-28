@@ -2,9 +2,6 @@ package skolard.presentation;
 
 import skolard.logic.ProfileHandler;
 import skolard.objects.User;
-import skolard.persistence.PersistenceFactory;
-import skolard.persistence.StudentPersistence;
-import skolard.persistence.TutorPersistence;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,16 +20,14 @@ public class ProfileView extends JFrame {
     private final JButton addStudentBtn = new JButton("Add Student");
     private final JButton addTutorBtn = new JButton("Add Tutor");
 
-    private final ProfileHandler handler;
+    private ProfileHandler handler;
     private User currentUser; // Stores the currently loaded user
 
-    public ProfileView() {
+    public ProfileView(ProfileHandler profileHandler) {
         super("SkolarD - Profile Viewer");
 
         // Load persistence handlers
-        StudentPersistence studentDao = PersistenceFactory.getStudentPersistence();
-        TutorPersistence tutorDao = PersistenceFactory.getTutorPersistence();
-        this.handler = new ProfileHandler(studentDao, tutorDao);
+        this.handler = profileHandler;
 
         setLayout(new BorderLayout(10, 10)); // Layout with spacing
 
