@@ -1,4 +1,4 @@
-package skolard.logic.utils;
+package skolard.utils;
 
 public class GradeUtil {
 

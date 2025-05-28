@@ -1,19 +1,70 @@
 package skolard.logic;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
+import skolard.utils.EmailUtil;
 
+interface ProfileFormatter {
+    String basic(User u);
+    String full(User u);
+}
+
+class DefaultProfileFormatter implements ProfileFormatter {
+    @Override
+    public String basic(User u) {
+        return "Name: " + u.getName() + "\n"
+             + "Email: " + u.getEmail() + "\n";
+    }
+
+    @Override
+    public String full(User u) {
+        StringBuilder sb = new StringBuilder(basic(u));
+        if (u instanceof Tutor) {
+            Tutor t = (Tutor) u;
+            sb.append("Bio: ").append(t.getBio()).append("\n");
+            sb.append("Courses: ")
+              .append(String.join(", ", t.getCourses()))
+              .append("\n");
+            t.getCourseGrades().forEach((c, g) ->
+                sb.append(" - ").append(c).append(": ").append(g).append("\n")
+            );
+            sb.append("Avg Rating: ").append(t.getAverageRating()).append("\n");
+        } else if (u instanceof Student) {
+            Student s = (Student) u;
+            sb.append("Upcoming: ")
+              .append(s.getUpcomingSessions().size())
+              .append("\n");
+            sb.append("Past: ")
+              .append(s.getPastSessions().size())
+              .append("\n");
+        }
+        return sb.toString();
+    }
+}
 /**
  * ProfileHandler manages viewing and modifying profile data
  * for users in the SkolarD platform, specifically Students and Tutors.
  */
 public class ProfileHandler {
-    private StudentPersistence studentPersistence;
-    private TutorPersistence tutorPersistence;
+    private final StudentPersistence studentPersistence;
+    private final TutorPersistence tutorPersistence;
+    private ProfileFormatter profileFormatter;
+
+    /**
+     * Constructor using default persistence implementations.
+     */
+    public ProfileHandler() {
+        // TO DO
+        this.studentPersistence = PersistenceFactory.getStudentPersistence();
+        this.tutorPersistence = PersistenceFactory.getTutorPersistence();
+        this.profileFormatter = new DefaultProfileFormatter();
+    }
 
     /**
      * Constructor to inject dependencies for persistence.
@@ -23,35 +74,25 @@ public class ProfileHandler {
     public ProfileHandler(StudentPersistence studentPersistence, TutorPersistence tutorPersistence) {
         this.studentPersistence = studentPersistence;
         this.tutorPersistence = tutorPersistence; 
+        this.profileFormatter = new DefaultProfileFormatter();
     }
 
+        public ProfileHandler(StudentPersistence sp,
+                          TutorPersistence tp,
+                          ProfileFormatter fmt) {
+        this.studentPersistence = sp;
+        this.tutorPersistence   = tp;
+        this.profileFormatter   = fmt;
+    }
 
-
-    /**
-     * Attempts to fetch a tutor by email.
-     * @param email email of the user.
-     * @return Tutor object if found, null otherwise.
-     */
     public Tutor getTutor(String email) {
-        Tutor tutor = null;
-        if (!email.equals(null) || !email.isEmpty()) {
-            tutor = tutorPersistence.getTutorByEmail(email.toLowerCase());
-        }
-        return tutor;
+        if (!EmailUtil.isValid(email)) return null;
+        return tutorPersistence.getTutorByEmail(email.trim().toLowerCase());
     }
 
-    /**
-     * Attempts to fetch a student by email.
-     * @param email email of the user.
-     * @return Student object if found, null otherwise.
-     */
-    public Student getStudent(String email){
-        Student student = null;
-        if(!email.equals(null) || !email.isEmpty()){
-            student = studentPersistence.getStudentByEmail(email.toLowerCase());
-        }
-
-        return student;
+    public Student getStudent(String email) {
+        if (!EmailUtil.isValid(email)) return null;
+        return studentPersistence.getStudentByEmail(email.trim().toLowerCase());
     }
 
     /**
@@ -60,7 +101,17 @@ public class ProfileHandler {
      * @param email student's email
      */
     public void addStudent(String name, String email) {
-        Student newStudent = new Student(name, email.toLowerCase());
+        if (name == null || name.trim().length() < 2) {
+            throw new IllegalArgumentException("Name must be at least 2 characters");
+        }
+        if (!EmailUtil.isValid(email)) {
+            throw new IllegalArgumentException("Invalid email address");
+        }
+        String key = email.trim().toLowerCase();
+        // if (studentPersistence.emailExists(key)) {
+        //     throw new IllegalArgumentException("A student with this email already exists");
+        // }
+        Student newStudent = new Student(name.trim(), key);
         studentPersistence.addStudent(newStudent);
     }
 
@@ -70,7 +121,25 @@ public class ProfileHandler {
      * @param email tutor's email
      */
     public void addTutor(String name, String email) {
-        Tutor newTutor = new Tutor(name, email.toLowerCase(), "Edit your bio...");
+        if (name == null || name.trim().length() < 2) {
+            throw new IllegalArgumentException("Name must be at least 2 characters");
+        }
+        if (!EmailUtil.isValid(email)) {
+            throw new IllegalArgumentException("Invalid email address");
+        }
+        //String key = email.trim().toLowerCase();
+        // if (tutorPersistence.emailExists(key)) {
+        //     throw new IllegalArgumentException("A tutor with this email already exists");
+        // }
+                // Construct using the existing multi-arg constructor
+        Tutor newTutor = new Tutor(
+            null,                // id assigned by persistence
+            name.trim(),
+            
+            "Edit your bio...",// default bio
+            new ArrayList<>(),   // courses list
+            new HashMap<>()      // course grades map
+        );
         tutorPersistence.addTutor(newTutor);
     }
 
@@ -88,61 +157,17 @@ public class ProfileHandler {
         studentPersistence.updateStudent(updatedStudent);
     }
 
-    /**
-     * Returns a user's basic profile: name and email.
-     * @param user User instance (either student or tutor)
-     * @return formatted string or empty string if null
-     */
-    public String viewBasicProfile(User user) {
-        if (user != null) {
-            return "Name: " + user.getName() + "\n"
-                 + "Email: " + user.getEmail() + "\n";
-        }
-        return "";
+    public String viewBasicProfile(User u) {
+        return (u == null)
+            ? ""
+            : profileFormatter.basic(u);
     }
 
-    /**
-     * Returns a user's full profile depending on type (Tutor or Student).
-     * @param user User object
-     * @return a detailed string with all relevant profile data
-     */
-    public String viewFullProfile(User user) {
-        if (user != null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(viewBasicProfile(user)); // common info
-
-            // Tutor-specific fields
-            if (user instanceof Tutor) {
-                Tutor tutor = (Tutor) user;
-                sb.append("Bio: ").append(tutor.getBio()).append("\n");
-                sb.append("Courses Taken: ").append(String.join(", ", tutor.getCourses())).append("\n");
-
-                Map<String, Double> courseGrades = tutor.getCourseGrades();
-                if (!courseGrades.isEmpty()) {
-                    sb.append("Grades: \n");
-                    for (String course : courseGrades.keySet()) {
-                        sb.append(" - ").append(course)
-                          .append(": ").append(courseGrades.get(course)).append("\n");
-                    }
-                }
-
-                sb.append("Average Rating: ").append(tutor.getAverageRating()).append("\n");
-            }
-
-            // Student-specific fields
-            if (user instanceof Student) {
-                Student s = (Student) user;
-                int upcoming = s.getUpcomingSessions() != null ? s.getUpcomingSessions().size() : 0;
-                int past = s.getPastSessions() != null ? s.getPastSessions().size() : 0;
-                sb.append("Upcoming Sessions: ").append(upcoming).append("\n");
-                sb.append("Past Sessions: ").append(past).append("\n");
-            }
-
-            return sb.toString();
-        }
-        return "";
+    public String viewFullProfile(User u) {
+        return (u == null)
+            ? ""
+            : profileFormatter.full(u);
     }
-
     /**
      * Updates a tutor's bio if the user is an instance of Tutor.
      * @param user User instance
