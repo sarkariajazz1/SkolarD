@@ -62,8 +62,8 @@ public class RatingList extends PriorityList<Session> {
             boolean courseMismatch = session.getCourseName() == null ||
                                      !session.getCourseName().equalsIgnoreCase(course);
 
-            String grade = session.getTutor().getGradeForCourse(course);
-            boolean missingGrade = grade == null || grade.equalsIgnoreCase("N/A");
+            Double grade = session.getTutor().getGradeForCourse(course);
+            boolean missingGrade = grade == null || grade == 1.0;
 
             if (courseMismatch || missingGrade) {
                 items.remove(i);
