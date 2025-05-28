@@ -75,6 +75,7 @@ public class PersistenceFactory {
         studentPersistence = StubFactory.createStudentPersistence();
         tutorPersistence = StubFactory.createTutorPersistence();
         sessionPersistence = StubFactory.createSessionPersistence();
+        messagePersistence = StubFactory.createMessagePersistence();
         if (e != null) {
             System.err.println("Falling back to stubs due to: " + e.getMessage());
         }
