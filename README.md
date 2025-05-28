@@ -10,6 +10,8 @@ The core value of SkolarD is its ability to match students with tutors who under
 
 SkolarD’s success in its first year will be evaluated using realistic, measurable goals. These include reaching 2,000 registered users within the first year, with at least 40% of students booking at least one session; achieving an average of three sessions per student per semester; and seeing at least 40% of students book a repeat session within 30 days. Additionally, 60% of users should self-report improved grades or understanding in the subject area through structured surveys, and user satisfaction should average 4.0 out of 5 based on feedback. Through these metrics, SkolarD aims to demonstrate meaningful academic impact while maintaining a manageable and scalable user base in its first year.
 
-SkolarD Architecture: https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/dev/docs/architecture/ARCHITECTURE.md?ref_type=heads
+# SkolarD Architecture: 
+https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/dev/docs/architecture/ARCHITECTURE.md?ref_type=heads
 
-SkolarD General Documents: https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/tree/dev/docs?ref_type=heads
+# SkolarD General Documents: 
+https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/tree/dev/docs?ref_type=heads
