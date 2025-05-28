@@ -1,3 +1,5 @@
+#  SkolarD
+
 SkolarD is a tutoring platform created to help post-secondary students book personalized, in-person tutoring sessions with ease. It enables students to find tutors based on specific courses and preferred teaching styles, making academic support more targeted and relevant. Once a tutor is selected, students can view their availability and schedule a session at a mutually convenient time. The platform also supports direct communication between students and tutors for further clarity and coordination.
 
 SkolarD is designed for students attending universities, colleges, or technical institutions who are struggling with particular courses or concepts. Finding a tutor who has taken the same course, especially at the same institution, can be a challenge—particularly in science and technical programs. SkolarD addresses this issue by matching students with tutors who have direct experience with the exact course, improving the relevance and efficiency of academic support.
