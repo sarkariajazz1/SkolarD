@@ -128,19 +128,11 @@ public class ProfileHandler {
         if (!EmailUtil.isValid(email)) {
             throw new IllegalArgumentException("Invalid email address");
         }
-        //String key = email.trim().toLowerCase();
-        // if (tutorPersistence.emailExists(key)) {
-        //     throw new IllegalArgumentException("A tutor with this email already exists");
+        String key = email.trim().toLowerCase();
+        // if (studentPersistence.emailExists(key)) {
+        //     throw new IllegalArgumentException("A student with this email already exists");
         // }
-                // Construct using the existing multi-arg constructor
-        Tutor newTutor = new Tutor(
-            null,                // id assigned by persistence
-            name.trim(),
-            
-            "Edit your bio...",// default bio
-            new ArrayList<>(),   // courses list
-            new HashMap<>()      // course grades map
-        );
+        Tutor newTutor = new Tutor(name.trim(), key, "Edit your bio...", new ArrayList<>(), new HashMap<>());            
         tutorPersistence.addTutor(newTutor);
     }
 
