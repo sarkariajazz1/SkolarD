@@ -13,7 +13,7 @@ import java.awt.*;
 public class SkolardApp extends JFrame {
 
     public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler) {
-        super("SkolarD - Dashboard");
+        super("SkolarD - Dashboard"); 
 
         setLayout(new BorderLayout());
 
