@@ -54,6 +54,13 @@ public interface SessionPersistence {
      * @param sessionId the ID of the session to remove
      */
     void removeSession(int sessionId);
+
+    /**
+     * Update the information of an existing session.
+     *
+     * @param updatedSession updated session object
+     */
+    void updateSession(Session updatedSession);
 }
 
 
