@@ -117,6 +117,14 @@ public class SessionStub implements SessionPersistence {
         sessions.remove(sessionId);
     }
 
+    @Override
+    public void updateSession(Session updatedSession) {
+        confirmCreation();
+        if(sessions.containsKey(updatedSession.getSessionId())) {
+            sessions.replace(updatedSession.getSessionId(), updatedSession);
+        }
+    }
+
     // Optional helper for clearing data
     public void deleteAllSessions() {
         this.sessions = new HashMap<>();

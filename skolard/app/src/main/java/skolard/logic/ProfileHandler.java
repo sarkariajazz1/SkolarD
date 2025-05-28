@@ -6,7 +6,6 @@ import java.util.HashMap;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
-import skolard.persistence.PersistenceFactory;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
 import skolard.utils.EmailUtil;

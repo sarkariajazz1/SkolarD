@@ -22,20 +22,20 @@ public class SessionHandler {
         if(user instanceof Tutor){
             Tutor tutor = (Tutor) user;
             List<Session> tutorSessions = sessionPersistence.getSessionsByTutorEmail(tutor.getEmail());
-            boolean sessionIsPossible = true;
 
             for(int i = 0; i < tutorSessions.size(); i++){
                 LocalDateTime tutorStartTime = tutorSessions.get(i).getStartDateTime();
                 LocalDateTime tutorEndTime = tutorSessions.get(i).getEndDateTime();
-                if(start.isAfter(tutorStartTime) && start.isBefore(tutorEndTime) || end.isAfter(tutorStartTime) && end.isBefore(tutorEndTime)){
-                    sessionIsPossible = false;
-                    throw new IllegalArgumentException("Session conflicts with existing sessions");
+                if(start.isAfter(tutorStartTime) && start.isBefore(tutorEndTime) 
+                        || end.isAfter(tutorStartTime) && end.isBefore(tutorEndTime)){
+                    throw new IllegalArgumentException("Session conflicts within existing sessions");
+                } else if(tutorStartTime.isAfter(start) && tutorStartTime.isBefore(end) 
+                        || tutorEndTime.isAfter(start) && tutorEndTime.isBefore(end)){
+                        throw new IllegalArgumentException("Existing sessions conflicts within session");
                 }
             }
 
-            if(sessionIsPossible){
-                sessionPersistence.addSession(new Session(-1, tutor, null, start, end, courseName));
-            }
+            sessionPersistence.addSession(new Session(-1, tutor, null, start, end, courseName));
             
         }
     }

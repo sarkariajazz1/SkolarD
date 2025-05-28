@@ -159,6 +159,29 @@ public class SessionDB implements SessionPersistence {
     }
 
     /**
+     * Update the information of an existing session.
+     *
+     * @param updatedSession updated session object
+     */
+    @Override
+    public void updateSession(Session updatedSession) {
+        String sql = "UPDATE session SET tutorEmail = ?, studentEmail = ?, " +
+            "startTime = ?, endTime = ?, courseID = ? WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, updatedSession.getTutor().getEmail());
+            stmt.setString(2, updatedSession.getStudent().getEmail());
+            stmt.setString(3, updatedSession.getStartDateTime().toString());
+            stmt.setString(4, updatedSession.getEndDateTime().toString());
+            stmt.setString(5, updatedSession.getCourseName());
+            stmt.setInt(6, updatedSession.getSessionId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error adding session", e);
+        }
+    }
+
+    /**
      * Helper method that converts a ResultSet row into a Session object.
      * Resolves tutor and student using their respective persistence layers.
      */
