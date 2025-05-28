@@ -188,7 +188,11 @@ public class ProfileHandler {
      * @param course course name
      * @param grade grade received
      */
+<<<<<<< HEAD
     public void addTutoringCourse(Tutor tutor, String course, Double grade){
+=======
+    public void addTutoringCourse(Tutor tutor, String course, double grade){
+>>>>>>> 99cac762440978524c2469e9ea2bc07ffc382f0b
         String courseAllLower = course.toLowerCase();
         
         if (!tutor.getCourses().contains(courseAllLower)) {
