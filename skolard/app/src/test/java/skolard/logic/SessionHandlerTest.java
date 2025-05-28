@@ -22,6 +22,7 @@ public class SessionHandlerTest {
 
     @Before
     public void setup() {
+        //Stub has samples already in database
         PersistenceFactory.initialize(PersistenceType.STUB, false);
         sessionPersistence = PersistenceFactory.getSessionPersistence();
         sessionHandler = new SessionHandler(sessionPersistence);
@@ -33,24 +34,24 @@ public class SessionHandlerTest {
 
     @Test
     public void testCreateSession_NoConflicts() {
-        Tutor tutor = new Tutor("Tutor","tutor@myumanitoba.ca", "A tutor");
+        Tutor tutor1 = new Tutor("Tutor","tutor@myumanitoba.ca", "A tutor");
         LocalDateTime start = LocalDateTime.of(2025, 5, 30, 10, 0);
         LocalDateTime end = LocalDateTime.of(2025, 5, 30, 11, 0);
 
-        sessionHandler.createSession(tutor, start, end, "Math 101");
+        sessionHandler.createSession(tutor1, start, end, "Math 101");
 
-        assertEquals(1, sessionPersistence.getAllSessions().size());
-        Session session = sessionPersistence.getAllSessions().get(0);
-        assertEquals(tutor, session.getTutor());
+        assertEquals(5, sessionPersistence.getAllSessions().size() - 1);
+        Session session = sessionPersistence.getAllSessions().get(5);
+        assertEquals(tutor1.getName(), session.getTutor().getName());
         assertEquals("Math 101", session.getCourseName());
     }
 
     @Test
     public void testCreateSession_WithConflict() {
-        Tutor tutor = new Tutor("Tutor","tutor@myumanitoba.ca", "A tutor");
+        Tutor tutor2 = new Tutor("Tutor","tutor@myumanitoba.ca", "A tutor");
 
         // Add an existing session
-        sessionPersistence.addSession(new Session(1, tutor, null,
+        sessionPersistence.addSession(new Session(1000, tutor2, null,
                 LocalDateTime.of(2025, 5, 30, 10, 0),
                 LocalDateTime.of(2025, 5, 30, 11, 0),
                 "Physics"));
@@ -59,7 +60,7 @@ public class SessionHandlerTest {
         LocalDateTime newEnd = LocalDateTime.of(2025, 5, 30, 11, 30);
 
         assertThrows(IllegalArgumentException.class, () ->
-            sessionHandler.createSession(tutor, newStart, newEnd, "Chemistry")
+            sessionHandler.createSession(tutor2, newStart, newEnd, "Chemistry")
         );
     }
 
@@ -68,36 +69,36 @@ public class SessionHandlerTest {
 
     @Test
     public void testBookASession_NotBooked() {
-        Tutor tutor = new Tutor("Tutor","tutor@myumanitoba.ca", "A tutor");
-        Student student = new Student("student","student@myumanitoba.ca");
+        Tutor tutor3 = new Tutor("Tutor","tutor@myumanitoba.ca", "A tutor");
+        Student student1 = new Student("student","student@myumanitoba.ca");
 
-        Session session = new Session(1, tutor, null,
+        Session session = new Session(2000, tutor3, null,
                 LocalDateTime.of(2025, 6, 1, 14, 0),
                 LocalDateTime.of(2025, 6, 1, 15, 0),
                 "Biology");
 
         sessionPersistence.addSession(session);
 
-        sessionHandler.bookASession(student, 1);
+        sessionHandler.bookASession(student1, 2000);
 
         assertTrue(session.isBooked());
-        assertEquals(student, session.getStudent());
+        assertEquals(student1, session.getStudent());
     }
 
     @Test
     public void testBookASession_AlreadyBooked() {
-        Tutor tutor = new Tutor("Tutor","tutor@myumanitoba.ca", "A tutor");
-        Student student = new Student("student","student@myumanitoba.ca");
+        Tutor tutor4 = new Tutor("Tutor","tutor@myumanitoba.ca", "A tutor");
+        Student student2 = new Student("student","student@myumanitoba.ca");
 
-        Session session = new Session(1, tutor, student,
+        Session session = new Session(3000, tutor4, student2,
                 LocalDateTime.of(2025, 6, 1, 14, 0),
                 LocalDateTime.of(2025, 6, 1, 15, 0),
                 "Biology");
 
         sessionPersistence.addSession(session);
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-            sessionHandler.bookASession(student, 1)
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> 
+            sessionHandler.bookASession(student2, 3000)
         );
 
         assertEquals("Session is already booked", ex.getMessage());
