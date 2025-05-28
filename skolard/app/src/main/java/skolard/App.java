@@ -15,7 +15,7 @@ public class App {
     public static void main(String[] args) {
         // Initialize the persistence layer with PROD mode
         // The second argument 'true' indicates that seed SQL files should be executed
-        PersistenceFactory.initialize(PersistenceType.PROD, true);
+        PersistenceFactory.initialize(PersistenceType.STUB, false);
 
         ProfileHandler profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(), 
             PersistenceFactory.getTutorPersistence());
