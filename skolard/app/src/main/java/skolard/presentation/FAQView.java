@@ -2,24 +2,20 @@ package skolard.presentation;
 
 import java.io.IOException;
 import javax.swing.JOptionPane;
-
 import skolard.logic.FAQHandler;
 
 
 public class FAQView {
     private final FAQHandler faqHandler;
 
-
     public FAQView() {
         this(new FAQHandler());
     }
-
 
     public FAQView(FAQHandler faqHandler) {
         this.faqHandler = faqHandler;
         openFAQ();
     }
-
 
     private void openFAQ() {
         try {
