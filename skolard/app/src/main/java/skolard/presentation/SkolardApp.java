@@ -17,13 +17,15 @@ public class SkolardApp extends JFrame {
 
         setLayout(new BorderLayout());
 
-        // Create navigation buttons for profile and matching views
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 10));
+        // Create navigation buttons for profile, matching, and FAQ views
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 10, 10));
         JButton profileBtn = new JButton("View Profiles");
         JButton matchBtn = new JButton("Find Tutors");
+        JButton faqBtn = new JButton("FAQs");
 
         buttonPanel.add(profileBtn);
         buttonPanel.add(matchBtn);
+        buttonPanel.add(faqBtn);
         add(buttonPanel, BorderLayout.CENTER);
 
         // Open Profile View
@@ -32,8 +34,11 @@ public class SkolardApp extends JFrame {
         // Open Matching View
         matchBtn.addActionListener(e -> new MatchingView(matchingHandler));
 
+        // Open FAQ View
+        faqBtn.addActionListener(e -> new FAQView());
+
         setDefaultCloseOperation(EXIT_ON_CLOSE); // Full app exits
-        setSize(400, 150);
+        setSize(500, 150);
         setLocationRelativeTo(null); // Center
         setVisible(true);
     }
