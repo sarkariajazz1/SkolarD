@@ -2,6 +2,7 @@ package skolard;
 
 import javax.swing.SwingUtilities;
 
+import skolard.logic.FAQHandler;
 import skolard.logic.MatchingHandler;
 import skolard.logic.ProfileHandler;
 import skolard.persistence.PersistenceFactory;
@@ -19,12 +20,12 @@ public class App {
 
         ProfileHandler profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(), 
             PersistenceFactory.getTutorPersistence());
-        MatchingHandler matchingHandler = new MatchingHandler(PersistenceFactory.getSessionPersistence());        
+        MatchingHandler matchingHandler = new MatchingHandler(PersistenceFactory.getSessionPersistence());
+        FAQHandler faqHandler = new FAQHandler();
 
         // Launch the GUI on the Event Dispatch Thread (recommended for Swing applications)
         SwingUtilities.invokeLater(() -> {
-            new skolard.presentation.SkolardApp(profileHandler, matchingHandler);
+            new skolard.presentation.SkolardApp(profileHandler, matchingHandler, faqHandler);
         });
     }
 }
-

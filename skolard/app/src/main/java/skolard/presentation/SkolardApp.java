@@ -2,6 +2,7 @@ package skolard.presentation;
 
 import javax.swing.*;
 
+import skolard.logic.FAQHandler;
 import skolard.logic.MatchingHandler;
 import skolard.logic.ProfileHandler;
 
@@ -13,6 +14,10 @@ import java.awt.*;
 public class SkolardApp extends JFrame {
 
     public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler) {
+        this(profileHandler, matchingHandler, new FAQHandler());
+    }
+
+    public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler, FAQHandler faqHandler) {
         super("SkolarD - Dashboard"); 
 
         setLayout(new BorderLayout());
@@ -35,7 +40,7 @@ public class SkolardApp extends JFrame {
         matchBtn.addActionListener(e -> new MatchingView(matchingHandler));
 
         // Open FAQ View
-        faqBtn.addActionListener(e -> new FAQView());
+        faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
         setDefaultCloseOperation(EXIT_ON_CLOSE); // Full app exits
         setSize(500, 150);

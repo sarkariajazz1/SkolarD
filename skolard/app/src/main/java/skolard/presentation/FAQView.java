@@ -1,40 +1,29 @@
 package skolard.presentation;
 
-import java.awt.Desktop;
-import java.io.File;
 import java.io.IOException;
 import javax.swing.JOptionPane;
+import skolard.logic.FAQHandler;
 
-/**
- * A class that opens the FAQ website in the default browser.
- */
+
 public class FAQView {
+    private final FAQHandler faqHandler;
 
-    /**
-     * Opens the FAQ website in the default browser.
-     */
     public FAQView() {
+        this(new FAQHandler());
+    }
+
+    public FAQView(FAQHandler faqHandler) {
+        this.faqHandler = faqHandler;
+        openFAQ();
+    }
+
+    private void openFAQ() {
         try {
-            // Get the path to the index.html file
-            File htmlFile = new File("skolard/hugo-faq-site/public/index.html");
+            boolean success = faqHandler.openFAQ();
 
-            // Check if Desktop is supported
-            if (Desktop.isDesktopSupported()) {
-                Desktop desktop = Desktop.getDesktop();
-
-                // Check if the file exists
-                if (htmlFile.exists()) {
-                    // Open the file in the default browser
-                    desktop.browse(htmlFile.toURI());
-                } else {
-                    JOptionPane.showMessageDialog(null,
-                        "FAQ file not found: " + htmlFile.getAbsolutePath(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                }
-            } else {
+            if (!success) {
                 JOptionPane.showMessageDialog(null,
-                    "Desktop is not supported on this platform.",
+                    "FAQ file not found: " + faqHandler.getFAQPath(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
             }

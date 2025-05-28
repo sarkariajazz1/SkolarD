@@ -14,6 +14,7 @@ subgraph Logic
     MatchingHandler
     PriorityList
     ProfileHandler
+    FAQHandler
     DefaultProfileFormatter
     RatingList
     SessionHandler
@@ -43,8 +44,10 @@ Tutor -->|extends| User
 %% Presentation → Logic
 MatchingView --> MatchingHandler
 ProfileView --> ProfileHandler
+FAQView --> FAQHandler
 SkolardApp --> MatchingHandler
 SkolardApp --> ProfileHandler
+SkolardApp --> FAQHandler
 
 %% Logic → Persistence
 MatchingHandler --> SessionDB
