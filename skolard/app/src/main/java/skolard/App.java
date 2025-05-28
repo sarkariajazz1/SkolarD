@@ -1,7 +1,5 @@
 package skolard;
 
-import java.util.List;
-
 import javax.swing.SwingUtilities;
 
 import skolard.logic.MatchingHandler;
