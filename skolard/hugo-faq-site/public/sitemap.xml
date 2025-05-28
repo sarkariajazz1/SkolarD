@@ -2,29 +2,29 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>/faq/faq/booking/</loc>
+    <loc>http://localhost:8080/faq/booking/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/faq/contact-support/</loc>
+    <loc>http://localhost:8080/faq/contact-support/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/faq/</loc>
+    <loc>http://localhost:8080/faq/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/faq/getting-started/</loc>
+    <loc>http://localhost:8080/faq/getting-started/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/</loc>
+    <loc>http://localhost:8080/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/faq/troubleshooting/</loc>
+    <loc>http://localhost:8080/faq/troubleshooting/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/faq/tutor-guide/</loc>
+    <loc>http://localhost:8080/faq/tutor-guide/</loc>
     <lastmod>2025-05-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/faq/categories/</loc>
+    <loc>http://localhost:8080/categories/</loc>
   </url><url>
-    <loc>/faq/tags/</loc>
+    <loc>http://localhost:8080/tags/</loc>
   </url>
 </urlset>

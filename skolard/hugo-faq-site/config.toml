@@ -1,4 +1,4 @@
-baseURL = "/faq/"
+baseURL = "https://skolard.help.com/"
 relativeURLs = true
 canonifyURLs = true
 languageCode = "en-us"
