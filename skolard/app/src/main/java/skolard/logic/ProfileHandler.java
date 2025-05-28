@@ -17,6 +17,15 @@ public class ProfileHandler {
     private TutorPersistence tutorPersistence;
 
     /**
+     * Constructor using default persistence implementations.
+     */
+    public ProfileHandler() {
+        // TO DO
+        this.studentPersistence = PersistenceFactory.getStudentPersistence();
+        this.tutorPersistence = PersistenceFactory.getTutorPersistence();
+    }
+
+    /**
      * Constructor to inject dependencies for persistence.
      * @param studentPersistence interface to manage student data.
      * @param tutorPersistence interface to manage tutor data.
@@ -26,14 +35,7 @@ public class ProfileHandler {
         this.tutorPersistence = tutorPersistence; 
     }
 
-    /**
-     * Overloaded constructor using default persistence implementations.
-     */
-    public ProfileHandler() {
-        // TO DO
-        this.studentPersistence = PersistenceFactory.getStudentPersistence();
-        this.tutorPersistence = PersistenceFactory.getTutorPersistence();
-    }
+
 
     /**
      * Attempts to fetch a tutor by email.
