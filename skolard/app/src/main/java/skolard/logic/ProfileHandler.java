@@ -50,8 +50,8 @@ class DefaultProfileFormatter implements ProfileFormatter {
  * for users in the SkolarD platform, specifically Students and Tutors.
  */
 public class ProfileHandler {
-    private StudentPersistence studentPersistence;
-    private TutorPersistence tutorPersistence;
+    private final StudentPersistence studentPersistence;
+    private final TutorPersistence tutorPersistence;
     private ProfileFormatter profileFormatter;
 
     /**
@@ -72,6 +72,7 @@ public class ProfileHandler {
     public ProfileHandler(StudentPersistence studentPersistence, TutorPersistence tutorPersistence) {
         this.studentPersistence = studentPersistence;
         this.tutorPersistence = tutorPersistence; 
+        this.profileFormatter = new DefaultProfileFormatter();
     }
 
         public ProfileHandler(StudentPersistence sp,
@@ -79,7 +80,7 @@ public class ProfileHandler {
                           ProfileFormatter fmt) {
         this.studentPersistence = sp;
         this.tutorPersistence   = tp;
-        this.profileFormatter         = fmt;
+        this.profileFormatter   = fmt;
     }
 
     public Tutor getTutor(String email) {
