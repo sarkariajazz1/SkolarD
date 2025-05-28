@@ -99,7 +99,7 @@ public class ProfileHandlerTest {
     public void testViewFullProfile_Tutor() {
         Tutor t = new Tutor("TutorX", "tx@d.com", "My Bio",
                             new ArrayList<>(Arrays.asList("C1")), new HashMap<>());
-        t.addCourseGrade("C1", "2.0");
+        t.addCourseGrade("C1", 2.0);
         String out = handler.viewFullProfile(t);
         assertTrue(out.contains("Bio: My Bio"));
         assertTrue(out.contains("Courses: C1"));
@@ -138,14 +138,14 @@ public class ProfileHandlerTest {
     @Test
     public void testAddTutoringCourse() {
         Tutor t = new Tutor("TC", "tc@d.com", "", new ArrayList<>(), new HashMap<>());
-        handler.addTutoringCourse(t, "Course X", "4.5");
+        handler.addTutoringCourse(t, "Course X", 4.5);
         assertTrue(t.getCourses().contains("course x"));
         assertEquals(Double.valueOf(4.5), t.getCourseGrades().get("course x"));
     }
 
     @Test(expected = NullPointerException.class)
     public void testAddTutoringCourse_NullTutor() {
-        handler.addTutoringCourse(null, "C", "1.0");
+        handler.addTutoringCourse(null, "C", 1.0);
     }
 
     // ─── removeTutoringCourse ────────────────────────────────────────────────────
