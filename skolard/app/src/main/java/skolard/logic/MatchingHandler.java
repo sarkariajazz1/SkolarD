@@ -43,21 +43,18 @@ public class MatchingHandler {
 
         List<Session> matchingSessions = addNonBookedSessions(courseName);
 
-        switch (filter) {
-            case "Rate":
-                RatingList rateList = new RatingList(matchingSessions);
-                matchingSessions = rateList.sortByBestCourseRating(courseName);
-                break;
-
-            case "Time":
+        if(filter.equalsIgnoreCase("rate")){
+            RatingList rateList = new RatingList(matchingSessions);
+            matchingSessions = rateList.sortByBestCourseRating(courseName);
+        } else if(filter.equalsIgnoreCase("time")){
+            if(!start.equals(null) && !end.equals(null)){
                 TimeList timeList = new TimeList(matchingSessions);
                 matchingSessions = timeList.filterByStudentTimeRange(start, end, courseName);
-                break;
-
-            case "Tutor":
-                TutorList tutorList = new TutorList(matchingSessions);
-                matchingSessions = tutorList.getSessionsByTutor(courseName);
-                break;
+            }
+            
+        } else if(filter.equalsIgnoreCase("tutor")){
+            TutorList tutorList = new TutorList(matchingSessions);
+            matchingSessions = tutorList.getSessionsByTutor(courseName);
         }
 
         return matchingSessions;
