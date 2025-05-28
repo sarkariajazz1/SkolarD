@@ -1,40 +1,39 @@
 ```mermaid
-
 flowchart TD
 
 %% Presentation Layer
-subgraph Presentation Layer
-    FAQView
-    MatchingView
-    ProfileView
-    SkolardApp
+subgraph "Presentation Layer"
+    FAQView["FAQView"]
+    MatchingView["MatchingView"]
+    ProfileView["ProfileView"]
+    SkolardApp["SkolardApp"]
 end
 
 %% Logic Layer
-subgraph Logic Layer
-    MatchingHandler
-    PriorityList
-    ProfileHandler
-    DefaultProfileFormatter
-    RatingList
-    SessionHandler
-    TimeList
-    TutorList
+subgraph "Logic Layer"
+    MatchingHandler["MatchingHandler"]
+    PriorityList["PriorityList"]
+    ProfileHandler["ProfileHandler"]
+    DefaultProfileFormatter["DefaultProfileFormatter"]
+    RatingList["RatingList"]
+    SessionHandler["SessionHandler"]
+    TimeList["TimeList"]
+    TutorList["TutorList"]
 end
 
 %% Persistence Layer
-subgraph Persistence Layer
-    SessionDB
-    StudentDB
-    TutorDB
+subgraph "Persistence Layer"
+    SessionDB["SessionDB"]
+    StudentDB["StudentDB"]
+    TutorDB["TutorDB"]
 end
 
 %% Objects Layer
-subgraph Objects Layer
-    User
-    Student
-    Tutor
-    Session
+subgraph "Objects Layer"
+    User["User"]
+    Student["Student"]
+    Tutor["Tutor"]
+    Session["Session"]
 end
 
 %% Inheritance
@@ -61,8 +60,6 @@ StudentDB --> Student
 TutorDB --> Tutor
 
 %% Logic Internal
-PriorityList
 RatingList --> PriorityList
 TutorList --> PriorityList
 TimeList --> PriorityList
-``
