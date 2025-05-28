@@ -66,7 +66,6 @@ public class SchemaInitializer {
             stmt.execute(createStudentTable);
             stmt.execute(createSessionTable);
             stmt.execute(createTutorCourseTable);
-            stmt.execute(createMessageTable);
         } catch (SQLException e) {
             System.err.println("SQL Error: " + e.getMessage()); // Logs any SQL issue
             throw new RuntimeException("Failed to initialize database schema", e);
