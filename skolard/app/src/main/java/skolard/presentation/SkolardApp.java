@@ -30,17 +30,9 @@ public class SkolardApp extends JFrame {
 
         // Open Profile View
         profileBtn.addActionListener(e -> new ProfileView(profileHandler));
-<<<<<<< HEAD
-        profileBtn.addActionListener(e -> new ProfileView(profileHandler));
 
         // Open Matching View
         matchBtn.addActionListener(e -> new MatchingView(matchingHandler));
-        matchBtn.addActionListener(e -> new MatchingView(matchingHandler));
-=======
-
-        // Open Matching View
-        matchBtn.addActionListener(e -> new MatchingView(matchingHandler));
->>>>>>> 99cac762440978524c2469e9ea2bc07ffc382f0b
 
         // Open FAQ View
         faqBtn.addActionListener(e -> new FAQView());

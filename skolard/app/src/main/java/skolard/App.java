@@ -19,11 +19,7 @@ public class App {
 
         ProfileHandler profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(), 
             PersistenceFactory.getTutorPersistence());
-        MatchingHandler matchingHandler = new MatchingHandler(PersistenceFactory.getSessionPersistence());    
-
-        ProfileHandler profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(), 
-            PersistenceFactory.getTutorPersistence());
-        MatchingHandler matchingHandler = new MatchingHandler(PersistenceFactory.getSessionPersistence());    
+        MatchingHandler matchingHandler = new MatchingHandler(PersistenceFactory.getSessionPersistence());        
 
         // Launch the GUI on the Event Dispatch Thread (recommended for Swing applications)
         SwingUtilities.invokeLater(() -> {
