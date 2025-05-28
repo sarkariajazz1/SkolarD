@@ -4,6 +4,7 @@ import java.util.Map;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
+import skolard.persistence.PersistenceFactory;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
 
@@ -23,6 +24,15 @@ public class ProfileHandler {
     public ProfileHandler(StudentPersistence studentPersistence, TutorPersistence tutorPersistence) {
         this.studentPersistence = studentPersistence;
         this.tutorPersistence = tutorPersistence; 
+    }
+
+    /**
+     * Overloaded constructor using default persistence implementations.
+     */
+    public ProfileHandler() {
+        // TO DO
+        this.studentPersistence = PersistenceFactory.getStudentPersistence();
+        this.tutorPersistence = PersistenceFactory.getTutorPersistence();
     }
 
     /**
