@@ -94,13 +94,4 @@ public class Session {
         System.out.println("Session " + sessionId + " booked by " + student.getName());
     }
 
-    @Override
-    public String toString() {
-        return "Session{" +
-                "sessionId='" + sessionId + '\'' +
-                ", tutor=" + tutor.getName() +
-                ", courseName='" + courseName + '\'' +
-                ", startDateTime=" + startDateTime + '\'' +
-                ", endDateTime=" + endDateTime;
-    }
 }
