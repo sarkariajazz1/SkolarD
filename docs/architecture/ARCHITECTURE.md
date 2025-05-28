@@ -48,35 +48,7 @@ skolard/
 
 ## 🧠 System Architecture (Layered)
 
-```mermaid
-graph TD
-    UI[User Interface (Future Frontend)] --> Logic
-    subgraph Logic Layer
-        Logic --> MatchingHandler
-        Logic --> ProfileHandler
-        MatchingHandler --> PriorityList
-        PriorityList --> TutorList
-        PriorityList --> RatingList
-        PriorityList --> TimeList
-    end
-
-    Logic --> Objects
-    Logic --> PersistenceFactory
-
-    subgraph Persistence Layer
-        PersistenceFactory --> SessionPersistence
-        PersistenceFactory --> TutorPersistence
-        PersistenceFactory --> StudentPersistence
-        SessionPersistence --> SessionStub
-        TutorPersistence --> TutorStub
-        StudentPersistence --> StudentStub
-    end
-
-    Objects --> Session
-    Objects --> Student
-    Objects --> Tutor
-    Objects --> User
-```
+![System Architecture](Architecture.PNG)
 
 ---
 
