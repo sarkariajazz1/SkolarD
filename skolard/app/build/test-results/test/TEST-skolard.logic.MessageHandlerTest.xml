@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="skolard.logic.MessageHandlerTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2025-05-28T21:06:53" hostname="LAPTOP-U5ONCI29" time="0.011">
+  <properties/>
+  <testcase name="testDeleteMessageHistory_NullStudent" classname="skolard.logic.MessageHandlerTest" time="0.002"/>
+  <testcase name="testGetMessageHistory_NullTutorEmail" classname="skolard.logic.MessageHandlerTest" time="0.0"/>
+  <testcase name="testSendMessage_NullInput" classname="skolard.logic.MessageHandlerTest" time="0.0"/>
+  <testcase name="testGetMessageHistory_NullStudentEmail" classname="skolard.logic.MessageHandlerTest" time="0.0"/>
+  <testcase name="testUpdateMessage_Null" classname="skolard.logic.MessageHandlerTest" time="0.0"/>
+  <testcase name="testDeleteMessageHistory_RemovesAllBetweenUsers" classname="skolard.logic.MessageHandlerTest" time="0.005"/>
+  <testcase name="testDeleteMessageById" classname="skolard.logic.MessageHandlerTest" time="0.0"/>
+  <testcase name="testUpdateMessage_Valid" classname="skolard.logic.MessageHandlerTest" time="0.0"/>
+  <testcase name="testDeleteMessageHistory_NullTutor" classname="skolard.logic.MessageHandlerTest" time="0.0"/>
+  <testcase name="testSendMessage_StoresMessage" classname="skolard.logic.MessageHandlerTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
