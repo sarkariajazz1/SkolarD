@@ -11,13 +11,9 @@ import java.awt.*;
  * The main dashboard window of SkolarD that allows navigation to other views.
  */
 public class SkolardApp extends JFrame {
-    private ProfileHandler profileHandler;
-    private MatchingHandler matchingHandler;
 
     public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler) {
-        super("SkolarD - Dashboard");
-        this.profileHandler = profileHandler;
-        this.matchingHandler = matchingHandler; 
+        super("SkolarD - Dashboard"); 
 
         setLayout(new BorderLayout());
 
