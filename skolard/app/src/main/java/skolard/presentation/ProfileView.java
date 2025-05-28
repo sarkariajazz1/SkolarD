@@ -62,7 +62,7 @@ public class ProfileView extends JFrame {
                 currentUser = handler.getTutor(email);
                 profileArea.setText(currentUser != null
                     ? handler.viewFullProfile(currentUser)
-                    : "No user found with that email.");
+                    : "No tutor found with that email.");
             }
         });
 
@@ -73,7 +73,7 @@ public class ProfileView extends JFrame {
                 currentUser = handler.getStudent(email);
                 profileArea.setText(currentUser != null
                     ? handler.viewFullProfile(currentUser)
-                    : "No user found with that email.");
+                    : "No found found with that email.");
             }
         });
 
