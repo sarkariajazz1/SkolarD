@@ -10,14 +10,15 @@ import skolard.objects.Session;
  * A simple GUI window to allow users to find available tutoring sessions for a specific course.
  */
 public class MatchingView extends JFrame {
-    private final MatchingHandler handler = new MatchingHandler(); // Logic handler
+    private MatchingHandler handler; // Logic handler
 
     private final JTextField courseField = new JTextField(15); // User input for course name
     private final DefaultListModel<String> sessionModel = new DefaultListModel<>(); // Backing list model for UI
     private final JList<String> sessionList = new JList<>(sessionModel); // Visual list of available sessions
 
-    public MatchingView() {
+    public MatchingView(MatchingHandler matchingHandler) {
         super("SkolarD - Matching View");
+        this.handler = matchingHandler;
 
         setLayout(new BorderLayout(10, 10)); // Window layout with spacing
 
