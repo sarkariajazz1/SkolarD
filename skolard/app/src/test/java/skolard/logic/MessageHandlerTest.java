@@ -39,22 +39,6 @@ public class MessageHandlerTest {
         handler.getMessageHistory("student@email.com", null);
     }
 
-    // @Test
-    // public void testGetMessageHistory_ReturnsCorrectMessages() {
-    //     String student = "student@email.com";
-    //     String tutor = "tutor@email.com";
-
-    //     Message m1 = new Message(1, now(), student, tutor, "Hello");
-    //     Message m2 = new Message(2, now(), tutor, student, "Hi back");
-    //     mockDb.addMessage(m1);
-    //     mockDb.addMessage(m2);
-
-    //     List<Message> history = handler.getMessageHistory(student, tutor);
-    //     assertEquals(2, history.size());
-    //     assertTrue(history.contains(m1));
-    //     assertTrue(history.contains(m2));
-    // }
-
     @Test(expected = IllegalArgumentException.class)
     public void testSendMessage_NullInput() {
         handler.sendMessage(null);
