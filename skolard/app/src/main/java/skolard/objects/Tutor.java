@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import skolard.logic.utils.GradeUtil;
-
 /**
  * Represents a tutor in the SkolarD platform.
  * Stores bio, courses taught, string-based grades, and upcoming sessions.
