@@ -15,6 +15,7 @@ public class Tutor extends User {
     private String bio;
     private List<String> courses;
     private Map<String, String> courseGrades; // course → string grade (e.g., "A", "95")
+    private List<Session> pastSessions;
     private List<Session> upcomingSessions;
 
     public Tutor(String name, String email, String bio,
@@ -86,5 +87,9 @@ public double getAverageRating() {
 
     public List<Session> getUpcomingSessions() {
         return upcomingSessions;
+    }
+    
+    public List<Session> getPastSessions(){
+        return pastSessions;
     }
 }
