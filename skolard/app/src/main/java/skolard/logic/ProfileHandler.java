@@ -45,7 +45,7 @@ public class ProfileHandler {
     public Tutor getTutor(String email) {
         Tutor tutor = null;
         if (!email.equals(null) || !email.isEmpty()) {
-            tutor = tutorPersistence.getTutorByEmail(email);
+            tutor = tutorPersistence.getTutorByEmail(email.toLowerCase());
         }
         return tutor;
     }
@@ -58,7 +58,7 @@ public class ProfileHandler {
     public Student getStudent(String email){
         Student student = null;
         if(!email.equals(null) || !email.isEmpty()){
-            student = studentPersistence.getStudentByEmail(email);
+            student = studentPersistence.getStudentByEmail(email.toLowerCase());
         }
 
         return student;
