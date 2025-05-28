@@ -17,7 +17,8 @@ public class ProfileView extends JFrame {
     // UI Components
     private final JTextField emailField = new JTextField(20);
     private final JTextArea profileArea = new JTextArea(15, 40);
-    private final JButton fetchBtn = new JButton("View Profile");
+    private final JButton fetchTutorBtn = new JButton("View Tutor Profile");
+    private final JButton fetchStudentBtn = new JButton("View Student Profile");
     private final JButton updateBioBtn = new JButton("Update Bio");
     private final JButton addStudentBtn = new JButton("Add Student");
     private final JButton addTutorBtn = new JButton("Add Tutor");
@@ -39,7 +40,8 @@ public class ProfileView extends JFrame {
         JPanel topPanel = new JPanel(new FlowLayout());
         topPanel.add(new JLabel("Email:"));
         topPanel.add(emailField);
-        topPanel.add(fetchBtn);
+        topPanel.add(fetchTutorBtn);
+        topPanel.add(fetchStudentBtn);
         add(topPanel, BorderLayout.NORTH);
 
         // Center area displays the user profile
@@ -53,11 +55,22 @@ public class ProfileView extends JFrame {
         bottomPanel.add(addTutorBtn);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // Fetch profile by email
-        fetchBtn.addActionListener(e -> {
+        // Fetch tutor profile by email
+        fetchTutorBtn.addActionListener(e -> {
             String email = emailField.getText().trim();
             if (!email.isEmpty()) {
                 currentUser = handler.getTutor(email);
+                profileArea.setText(currentUser != null
+                    ? handler.viewFullProfile(currentUser)
+                    : "No user found with that email.");
+            }
+        });
+
+        // Fetch student profile by email
+        fetchTutorBtn.addActionListener(e -> {
+            String email = emailField.getText().trim();
+            if (!email.isEmpty()) {
+                currentUser = handler.getStudent(email);
                 profileArea.setText(currentUser != null
                     ? handler.viewFullProfile(currentUser)
                     : "No user found with that email.");
