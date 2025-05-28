@@ -8,6 +8,7 @@ import skolard.objects.Tutor;
 import skolard.objects.User;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
+import skolard.persistence.PersistenceFactory;
 import skolard.utils.EmailUtil;
 
 interface ProfileFormatter {

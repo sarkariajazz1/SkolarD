@@ -102,15 +102,4 @@ public class MatchingHandler {
         }
     }
 
-    @Override
-    public String toString() {
-        List<Session> sessions = sessionDB.getAllSessions();
-        PriorityList<Session> sessionPriority = new PriorityList<>();
-        
-        for (Session s : sessions) {
-            sessionPriority.addItem(s);
-        }
-
-        return sessionPriority.toString();
-    }
 }
