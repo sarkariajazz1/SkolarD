@@ -53,14 +53,8 @@ public class Tutor extends User {
         this.courseGrades = courseGrades;
     }
 
-    public void addCourseGrade(String course, String grade) {
-        try {
-            Double courseGrade = Double.parseDouble(grade);
-            this.courseGrades.put(course, courseGrade);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Grade is not a double");
-        }
-        
+    public void addCourseGrade(String course, Double grade) {
+        this.courseGrades.put(course, grade);
     }
 
     public Double getGradeForCourse(String course) {
