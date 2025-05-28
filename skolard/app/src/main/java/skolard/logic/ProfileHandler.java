@@ -32,7 +32,7 @@ public class ProfileHandler {
      */
     public Tutor getTutor(String email) {
         Tutor tutor = null;
-        if (email.equals(null) || email.equals("")) {
+        if (!email.equals(null) || !email.equals("")) {
             tutor = tutorPersistence.getTutorByEmail(email);
         }
         return tutor;
