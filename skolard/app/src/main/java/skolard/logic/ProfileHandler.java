@@ -56,22 +56,20 @@ public class ProfileHandler {
      * Adds a new student to the persistence layer.
      * @param name student's name
      * @param email student's email
-     * @return the created Student object
      */
-    public Student addStudent(String name, String email) {
+    public void addStudent(String name, String email) {
         Student newStudent = new Student(name, email);
-        return studentPersistence.addStudent(newStudent);
+        studentPersistence.addStudent(newStudent);
     }
 
     /**
      * Adds a new tutor to the persistence layer.
      * @param name tutor's name
      * @param email tutor's email
-     * @return the created Tutor object
      */
-    public Tutor addTutor(String name, String email) {
+    public void addTutor(String name, String email) {
         Tutor newTutor = new Tutor(name, email, "Edit your bio...");
-        return tutorPersistence.addTutor(newTutor);
+        tutorPersistence.addTutor(newTutor);
     }
 
     /**

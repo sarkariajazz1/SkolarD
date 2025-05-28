@@ -67,7 +67,7 @@ public class ProfileView extends JFrame {
         });
 
         // Fetch student profile by email
-        fetchTutorBtn.addActionListener(e -> {
+        fetchStudentBtn.addActionListener(e -> {
             String email = emailField.getText().trim();
             if (!email.isEmpty()) {
                 currentUser = handler.getStudent(email);
