@@ -12,10 +12,16 @@ public class PaymentHandler {
         boolean validNumber = false;
         boolean validExpiry = false;
         boolean validCVV = false;
+        
+        if(!number.isEmpty() && !expiry.isEmpty() && cvv.isEmpty() && !number.equals(null)
+                && !expiry.equals(null) && !cvv.equals(null)){
 
-        validNumber = validateNumber(number.replaceAll("\\s+", ""));
-        validExpiry = validateExpiry(expiry.replaceAll("\\s+", ""));
-        validCVV = validateCVV(cvv.replaceAll("\\s+", ""));
+            validNumber = validateNumber(number.replaceAll("\\s+", ""));
+            // Expiry is in the form mmyy
+            validExpiry = validateExpiry(expiry.replaceAll("\\s+", ""));
+            validCVV = validateCVV(cvv.replaceAll("\\s+", ""));
+        }
+        
 
         if(validNumber && validExpiry && validCVV){
             return true;
@@ -29,13 +35,13 @@ public class PaymentHandler {
         long sameDigits = number.chars().distinct().count();
 
         //Check if number is between lengths of 13 and 19
-        if(number.length() < 13 && number.length() > 19){
+        if(number.length() < 13 || number.length() > 19){
             validNumber = false;
         }
 
         //Checks if number passes Luhn's algorithm 
         if(!isValidLuhn(number)){
-            return false;
+            validNumber = false;
         }
 
         //Checks if all digits are the same.
@@ -43,6 +49,9 @@ public class PaymentHandler {
             validNumber = false;
         }
 
+        if(!number.matches("\\d+")){
+            validNumber = false;
+        }
 
         return validNumber;
     }
@@ -77,6 +86,14 @@ public class PaymentHandler {
 
     public boolean validateCVV(String cvv){
         boolean validCVV = true;
+
+        if(cvv.length() < 3 || cvv.length() > 4){
+            validCVV = false;
+        }
+
+        if(cvv.matches("\\d+")){
+            validCVV = false;
+        }
 
         return validCVV;
     }
