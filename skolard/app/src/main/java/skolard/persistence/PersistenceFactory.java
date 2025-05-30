@@ -8,6 +8,7 @@ import skolard.persistence.sqlite.SchemaInitializer;
 import skolard.persistence.sqlite.SessionDB;
 import skolard.persistence.sqlite.StudentDB;
 import skolard.persistence.sqlite.TutorDB;
+import skolard.persistence.sqlite.LoginDB;
 import skolard.persistence.stub.StubFactory;
 
 public class PersistenceFactory {
@@ -17,11 +18,12 @@ public class PersistenceFactory {
     private static TutorPersistence tutorPersistence;
     private static SessionPersistence sessionPersistence;
     private static MessagePersistence messagePersistence;
+    private static LoginPersistence loginPersistence;
 
     /**
      * Initializes the appropriate persistence layer based on the specified type.
      * If type is PROD or TEST, initializes SQLite database; otherwise, falls back to stub mode.
-     * 
+     *
      * @param type the type of persistence (PROD, TEST, or STUB)
      * @param seed whether to seed the database with initial data
      */
@@ -56,6 +58,7 @@ public class PersistenceFactory {
                     tutorPersistence = new TutorDB(conn);
                     sessionPersistence = new SessionDB(conn, studentPersistence, tutorPersistence);
                     messagePersistence = new MessageDB(conn);
+                    loginPersistence = new LoginDB(conn);
 
                 } catch (Exception e) {
                     // Fallback to stub persistence if any error occurs
@@ -68,7 +71,7 @@ public class PersistenceFactory {
 
     /**
      * Initializes stub-based persistence as a fallback or default.
-     * 
+     *
      * @param e the exception that triggered the fallback, or null if intentional
      */
     private static void fallbackToStubs(Exception e) {
@@ -76,6 +79,7 @@ public class PersistenceFactory {
         tutorPersistence = StubFactory.createTutorPersistence();
         sessionPersistence = StubFactory.createSessionPersistence();
         messagePersistence = StubFactory.createMessagePersistence();
+        loginPersistence = StubFactory.createLoginPersistence();
         if (e != null) {
             System.err.println("Falling back to stubs due to: " + e.getMessage());
         }
@@ -101,6 +105,11 @@ public class PersistenceFactory {
         return messagePersistence;
     }
 
+    // Accessor for login persistence
+    public static LoginPersistence getLoginPersistence() {
+        return loginPersistence;
+    }
+
     /**
      * Resets the persistence layer and closes the active database connection.
      * This is typically used when shutting down or reinitializing the system.
@@ -111,5 +120,6 @@ public class PersistenceFactory {
         tutorPersistence = null;
         sessionPersistence = null;
         messagePersistence = null;
+        loginPersistence = null;
     }
 }

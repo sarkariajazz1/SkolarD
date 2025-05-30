@@ -26,13 +26,15 @@ public class SchemaInitializer {
         String createTutorTable = "CREATE TABLE IF NOT EXISTS tutor (" +
                 "email TEXT PRIMARY KEY NOT NULL UNIQUE," +    // Tutor's email (primary key)
                 "name TEXT NOT NULL," +                        // Tutor's full name
-                "bio TEXT NOT NULL" +                          // Short bio or background
+                "bio TEXT NOT NULL," +                          // Short bio or background
+                "password TEXT NOT NULL" +
                 ");";
 
         // Table for storing student profiles with their email and name
         String createStudentTable = "CREATE TABLE IF NOT EXISTS student (" +
                 "email TEXT PRIMARY KEY NOT NULL UNIQUE," +    // Student's email (primary key)
-                "name TEXT NOT NULL" +                         // Student's full name
+                "name TEXT NOT NULL," +                         // Student's full name
+                "password TEXT NOT NULL" +         
                 ");";
 
         // Table for storing tutoring sessions between students and tutors

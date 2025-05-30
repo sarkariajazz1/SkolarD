@@ -134,6 +134,14 @@ public class TutorStub implements TutorPersistence {
         return tutorList;
     }
 
+    @Override
+    public Tutor authenticate(String email, String hashedPassword) {
+        confirmCreation();
+        // Stub skips password checking, just return the tutor if found
+        return tutors.get(email);
+    }
+
+
     /**
      * Clears all tutor records from memory (optional helper).
      */

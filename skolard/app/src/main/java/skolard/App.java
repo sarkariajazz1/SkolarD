@@ -1,35 +1,44 @@
 package skolard;
 
-import javax.swing.SwingUtilities;
+import skolard.logic.*;
+import skolard.persistence.*;
+import skolard.presentation.*;
 
-import skolard.logic.FAQHandler;
-import skolard.logic.MatchingHandler;
-import skolard.logic.ProfileHandler;
-import skolard.logic.MessageHandler;
-import skolard.persistence.PersistenceFactory;
-import skolard.persistence.PersistenceType;
+import javax.swing.*;
 
 /**
  * Main entry point for the SkolarD application.
- * Initializes the persistence layer and launches the main UI.
  */
 public class App {
     public static void main(String[] args) {
-        // Initialize the persistence layer (PROD mode + seed)
         PersistenceFactory.initialize(PersistenceType.PROD, true);
 
-        // Logic handlers
-        ProfileHandler profileHandler = new ProfileHandler(
-            PersistenceFactory.getStudentPersistence(),
-            PersistenceFactory.getTutorPersistence()
-        );
-        MatchingHandler matchingHandler = new MatchingHandler(PersistenceFactory.getSessionPersistence());
-        MessageHandler messageHandler = new MessageHandler(PersistenceFactory.getMessagePersistence());
-        FAQHandler faqHandler = new FAQHandler(); // if used elsewhere
+        LoginHandler loginHandler = new LoginHandler(PersistenceFactory.getLoginPersistence());
 
-        // Start UI
         SwingUtilities.invokeLater(() -> {
-            new skolard.presentation.SkolardApp(profileHandler, matchingHandler, faqHandler, messageHandler);
+            while (true) {
+                LoginView loginView = new LoginView();
+                while (loginView.getCredentials() == null) {
+                    try {
+                        Thread.sleep(100); // Wait until login view is closed
+                    } catch (InterruptedException ignored) {}
+                }
+
+                if (loginHandler.login(loginView.getCredentials())) {
+                    // Load and launch dashboard
+                    ProfileHandler profileHandler = new ProfileHandler(
+                            PersistenceFactory.getStudentPersistence(),
+                            PersistenceFactory.getTutorPersistence());
+                    MatchingHandler matchingHandler = new MatchingHandler(PersistenceFactory.getSessionPersistence());
+                    MessageHandler messageHandler = new MessageHandler(PersistenceFactory.getMessagePersistence());
+                    FAQHandler faqHandler = new FAQHandler();
+
+                    new SkolardApp(profileHandler, matchingHandler, faqHandler, messageHandler);
+                    break;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Login failed. Please try again.");
+                }
+            }
         });
     }
 }
