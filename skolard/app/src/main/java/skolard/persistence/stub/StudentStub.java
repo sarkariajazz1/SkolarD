@@ -114,12 +114,20 @@ public class StudentStub implements StudentPersistence {
         return studentList;
     }
 
+    @Override
+    public Student authenticate(String email, String hashedPassword) {
+        confirmCreation();
+        // Stub does not store passwords, so just return the student if found
+        return students.get(email);  // Always authenticates successfully
+    }
+
     /**
      * Clears all student records from memory.
      */
     public void close() {
         this.students = null;
     }
+
 }
 
 

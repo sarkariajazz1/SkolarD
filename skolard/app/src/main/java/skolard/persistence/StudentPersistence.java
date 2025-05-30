@@ -39,6 +39,16 @@ public interface StudentPersistence {
      * @param updatedStudent updated student object
      */
     void updateStudent(Student updatedStudent);
+
+    /**
+     * Authenticates a student using their email and hashed password.
+     * 
+     * @param email the student's email
+     * @param hashedPassword the hashed password
+     * @return the authenticated student, or null if invalid
+     */
+    Student authenticate(String email, String hashedPassword);
+
 }
 
 
