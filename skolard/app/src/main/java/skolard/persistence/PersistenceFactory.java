@@ -18,6 +18,10 @@ public class PersistenceFactory {
     private static SessionPersistence sessionPersistence;
     private static MessagePersistence messagePersistence;
 
+    //TODO
+    private static SupportPersistence supportPersistence;//finish the methodsfor supportPersistence
+    
+
     /**
      * Initializes the appropriate persistence layer based on the specified type.
      * If type is PROD or TEST, initializes SQLite database; otherwise, falls back to stub mode.
