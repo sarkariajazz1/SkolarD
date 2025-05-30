@@ -18,7 +18,7 @@ public class PaymentHandler {
     }
 
     public void saveCard(String number, String expiry, String cvv){
-        //TO DO with Database
+        //TO DO with Database and encryption
     }
 
     public boolean validateCard(String number, String expiry, String cvv){
