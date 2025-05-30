@@ -1,11 +1,24 @@
 package skolard.logic;
 
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 public class PaymentHandler {
     //Insert private Database variable
 
     //Default Constructor
     public PaymentHandler(){
         //Insert Database initialization
+    }
+
+    public void payWithCard(String number, String expiry, String cvv){
+        //TO DO
+    }
+
+    public void saveCard(String number, String expiry, String cvv){
+        //TO DO with Database
     }
 
     public boolean validateCard(String number, String expiry, String cvv){
@@ -17,7 +30,7 @@ public class PaymentHandler {
                 && !expiry.equals(null) && !cvv.equals(null)){
 
             validNumber = validateNumber(number.replaceAll("\\s+", ""));
-            // Expiry is in the form mmyy
+            // Expiry is in the form MM/YY
             validExpiry = validateExpiry(expiry.replaceAll("\\s+", ""));
             validCVV = validateCVV(cvv.replaceAll("\\s+", ""));
         }
@@ -30,7 +43,7 @@ public class PaymentHandler {
         }
     }
 
-    public boolean validateNumber(String number){
+    private boolean validateNumber(String number){
         boolean validNumber = true;
         long sameDigits = number.chars().distinct().count();
 
@@ -56,7 +69,7 @@ public class PaymentHandler {
         return validNumber;
     }
 
-    public static boolean isValidLuhn(String number) {
+    private boolean isValidLuhn(String number) {
         int sum = 0;
         boolean doubleDigit = false;
 
@@ -78,20 +91,34 @@ public class PaymentHandler {
         return (sum % 10 == 0);
     }
 
-    public boolean validateExpiry(String expiry){
+    private boolean validateExpiry(String expiry){
         boolean validExpiry = true;
+        try {
+            // Parse expiry in MM/yy format to YearMonth
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy");
+            YearMonth expiryYearMonth = YearMonth.parse(expiry, formatter);
+
+            // Get current YearMonth
+            YearMonth currentYearMonth = YearMonth.from(LocalDateTime.now());
+
+            // Card is valid if expiry month/year is this month or in the future
+            return !expiryYearMonth.isBefore(currentYearMonth);
+
+        } catch (DateTimeParseException e) {
+            validExpiry=  false;
+        }
 
         return validExpiry;
     }
 
-    public boolean validateCVV(String cvv){
+    private boolean validateCVV(String cvv){
         boolean validCVV = true;
 
         if(cvv.length() < 3 || cvv.length() > 4){
             validCVV = false;
         }
 
-        if(cvv.matches("\\d+")){
+        if(!cvv.matches("\\d+")){
             validCVV = false;
         }
 
