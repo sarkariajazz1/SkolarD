@@ -26,7 +26,7 @@ public class PaymentHandler {
         boolean validExpiry = false;
         boolean validCVV = false;
         
-        if(!number.isEmpty() && !expiry.isEmpty() && cvv.isEmpty() && !number.equals(null)
+        if(!number.isEmpty() && !expiry.isEmpty() && !cvv.isEmpty() && !number.equals(null)
                 && !expiry.equals(null) && !cvv.equals(null)){
 
             validNumber = validateNumber(number.replaceAll("\\s+", ""));
@@ -105,7 +105,7 @@ public class PaymentHandler {
             return !expiryYearMonth.isBefore(currentYearMonth);
 
         } catch (DateTimeParseException e) {
-            validExpiry=  false;
+            validExpiry = false;
         }
 
         return validExpiry;
