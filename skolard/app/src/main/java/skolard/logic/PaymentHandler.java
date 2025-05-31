@@ -1,9 +1,13 @@
 package skolard.logic;
 
+import skolard.utils.CardUtil;
+
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
+import javax.crypto.SecretKey;
 
 public class PaymentHandler {
     //Insert private Database variable
@@ -13,28 +17,41 @@ public class PaymentHandler {
         //Insert Database initialization
     }
 
-    public void payWithCard(String number, String expiry, String cvv){
-        //TO DO
+    public boolean payWithCard(String number, String expiry, String cvv, boolean saveInfo){
+        boolean validCard = validateCard(number, expiry, cvv);
+
+        if(saveInfo){
+            saveCard(number, expiry);
+        }
+
+        return validCard;
     }
 
-    public void saveCard(String number, String expiry, String cvv){
-        //TO DO with Database and encryption
+    private void saveCard(String number, String expiry){
+        String combinedInfo = number + "|" + expiry;
+
+        try {
+            SecretKey key = CardUtil.generateKey();
+            String encryptedData = CardUtil.encrypt(combinedInfo, key);
+            // TO DO save into database
+
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Card information could not be encrypted");
+        }
+        
     }
 
-    public boolean validateCard(String number, String expiry, String cvv){
+    private boolean validateCard(String number, String expiry, String cvv){
         boolean validNumber = false;
         boolean validExpiry = false;
         boolean validCVV = false;
         
-        if(!number.isEmpty() && !expiry.isEmpty() && !cvv.isEmpty() && !number.equals(null)
-                && !expiry.equals(null) && !cvv.equals(null)){
-
+        if(isNotNullOrEmpty(number) && isNotNullOrEmpty(expiry) && isNotNullOrEmpty(cvv)){
             validNumber = validateNumber(number.replaceAll("\\s+", ""));
             // Expiry is in the form MM/YY
             validExpiry = validateExpiry(expiry.replaceAll("\\s+", ""));
             validCVV = validateCVV(cvv.replaceAll("\\s+", ""));
         }
-        
 
         if(validNumber && validExpiry && validCVV){
             return true;
@@ -43,12 +60,20 @@ public class PaymentHandler {
         }
     }
 
+    private boolean isNotNullOrEmpty(String s){
+        return s != null && !s.isEmpty();
+    }
     private boolean validateNumber(String number){
         boolean validNumber = true;
         long sameDigits = number.chars().distinct().count();
 
         //Check if number is between lengths of 13 and 19
         if(number.length() < 13 || number.length() > 19){
+            validNumber = false;
+        }
+
+        //Checks if all characters are digits
+        if(!number.matches("\\d+")){
             validNumber = false;
         }
 
@@ -62,9 +87,7 @@ public class PaymentHandler {
             validNumber = false;
         }
 
-        if(!number.matches("\\d+")){
-            validNumber = false;
-        }
+        
 
         return validNumber;
     }
@@ -76,7 +99,6 @@ public class PaymentHandler {
         // Process digits from right to left
         for (int i = number.length() - 1; i >= 0; i--) {
             char c = number.charAt(i);
-            if (!Character.isDigit(c)) return false; // Invalid character
 
             int digit = c - '0';
             if (doubleDigit) {

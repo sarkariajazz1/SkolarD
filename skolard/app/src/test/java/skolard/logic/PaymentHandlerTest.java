@@ -19,7 +19,7 @@ public class PaymentHandlerTest {
         String expiry = "12/29"; // Future expiry
         String cvv = "123";      // Valid CVV
 
-        assertTrue(handler.validateCard(number, expiry, cvv));
+        assertTrue(handler.payWithCard(number, expiry, cvv, false));
     }
 
     @Test
@@ -28,7 +28,7 @@ public class PaymentHandlerTest {
         String expiry = "12/29";
         String cvv = "123";
 
-        assertFalse(handler.validateCard(number, expiry, cvv));
+        assertFalse(handler.payWithCard(number, expiry, cvv, false));
     }
 
     @Test
@@ -37,16 +37,34 @@ public class PaymentHandlerTest {
         String expiry = "12/29";
         String cvv = "123";
 
-        assertFalse(handler.validateCard(number, expiry, cvv));
+        assertFalse(handler.payWithCard(number, expiry, cvv, false));
     }
 
     @Test
     public void testInvalidCardNumber_LengthTooShort() {
-        String number = "123456789012"; // Too short
+        String number = "123456789012";
         String expiry = "12/29";
         String cvv = "123";
 
-        assertFalse(handler.validateCard(number, expiry, cvv));
+        assertFalse(handler.payWithCard(number, expiry, cvv, false));
+    }
+
+    @Test
+    public void testInvalidCardNumber_LengthTooLong() {
+        String number = "12345678901234567890";
+        String expiry = "12/29";
+        String cvv = "123";
+
+        assertFalse(handler.payWithCard(number, expiry, cvv, false));
+    }
+
+    @Test
+    public void testInvalidCardNumber_NoNumbers() {
+        String number = "abcdefghijklmnop";
+        String expiry = "12/29";
+        String cvv = "123";
+
+        assertFalse(handler.payWithCard(number, expiry, cvv, false));
     }
 
     @Test
@@ -55,7 +73,7 @@ public class PaymentHandlerTest {
         String expiry = "01/20"; // Past date
         String cvv = "123";
 
-        assertFalse(handler.validateCard(number, expiry, cvv));
+        assertFalse(handler.payWithCard(number, expiry, cvv, false));
     }
 
     @Test
@@ -64,7 +82,7 @@ public class PaymentHandlerTest {
         String expiry = "2025-12"; // Invalid format
         String cvv = "123";
 
-        assertFalse(handler.validateCard(number, expiry, cvv));
+        assertFalse(handler.payWithCard(number, expiry, cvv, false));
     }
 
     @Test
@@ -73,7 +91,7 @@ public class PaymentHandlerTest {
         String expiry = "12/29";
         String cvv = "12"; // Too short
 
-        assertFalse(handler.validateCard(number, expiry, cvv));
+        assertFalse(handler.payWithCard(number, expiry, cvv, false));
     }
 
     @Test
@@ -82,18 +100,17 @@ public class PaymentHandlerTest {
         String expiry = "12/29";
         String cvv = "12a"; // Invalid characters
 
-        assertFalse(handler.validateCard(number, expiry, cvv));
+        assertFalse(handler.payWithCard(number, expiry, cvv,false));
     }
 
     @Test
     public void testEmptyFields() {
-        assertFalse(handler.validateCard("", "", ""));
+        assertFalse(handler.payWithCard("", "", "", false));
     }
 
     @Test
     public void testNullSafeCheck() {
-        // Should safely return false if CVV is empty
-        assertFalse(handler.validateCard("4111 1111 1111 1111", "12/29", ""));
+        assertFalse(handler.payWithCard(null, null,null, false));
     }
 
 }
