@@ -1,9 +1,11 @@
 package skolard.persistence;
 
+import java.util.List;
+
 import skolard.objects.Card;
 
 public interface CardPersistence {
     Card addAccountCard(String accountEmail, String cardInfo);
-    Card getCardByAccount(String accountEmail);
-    void deleteCard(String accountEmail);
+    List<Card> getCardsByAccount(String accountEmail);
+    void deleteCard(String accountEmail, Card card);
 }
