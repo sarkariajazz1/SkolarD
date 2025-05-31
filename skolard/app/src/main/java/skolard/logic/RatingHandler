@@ -1,0 +1,54 @@
+package skolard.logic;
+
+import skolard.objects.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Handles rating submission and processing.
+ * Responsible for updating tutor/session records and posting feedback.
+ */
+public class RatingHandler {
+    private final List<RatingRequest> ratingRequests;
+
+    public RatingHandler() {
+        this.ratingRequests = new ArrayList<>();
+    }
+
+    public void createRatingRequest(Session session, Student student) {
+        RatingRequest request = new RatingRequest(session, student);
+        ratingRequests.add(request);
+        // Notify student in-app or by email (UI logic can hook in here)
+    }
+
+    public void processRatingSubmission(RatingRequest request, int tutorRating, int courseRating, String feedback) {
+        request.submit(tutorRating, courseRating, feedback);
+        updateSessionRating(request.getSession(), courseRating);
+        updateTutorRating(request.getSession().getTutor(), tutorRating);
+        postFeedback(request.getSession().getTutor(), request.getSession().getCourseName(), feedback);
+    }
+
+    public void processRatingSkip(RatingRequest request) {
+        request.skip();
+    }
+
+    private void updateSessionRating(Session session, int rating) {
+        session.setRating(rating);
+        // persist change via SessionPersistence if needed
+    }
+
+    private void updateTutorRating(Tutor tutor, int rating) {
+        tutor.addRating(rating); // Assume this updates the average
+        // persist change via TutorPersistence if needed
+    }
+
+    private void postFeedback(Tutor tutor, String courseName, String feedback) {
+        tutor.addCourseFeedback(courseName, feedback);
+        // persist change via TutorPersistence if needed
+    }
+
+    public List<RatingRequest> getAllRequests() {
+        return new ArrayList<>(ratingRequests);
+    }
+}
