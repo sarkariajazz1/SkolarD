@@ -26,7 +26,6 @@ public class SkolardApp extends JFrame {
     final private ProfileHandler profileHandler;
     final private MatchingHandler matchingHandler;
     final private FAQHandler faqHandler;
-    private boolean isAuthenticated = false;
     final private LoginHandler loginHandler;
     // UI Components
     private JPanel mainPanel;
@@ -131,7 +130,6 @@ public class SkolardApp extends JFrame {
      * Called when user successfully authenticates
      */
     public void onAuthenticationSuccess() {
-        isAuthenticated = true;
         setTitle("SkolarD - Dashboard");
         cardLayout.show(mainPanel, "DASHBOARD");
     }
@@ -140,7 +138,6 @@ public class SkolardApp extends JFrame {
      * Shows the authentication view (login/signup)
      */
     public void showAuthenticationView() {
-        isAuthenticated = false;
         setTitle("SkolarD - Welcome");
         cardLayout.show(mainPanel, "AUTH");
     }
