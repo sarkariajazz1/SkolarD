@@ -1,66 +1,148 @@
+
 package skolard.presentation;
 
 import javax.swing.*;
-
 import skolard.logic.FAQHandler;
 import skolard.logic.MatchingHandler;
 import skolard.logic.ProfileHandler;
-import skolard.logic.SupportHandler;
-
 import java.awt.*;
 
 /**
- * The main dashboard window of SkolarD that allows navigation to other views.
+ * The main application window of SkolarD that handles authentication and navigation.
  */
 public class SkolardApp extends JFrame {
 
-    public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler, SupportHandler supportHandler) {
-        this(profileHandler, matchingHandler, new FAQHandler());
-    }
+    private ProfileHandler profileHandler;
+    private MatchingHandler matchingHandler;
+    private FAQHandler faqHandler;
+    private boolean isAuthenticated = false;
+
+    // UI Components
+    private JPanel mainPanel;
+    private CardLayout cardLayout;
 
     public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler, FAQHandler faqHandler) {
-        super("SkolarD - Dashboard");
+        super("SkolarD - Welcome");
 
-        setLayout(new BorderLayout());
+        this.profileHandler = profileHandler;
+        this.matchingHandler = matchingHandler;
+        this.faqHandler = faqHandler;
 
-        // Create navigation buttons for all views
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 3, 10, 10));
+        initializeUI();
+        showAuthenticationView();
+
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(600, 200);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private void initializeUI() {
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
+
+        // Create authentication panel (login/signup options)
+        JPanel authPanel = createAuthenticationPanel();
+
+        // Create main dashboard panel (available after authentication)
+        JPanel dashboardPanel = createDashboardPanel();
+
+        mainPanel.add(authPanel, "AUTH");
+        mainPanel.add(dashboardPanel, "DASHBOARD");
+
+        add(mainPanel);
+    }
+
+    private JPanel createAuthenticationPanel() {
+        JPanel authPanel = new JPanel(new BorderLayout(10, 10));
+
+        // Welcome message
+        JLabel welcomeLabel = new JLabel("Welcome to SkolarD", SwingConstants.CENTER);
+        welcomeLabel.setFont(welcomeLabel.getFont().deriveFont(Font.BOLD, 16f));
+        authPanel.add(welcomeLabel, BorderLayout.NORTH);
+
+        // Authentication buttons
+        JPanel buttonPanel = new JPanel(new FlowLayout());
         JButton loginBtn = new JButton("Login");
         JButton signUpBtn = new JButton("Sign Up");
-        JButton profileBtn = new JButton("View Profiles");
-        JButton matchBtn = new JButton("Find Tutors");
-        JButton supportBtn = new JButton("Support");
         JButton faqBtn = new JButton("FAQs");
 
         buttonPanel.add(loginBtn);
         buttonPanel.add(signUpBtn);
-        buttonPanel.add(profileBtn);
-        buttonPanel.add(matchBtn);
-        buttonPanel.add(supportBtn);
         buttonPanel.add(faqBtn);
-        add(buttonPanel, BorderLayout.CENTER);
+        authPanel.add(buttonPanel, BorderLayout.CENTER);
 
-        // Open Login View
-        loginBtn.addActionListener(e -> new LoginView(profileHandler));
+        // Instructions
+        JLabel instructionLabel = new JLabel("Please login or sign up to access all features", SwingConstants.CENTER);
+        authPanel.add(instructionLabel, BorderLayout.SOUTH);
 
-        // Open Sign Up View
-        signUpBtn.addActionListener(e -> new SignUpView(profileHandler));
-
-        // Open Profile View
-        profileBtn.addActionListener(e -> new ProfileView(profileHandler));
-
-        // Open Matching View
-        matchBtn.addActionListener(e -> new MatchingView(matchingHandler));
-
-        // Open Support View
-        //supportBtn.addActionListener(e -> new SupportView(supportHandler));
-
-        // Open FAQ View
+        // Event listeners
+        loginBtn.addActionListener(e -> new LoginView(profileHandler, this));
+        signUpBtn.addActionListener(e -> new SignUpView(profileHandler, this));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
-        setDefaultCloseOperation(EXIT_ON_CLOSE); // Full app exits
-        setSize(600, 200);
-        setLocationRelativeTo(null); // Center
-        setVisible(true);
+        return authPanel;
+    }
+
+    private JPanel createDashboardPanel() {
+        JPanel dashboardPanel = new JPanel(new BorderLayout(10, 10));
+
+        // Dashboard title
+        JLabel dashboardLabel = new JLabel("SkolarD Dashboard", SwingConstants.CENTER);
+        dashboardLabel.setFont(dashboardLabel.getFont().deriveFont(Font.BOLD, 16f));
+        dashboardPanel.add(dashboardLabel, BorderLayout.NORTH);
+
+        // Main feature buttons
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        JButton profileBtn = new JButton("View Profiles");
+        JButton matchBtn = new JButton("Find Tutors");
+        JButton faqBtn = new JButton("FAQs");
+        JButton logoutBtn = new JButton("Logout");
+
+        buttonPanel.add(profileBtn);
+        buttonPanel.add(matchBtn);
+        buttonPanel.add(faqBtn);
+        buttonPanel.add(logoutBtn);
+        dashboardPanel.add(buttonPanel, BorderLayout.CENTER);
+
+        // Event listeners
+        profileBtn.addActionListener(e -> new ProfileView(profileHandler));
+        matchBtn.addActionListener(e -> new MatchingView(matchingHandler));
+        faqBtn.addActionListener(e -> new FAQView(faqHandler));
+        logoutBtn.addActionListener(e -> logout());
+
+        return dashboardPanel;
+    }
+
+    /**
+     * Called when user successfully authenticates
+     */
+    public void onAuthenticationSuccess() {
+        isAuthenticated = true;
+        setTitle("SkolarD - Dashboard");
+        cardLayout.show(mainPanel, "DASHBOARD");
+    }
+
+    /**
+     * Shows the authentication view (login/signup)
+     */
+    public void showAuthenticationView() {
+        isAuthenticated = false;
+        setTitle("SkolarD - Welcome");
+        cardLayout.show(mainPanel, "AUTH");
+    }
+
+    /**
+     * Handles user logout
+     */
+    private void logout() {
+        int choice = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to logout?",
+                "Logout Confirmation",
+                JOptionPane.YES_NO_OPTION);
+
+        if (choice == JOptionPane.YES_OPTION) {
+            showAuthenticationView();
+        }
     }
 }
