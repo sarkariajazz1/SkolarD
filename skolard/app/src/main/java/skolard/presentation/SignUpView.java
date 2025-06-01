@@ -95,7 +95,9 @@ public class SignUpView extends JFrame {
         signUpStudentBtn.addActionListener(e -> {
             if (validateForm()) {
                 try {
-                    handler.addStudent(nameField.getText().trim(), emailField.getText().trim());
+                    String password = new String(passwordField.getPassword());
+                    String hashedPassword = skolard.utils.PasswordUtil.hash(password);
+                    handler.addStudent(nameField.getText().trim(), emailField.getText().trim(), hashedPassword);
                     statusLabel.setText("Student account created successfully!");
                     JOptionPane.showMessageDialog(this,
                             "Student account created for: " + nameField.getText().trim() +
@@ -116,7 +118,9 @@ public class SignUpView extends JFrame {
         signUpTutorBtn.addActionListener(e -> {
             if (validateForm()) {
                 try {
-                    handler.addTutor(nameField.getText().trim(), emailField.getText().trim());
+                    String password = new String(passwordField.getPassword());
+                    String hashedPassword = skolard.utils.PasswordUtil.hash(password);
+                    handler.addTutor(nameField.getText().trim(), emailField.getText().trim(),hashedPassword);
                     statusLabel.setText("Tutor account created successfully!");
                     JOptionPane.showMessageDialog(this,
                             "Tutor account created for: " + nameField.getText().trim() +

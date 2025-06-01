@@ -16,17 +16,17 @@ public class Tutor extends User {
     private List<Session> pastSessions;
     private List<Session> upcomingSessions;
 
-    public Tutor(String name, String email, String bio,
+    public Tutor(String name, String email, String hashedPassword,String bio,
                  List<String> courses, Map<String, Double> courseGrades) {
-        super(name, email);
+        super(name, email, hashedPassword);
         this.bio = bio;
         this.courses = courses != null ? courses : new ArrayList<>();
         this.courseGrades = courseGrades != null ? courseGrades : new HashMap<>();
         this.upcomingSessions = new ArrayList<>();
     }
 
-    public Tutor(String name, String email, String bio) {
-        this(name, email, bio, new ArrayList<>(), new HashMap<>());
+    public Tutor(String name, String email,String hashedPassoword, String bio) {
+        this(name, email, hashedPassoword,bio, new ArrayList<>(), new HashMap<>());
     }
 
     public String getBio() {

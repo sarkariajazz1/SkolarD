@@ -11,12 +11,11 @@ public class Student extends User {
     private List<Session> pastSessions;
     private List<Session> upcomingSessions;
 
-    public Student(String name, String email) {
-        super(name, email);
+    public Student(String name, String email, String  hashedPassword) {
+        super(name, email, hashedPassword);
         this.pastSessions = new ArrayList<>();
         this.upcomingSessions = new ArrayList<>();
     }
-
     public List<Session> getPastSessions() {
         return pastSessions;
     }
