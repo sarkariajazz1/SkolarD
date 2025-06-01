@@ -1,6 +1,8 @@
 package skolard.logic;
 
 import skolard.objects.*;
+import skolard.persistence.SessionPersistence;
+import skolard.persistence.TutorPersistence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,43 +13,64 @@ import java.util.List;
  */
 public class RatingHandler {
     private final List<RatingRequest> ratingRequests;
+    private final SessionPersistence sessionDB;
+    private final TutorPersistence tutorDB;
 
-    public RatingHandler() {
+    public RatingHandler(SessionPersistence sessionDB, TutorPersistence tutorDB) {
         this.ratingRequests = new ArrayList<>();
+        this.sessionDB = sessionDB;
+        this.tutorDB = tutorDB;
     }
 
+    /**
+     * Creates and stores a new rating request.
+     */
     public void createRatingRequest(Session session, Student student) {
         RatingRequest request = new RatingRequest(session, student);
         ratingRequests.add(request);
-        // Notify student in-app or by email (UI logic can hook in here)
+        // UI/notification logic can be triggered elsewhere
     }
 
+    /**
+     * Processes a submitted rating by the student.
+     */
     public void processRatingSubmission(RatingRequest request, int tutorRating, int courseRating, String feedback) {
         request.submit(tutorRating, courseRating, feedback);
-        updateSessionRating(request.getSession(), courseRating);
-        updateTutorRating(request.getSession().getTutor(), tutorRating);
-        postFeedback(request.getSession().getTutor(), request.getSession().getCourseName(), feedback);
+
+        Session session = request.getSession();
+        Tutor tutor = session.getTutor();
+
+        // Update models
+        session.setRating(courseRating);
+        tutor.addRating(tutorRating);
+        tutor.addCourseFeedback(session.getCourseName(), feedback);
+
+        // Persist updated models
+        sessionDB.updateSession(session);
+        tutorDB.updateTutor(tutor);
+
+        // Save feedback as a persistent record
+        Feedback feedbackRecord = new Feedback(
+            session.getId(),
+            session.getCourseName(),
+            tutor.getId(),
+            request.getStudent().getId(),
+            courseRating,
+            feedback
+        );
+        sessionDB.saveFeedback(feedbackRecord);
     }
 
+    /**
+     * Marks a rating request as skipped.
+     */
     public void processRatingSkip(RatingRequest request) {
         request.skip();
     }
 
-    private void updateSessionRating(Session session, int rating) {
-        session.setRating(rating);
-        // persist change via SessionPersistence if needed
-    }
-
-    private void updateTutorRating(Tutor tutor, int rating) {
-        tutor.addRating(rating); // Assume this updates the average
-        // persist change via TutorPersistence if needed
-    }
-
-    private void postFeedback(Tutor tutor, String courseName, String feedback) {
-        tutor.addCourseFeedback(courseName, feedback);
-        // persist change via TutorPersistence if needed
-    }
-
+    /**
+     * Returns all in-memory rating requests.
+     */
     public List<RatingRequest> getAllRequests() {
         return new ArrayList<>(ratingRequests);
     }
