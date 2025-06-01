@@ -19,46 +19,37 @@ public class CardDB implements CardPersistence{
         this.connection = connection;
     }
 
-    /**
-     * Inserts a new student into the database.
-     * 
-     * @param newStudent the student object to insert
-     * @return the same student object that was added
-     */
     @Override
     public Card addAccountCard(String accountEmail, Card card) {
-        String sql = "INSERT INTO student (name, email) VALUES (?, ?)";
+        String sql = "INSERT INTO card (accountEmail, name, cardNumber, expiry) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            //stmt.setString(1, newStudent.getName());
-            //stmt.setString(2, newStudent.getEmail());
+            stmt.setString(1, accountEmail);
+            stmt.setString(2, card.getName());
+            stmt.setString(3, card.getCardNumber());
+            stmt.setString(4, card.getExpiry());
             stmt.executeUpdate();
             return card;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error adding student", e);
+            throw new RuntimeException("Error adding card", e);
         }
     }
 
-    /**
-     * Retrieves all students from the database.
-     * 
-     * @return a list of all student objects found
-     */
     @Override
     public List<Card> getCardsByAccount(String accountEmail) {
         List<Card> cards = new ArrayList<>();
-        String sql = "SELECT name, email FROM student";
+        String sql = "SELECT name, cardNumber, expiry FROM card WHERE accountEmail = ?";
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            // Iterate over result set and build Student objects
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, accountEmail);
+            ResultSet rs = stmt.executeQuery(sql);
+            // Iterate over result set and build Card objects
             while (rs.next()) {
                 cards.add(new Card(
-                    rs.getString("name"),
-                    rs.getString("email"),
-                    null
+                    rs.getString("cardNumber"),
+                    rs.getString("expiry"),
+                    rs.getString("name")
                 ));
             }
 
@@ -69,21 +60,19 @@ public class CardDB implements CardPersistence{
         return cards;
     }
 
-    /**
-     * Deletes a student from the database based on their email.
-     * 
-     * @param email the unique email of the student to delete
-     */
     @Override
     public void deleteCard(String accountEmail, Card card) {
-        String sql = "DELETE FROM student WHERE email = ?";
+        String sql = "DELETE FROM card WHERE accountEmail = ? AND name = ? AND cardNumber = ? AND expiry = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, accountEmail);
+            stmt.setString(2, card.getName());
+            stmt.setString(3, card.getCardNumber());
+            stmt.setString(4, card.getExpiry());
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error deleting student", e);
+            throw new RuntimeException("Error deleting card", e);
         }
     }
 }
