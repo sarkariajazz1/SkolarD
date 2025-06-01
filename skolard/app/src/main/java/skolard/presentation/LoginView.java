@@ -1,9 +1,24 @@
 package skolard.presentation;
 
-import javax.swing.*;
-import java.awt.*;
-import skolard.logic.ProfileHandler;
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import skolard.logic.FAQHandler;
+import skolard.logic.LoginHandler;
+import skolard.logic.ProfileHandler;
+import skolard.objects.LoginCredentials;
 import skolard.objects.User;
 
 /**
@@ -24,7 +39,7 @@ public class LoginView extends JFrame {
     private ProfileHandler handler;
     private SkolardApp parentApp;
 
-    public LoginView(ProfileHandler profileHandler, SkolardApp parentApp) {
+    public LoginView(ProfileHandler profileHandler,LoginHandler loginHandler, SkolardApp parentApp) {
         super("SkolarD - Login");
 
         this.handler = profileHandler;
@@ -73,19 +88,19 @@ public class LoginView extends JFrame {
                 return;
             }
 
-            User student = handler.getStudent(email);
-            if (student != null) {
+            LoginCredentials creds = new LoginCredentials(email, password, "student");
+
+            if (loginHandler.login(creds)) {
+                User student = handler.getStudent(email);
                 statusLabel.setText("Login successful! Welcome " + student.getName());
                 JOptionPane.showMessageDialog(this,
                         "Login successful as student: " + student.getName(),
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE);
-
-                // Notify parent app of successful authentication
                 parentApp.onAuthenticationSuccess();
-                dispose(); // Close login window
+                dispose();
             } else {
-                statusLabel.setText("No student found with that email");
+                statusLabel.setText("Invalid student credentials");
             }
         });
 
@@ -99,21 +114,22 @@ public class LoginView extends JFrame {
                 return;
             }
 
-            User tutor = handler.getTutor(email);
-            if (tutor != null) {
+            LoginCredentials creds = new LoginCredentials(email, password, "tutor");
+
+            if (loginHandler.login(creds)) {
+                User tutor = handler.getTutor(email);
                 statusLabel.setText("Login successful! Welcome " + tutor.getName());
                 JOptionPane.showMessageDialog(this,
                         "Login successful as tutor: " + tutor.getName(),
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE);
-
-                // Notify parent app of successful authentication
                 parentApp.onAuthenticationSuccess();
-                dispose(); // Close login window
+                dispose();
             } else {
-                statusLabel.setText("No tutor found with that email");
+                statusLabel.setText("Invalid tutor credentials");
             }
         });
+
 
         // Switch to sign up
         signUpBtn.addActionListener(e -> {

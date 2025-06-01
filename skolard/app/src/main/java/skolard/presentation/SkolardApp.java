@@ -1,12 +1,23 @@
 
 package skolard.presentation;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import skolard.logic.FAQHandler;
+import skolard.logic.LoginHandler;
 import skolard.logic.MatchingHandler;
 import skolard.logic.ProfileHandler;
-import java.awt.*;
-
 /**
  * The main application window of SkolarD that handles authentication and navigation.
  */
@@ -16,7 +27,7 @@ public class SkolardApp extends JFrame {
     private MatchingHandler matchingHandler;
     private FAQHandler faqHandler;
     private boolean isAuthenticated = false;
-
+    private LoginHandler loginHandler;
     // UI Components
     private JPanel mainPanel;
     private CardLayout cardLayout;
@@ -77,7 +88,7 @@ public class SkolardApp extends JFrame {
         authPanel.add(instructionLabel, BorderLayout.SOUTH);
 
         // Event listeners
-        loginBtn.addActionListener(e -> new LoginView(profileHandler, this));
+        loginBtn.addActionListener(e -> new LoginView(profileHandler, loginHandler,this));
         signUpBtn.addActionListener(e -> new SignUpView(profileHandler, this));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
