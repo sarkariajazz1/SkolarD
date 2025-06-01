@@ -2,13 +2,17 @@ package skolard.logic;
 
 import skolard.objects.LoginCredentials;
 import skolard.persistence.LoginPersistence;
+import skolard.persistence.PersistenceFactory;
 
 /**
  * Handles login logic for authenticating students and tutors.
  */
 public class LoginHandler {
     private final LoginPersistence loginDB;
-
+    public LoginHandler() {
+        this.loginDB = PersistenceFactory.getLoginPersistence();
+    }
+    
     public LoginHandler(LoginPersistence loginDB) {
         this.loginDB = loginDB;
     }
