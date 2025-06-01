@@ -22,17 +22,17 @@ public class PaymentHandler {
         this.cardDB = cardPersistence;
     }
 
-    public boolean payWithCard(String number, String expiry, String cvv, boolean saveInfo, Student student){
-        boolean validCard = validateCard(number, expiry, cvv);
+    public boolean payWithCard(String name, String number, String expiry, String cvv, boolean saveInfo, Student student){
+        boolean validCard = validateCard(name, number, expiry, cvv);
 
         if(saveInfo && validCard){
-            saveCard(number, expiry, student);
+            saveCard(name, number, expiry, student);
         }
 
         return validCard;
     }
 
-    public List<Card> payWithRecordedCard(Student student){
+    public List<Card> retrieveRecordedCards(Student student){
         List<Card> encryptedCards = cardDB.getCardsByAccount(student.getEmail());
         List<Card> decryptedCard = new ArrayList<>();
 
@@ -53,12 +53,13 @@ public class PaymentHandler {
         cardDB.deleteCard(student.getEmail(), card);
     }
 
-    private void saveCard(String number, String expiry, Student student){
-        String combinedInfo = number + "|" + expiry;
+    private void saveCard(String name, String number, String expiry, Student student){
+        String combinedInfo = name + "|" + number + "|" + expiry;
 
         try {
             SecretKey key = CardUtil.generateKey();
             String encryptedData = CardUtil.encrypt(combinedInfo, key);
+            // Check with Matthew if return is a String yet
             cardDB.addAccountCard(student.getEmail(), encryptedData);
 
         } catch (Exception e) {
@@ -67,12 +68,12 @@ public class PaymentHandler {
         
     }
 
-    private boolean validateCard(String number, String expiry, String cvv){
+    private boolean validateCard(String name, String number, String expiry, String cvv){
         boolean validNumber = false;
         boolean validExpiry = false;
         boolean validCVV = false;
         
-        if(isNotNullOrEmpty(number) && isNotNullOrEmpty(expiry) && isNotNullOrEmpty(cvv)){
+        if(isNotNullOrEmpty(name) && isNotNullOrEmpty(number) && isNotNullOrEmpty(expiry) && isNotNullOrEmpty(cvv)){
             validNumber = validateNumber(number.replaceAll("\\s+", ""));
             // Expiry is in the form MM/YY
             validExpiry = validateExpiry(expiry.replaceAll("\\s+", ""));

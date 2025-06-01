@@ -1,116 +1,156 @@
 package skolard.logic;
 
+import skolard.objects.Student;
+import skolard.persistence.CardPersistence;
+import skolard.persistence.PersistenceFactory;
+import skolard.persistence.PersistenceType;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before; 
 import org.junit.Test;
 
 public class PaymentHandlerTest {
+    private CardPersistence cp;
     private PaymentHandler handler;
+    private Student student;
 
     @Before
     public void setup(){
-        handler = new PaymentHandler();
+        //PersistenceFactory.initialize(PersistenceType.STUB, false);
+        //cp = PersistenceFactory
+        handler = new PaymentHandler(cp);
+        Student student = new Student("John Doe", "johndoe@example.com");
+
     }
 
     @Test
     public void testValidCard(){
+        String name = "John Doe";
         String number = "4111 1111 1111 1111"; // Valid Visa Luhn number
         String expiry = "12/29"; // Future expiry
         String cvv = "123";      // Valid CVV
 
-        assertTrue(handler.payWithCard(number, expiry, cvv, false));
+        assertTrue(handler.payWithCard(name, number, expiry, cvv, false, student));
     }
 
     @Test
     public void testInvalidCardNumber_LuhnFail() {
+        String name = "John Doe";
         String number = "4111 1111 1111 1112"; // Invalid Luhn
         String expiry = "12/29";
         String cvv = "123";
 
-        assertFalse(handler.payWithCard(number, expiry, cvv, false));
+        assertFalse(handler.payWithCard(name, number, expiry, cvv, false, student));
     }
 
     @Test
     public void testInvalidCardNumber_SameDigits() {
+        String name = "John Doe";
         String number = "1111 1111 1111 1111"; // All same digits
         String expiry = "12/29";
         String cvv = "123";
 
-        assertFalse(handler.payWithCard(number, expiry, cvv, false));
+        assertFalse(handler.payWithCard(name, number, expiry, cvv, false, student));
     }
 
     @Test
     public void testInvalidCardNumber_LengthTooShort() {
+        String name = "John Doe";
         String number = "123456789012";
         String expiry = "12/29";
         String cvv = "123";
 
-        assertFalse(handler.payWithCard(number, expiry, cvv, false));
+        assertFalse(handler.payWithCard(name, number, expiry, cvv, false, student));
     }
 
     @Test
     public void testInvalidCardNumber_LengthTooLong() {
+        String name = "John Doe";
         String number = "12345678901234567890";
         String expiry = "12/29";
         String cvv = "123";
 
-        assertFalse(handler.payWithCard(number, expiry, cvv, false));
+        assertFalse(handler.payWithCard(name, number, expiry, cvv, false, student));
     }
 
     @Test
     public void testInvalidCardNumber_NoNumbers() {
+        String name = "John Doe";
         String number = "abcdefghijklmnop";
         String expiry = "12/29";
         String cvv = "123";
 
-        assertFalse(handler.payWithCard(number, expiry, cvv, false));
+        assertFalse(handler.payWithCard(name, number, expiry, cvv, false, student));
     }
 
     @Test
     public void testInvalidExpiry_PastDate() {
+        String name = "John Doe";
         String number = "4111 1111 1111 1111";
         String expiry = "01/20"; // Past date
         String cvv = "123";
 
-        assertFalse(handler.payWithCard(number, expiry, cvv, false));
+        assertFalse(handler.payWithCard(name, number, expiry, cvv, false, student));
     }
 
     @Test
     public void testInvalidExpiry_Format() {
+        String name = "John Doe";
         String number = "4111 1111 1111 1111";
         String expiry = "2025-12"; // Invalid format
         String cvv = "123";
 
-        assertFalse(handler.payWithCard(number, expiry, cvv, false));
+        assertFalse(handler.payWithCard(name, number, expiry, cvv, false, student));
     }
 
     @Test
     public void testInvalidCVV_TooShort() {
+        String name = "John Doe";
         String number = "4111 1111 1111 1111";
         String expiry = "12/29";
-        String cvv = "12"; // Too short
+        String cvv = "12";
 
-        assertFalse(handler.payWithCard(number, expiry, cvv, false));
+        assertFalse(handler.payWithCard(name, number, expiry, cvv, false, student));
+    }
+
+    @Test
+    public void testInvalidCVV_TooLong() {
+        String name = "John Doe";
+        String number = "4111 1111 1111 1111";
+        String expiry = "12/29";
+        String cvv = "12345";
+
+        assertFalse(handler.payWithCard(name, number, expiry, cvv, false, student));
     }
 
     @Test
     public void testInvalidCVV_NonNumeric() {
+        String name = "John Doe";
         String number = "4111 1111 1111 1111";
         String expiry = "12/29";
         String cvv = "12a"; // Invalid characters
 
-        assertFalse(handler.payWithCard(number, expiry, cvv,false));
+        assertFalse(handler.payWithCard(name, number, expiry, cvv, false, student));
     }
 
     @Test
     public void testEmptyFields() {
-        assertFalse(handler.payWithCard("", "", "", false));
+        assertFalse(handler.payWithCard("", "", "", "", false, student));
     }
 
     @Test
     public void testNullSafeCheck() {
-        assertFalse(handler.payWithCard(null, null,null, false));
+        assertFalse(handler.payWithCard(null, null, null,null, false, student));
     }
 
+    @Test
+    public void testSaveCard(){
+        String name = "John Doe";
+        String number = "4111 1111 1111 1111"; // Valid Visa Luhn number
+        String expiry = "12/29"; // Future expiry
+        String cvv = "123";      // Valid CVV
+
+        assertTrue(handler.payWithCard(name, number, expiry, cvv, true, student));
+    }
 }
