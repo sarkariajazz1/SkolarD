@@ -1,7 +1,12 @@
 package skolard.logic;
 
+import skolard.objects.Student;
+import skolard.objects.Card;
+import skolard.persistence.CardPersistence;
 import skolard.utils.CardUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -10,30 +15,51 @@ import java.time.format.DateTimeParseException;
 import javax.crypto.SecretKey;
 
 public class PaymentHandler {
-    //Insert private Database variable
+    private CardPersistence cardDB;
 
     //Default Constructor
-    public PaymentHandler(){
-        //Insert Database initialization
+    public PaymentHandler(CardPersistence cardPersistence){
+        this.cardDB = cardPersistence;
     }
 
-    public boolean payWithCard(String number, String expiry, String cvv, boolean saveInfo){
+    public boolean payWithCard(String number, String expiry, String cvv, boolean saveInfo, Student student){
         boolean validCard = validateCard(number, expiry, cvv);
 
-        if(saveInfo){
-            saveCard(number, expiry);
+        if(saveInfo && validCard){
+            saveCard(number, expiry, student);
         }
 
         return validCard;
     }
 
-    private void saveCard(String number, String expiry){
+    public List<Card> payWithRecordedCard(Student student){
+        List<Card> encryptedCards = cardDB.getCardsByAccount(student.getEmail());
+        List<Card> decryptedCard = new ArrayList<>();
+
+        try {
+            SecretKey key = CardUtil.generateKey();
+            for(int i = 0; i < encryptedCards.size(); i++){
+                //TODO decrypt from database the string
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Card information could not be decrypted");
+        }
+        
+
+        return decryptedCard;
+    }
+
+    public void deleteRecordedCard(Student student, Card card){
+        cardDB.deleteCard(student.getEmail(), card);
+    }
+
+    private void saveCard(String number, String expiry, Student student){
         String combinedInfo = number + "|" + expiry;
 
         try {
             SecretKey key = CardUtil.generateKey();
             String encryptedData = CardUtil.encrypt(combinedInfo, key);
-            // TO DO save into database
+            cardDB.addAccountCard(student.getEmail(), encryptedData);
 
         } catch (Exception e) {
             throw new IllegalArgumentException("Card information could not be encrypted");
