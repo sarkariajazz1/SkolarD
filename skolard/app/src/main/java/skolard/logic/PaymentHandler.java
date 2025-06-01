@@ -34,19 +34,23 @@ public class PaymentHandler {
 
     public List<Card> retrieveRecordedCards(Student student){
         List<Card> encryptedCards = cardDB.getCardsByAccount(student.getEmail());
-        List<Card> decryptedCard = new ArrayList<>();
+        List<Card> decryptedCards = new ArrayList<>();
+        Card currentCard;
+        String decryptedData;
 
         try {
             SecretKey key = CardUtil.generateKey();
             for(int i = 0; i < encryptedCards.size(); i++){
-                //TODO decrypt from database the string
+                currentCard = encryptedCards.get(i);
+                decryptedData = CardUtil.decrypt(currentCard.getCardNumber(), key);
+                decryptedCards.add(new Card(decryptedData, currentCard.getExpiry(), currentCard.getName()));
             }
         } catch (Exception e) {
             throw new IllegalArgumentException("Card information could not be decrypted");
         }
         
 
-        return decryptedCard;
+        return decryptedCards;
     }
 
     public void deleteRecordedCard(Student student, Card card){
@@ -54,13 +58,11 @@ public class PaymentHandler {
     }
 
     private void saveCard(String name, String number, String expiry, Student student){
-        String combinedInfo = name + "|" + number + "|" + expiry;
-
         try {
             SecretKey key = CardUtil.generateKey();
-            String encryptedData = CardUtil.encrypt(combinedInfo, key);
-            // Check with Matthew if return is a String yet
-            cardDB.addAccountCard(student.getEmail(), encryptedData);
+            String encryptedData = CardUtil.encrypt(number, key);
+            Card savedCard = new Card(encryptedData, expiry, name);
+            cardDB.addAccountCard(student.getEmail(), savedCard);
 
         } catch (Exception e) {
             throw new IllegalArgumentException("Card information could not be encrypted");

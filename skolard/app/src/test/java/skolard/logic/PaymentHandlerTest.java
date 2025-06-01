@@ -2,8 +2,6 @@ package skolard.logic;
 
 import skolard.objects.Student;
 import skolard.persistence.CardPersistence;
-import skolard.persistence.PersistenceFactory;
-import skolard.persistence.PersistenceType;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -20,7 +18,7 @@ public class PaymentHandlerTest {
         //PersistenceFactory.initialize(PersistenceType.STUB, false);
         //cp = PersistenceFactory
         handler = new PaymentHandler(cp);
-        Student student = new Student("John Doe", "johndoe@example.com");
+        student = new Student("John Doe", "johndoe@example.com");
 
     }
 
