@@ -1,67 +1,132 @@
 package skolard.presentation;
 
-import skolard.objects.LoginCredentials;
-
 import javax.swing.*;
 import java.awt.*;
+import skolard.logic.ProfileHandler;
+import skolard.logic.FAQHandler;
+import skolard.objects.User;
 
 /**
- * GUI window for logging into the SkolarD platform.
+ * GUI window for user login in SkolarD.
+ * Allows users to authenticate as either a student or tutor.
  */
 public class LoginView extends JFrame {
 
+    // UI Components
     private final JTextField emailField = new JTextField(20);
     private final JPasswordField passwordField = new JPasswordField(20);
-    private final JComboBox<String> roleCombo = new JComboBox<>(new String[]{"student", "tutor"});
+    private final JButton loginStudentBtn = new JButton("Login as Student");
+    private final JButton loginTutorBtn = new JButton("Login as Tutor");
+    private final JButton signUpBtn = new JButton("Go to Sign Up");
+    private final JButton faqBtn = new JButton("FAQs");
+    private final JLabel statusLabel = new JLabel("Enter your credentials to login");
 
-    private LoginCredentials credentials;
+    private ProfileHandler handler;
+    private SkolardApp parentApp;
 
-    public LoginView() {
-        super("SkolarD Login");
+    public LoginView(ProfileHandler profileHandler, SkolardApp parentApp) {
+        super("SkolarD - Login");
+
+        this.handler = profileHandler;
+        this.parentApp = parentApp;
 
         setLayout(new BorderLayout(10, 10));
 
-        // Top panel: email and password
-        JPanel topPanel = new JPanel(new FlowLayout());
-        topPanel.add(new JLabel("Email:"));
-        topPanel.add(emailField);
-        topPanel.add(new JLabel("Password:"));
-        topPanel.add(passwordField);
-        add(topPanel, BorderLayout.NORTH);
+        // Center panel for login form
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
 
-        // Center panel: role selection
-        JPanel centerPanel = new JPanel(new FlowLayout());
-        centerPanel.add(new JLabel("Role:"));
-        centerPanel.add(roleCombo);
-        add(centerPanel, BorderLayout.CENTER);
+        // Email field
+        gbc.gridx = 0; gbc.gridy = 0;
+        formPanel.add(new JLabel("Email:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(emailField, gbc);
 
-        // Bottom panel: login button
-        JPanel bottomPanel = new JPanel(new FlowLayout());
-        JButton loginButton = new JButton("Login");
-        bottomPanel.add(loginButton);
-        add(bottomPanel, BorderLayout.SOUTH);
+        // Password field
+        gbc.gridx = 0; gbc.gridy = 1;
+        formPanel.add(new JLabel("Password:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(passwordField, gbc);
 
-        loginButton.addActionListener(e -> {
+        add(formPanel, BorderLayout.CENTER);
+
+        // Button panel
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+        buttonPanel.add(loginStudentBtn);
+        buttonPanel.add(loginTutorBtn);
+        buttonPanel.add(signUpBtn);
+        buttonPanel.add(faqBtn);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        // Status label at top
+        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        add(statusLabel, BorderLayout.NORTH);
+
+        // Login as student
+        loginStudentBtn.addActionListener(e -> {
             String email = emailField.getText().trim();
-            String password = new String(passwordField.getPassword()).trim();
-            String role = ((String) roleCombo.getSelectedItem()).toLowerCase();
+            String password = new String(passwordField.getPassword());
 
             if (email.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please enter email and password.");
+                statusLabel.setText("Please enter both email and password");
                 return;
             }
 
-            credentials = new LoginCredentials(email, password, role);
-            dispose(); // Close the login window
+            User student = handler.getStudent(email);
+            if (student != null) {
+                statusLabel.setText("Login successful! Welcome " + student.getName());
+                JOptionPane.showMessageDialog(this,
+                        "Login successful as student: " + student.getName(),
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+                // Notify parent app of successful authentication
+                parentApp.onAuthenticationSuccess();
+                dispose(); // Close login window
+            } else {
+                statusLabel.setText("No student found with that email");
+            }
         });
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        pack();
-        setLocationRelativeTo(null); // Center on screen
-        setVisible(true);
-    }
+        // Login as tutor
+        loginTutorBtn.addActionListener(e -> {
+            String email = emailField.getText().trim();
+            String password = new String(passwordField.getPassword());
 
-    public LoginCredentials getCredentials() {
-        return credentials;
+            if (email.isEmpty() || password.isEmpty()) {
+                statusLabel.setText("Please enter both email and password");
+                return;
+            }
+
+            User tutor = handler.getTutor(email);
+            if (tutor != null) {
+                statusLabel.setText("Login successful! Welcome " + tutor.getName());
+                JOptionPane.showMessageDialog(this,
+                        "Login successful as tutor: " + tutor.getName(),
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+                // Notify parent app of successful authentication
+                parentApp.onAuthenticationSuccess();
+                dispose(); // Close login window
+            } else {
+                statusLabel.setText("No tutor found with that email");
+            }
+        });
+
+        // Switch to sign up
+        signUpBtn.addActionListener(e -> {
+            new SignUpView(handler, parentApp);
+            dispose(); // Close login window
+        });
+
+        // Open FAQ
+        faqBtn.addActionListener(e -> new FAQView(new FAQHandler()));
+
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        pack();
+        setLocationRelativeTo(parentApp);
+        setVisible(true);
     }
 }
