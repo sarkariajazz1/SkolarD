@@ -6,8 +6,8 @@ package skolard.objects;
  */
 public class Support extends User {
 
-    public Support(String name, String email) {
-        super(name, email);
+    public Support(String name, String email, String hashedPassword) {
+        super(name, email,hashedPassword);
     }
 
     @Override

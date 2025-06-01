@@ -16,6 +16,11 @@ public class Student extends User {
         this.pastSessions = new ArrayList<>();
         this.upcomingSessions = new ArrayList<>();
     }
+    public Student(String name, String email) {
+        super(name, email);
+        this.pastSessions = pastSessions != null ? pastSessions : new ArrayList<>();
+        this.upcomingSessions = upcomingSessions != null ? upcomingSessions : new ArrayList<>();
+    }
     public List<Session> getPastSessions() {
         return pastSessions;
     }

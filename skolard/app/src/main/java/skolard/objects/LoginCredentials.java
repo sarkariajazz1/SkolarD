@@ -17,10 +17,10 @@ public class LoginCredentials {
     public String getEmail() {
         return email;
     }
-    //Should not get plain password in production code
-    // public String getPlainPassword() {
-    //     return plainPassword;
-    // }
+    
+    public String getPlainPassword() {
+        return plainPassword;
+    }
 
     public String getRole() {
         return role;
