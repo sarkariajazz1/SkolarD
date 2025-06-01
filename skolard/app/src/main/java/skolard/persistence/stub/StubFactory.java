@@ -1,5 +1,6 @@
 package skolard.persistence.stub;
 
+import skolard.persistence.LoginPersistence;
 import skolard.persistence.MessagePersistence;
 import skolard.persistence.SessionPersistence;
 import skolard.persistence.StudentPersistence;
@@ -21,6 +22,10 @@ public class StubFactory {
 
     public static MessagePersistence createMessagePersistence() {
         return new MessageStub(); // in-memory message persistence
+    }
+
+    public static LoginPersistence createLoginPersistence(){
+        return new LoginStub(); 
     }
 }
 

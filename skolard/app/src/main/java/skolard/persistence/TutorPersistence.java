@@ -65,3 +65,15 @@ public interface TutorPersistence {
      */
     List<String> getAllFeedbackForTutor(String tutorId);
 }
+
+    /**
+     * Authenticates a tutor by matching email and hashed password.
+     *
+     * @param email the tutor's email
+     * @param hashedPassword the hashed password
+     * @return the authenticated Tutor object, or null if not found or mismatch
+     */
+    Tutor authenticate(String email, String hashedPassword);
+
+}
+
