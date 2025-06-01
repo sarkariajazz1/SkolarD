@@ -15,10 +15,8 @@ public class PaymentHandlerTest {
 
     @Before
     public void setup(){
-        //PersistenceFactory.initialize(PersistenceType.STUB, false);
-        //cp = PersistenceFactory
+        cp = new CardPersistence();
         handler = new PaymentHandler(cp);
-        student = new Student("John Doe", "johndoe@example.com");
 
     }
 
@@ -148,6 +146,7 @@ public class PaymentHandlerTest {
         String number = "4111 1111 1111 1111"; // Valid Visa Luhn number
         String expiry = "12/29"; // Future expiry
         String cvv = "123";      // Valid CVV
+        student = new Student("John Doe", "johndoe@example.com");
 
         assertTrue(handler.payWithCard(name, number, expiry, cvv, true, student));
     }
