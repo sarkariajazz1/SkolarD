@@ -31,7 +31,7 @@ public interface SessionPersistence {
      *
      * @param feedback Feedback object containing rating and comment.
      */
-    void saveFeedback(Feedback feedback);
+    //void saveFeedback(Feedback feedback);
 
     /**
      * Retrieve all feedback entries related to a specific course.
@@ -39,5 +39,5 @@ public interface SessionPersistence {
      * @param courseName the course name (e.g., "COMP2150")
      * @return list of feedback records linked to that course
      */
-    List<Feedback> getFeedbackByCourse(String courseName);
+    //List<Feedback> getFeedbackByCourse(String courseName);
 }

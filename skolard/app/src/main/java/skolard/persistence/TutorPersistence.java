@@ -55,7 +55,7 @@ public interface TutorPersistence {
      * @param courseName the course related to the feedback
      * @param feedback the actual text comment provided by the student
      */
-    void saveCourseFeedback(String tutorId, String courseName, String feedback);
+    //void saveCourseFeedback(String tutorId, String courseName, String feedback);
 
     /**
      * Retrieve all public feedback comments for a specific tutor.
@@ -63,8 +63,8 @@ public interface TutorPersistence {
      * @param tutorId the ID of the tutor
      * @return a list of strings containing all comments for that tutor
      */
-    List<String> getAllFeedbackForTutor(String tutorId);
-}
+    //List<String> getAllFeedbackForTutor(String tutorId);
+
 
     /**
      * Authenticates a tutor by matching email and hashed password.
