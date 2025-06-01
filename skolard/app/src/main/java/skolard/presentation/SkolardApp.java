@@ -23,21 +23,22 @@ import skolard.logic.ProfileHandler;
  */
 public class SkolardApp extends JFrame {
 
-    private ProfileHandler profileHandler;
-    private MatchingHandler matchingHandler;
-    private FAQHandler faqHandler;
+    final private ProfileHandler profileHandler;
+    final private MatchingHandler matchingHandler;
+    final private FAQHandler faqHandler;
     private boolean isAuthenticated = false;
-    private LoginHandler loginHandler;
+    final private LoginHandler loginHandler;
     // UI Components
     private JPanel mainPanel;
     private CardLayout cardLayout;
 
-    public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler, FAQHandler faqHandler) {
+    public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler, FAQHandler faqHandler, LoginHandler loginHandler) {
         super("SkolarD - Welcome");
 
         this.profileHandler = profileHandler;
         this.matchingHandler = matchingHandler;
         this.faqHandler = faqHandler;
+        this.loginHandler = loginHandler;
 
         initializeUI();
         showAuthenticationView();

@@ -38,12 +38,14 @@ public class LoginView extends JFrame {
 
     private ProfileHandler handler;
     private SkolardApp parentApp;
-
+    private LoginHandler loginHandler;
+    
     public LoginView(ProfileHandler profileHandler,LoginHandler loginHandler, SkolardApp parentApp) {
         super("SkolarD - Login");
 
         this.handler = profileHandler;
         this.parentApp = parentApp;
+        this.loginHandler = loginHandler;
 
         setLayout(new BorderLayout(10, 10));
 
