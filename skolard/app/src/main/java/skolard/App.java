@@ -27,7 +27,7 @@ public class App {
         LoginHandler loginHandler = new LoginHandler();
         // Start UI
         SwingUtilities.invokeLater(() -> {
-            new skolard.presentation.SkolardApp(profileHandler, matchingHandler,faqHandler,loginHandler );
+            new skolard.presentation.SkolardApp(profileHandler, matchingHandler,faqHandler,loginHandler);
         });
     }
 }
