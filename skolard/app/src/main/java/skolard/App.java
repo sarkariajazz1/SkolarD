@@ -5,6 +5,7 @@ import javax.swing.SwingUtilities;
 import skolard.logic.FAQHandler;
 import skolard.logic.MatchingHandler;
 import skolard.logic.ProfileHandler;
+import skolard.logic.SupportHandler;
 import skolard.persistence.PersistenceFactory;
 import skolard.persistence.PersistenceType;
 
@@ -18,9 +19,10 @@ public class App {
         // The second argument 'true' indicates that seed SQL files should be executed
         PersistenceFactory.initialize(PersistenceType.PROD, true);
 
-        ProfileHandler profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(), 
-            PersistenceFactory.getTutorPersistence());
+        ProfileHandler profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(),
+                PersistenceFactory.getTutorPersistence());
         MatchingHandler matchingHandler = new MatchingHandler(PersistenceFactory.getSessionPersistence());
+        //SupportHandler supportHandler = new SupportHandler(PersistenceFactory.getSupportPersistence());
         FAQHandler faqHandler = new FAQHandler();
 
         // Launch the GUI on the Event Dispatch Thread (recommended for Swing applications)
