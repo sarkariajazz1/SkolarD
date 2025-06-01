@@ -99,6 +99,7 @@ public class SkolardApp extends JFrame {
         JButton faqBtn = new JButton("FAQs");
         JButton logoutBtn = new JButton("Logout");
 
+        // Add buttons to panel
         buttonPanel.add(profileBtn);
         buttonPanel.add(matchBtn);
         buttonPanel.add(faqBtn);
