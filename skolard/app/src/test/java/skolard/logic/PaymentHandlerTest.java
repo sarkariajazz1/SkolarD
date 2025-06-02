@@ -2,6 +2,7 @@ package skolard.logic;
 
 import skolard.objects.Student;
 import skolard.persistence.CardPersistence;
+import skolard.persistence.stub.CardStub;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -15,7 +16,7 @@ public class PaymentHandlerTest {
 
     @Before
     public void setup(){
-        cp = new CardPersistence();
+        cp = new CardStub();
         handler = new PaymentHandler(cp);
 
     }

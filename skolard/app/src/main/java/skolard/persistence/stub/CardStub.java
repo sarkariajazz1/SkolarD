@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import skolard.objects.Card;
-import skolard.objects.Message;
-import skolard.objects.Student;
 import skolard.persistence.CardPersistence;
 
 public class CardStub implements CardPersistence{
@@ -66,6 +64,16 @@ public class CardStub implements CardPersistence{
 
     @Override
     public void deleteCard(String accountEmail, Card card) {
+        confirmCreation();
 
+        String key = generateKey(accountEmail, card);
+
+        if(cards.containsKey(key)) {
+            cards.remove(key);
+        }
+    }
+
+    public void close() {
+        this.cards = null;
     }
 }
