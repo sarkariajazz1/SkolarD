@@ -15,5 +15,3 @@ public class Support extends User {
         return "Support Staff: " + name + " (" + email + ")";
     }
 }
-
-
