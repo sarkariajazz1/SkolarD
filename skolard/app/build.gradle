@@ -16,6 +16,9 @@ dependencies {
     // (Optional) JUnit 5 API—kept in case you ever add JUnit 5 tests
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
 
+    // Mockito
+    testImplementation 'org.mockito:mockito-core:5.11.0'
+
     // JUnit 4 API
     testImplementation 'junit:junit:4.13.2'
 
