@@ -1,9 +1,23 @@
 package skolard.presentation;
 
-import javax.swing.*;
-import java.awt.*;
-import skolard.logic.ProfileHandler;
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import skolard.logic.FAQHandler;
+import skolard.logic.LoginHandler;
+import skolard.logic.ProfileHandler;
 
 /**
  * GUI window for user registration in SkolarD.
@@ -23,6 +37,7 @@ public class SignUpView extends JFrame {
     private final JLabel statusLabel = new JLabel("Fill in the form to create your account");
 
     private ProfileHandler handler;
+    private LoginHandler loginHandler;
     private SkolardApp parentApp;
 
     public SignUpView(ProfileHandler profileHandler, SkolardApp parentApp) {
@@ -80,7 +95,9 @@ public class SignUpView extends JFrame {
         signUpStudentBtn.addActionListener(e -> {
             if (validateForm()) {
                 try {
-                    handler.addStudent(nameField.getText().trim(), emailField.getText().trim());
+                    String password = new String(passwordField.getPassword());
+                    String hashedPassword = skolard.utils.PasswordUtil.hash(password);
+                    handler.addStudent(nameField.getText().trim(), emailField.getText().trim(), hashedPassword);
                     statusLabel.setText("Student account created successfully!");
                     JOptionPane.showMessageDialog(this,
                             "Student account created for: " + nameField.getText().trim() +
@@ -101,7 +118,9 @@ public class SignUpView extends JFrame {
         signUpTutorBtn.addActionListener(e -> {
             if (validateForm()) {
                 try {
-                    handler.addTutor(nameField.getText().trim(), emailField.getText().trim());
+                    String password = new String(passwordField.getPassword());
+                    String hashedPassword = skolard.utils.PasswordUtil.hash(password);
+                    handler.addTutor(nameField.getText().trim(), emailField.getText().trim(),hashedPassword);
                     statusLabel.setText("Tutor account created successfully!");
                     JOptionPane.showMessageDialog(this,
                             "Tutor account created for: " + nameField.getText().trim() +
@@ -120,7 +139,7 @@ public class SignUpView extends JFrame {
 
         // Switch to login
         loginBtn.addActionListener(e -> {
-            new LoginView(handler, parentApp);
+            new LoginView(handler, loginHandler,parentApp);
             dispose(); // Close signup window
         });
 
