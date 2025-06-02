@@ -1,11 +1,15 @@
 package skolard.persistence.sqlite;
 
-import skolard.objects.Student;
-import skolard.persistence.StudentPersistence;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import skolard.objects.Student;
+import skolard.persistence.StudentPersistence;
 
 /**
  * SQLite implementation of the StudentPersistence interface.
@@ -90,11 +94,12 @@ public class StudentDB implements StudentPersistence {
      */
     @Override
     public Student addStudent(Student newStudent) {
-        String sql = "INSERT INTO student (name, email) VALUES (?, ?)";
+        String sql = "INSERT INTO student (name, email, password) VALUES (?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, newStudent.getName());
             stmt.setString(2, newStudent.getEmail());
+            stmt.setString(3, newStudent.getHashedPassword()); // Assuming hashed password is also stored
             stmt.executeUpdate();
             return newStudent;
 
@@ -151,7 +156,7 @@ public class StudentDB implements StudentPersistence {
             if (rs.next()) {
                 String storedHash = rs.getString("password");
                 if (storedHash.equals(hashedPassword)) {
-                    return new Student(rs.getString("name"), rs.getString("email"));
+                    return new Student(rs.getString("name"), rs.getString("email"),rs.getString("password"));
                 }
             }
         } catch (SQLException e) {

@@ -14,72 +14,76 @@ import skolard.persistence.TutorPersistence;
  */
 public class TutorStub implements TutorPersistence {
 
-    private Map<String, Tutor> tutors;           // Map to hold tutors keyed by email
+    private Map<String, Tutor> tutors; // Map to hold tutors keyed by email
 
     /**
      * Constructor initializes the in-memory structure and populates it with sample data.
      */
     public TutorStub() {
         confirmCreation();
-        addSampleTutor();
+        addSampleTutors();
     }
 
     /**
      * Ensures the tutors map is initialized before use.
      */
     private void confirmCreation() {
-        if(tutors == null) {
+        if (tutors == null) {
             tutors = new HashMap<>();
         }
     }
 
     /**
-     * Adds a sample tutor with two courses and example grades.
-     * This is for demonstration and testing purposes only.
+     * Basic stub hash method for passwords (development use only).
      */
-    private void addSampleTutor() {
-        String course1 = "COMP 1010";
-        String course2 = "COMP 3350";
-        ArrayList<String> courses = new ArrayList<String>();
-        Map<String, Double> courseGrades = new HashMap<>();
-
-        courses.add(course1);
-        courses.add(course2);
-
-        courseGrades.put(course1, 4.0);
-        courseGrades.put(course2, 3.5);
-
-        addTutor(new Tutor("Yab Matt", "mattyab@myumanitoba.ca",
-                "", courses, courseGrades));
+    private String hash(String plain) {
+        return Integer.toHexString(plain.hashCode());
     }
 
     /**
-     * Adds a tutor if a tutor with the same email already exists.
-     * (This logic may need revision — typically you'd only add if email is NOT present.)
+     * Adds a sample tutor for demonstration and testing purposes.
+     */
+    private void addSampleTutors() {
+        String course1 = "COMP 1010";
+        String course2 = "COMP 3350";
+
+        ArrayList<String> courses = new ArrayList<>();
+        courses.add(course1);
+        courses.add(course2);
+
+        Map<String, Double> courseGrades = new HashMap<>();
+        courseGrades.put(course1, 4.0);
+        courseGrades.put(course2, 3.5);
+
+        Tutor sampleTutor = new Tutor(
+                "Yab Matt",
+                "mattyab@myumanitoba.ca",
+                hash("pass123"),
+                "Experienced in Java and C++ tutoring.",
+                courses,
+                courseGrades
+        );
+
+        addTutor(sampleTutor);
+    }
+
+    /**
+     * Adds a tutor if their email is not already registered.
      *
      * @param tutor The tutor to add
-     * @return The newly created tutor object, or null if not added
+     * @return The added tutor, or null if one with same email exists
      */
     @Override
     public Tutor addTutor(Tutor tutor) {
         confirmCreation();
 
-        // Only add the tutor if they don't already exist
         if (!tutors.containsKey(tutor.getEmail())) {
-            Tutor newTutor = new Tutor(
-                    tutor.getName(),
-                    tutor.getEmail(),
-                    tutor.getBio(),
-                    tutor.getCourses(),
-                    tutor.getCourseGrades()
-            );
-            tutors.put(newTutor.getEmail(), newTutor);
-            return newTutor;
+            tutors.put(tutor.getEmail(), tutor);
+            return tutor;
         }
 
-        return null; // Return null if already exists (or you can choose to return existing)
+        return null;
     }
-
 
     /**
      * Retrieves a tutor by their email address.
@@ -101,9 +105,7 @@ public class TutorStub implements TutorPersistence {
     @Override
     public void deleteTutorByEmail(String email) {
         confirmCreation();
-        if(tutors.containsKey(email)) {
-            tutors.remove(email);
-        }
+        tutors.remove(email);
     }
 
     /**
@@ -114,7 +116,7 @@ public class TutorStub implements TutorPersistence {
     @Override
     public void updateTutor(Tutor updatedTutor) {
         confirmCreation();
-        if(tutors.containsKey(updatedTutor.getEmail())) {
+        if (tutors.containsKey(updatedTutor.getEmail())) {
             tutors.replace(updatedTutor.getEmail(), updatedTutor);
         }
     }
@@ -127,27 +129,30 @@ public class TutorStub implements TutorPersistence {
     @Override
     public List<Tutor> getAllTutors() {
         confirmCreation();
-        List<Tutor> tutorList = new ArrayList<>();
-        for (Tutor tutor : tutors.values()) {
-            tutorList.add(tutor);
-        }
-        return tutorList;
+        return new ArrayList<>(tutors.values());
     }
 
+    /**
+     * Authenticates a tutor by comparing stored and provided hashed passwords.
+     *
+     * @param email          Tutor's email
+     * @param hashedPassword Hashed password to check
+     * @return Tutor if credentials match, otherwise null
+     */
     @Override
     public Tutor authenticate(String email, String hashedPassword) {
         confirmCreation();
-        // Stub skips password checking, just return the tutor if found
-        return tutors.get(email);
+        Tutor tutor = tutors.get(email);
+        if (tutor != null && tutor.getHashedPassword().equals(hashedPassword)) {
+            return tutor;
+        }
+        return null;
     }
 
-
     /**
-     * Clears all tutor records from memory (optional helper).
+     * Clears all tutor records from memory.
      */
     public void close() {
         this.tutors = null;
     }
 }
-
-

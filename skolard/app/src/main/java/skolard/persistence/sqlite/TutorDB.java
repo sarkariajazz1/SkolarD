@@ -1,11 +1,15 @@
 package skolard.persistence.sqlite;
 
-import skolard.objects.Tutor;
-import skolard.persistence.TutorPersistence;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import skolard.objects.Tutor;
+import skolard.persistence.TutorPersistence;
 
 /**
  * SQLite implementation of the TutorPersistence interface.
@@ -18,17 +22,14 @@ public class TutorDB implements TutorPersistence {
 
     /**
      * Constructor that accepts a SQLite connection.
-     *
-     * @param connection the database connection to use
      */
     public TutorDB(Connection connection) {
         this.connection = connection;
     }
 
     /**
-     * Retrieves all tutor records from the database.
-     *
-     * @return a list of all tutors
+     * Retrieves all tutors for public viewing.
+     * Does not include password hash.
      */
     @Override
     public List<Tutor> getAllTutors() {
@@ -38,7 +39,6 @@ public class TutorDB implements TutorPersistence {
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
-            // Build Tutor objects from the result set
             while (rs.next()) {
                 tutors.add(new Tutor(
                     rs.getString("name"),
@@ -55,10 +55,7 @@ public class TutorDB implements TutorPersistence {
     }
 
     /**
-     * Retrieves a single tutor by their unique email.
-     *
-     * @param email the email of the tutor to find
-     * @return the matching Tutor object, or null if not found
+     * Retrieves a tutor by email (for profile display only).
      */
     @Override
     public Tutor getTutorByEmail(String email) {
@@ -68,7 +65,6 @@ public class TutorDB implements TutorPersistence {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
 
-            // Return the tutor if found
             if (rs.next()) {
                 return new Tutor(
                     rs.getString("name"),
@@ -85,19 +81,17 @@ public class TutorDB implements TutorPersistence {
     }
 
     /**
-     * Inserts a new tutor into the database.
-     *
-     * @param newTutor the tutor object to insert
-     * @return the same tutor object
+     * Adds a new tutor to the database (includes hashed password).
      */
     @Override
     public Tutor addTutor(Tutor newTutor) {
-        String sql = "INSERT INTO tutor (name, email, bio) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO tutor (name, email, password, bio) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, newTutor.getName());
             stmt.setString(2, newTutor.getEmail());
-            stmt.setString(3, newTutor.getBio());
+            stmt.setString(3, newTutor.getHashedPassword());
+            stmt.setString(4, newTutor.getBio());
             stmt.executeUpdate();
             return newTutor;
 
@@ -107,9 +101,7 @@ public class TutorDB implements TutorPersistence {
     }
 
     /**
-     * Deletes a tutor from the database using their email as the key.
-     *
-     * @param email the email of the tutor to delete
+     * Deletes a tutor by email.
      */
     @Override
     public void deleteTutorByEmail(String email) {
@@ -125,9 +117,8 @@ public class TutorDB implements TutorPersistence {
     }
 
     /**
-     * Updates an existing tutor's name and bio in the database.
-     *
-     * @param updatedTutor the tutor object containing updated fields
+     * Updates an existing tutor's name and bio.
+     * Password is not updated here.
      */
     @Override
     public void updateTutor(Tutor updatedTutor) {
@@ -144,6 +135,10 @@ public class TutorDB implements TutorPersistence {
         }
     }
 
+    /**
+     * Authenticates a tutor using email and hashed password.
+     * Returns a full Tutor object (for login session).
+     */
     @Override
     public Tutor authenticate(String email, String hashedPassword) {
         String sql = "SELECT name, email, bio, password FROM tutor WHERE email = ?";
@@ -158,7 +153,9 @@ public class TutorDB implements TutorPersistence {
                     return new Tutor(
                         rs.getString("name"),
                         rs.getString("email"),
-                        rs.getString("bio")
+                        hashedPassword,                        // known match
+                        rs.getString("bio"),
+                        null, null                             // courses and grades null for now
                     );
                 }
             }
@@ -168,5 +165,4 @@ public class TutorDB implements TutorPersistence {
 
         return null;
     }
-
 }
