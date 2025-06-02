@@ -9,10 +9,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before; 
 import org.junit.Test;
-import org.mockito.Mockito;
+
 
 import java.util.List;
 
@@ -23,7 +28,7 @@ public class PaymentHandlerTest {
 
     @Before
     public void setup(){
-        cp = new CardStub();
+        cp = mock(CardPersistence.class);
         handler = new PaymentHandler(cp);
 
     }
@@ -155,8 +160,9 @@ public class PaymentHandlerTest {
         String expiry = "12/29"; // Future expiry
         String cvv = "123";      // Valid CVV
         student = new Student("John Doe", "johndoe@example.com");
-
+        
         assertTrue(handler.payWithCard(name, number, expiry, cvv, true, student));
+        verify(cp).addAccountCard(eq(student.getEmail()), any(Card.class));
     }
 
     @Test
