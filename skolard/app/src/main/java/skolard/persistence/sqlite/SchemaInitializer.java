@@ -75,7 +75,7 @@ public class SchemaInitializer {
                 "accountEmail TEXT NOT NULL," +                // Email of account the card is saved for      
                 "name TEXT NOT NULL," +                        // Name on the card
                 "cardNumber TEXT NOT NULL," +                  // Card number
-                "expiry TEXT NOT NULL" +                       // Expiry of the card
+                "expiry TEXT NOT NULL," +                       // Expiry of the card
                 "PRIMARY KEY(accountEmail, cardNumber, expiry)," +
                 "FOREIGN KEY(accountEmail) REFERENCES student(email)" +
                 ");";
