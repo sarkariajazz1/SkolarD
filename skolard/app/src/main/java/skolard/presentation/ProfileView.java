@@ -1,10 +1,20 @@
 package skolard.presentation;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 import skolard.logic.ProfileHandler;
 import skolard.objects.User;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * GUI window for viewing and managing user profiles in SkolarD.
@@ -93,10 +103,11 @@ public class ProfileView extends JFrame {
         addStudentBtn.addActionListener(e -> {
             JTextField nameField = new JTextField();
             JTextField emailField = new JTextField();
-            Object[] fields = {"Name:", nameField, "Email:", emailField};
+            JPasswordField passwordField = new JPasswordField();
+            Object[] fields = {"Name:", nameField, "Email:", emailField, "Password:", passwordField};
             int option = JOptionPane.showConfirmDialog(this, fields, "Add Student", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
-                handler.addStudent(nameField.getText().trim(), emailField.getText().trim());
+                handler.addStudent(nameField.getText().trim(), emailField.getText().trim(),new String(passwordField.getPassword()).trim());
                 JOptionPane.showMessageDialog(this, "Student added!");
             }
         });
@@ -105,10 +116,11 @@ public class ProfileView extends JFrame {
         addTutorBtn.addActionListener(e -> {
             JTextField nameField = new JTextField();
             JTextField emailField = new JTextField();
-            Object[] fields = {"Name:", nameField, "Email:", emailField};
+            JPasswordField passwordField = new JPasswordField();
+            Object[] fields = {"Name:", nameField, "Email:", emailField, "Password:", passwordField};
             int option = JOptionPane.showConfirmDialog(this, fields, "Add Tutor", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
-                handler.addTutor(nameField.getText().trim(), emailField.getText().trim());
+                handler.addTutor(nameField.getText().trim(), emailField.getText().trim(),new String(passwordField.getPassword()).trim());
                 JOptionPane.showMessageDialog(this, "Tutor added!");
             }
         });

@@ -1,12 +1,15 @@
 package skolard.persistence.stub;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.persistence.SessionPersistence;
-
-import java.time.LocalDateTime;
-import java.util.*;
 
 /**
  * Stub implementation of SessionPersistence that stores session data in-memory using a HashMap.
@@ -15,34 +18,48 @@ import java.util.*;
 public class SessionStub implements SessionPersistence {
 
     private Map<Integer, Session> sessions;       // Stores sessions by their unique ID
-    private static int sessionCounter = 0;       // Used to generate unique session IDs
+    private static int sessionCounter = 0;        // Used to generate unique session IDs
 
     public SessionStub() {
         confirmCreation();       // Ensure map is initialized
         addSampleSessions();     // Populate with fake data
     }
 
-    // Initialize the internal session map if not already done
+    // Ensure internal map is initialized
     private void confirmCreation() {
         if (sessions == null) {
             sessions = new HashMap<>();
         }
     }
 
-    // Generate and add some fake sessions to simulate real data
+    // Simulate password hashing (stub use only)
+    private String hash(String password) {
+        return Integer.toHexString(password.hashCode());
+    }
+
+    // Populate with mock tutor/student and sessions
     private void addSampleSessions() {
-        Tutor tutor1 = new Tutor("Amrit Singh", "amrit@skolard.ca",
-                "CS & Math Tutor", new ArrayList<>(List.of("COMP 1010", "MATH 1500")),
-                Map.of("COMP 1010", 4.5, "MATH 1500", 4.0));
+        Tutor tutor1 = new Tutor(
+                "Amrit Singh",
+                "amrit@skolard.ca",
+                hash("amrit123"),
+                "CS & Math Tutor",
+                new ArrayList<>(List.of("COMP 1010", "MATH 1500")),
+                Map.of("COMP 1010", 4.5, "MATH 1500", 4.0)
+        );
 
-        Tutor tutor2 = new Tutor("Sukhdeep Kaur", "sukhdeep@skolard.ca",
-                "Physics tutor", new ArrayList<>(List.of("PHYS 1050")),
-                Map.of("PHYS 1050", 4.0));
+        Tutor tutor2 = new Tutor(
+                "Sukhdeep Kaur",
+                "sukhdeep@skolard.ca",
+                hash("sukhdeep123"),
+                "Physics tutor",
+                new ArrayList<>(List.of("PHYS 1050")),
+                Map.of("PHYS 1050", 4.0)
+        );
 
-        Student student1 = new Student("Raj Gill", "raj@skolard.ca");
-        Student student2 = new Student("Simran Dhillon", "simran@skolard.ca");
+        Student student1 = new Student("Raj Gill", "raj@skolard.ca", hash("raj123"));
+        Student student2 = new Student("Simran Dhillon", "simran@skolard.ca", hash("simran123"));
 
-        // Create sessions
         Session s1 = new Session(generateSessionId(), tutor1, null,
                 LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).plusHours(1),
                 "COMP 1010");
@@ -57,13 +74,12 @@ public class SessionStub implements SessionPersistence {
                 "MATH 1500");
         s3.bookSession(student1);
 
-        // Add to in-memory DB
         addSession(s1);
         addSession(s2);
         addSession(s3);
     }
 
-    // Generate a unique session ID
+    // Generates a unique session ID
     private int generateSessionId() {
         return sessionCounter++;
     }
@@ -120,20 +136,22 @@ public class SessionStub implements SessionPersistence {
     @Override
     public void updateSession(Session updatedSession) {
         confirmCreation();
-        if(sessions.containsKey(updatedSession.getSessionId())) {
+        if (sessions.containsKey(updatedSession.getSessionId())) {
             sessions.replace(updatedSession.getSessionId(), updatedSession);
         }
     }
 
-    // Optional helper for clearing data
+    /**
+     * Clears all session records from memory.
+     */
     public void deleteAllSessions() {
         this.sessions = new HashMap<>();
     }
 
-    // Optional helper for resetting the stub entirely
+    /**
+     * Resets the session stub completely.
+     */
     public void close() {
         this.sessions = null;
     }
 }
-
-

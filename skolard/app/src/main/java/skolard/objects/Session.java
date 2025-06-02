@@ -85,7 +85,7 @@ public class Session {
         }
         this.booked = true;
         this.student = student;
-        this.tutor.setUpcomingSession(this); // Add to tutor's schedule
+        this.tutor.addUpcomingSession(this); // Add to tutor's schedule
         student.setUpcomingSession(this);    // Add to student's schedule
         System.out.println("Session " + sessionId + " booked by " + student.getName());
     }

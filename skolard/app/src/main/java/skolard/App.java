@@ -3,9 +3,10 @@ package skolard;
 import javax.swing.SwingUtilities;
 
 import skolard.logic.FAQHandler;
+import skolard.logic.LoginHandler;
 import skolard.logic.MatchingHandler;
-import skolard.logic.ProfileHandler;
 import skolard.logic.MessageHandler;
+import skolard.logic.ProfileHandler;
 import skolard.persistence.PersistenceFactory;
 import skolard.persistence.PersistenceType;
 
@@ -23,10 +24,10 @@ public class App {
         MatchingHandler matchingHandler = new MatchingHandler(PersistenceFactory.getSessionPersistence());
         MessageHandler messageHandler = new MessageHandler(PersistenceFactory.getMessagePersistence());
         FAQHandler faqHandler = new FAQHandler(); // if used elsewhere
-
+        LoginHandler loginHandler = new LoginHandler();
         // Start UI
         SwingUtilities.invokeLater(() -> {
-            new skolard.presentation.SkolardApp(profileHandler, matchingHandler, faqHandler);
+            new skolard.presentation.SkolardApp(profileHandler, matchingHandler,faqHandler,loginHandler);
         });
     }
 }
