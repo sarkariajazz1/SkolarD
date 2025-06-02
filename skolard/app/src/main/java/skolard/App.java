@@ -34,5 +34,6 @@ public class App {
         SwingUtilities.invokeLater(() -> {
             new skolard.presentation.SkolardApp(profileHandler, matchingHandler, sessionHandler, messageHandler, faqHandler, loginHandler);
         });
+
     }
 }
