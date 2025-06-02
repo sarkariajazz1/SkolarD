@@ -5,13 +5,20 @@ import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 public class CardUtil {
 
-    public static SecretKey generateKey() throws Exception {
-        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-        keyGen.init(128); // Use 192 or 256 in production
-        return keyGen.generateKey();
+    public static SecretKey generateKey() {
+        // Define a constant 128-bit (16-byte) key
+        byte[] keyBytes = new byte[] {
+            (byte) 0x01, (byte) 0x23, (byte) 0x45, (byte) 0x67,
+            (byte) 0x89, (byte) 0xAB, (byte) 0xCD, (byte) 0xEF,
+            (byte) 0x10, (byte) 0x32, (byte) 0x54, (byte) 0x76,
+            (byte) 0x98, (byte) 0xBA, (byte) 0xDC, (byte) 0xFE
+        };
+
+        return new SecretKeySpec(keyBytes, "AES");
     }
 
     public static String encrypt(String plainText, SecretKey key) throws Exception {

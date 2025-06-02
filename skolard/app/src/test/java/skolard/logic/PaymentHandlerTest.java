@@ -179,12 +179,40 @@ public class PaymentHandlerTest {
         String name = "John Doe";
         String number = "4111 1111 1111 1111"; // Valid Visa Luhn number
         String expiry = "12/29"; // Future expiry
-        String cvv = "123";      // Valid CVV
-        student = new Student("John Doe", "johndoe@example.com");
+        student = new Student(name, "johndoe@example.com");
         handler.saveCard(name, number, expiry, student);
         List<Card> cards = handler.retrieveRecordedCards(student);
 
         assertEquals(1, cards.size());
 
+    }
+
+    @Test
+    public void testRetrieveRecordedCards_ThrowException(){
+        PaymentHandler newHandler = new PaymentHandler(null);
+        String name = "John Doe";
+        student = new Student(name, "johndoe@example.com");
+
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> newHandler.retrieveRecordedCards(student)
+        );
+
+        assertEquals("Card information could not be decrypted", exception.getMessage());
+
+    }
+
+    @Test
+    public void testDeleteRecordedCard(){
+        String name = "John Doe";
+        String number = "4111 1111 1111 1111"; // Valid Visa Luhn number
+        String expiry = "12/29"; // Future expiry
+        String cvv = "123";      // Valid CVV
+        student = new Student("John Doe", "johndoe@example.com");
+        handler.saveCard(name, number, expiry, student);
+        List<Card> cardsOne = handler.retrieveRecordedCards(student);
+        handler.deleteRecordedCard(student, cardsOne.get(0));
+        List<Card> cardsTwo = handler.retrieveRecordedCards(student);
+        assertEquals(0, cardsTwo.size());
     }
 }

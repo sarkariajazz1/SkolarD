@@ -16,10 +16,16 @@ import javax.crypto.SecretKey;
 
 public class PaymentHandler {
     private CardPersistence cardDB;
+    private SecretKey key;
 
     //Default Constructor
     public PaymentHandler(CardPersistence cardPersistence){
         this.cardDB = cardPersistence;
+        try {
+            key = CardUtil.generateKey();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("test");
+        }
     }
 
     public boolean payWithCard(String name, String number, String expiry, String cvv, boolean saveInfo, Student student){
@@ -33,13 +39,16 @@ public class PaymentHandler {
     }
 
     public List<Card> retrieveRecordedCards(Student student){
-        List<Card> encryptedCards = cardDB.getCardsByAccount(student.getEmail());
-        List<Card> decryptedCards = new ArrayList<>();
+        List<Card> encryptedCards;
+        List<Card> decryptedCards;
         Card currentCard;
         String decryptedData;
 
         try {
-            SecretKey key = CardUtil.generateKey();
+            encryptedCards = cardDB.getCardsByAccount(student.getEmail());
+            decryptedCards = new ArrayList<>();
+            
+
             for(int i = 0; i < encryptedCards.size(); i++){
                 currentCard = encryptedCards.get(i);
                 decryptedData = CardUtil.decrypt(currentCard.getCardNumber(), key);
@@ -59,11 +68,10 @@ public class PaymentHandler {
 
     public void saveCard(String name, String number, String expiry, Student student){
         try {
-            SecretKey key = CardUtil.generateKey();
             String encryptedData = CardUtil.encrypt(number, key);
             Card savedCard = new Card(encryptedData, expiry, name);
             cardDB.addAccountCard(student.getEmail(), savedCard);
-
+            
         } catch (Exception e) {
             throw new IllegalArgumentException("Card information could not be encrypted");
         }

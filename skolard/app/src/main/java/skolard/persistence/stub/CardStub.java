@@ -55,7 +55,7 @@ public class CardStub implements CardPersistence{
         List<Card> cardList = new ArrayList<>();
 
         for (String key : cards.keySet()) {
-            if(getEmailFromKey(key).equalsIgnoreCase(accountEmail)) {
+            if(!getEmailFromKey(key).equalsIgnoreCase(accountEmail)) {
                 cardList.add(cards.get(key));
             }
         }
