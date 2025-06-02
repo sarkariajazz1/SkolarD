@@ -7,6 +7,8 @@ import skolard.logic.LoginHandler;
 import skolard.logic.MatchingHandler;
 import skolard.logic.MessageHandler;
 import skolard.logic.ProfileHandler;
+import skolard.logic.SessionHandler;
+import skolard.logic.SupportHandler;
 import skolard.persistence.PersistenceFactory;
 import skolard.persistence.PersistenceType;
 
@@ -23,11 +25,14 @@ public class App {
                 PersistenceFactory.getTutorPersistence());
         MatchingHandler matchingHandler = new MatchingHandler(PersistenceFactory.getSessionPersistence());
         MessageHandler messageHandler = new MessageHandler(PersistenceFactory.getMessagePersistence());
+        SessionHandler sessionHandler = new SessionHandler(PersistenceFactory.getSessionPersistence());
+        //SupportHandler supportHandler = new SupportHandler(PersistenceFactory.getSupportPersistence());
         FAQHandler faqHandler = new FAQHandler(); // if used elsewhere
         LoginHandler loginHandler = new LoginHandler();
+        
         // Start UI
         SwingUtilities.invokeLater(() -> {
-            new skolard.presentation.SkolardApp(profileHandler, matchingHandler,faqHandler,loginHandler);
+            new skolard.presentation.SkolardApp(profileHandler, matchingHandler, sessionHandler, messageHandler, faqHandler, loginHandler);
         });
     }
 }
