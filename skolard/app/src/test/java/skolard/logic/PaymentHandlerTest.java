@@ -1,13 +1,19 @@
 package skolard.logic;
 
 import skolard.objects.Student;
+import skolard.objects.Card;
 import skolard.persistence.CardPersistence;
 import skolard.persistence.stub.CardStub;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.Before; 
 import org.junit.Test;
+
+import java.util.List;
 
 public class PaymentHandlerTest {
     private CardPersistence cp;
@@ -150,5 +156,35 @@ public class PaymentHandlerTest {
         student = new Student("John Doe", "johndoe@example.com");
 
         assertTrue(handler.payWithCard(name, number, expiry, cvv, true, student));
+    }
+
+    @Test
+    public void testSaveCard_Exception(){
+        CardPersistence cardPersistence = null; //Null database
+        PaymentHandler newHandler = new PaymentHandler(cardPersistence);
+        String name = "John Doe";
+        String number = "4111 1111 1111 1111"; // Valid Visa Luhn number
+        String expiry = "12/29"; // Future expiry
+        String cvv = "123";      // Valid CVV
+        student = new Student("John Doe", "johndoe@example.com");
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
+            newHandler.payWithCard(name, number, expiry, cvv, true, student);
+        });
+        assertEquals("Card information could not be encrypted", ex.getMessage());
+    }
+
+    @Test
+    public void testRetrieveRecordedCards_Successfull(){
+        String name = "John Doe";
+        String number = "4111 1111 1111 1111"; // Valid Visa Luhn number
+        String expiry = "12/29"; // Future expiry
+        String cvv = "123";      // Valid CVV
+        student = new Student("John Doe", "johndoe@example.com");
+        handler.saveCard(name, number, expiry, student);
+        List<Card> cards = handler.retrieveRecordedCards(student);
+
+        assertEquals(1, cards.size());
+
     }
 }

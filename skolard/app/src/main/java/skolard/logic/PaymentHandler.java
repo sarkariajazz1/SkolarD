@@ -57,7 +57,7 @@ public class PaymentHandler {
         cardDB.deleteCard(student.getEmail(), card);
     }
 
-    private void saveCard(String name, String number, String expiry, Student student){
+    public void saveCard(String name, String number, String expiry, Student student){
         try {
             SecretKey key = CardUtil.generateKey();
             String encryptedData = CardUtil.encrypt(number, key);
