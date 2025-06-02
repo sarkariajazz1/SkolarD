@@ -5,6 +5,7 @@ import skolard.persistence.MessagePersistence;
 import skolard.persistence.SessionPersistence;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
+import skolard.persistence.CardPersistence;
 
 public class StubFactory {
     
@@ -26,6 +27,10 @@ public class StubFactory {
 
     public static LoginPersistence createLoginPersistence(){
         return new LoginStub(); 
+    }
+
+    public static CardPersistence createCardPersistence() {
+        return new CardStub();
     }
 }
 
