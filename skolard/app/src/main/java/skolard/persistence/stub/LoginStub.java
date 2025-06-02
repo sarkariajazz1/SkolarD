@@ -48,4 +48,3 @@ public class LoginStub implements LoginPersistence {
         return Integer.toHexString(password.hashCode());
     }
 }
-
