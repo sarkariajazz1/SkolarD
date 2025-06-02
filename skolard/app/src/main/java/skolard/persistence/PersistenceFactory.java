@@ -9,6 +9,7 @@ import skolard.persistence.sqlite.SessionDB;
 import skolard.persistence.sqlite.StudentDB;
 import skolard.persistence.sqlite.TutorDB;
 import skolard.persistence.sqlite.LoginDB;
+import skolard.persistence.sqlite.CardDB;
 import skolard.persistence.stub.StubFactory;
 
 public class PersistenceFactory {
@@ -19,6 +20,7 @@ public class PersistenceFactory {
     private static SessionPersistence sessionPersistence;
     private static MessagePersistence messagePersistence;
     private static LoginPersistence loginPersistence;
+    private static CardPersistence cardPersistence;
 
     //TODO
     private static SupportPersistence supportPersistence;//finish the methodsfor supportPersistence
@@ -63,6 +65,7 @@ public class PersistenceFactory {
                     sessionPersistence = new SessionDB(conn, studentPersistence, tutorPersistence);
                     messagePersistence = new MessageDB(conn);
                     loginPersistence = new LoginDB(conn);
+                    cardPersistence = new CardDB(conn);
 
                 } catch (Exception e) {
                     // Fallback to stub persistence if any error occurs
@@ -84,6 +87,7 @@ public class PersistenceFactory {
         sessionPersistence = StubFactory.createSessionPersistence();
         messagePersistence = StubFactory.createMessagePersistence();
         loginPersistence = StubFactory.createLoginPersistence();
+        cardPersistence = StubFactory.createCardPersistence();
         if (e != null) {
             System.err.println("Falling back to stubs due to: " + e.getMessage());
         }
@@ -114,6 +118,10 @@ public class PersistenceFactory {
         return loginPersistence;
     }
 
+    public static CardPersistence getCardPersistence() {
+        return cardPersistence;
+    }
+
     /**
      * Resets the persistence layer and closes the active database connection.
      * This is typically used when shutting down or reinitializing the system.
@@ -125,5 +133,6 @@ public class PersistenceFactory {
         sessionPersistence = null;
         messagePersistence = null;
         loginPersistence = null;
+        cardPersistence = null;
     }
 }

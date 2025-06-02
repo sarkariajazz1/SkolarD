@@ -71,6 +71,15 @@ public class SchemaInitializer {
                 "FOREIGN KEY(receiverEmail) REFERENCES tutor(email)" +
                 ");";
 
+        String createCardTable = "CREATE TABLE IF NOT EXISTS card (" +
+                "accountEmail TEXT NOT NULL," +                // Email of account the card is saved for      
+                "name TEXT NOT NULL," +                        // Name on the card
+                "cardNumber TEXT NOT NULL," +                  // Card number
+                "expiry TEXT NOT NULL" +                       // Expiry of the card
+                "PRIMARY KEY(accountEmail, cardNumber, expiry)," +
+                "FOREIGN KEY(accountEmail) REFERENCES student(email)" +
+                ");";
+
         // Execute all table creation statements
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(createCourseTable);
@@ -79,6 +88,7 @@ public class SchemaInitializer {
             stmt.execute(createSessionTable);
             stmt.execute(createTutorCourseTable);
             stmt.execute(createMessageTable);
+            stmt.execute(createCardTable);
         } catch (SQLException e) {
             System.err.println("SQL Error: " + e.getMessage()); // Logs any SQL issue
             throw new RuntimeException("Failed to initialize database schema", e);
