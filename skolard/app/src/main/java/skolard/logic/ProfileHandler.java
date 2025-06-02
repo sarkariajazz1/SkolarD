@@ -6,9 +6,9 @@ import java.util.HashMap;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
+import skolard.persistence.PersistenceFactory;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
-import skolard.persistence.PersistenceFactory;
 import skolard.utils.EmailUtil;
 
 interface ProfileFormatter {
@@ -101,7 +101,7 @@ public class ProfileHandler {
      * @param name student's name
      * @param email student's email
      */
-    public void addStudent(String name, String email) {
+    public void addStudent(String name, String email, String hashedPassword) {
         if (name == null || name.trim().length() < 2) {
             throw new IllegalArgumentException("Name must be at least 2 characters");
         }
@@ -112,7 +112,7 @@ public class ProfileHandler {
         // if (studentPersistence.emailExists(key)) {
         //     throw new IllegalArgumentException("A student with this email already exists");
         // }
-        Student newStudent = new Student(name.trim(), key);
+        Student newStudent = new Student(name.trim(), key,hashedPassword);
         studentPersistence.addStudent(newStudent);
     }
 
@@ -121,7 +121,7 @@ public class ProfileHandler {
      * @param name tutor's name
      * @param email tutor's email
      */
-    public void addTutor(String name, String email) {
+    public void addTutor(String name, String email, String hashedPassword) {
         if (name == null || name.trim().length() < 2) {
             throw new IllegalArgumentException("Name must be at least 2 characters");
         }
@@ -132,7 +132,7 @@ public class ProfileHandler {
         // if (studentPersistence.emailExists(key)) {
         //     throw new IllegalArgumentException("A student with this email already exists");
         // }
-        Tutor newTutor = new Tutor(name.trim(), key, "Edit your bio...", new ArrayList<>(), new HashMap<>());            
+        Tutor newTutor = new Tutor(name.trim(), key,hashedPassword, "Edit your bio...", new ArrayList<>(), new HashMap<>());            
         tutorPersistence.addTutor(newTutor);
     }
 
