@@ -1,6 +1,6 @@
 # Compiled class files
 *.class
-
+skolard.db
 # Build directories
 /skolard/app/build/
 /out/
