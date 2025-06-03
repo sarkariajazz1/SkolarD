@@ -23,6 +23,7 @@ import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
 import skolard.persistence.PersistenceFactory;
+import skolard.persistence.PersistenceRegistry;
 
 /**
  * GUI window for user registration in SkolarD.
@@ -201,7 +202,7 @@ public class SignUpView extends JFrame {
 
             // Store credentials using the login persistence
             // This will handle the proper password hashing for the login system
-            var loginPersistence = PersistenceFactory.getLoginPersistence();
+            var loginPersistence = PersistenceRegistry.getLoginPersistence();
 
             // Test the credentials to ensure they're stored properly
             boolean stored = false;
