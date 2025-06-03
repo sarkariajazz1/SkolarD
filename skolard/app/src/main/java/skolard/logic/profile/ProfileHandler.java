@@ -4,20 +4,33 @@ import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
 import skolard.persistence.PersistenceRegistry;
+import skolard.persistence.StudentPersistence;
+import skolard.persistence.TutorPersistence;
 
 public class ProfileHandler {
     private final ProfileCreator creator;
     private final ProfileUpdater updater;
     private final ProfileViewer viewer;
 
+    /**
+     * Default constructor using the real database from PersistenceRegistry.
+     */
     public ProfileHandler() {
-        this.creator = new ProfileCreator(PersistenceRegistry.getStudentPersistence(),
-                                          PersistenceRegistry.getTutorPersistence());
-        this.updater = new ProfileUpdater(PersistenceRegistry.getStudentPersistence(),
-                                          PersistenceRegistry.getTutorPersistence());
-        this.viewer  = new ProfileViewer(new DefaultProfileFormatter());
+        this(PersistenceRegistry.getStudentPersistence(),
+             PersistenceRegistry.getTutorPersistence(),
+             new DefaultProfileFormatter());
     }
 
+    /**
+     * Constructor allowing injection of custom persistence and formatter.
+     */
+    public ProfileHandler(StudentPersistence sp, TutorPersistence tp, ProfileFormatter formatter) {
+        this.creator = new ProfileCreator(sp, tp);
+        this.updater = new ProfileUpdater(sp, tp);
+        this.viewer = new ProfileViewer(formatter);
+    }
+
+    // Profile creation
     public void addStudent(String name, String email, String hash) {
         creator.addStudent(name, email, hash);
     }
@@ -26,6 +39,7 @@ public class ProfileHandler {
         creator.addTutor(name, email, hash);
     }
 
+    // Profile update
     public void updateStudent(Student s) {
         updater.updateStudent(s);
     }
@@ -46,6 +60,7 @@ public class ProfileHandler {
         updater.removeCourse(t, course);
     }
 
+    // Profile view
     public String viewBasicProfile(User u) {
         return viewer.viewBasicProfile(u);
     }
