@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import skolard.logic.SessionHandler;
+import skolard.logic.session.SessionHandler;
 import skolard.objects.User;
 import skolard.objects.Tutor;
 import skolard.objects.Student;

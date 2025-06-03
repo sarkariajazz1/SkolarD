@@ -15,9 +15,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import skolard.logic.FAQHandler;
-import skolard.logic.LoginHandler;
-import skolard.logic.ProfileHandler;
+import skolard.logic.auth.LoginHandler;
+import skolard.logic.faq.FAQHandler;
+import skolard.logic.profile.ProfileHandler;
 import skolard.objects.LoginCredentials;
 import skolard.objects.User;
 

@@ -1,12 +1,26 @@
 package skolard.presentation;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.util.List;
-import skolard.logic.SupportHandler;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+
+import skolard.logic.support.SupportHandler;
+import skolard.objects.Student;
 import skolard.objects.SupportTicket;
 import skolard.objects.User;
-import skolard.objects.Student;
 
 /**
  * GUI window for managing support tickets in SkolarD.

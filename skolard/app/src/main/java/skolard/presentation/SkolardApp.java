@@ -14,12 +14,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import skolard.logic.FAQHandler;
-import skolard.logic.LoginHandler;
-import skolard.logic.MatchingHandler;
-import skolard.logic.MessageHandler;
-import skolard.logic.ProfileHandler;
-import skolard.logic.SessionHandler;
+import skolard.logic.auth.LoginHandler;
+import skolard.logic.faq.FAQHandler;
+import skolard.logic.matching.MatchingHandler;
+import skolard.logic.message.MessageHandler;
+import skolard.logic.profile.ProfileHandler;
+import skolard.logic.session.SessionHandler;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;

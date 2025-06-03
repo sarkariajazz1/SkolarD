@@ -13,7 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import skolard.logic.ProfileHandler;
+import skolard.logic.profile.ProfileHandler;
 import skolard.objects.User;
 
 /**

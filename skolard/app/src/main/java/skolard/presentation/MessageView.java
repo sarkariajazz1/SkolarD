@@ -1,12 +1,21 @@
 package skolard.presentation;
 
-import skolard.logic.MessageHandler;
-import skolard.objects.Message;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import skolard.logic.message.MessageHandler;
+import skolard.objects.Message;
 
 /**
  * GUI for viewing and sending messages between a student and a tutor.

@@ -13,9 +13,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import skolard.logic.MatchingHandler;
-import skolard.logic.MessageHandler;
-import skolard.logic.ProfileHandler;
+import skolard.logic.matching.MatchingHandler;
+import skolard.logic.message.MessageHandler;
+import skolard.logic.profile.ProfileHandler;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 

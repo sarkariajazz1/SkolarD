@@ -2,8 +2,10 @@
 package skolard.presentation;
 
 import java.io.IOException;
+
 import javax.swing.JOptionPane;
-import skolard.logic.FAQHandler;
+
+import skolard.logic.faq.FAQHandler;
 
 /**
  * View class for displaying the FAQ documentation.
