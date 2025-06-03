@@ -57,8 +57,7 @@ public class Session {
         return endDateTime;
     }
 
-    // Typo: This should probably be "setEndDateTime"
-    public void getEndDateTime(LocalDateTime endDateTime) {
+    public void setEndDateTime(LocalDateTime endDateTime) {
         this.endDateTime = endDateTime;
     }
 
