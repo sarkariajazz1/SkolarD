@@ -11,6 +11,7 @@ public class PersistenceProvider {
         StudentPersistence studentPersistence = new StudentDB(conn);
         TutorPersistence tutorPersistence = new TutorDB(conn);
         SessionPersistence sessionPersistence = new SessionDB(conn, studentPersistence, tutorPersistence);
+        SupportPersistence supportPersistence = new SupportDB(conn, studentPersistence, tutorPersistence);
 
         PersistenceRegistry.setStudentPersistence(studentPersistence);
         PersistenceRegistry.setTutorPersistence(tutorPersistence);
@@ -18,6 +19,7 @@ public class PersistenceProvider {
         PersistenceRegistry.setMessagePersistence(new MessageDB(conn));
         PersistenceRegistry.setLoginPersistence(new LoginDB(conn));
         PersistenceRegistry.setCardPersistence(new CardDB(conn));
+        PersistenceRegistry.setSupportPersistence(supportPersistence); // NEW
     }
 
     public static void initializeStubs() {
@@ -27,5 +29,6 @@ public class PersistenceProvider {
         PersistenceRegistry.setMessagePersistence(StubFactory.createMessagePersistence());
         PersistenceRegistry.setLoginPersistence(StubFactory.createLoginPersistence());
         PersistenceRegistry.setCardPersistence(StubFactory.createCardPersistence());
+        PersistenceRegistry.setSupportPersistence(StubFactory.createSupportPersistence()); // NEW
     }
 }

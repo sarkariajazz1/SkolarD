@@ -7,6 +7,7 @@ public class PersistenceRegistry {
     private static MessagePersistence messagePersistence;
     private static LoginPersistence loginPersistence;
     private static CardPersistence cardPersistence;
+    private static SupportPersistence supportPersistence; // NEW
 
     public static StudentPersistence getStudentPersistence() {
         return studentPersistence;
@@ -54,5 +55,13 @@ public class PersistenceRegistry {
 
     public static void setCardPersistence(CardPersistence cp) {
         cardPersistence = cp;
+    }
+
+    public static SupportPersistence getSupportPersistence() {
+        return supportPersistence;
+    }
+
+    public static void setSupportPersistence(SupportPersistence sp) {
+        supportPersistence = sp;
     }
 }

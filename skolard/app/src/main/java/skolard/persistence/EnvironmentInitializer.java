@@ -1,9 +1,9 @@
 package skolard.persistence;
 
 import skolard.persistence.sqlite.SchemaInitializer;
+
 import java.sql.Connection;
 import java.util.List;
-
 
 public class EnvironmentInitializer {
 
@@ -12,16 +12,19 @@ public class EnvironmentInitializer {
         ConnectionManager.initialize(dbPath);
         Connection conn = ConnectionManager.get();
 
-        // Initialize schema
         SchemaInitializer.initializeSchema(conn);
 
-        // Optionally seed the database
         if (seed) {
             DatabaseSeeder.seed(conn, List.of(
+                "/seed_courses.sql",
                 "/seed_students.sql",
                 "/seed_tutors.sql",
+                "/seed_tutorCourse.sql",
                 "/seed_sessions.sql",
-                "/seed_messages.sql"
+                "/seed_messages.sql",
+                "/seed_card.sql",
+                "/seed_support_user.sql",
+                "/seed_support.sql"
             ));
         }
 

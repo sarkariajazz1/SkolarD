@@ -35,9 +35,7 @@ public class LoginHandler {
             case "tutor":
                 return loginDB.authenticateTutor(email, password);
             case "support":
-                // For now, support accounts may be hardcoded or simply treated as admin
-                // This is just an example logic; adjust as needed
-                return email.equals("support@skolard.com") && password.equals("admin123");
+                return loginDB.authenticateSupport(email, password);
             default:
                 System.err.println("Unknown role: " + role);
                 return false;
