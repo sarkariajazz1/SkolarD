@@ -1,3 +1,4 @@
+
 package skolard.presentation;
 
 import java.awt.BorderLayout;
@@ -16,10 +17,11 @@ import javax.swing.SwingConstants;
 import skolard.logic.FAQHandler;
 import skolard.logic.LoginHandler;
 import skolard.logic.MatchingHandler;
-import skolard.logic.ProfileHandler;
 import skolard.logic.MessageHandler;
-import skolard.logic.SupportHandler;
+import skolard.logic.ProfileHandler;
 import skolard.logic.SessionHandler;
+import skolard.objects.Student;
+import skolard.objects.Tutor;
 import skolard.objects.User;
 
 /**
@@ -41,6 +43,7 @@ public class SkolardApp extends JFrame {
     // UI Components
     private JPanel mainPanel;
     private CardLayout cardLayout;
+    private JPanel dashboardPanel; // Store reference to recreate it
 
     public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler,
                       SessionHandler sessionHandler,
@@ -71,8 +74,8 @@ public class SkolardApp extends JFrame {
         // Create authentication panel (login/signup options)
         JPanel authPanel = createAuthenticationPanel();
 
-        // Create main dashboard panel (available after authentication)
-        JPanel dashboardPanel = createDashboardPanel();
+        // Create initial dashboard panel (will be updated based on user type)
+        dashboardPanel = createDashboardPanel();
 
         mainPanel.add(authPanel, "AUTH");
         mainPanel.add(dashboardPanel, "DASHBOARD");
@@ -105,7 +108,7 @@ public class SkolardApp extends JFrame {
 
         // Event listeners
         loginBtn.addActionListener(e -> new LoginView(profileHandler, loginHandler, this));
-        signUpBtn.addActionListener(e -> new SignUpView(profileHandler, this));
+        signUpBtn.addActionListener(e -> new SignUpView(profileHandler, loginHandler, this));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
         return authPanel;
@@ -114,27 +117,18 @@ public class SkolardApp extends JFrame {
     private JPanel createDashboardPanel() {
         JPanel dashboardPanel = new JPanel(new BorderLayout(10, 10));
 
-        // Dashboard title
-        JLabel dashboardLabel = new JLabel("SkolarD Dashboard", SwingConstants.CENTER);
+        // Dashboard title with user info
+        String titleText = "SkolarD Dashboard";
+        if (currentUser != null) {
+            String userType = currentUser instanceof Student ? "Student" : "Tutor";
+            titleText += " - " + userType + ": " + currentUser.getName();
+        }
+        JLabel dashboardLabel = new JLabel(titleText, SwingConstants.CENTER);
         dashboardLabel.setFont(dashboardLabel.getFont().deriveFont(Font.BOLD, 16f));
         dashboardPanel.add(dashboardLabel, BorderLayout.NORTH);
 
-        // Main feature buttons - Updated to 3x2 grid for more features
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
-        JButton profileBtn = new JButton("View Profiles");
-        JButton matchBtn = new JButton("Find Tutors");
-        JButton sessionBtn = new JButton("Session Management");
-        JButton messageBtn = new JButton("Messages");
-        JButton supportBtn = new JButton("Support");
-        JButton faqBtn = new JButton("FAQs");
-
-        // Add buttons to panel
-        buttonPanel.add(profileBtn);
-        buttonPanel.add(matchBtn);
-        buttonPanel.add(sessionBtn);
-        buttonPanel.add(messageBtn);
-        buttonPanel.add(supportBtn);
-        buttonPanel.add(faqBtn);
+        // Create buttons based on user type
+        JPanel buttonPanel = createButtonPanelForUser();
         dashboardPanel.add(buttonPanel, BorderLayout.CENTER);
 
         // Logout button at bottom
@@ -143,23 +137,150 @@ public class SkolardApp extends JFrame {
         bottomPanel.add(logoutBtn);
         dashboardPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Event listeners
-        profileBtn.addActionListener(e -> new ProfileView(profileHandler));
-        matchBtn.addActionListener(e -> new MatchingView(matchingHandler));
-        sessionBtn.addActionListener(e -> {
-            if (currentUser != null) {
-                new SessionView(sessionHandler, currentUser);
-            } else {
-                JOptionPane.showMessageDialog(this, "Please login first to access session management",
-                        "Authentication Required", JOptionPane.WARNING_MESSAGE);
-            }
-        });
-        messageBtn.addActionListener(e -> new MessageView(messageHandler));
-        //supportBtn.addActionListener(e -> new SupportView(supportHandler));
-        faqBtn.addActionListener(e -> new FAQView(faqHandler));
+        // Logout event listener
         logoutBtn.addActionListener(e -> logout());
 
         return dashboardPanel;
+    }
+
+    private JPanel createButtonPanelForUser() {
+        if (currentUser == null) {
+            // Generic panel for unauthenticated users
+            JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+            JButton profileBtn = new JButton("Profile Management");
+            JButton sessionBtn = new JButton("Session Management");
+            JButton messageBtn = new JButton("Messages");
+            JButton faqBtn = new JButton("FAQs");
+
+            buttonPanel.add(profileBtn);
+            buttonPanel.add(sessionBtn);
+            buttonPanel.add(messageBtn);
+            buttonPanel.add(faqBtn);
+
+            // Generic event listeners (with authentication checks)
+            profileBtn.addActionListener(e -> {
+                JOptionPane.showMessageDialog(this, "Please login first to access profile management",
+                        "Authentication Required", JOptionPane.WARNING_MESSAGE);
+            });
+            sessionBtn.addActionListener(e -> {
+                JOptionPane.showMessageDialog(this, "Please login first to access session management",
+                        "Authentication Required", JOptionPane.WARNING_MESSAGE);
+            });
+            messageBtn.addActionListener(e -> {
+                JOptionPane.showMessageDialog(this, "Please login first to access messages",
+                        "Authentication Required", JOptionPane.WARNING_MESSAGE);
+            });
+            faqBtn.addActionListener(e -> new FAQView(faqHandler));
+
+            return buttonPanel;
+        }
+
+        if (currentUser instanceof Student) {
+            return createStudentButtonPanel();
+        } else if (currentUser instanceof Tutor) {
+            return createTutorButtonPanel();
+        } else {
+            // Fallback for unknown user types
+            return createGenericButtonPanel();
+        }
+    }
+
+    private JPanel createStudentButtonPanel() {
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+
+        JButton myDashboardBtn = new JButton("My Dashboard");
+        JButton findTutorsBtn = new JButton("Find Tutors");
+        JButton sessionBtn = new JButton("Session Management");
+        JButton messageBtn = new JButton("Messages");
+        JButton supportBtn = new JButton("Support");
+        JButton faqBtn = new JButton("FAQs");
+
+        buttonPanel.add(myDashboardBtn);
+        buttonPanel.add(findTutorsBtn);
+        buttonPanel.add(sessionBtn);
+        buttonPanel.add(messageBtn);
+        buttonPanel.add(supportBtn);
+        buttonPanel.add(faqBtn);
+
+        // Student-specific event listeners
+        myDashboardBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
+        findTutorsBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
+        sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
+        messageBtn.addActionListener(e -> new MessageView(messageHandler));
+        //supportBtn.addActionListener(e -> new SupportView(supportHandler));
+        faqBtn.addActionListener(e -> new FAQView(faqHandler));
+
+        return buttonPanel;
+    }
+
+    private JPanel createTutorButtonPanel() {
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+
+        JButton myDashboardBtn = new JButton("My Dashboard");
+        JButton studentsBtn = new JButton("My Students");
+        JButton sessionBtn = new JButton("Session Management");
+        JButton messageBtn = new JButton("Messages");
+        JButton supportBtn = new JButton("Support");
+        JButton faqBtn = new JButton("FAQs");
+
+        buttonPanel.add(myDashboardBtn);
+        buttonPanel.add(studentsBtn);
+        buttonPanel.add(sessionBtn);
+        buttonPanel.add(messageBtn);
+        buttonPanel.add(supportBtn);
+        buttonPanel.add(faqBtn);
+
+        // Tutor-specific event listeners
+        myDashboardBtn.addActionListener(e -> new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
+        studentsBtn.addActionListener(e -> new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
+        sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
+        messageBtn.addActionListener(e -> new MessageView(messageHandler));
+        //supportBtn.addActionListener(e -> new SupportView(supportHandler));
+        faqBtn.addActionListener(e -> new FAQView(faqHandler));
+
+        return buttonPanel;
+    }
+
+    private JPanel createGenericButtonPanel() {
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+
+        JButton profileBtn = new JButton("Profile Management");
+        JButton sessionBtn = new JButton("Session Management");
+        JButton messageBtn = new JButton("Messages");
+        JButton faqBtn = new JButton("FAQs");
+
+        buttonPanel.add(profileBtn);
+        buttonPanel.add(sessionBtn);
+        buttonPanel.add(messageBtn);
+        buttonPanel.add(faqBtn);
+
+        // Generic event listeners
+        profileBtn.addActionListener(e -> new ProfileView(profileHandler));
+        sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
+        messageBtn.addActionListener(e -> new MessageView(messageHandler));
+        faqBtn.addActionListener(e -> new FAQView(faqHandler));
+
+        return buttonPanel;
+    }
+
+    /**
+     * Opens the appropriate dashboard based on the user type
+     */
+    private void openUserSpecificDashboard() {
+        if (currentUser == null) {
+            JOptionPane.showMessageDialog(this, "Please login first to access your dashboard",
+                    "Authentication Required", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (currentUser instanceof Student) {
+            new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser);
+        } else if (currentUser instanceof Tutor) {
+            new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser);
+        } else {
+            // Fallback to the old ProfileView for any other user types
+            new ProfileView(profileHandler);
+        }
     }
 
     /**
@@ -175,7 +296,14 @@ public class SkolardApp extends JFrame {
      */
     public void onAuthenticationSuccess(User user) {
         this.currentUser = user;
-        onAuthenticationSuccess();
+        setTitle("SkolarD - Dashboard (" + user.getName() + ")");
+
+        // Recreate the dashboard panel with user-specific buttons
+        mainPanel.remove(dashboardPanel);
+        dashboardPanel = createDashboardPanel();
+        mainPanel.add(dashboardPanel, "DASHBOARD");
+
+        cardLayout.show(mainPanel, "DASHBOARD");
     }
 
     /**
@@ -184,6 +312,12 @@ public class SkolardApp extends JFrame {
     public void showAuthenticationView() {
         setTitle("SkolarD - Welcome");
         this.currentUser = null; // Clear current user on logout
+
+        // Recreate the dashboard panel for unauthenticated state
+        mainPanel.remove(dashboardPanel);
+        dashboardPanel = createDashboardPanel();
+        mainPanel.add(dashboardPanel, "DASHBOARD");
+
         cardLayout.show(mainPanel, "AUTH");
     }
 

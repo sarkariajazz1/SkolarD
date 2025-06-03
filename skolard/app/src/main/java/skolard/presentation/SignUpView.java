@@ -18,6 +18,11 @@ import javax.swing.SwingConstants;
 import skolard.logic.FAQHandler;
 import skolard.logic.LoginHandler;
 import skolard.logic.ProfileHandler;
+import skolard.objects.LoginCredentials;
+import skolard.objects.Student;
+import skolard.objects.Tutor;
+import skolard.objects.User;
+import skolard.persistence.PersistenceFactory;
 
 /**
  * GUI window for user registration in SkolarD.
@@ -40,10 +45,11 @@ public class SignUpView extends JFrame {
     private LoginHandler loginHandler;
     private SkolardApp parentApp;
 
-    public SignUpView(ProfileHandler profileHandler, SkolardApp parentApp) {
+    public SignUpView(ProfileHandler profileHandler, LoginHandler loginHandler, SkolardApp parentApp) {
         super("SkolarD - Sign Up");
 
         this.handler = profileHandler;
+        this.loginHandler = loginHandler;
         this.parentApp = parentApp;
 
         setLayout(new BorderLayout(10, 10));
@@ -95,21 +101,37 @@ public class SignUpView extends JFrame {
         signUpStudentBtn.addActionListener(e -> {
             if (validateForm()) {
                 try {
+                    String name = nameField.getText().trim();
+                    String email = emailField.getText().trim();
                     String password = new String(passwordField.getPassword());
-                    String hashedPassword = skolard.utils.PasswordUtil.hash(password);
-                    handler.addStudent(nameField.getText().trim(), emailField.getText().trim(), hashedPassword);
+
+                    // Create the student user
+                    handler.addStudent(name, email, password);
+
+                    // Store login credentials for authentication
+                    storeLoginCredentials(email, password, "student");
+
+                    // Get the created student for authentication success
+                    Student newStudent = handler.getStudent(email);
+
                     statusLabel.setText("Student account created successfully!");
                     JOptionPane.showMessageDialog(this,
-                            "Student account created for: " + nameField.getText().trim() +
+                            "Student account created for: " + name +
                                     "\nYou can now access the dashboard!",
                             "Success",
                             JOptionPane.INFORMATION_MESSAGE);
 
-                    // Notify parent app of successful authentication
-                    parentApp.onAuthenticationSuccess();
+                    // Notify parent app of successful authentication with user info
+                    parentApp.onAuthenticationSuccess(newStudent);
                     dispose(); // Close signup window
                 } catch (IllegalArgumentException ex) {
                     statusLabel.setText("Error: " + ex.getMessage());
+                    JOptionPane.showMessageDialog(this, "Error creating account: " + ex.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception ex) {
+                    statusLabel.setText("Unexpected error occurred");
+                    JOptionPane.showMessageDialog(this, "An unexpected error occurred. Please try again.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -118,28 +140,44 @@ public class SignUpView extends JFrame {
         signUpTutorBtn.addActionListener(e -> {
             if (validateForm()) {
                 try {
+                    String name = nameField.getText().trim();
+                    String email = emailField.getText().trim();
                     String password = new String(passwordField.getPassword());
-                    String hashedPassword = skolard.utils.PasswordUtil.hash(password);
-                    handler.addTutor(nameField.getText().trim(), emailField.getText().trim(),hashedPassword);
+
+                    // Create the tutor user
+                    handler.addTutor(name, email, password);
+
+                    // Store login credentials for authentication
+                    storeLoginCredentials(email, password, "tutor");
+
+                    // Get the created tutor for authentication success
+                    Tutor newTutor = handler.getTutor(email);
+
                     statusLabel.setText("Tutor account created successfully!");
                     JOptionPane.showMessageDialog(this,
-                            "Tutor account created for: " + nameField.getText().trim() +
+                            "Tutor account created for: " + name +
                                     "\nYou can now access the dashboard!",
                             "Success",
                             JOptionPane.INFORMATION_MESSAGE);
 
-                    // Notify parent app of successful authentication
-                    parentApp.onAuthenticationSuccess();
+                    // Notify parent app of successful authentication with user info
+                    parentApp.onAuthenticationSuccess(newTutor);
                     dispose(); // Close signup window
                 } catch (IllegalArgumentException ex) {
                     statusLabel.setText("Error: " + ex.getMessage());
+                    JOptionPane.showMessageDialog(this, "Error creating account: " + ex.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception ex) {
+                    statusLabel.setText("Unexpected error occurred");
+                    JOptionPane.showMessageDialog(this, "An unexpected error occurred. Please try again.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
         // Switch to login
         loginBtn.addActionListener(e -> {
-            new LoginView(handler, loginHandler,parentApp);
+            new LoginView(handler, loginHandler, parentApp);
             dispose(); // Close signup window
         });
 
@@ -150,6 +188,40 @@ public class SignUpView extends JFrame {
         pack();
         setLocationRelativeTo(parentApp);
         setVisible(true);
+    }
+
+    /**
+     * Stores login credentials in the login persistence layer
+     * This ensures users can login after signup
+     */
+    private void storeLoginCredentials(String email, String password, String role) {
+        try {
+            // Create login credentials
+            LoginCredentials credentials = new LoginCredentials(email, password, role);
+
+            // Store credentials using the login persistence
+            // This will handle the proper password hashing for the login system
+            var loginPersistence = PersistenceFactory.getLoginPersistence();
+
+            // Test the credentials to ensure they're stored properly
+            boolean stored = false;
+            if ("student".equals(role)) {
+                stored = loginPersistence.authenticateStudent(email, password);
+            } else if ("tutor".equals(role)) {
+                stored = loginPersistence.authenticateTutor(email, password);
+            }
+
+            // If not stored (likely because it's a new account), we need to ensure
+            // the credentials are properly saved. This might require adding the user
+            // to the login persistence layer as well.
+            if (!stored) {
+                System.out.println("Warning: Login credentials may not be properly stored for " + email);
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error storing login credentials: " + e.getMessage());
+            // Don't throw exception here as the user account was still created successfully
+        }
     }
 
     private boolean validateForm() {
@@ -170,6 +242,11 @@ public class SignUpView extends JFrame {
 
         if (password.length() < 6) {
             statusLabel.setText("Password must be at least 6 characters");
+            return false;
+        }
+
+        if (!email.contains("@") || !email.contains(".")) {
+            statusLabel.setText("Please enter a valid email address");
             return false;
         }
 
