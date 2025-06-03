@@ -68,4 +68,13 @@ public class ProfileHandler {
     public String viewFullProfile(User u) {
         return viewer.viewFullProfile(u);
     }
+
+    public Student getStudent(String email) {
+    return creator.getStudent(email);
+}
+
+public Tutor getTutor(String email) {
+    return creator.getTutor(email);
+}
+
 }

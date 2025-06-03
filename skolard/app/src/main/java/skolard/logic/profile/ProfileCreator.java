@@ -1,13 +1,14 @@
 package skolard.logic.profile;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
-import skolard.utils.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import skolard.utils.EmailUtil;
+import skolard.utils.ValidationUtil;
 
 public class ProfileCreator {
     private final StudentPersistence studentDB;
@@ -27,5 +28,13 @@ public class ProfileCreator {
         ValidationUtil.validateNewUser(name, email);
         tutorDB.addTutor(new Tutor(name.trim(), EmailUtil.normalize(email), hashedPassword,
                                    "Edit your bio...", new ArrayList<>(), new HashMap<>()));
+    }
+
+    public Student getStudent(String email) {
+    return studentDB.getStudentByEmail(email.trim().toLowerCase());
+    }
+
+    public Tutor getTutor(String email) {
+        return tutorDB.getTutorByEmail(email.trim().toLowerCase());
     }
 }
