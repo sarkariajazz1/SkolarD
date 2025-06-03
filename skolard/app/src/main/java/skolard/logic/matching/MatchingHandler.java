@@ -6,6 +6,7 @@ import java.util.List;
 
 import skolard.objects.Session;
 import skolard.objects.Student;
+import skolard.persistence.PersistenceRegistry;
 import skolard.persistence.SessionPersistence;
 
 /**
@@ -16,15 +17,19 @@ public class MatchingHandler {
     private final SessionPersistence sessionDB;
 
     /**
-     * Constructor for dependency injection of a session database implementation.
+     * Default constructor using the real persistence layer.
+     */
+    public MatchingHandler() {
+        this(PersistenceRegistry.getSessionPersistence());
+    }
+
+    /**
+     * Constructor for injecting a custom session database (mock/stub).
      */
     public MatchingHandler(SessionPersistence sessionPersistence) {
         this.sessionDB = sessionPersistence;
     }
 
-    /**
-     * Adds a session to the database.
-     */
     public void addSession(Session session) {
         if (session == null) {
             throw new IllegalArgumentException("Session cannot be null.");
@@ -32,10 +37,6 @@ public class MatchingHandler {
         sessionDB.addSession(session);
     }
 
-    /**
-     * Returns sessions that match the given course and are not booked.
-     * Applies a filter: "rate", "time", or "tutor".
-     */
     public List<Session> getAvailableSessions(String filter, String courseName, LocalDateTime start, LocalDateTime end) {
         if (courseName == null || courseName.isEmpty()) {
             throw new IllegalArgumentException("Course name cannot be null or empty.");
@@ -65,16 +66,10 @@ public class MatchingHandler {
         return matchingSessions;
     }
 
-    /**
-     * Returns sessions for the course that are not yet booked (no filter applied).
-     */
     public List<Session> getAvailableSessions(String courseName) {
         return getNonBookedSessions(courseName);
     }
 
-    /**
-     * Helper method to get non-booked sessions for a course.
-     */
     private List<Session> getNonBookedSessions(String courseName) {
         List<Session> allSessions = sessionDB.getAllSessions();
         List<Session> sessions = new ArrayList<>();
@@ -88,9 +83,6 @@ public class MatchingHandler {
         return sessions;
     }
 
-    /**
-     * Books a session for a student, if the session is available.
-     */
     public void bookSession(Session session, Student student) {
         if (session == null || student == null) {
             throw new IllegalArgumentException("Session and student cannot be null.");
