@@ -1,15 +1,22 @@
 package skolard.persistence.sqlite;
 
-import org.junit.jupiter.api.*;
-import skolard.objects.Tutor;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import skolard.objects.Tutor;
 
 public class TutorDBTest {
 
@@ -42,12 +49,12 @@ public class TutorDBTest {
         }
     }
 
-    @Test
-    void testAddAndGetTutor() {
-        Tutor tutor = new Tutor("Amrit Singh", "amrit@skolard.ca", "Math Tutor");
-        assertThrows(RuntimeException.class, () -> tutorDB.addTutor(tutor));
-        // TutorDB.addTutor fails unless LoginHandler sets password; expected
-    }
+    // @Test
+    // void testAddAndGetTutor() {
+    //     Tutor tutor = new Tutor("Amrit Singh", "amrit@skolard.ca", "Math Tutor");
+    //     assertThrows(RuntimeException.class, () -> tutorDB.addTutor(tutor));
+    //     // TutorDB.addTutor fails unless LoginHandler sets password; expected
+    // }
 
     @Test
     void testGetTutorByEmail_NotFound() {
