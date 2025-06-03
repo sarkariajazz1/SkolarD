@@ -1,40 +1,34 @@
 package skolard.persistence.stub;
 
-import skolard.persistence.LoginPersistence;
-import skolard.persistence.MessagePersistence;
-import skolard.persistence.SessionPersistence;
-import skolard.persistence.StudentPersistence;
-import skolard.persistence.TutorPersistence;
-import skolard.persistence.CardPersistence;
+import skolard.persistence.*;
 
 public class StubFactory {
-    
+
     public static StudentPersistence createStudentPersistence() {
-        return new StudentStub(); // in-memory student persistence
+        return new StudentStub();
     }
 
     public static TutorPersistence createTutorPersistence() {
-        return new TutorStub(); // in-memory tutor persistence
+        return new TutorStub();
     }
 
     public static SessionPersistence createSessionPersistence() {
-        return new SessionStub(); // in-memory session persistence
+        return new SessionStub();
     }
 
     public static MessagePersistence createMessagePersistence() {
-        return new MessageStub(); // in-memory message persistence
+        return new MessageStub();
     }
 
-    public static LoginPersistence createLoginPersistence(){
-        return new LoginStub(); 
+    public static LoginPersistence createLoginPersistence() {
+        return new LoginStub();
     }
 
     public static CardPersistence createCardPersistence() {
         return new CardStub();
     }
+
+    public static SupportPersistence createSupportPersistence() {
+        return new SupportStub();
+    }
 }
-
-
-
-
-

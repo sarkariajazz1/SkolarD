@@ -26,6 +26,13 @@ public class LoginDB implements LoginPersistence {
         return checkPassword(email, plainPassword, sql);
     }
 
+    @Override
+    public boolean authenticateSupport(String email, String plainPassword) {
+        String sql = "SELECT password FROM support WHERE email = ?";
+        return checkPassword(email, plainPassword, sql);
+    }
+
+
     private boolean checkPassword(String email, String plainPassword, String sql) {
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);

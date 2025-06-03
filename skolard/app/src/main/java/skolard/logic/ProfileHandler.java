@@ -7,6 +7,7 @@ import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
 import skolard.persistence.PersistenceFactory;
+import skolard.persistence.PersistenceRegistry;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
 import skolard.utils.EmailUtil;
@@ -62,8 +63,8 @@ public class ProfileHandler {
      */
     public ProfileHandler() {
         // TO DO
-        this.studentPersistence = PersistenceFactory.getStudentPersistence();
-        this.tutorPersistence = PersistenceFactory.getTutorPersistence();
+        this.studentPersistence = PersistenceRegistry.getStudentPersistence();
+        this.tutorPersistence = PersistenceRegistry.getTutorPersistence();
         this.profileFormatter = new DefaultProfileFormatter();
     }
 

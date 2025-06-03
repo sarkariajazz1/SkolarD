@@ -2,14 +2,9 @@ package skolard;
 
 import javax.swing.SwingUtilities;
 
-import skolard.logic.FAQHandler;
-import skolard.logic.LoginHandler;
-import skolard.logic.MatchingHandler;
-import skolard.logic.MessageHandler;
-import skolard.logic.ProfileHandler;
-import skolard.logic.SessionHandler;
-import skolard.logic.SupportHandler;
+import skolard.logic.*;
 import skolard.persistence.PersistenceFactory;
+import skolard.persistence.PersistenceRegistry;
 import skolard.persistence.PersistenceType;
 
 /**
@@ -21,19 +16,28 @@ public class App {
         // Initialize the persistence layer (PROD mode + seed)
         PersistenceFactory.initialize(PersistenceType.PROD, true);
 
-        ProfileHandler profileHandler = new ProfileHandler(PersistenceFactory.getStudentPersistence(),
-                PersistenceFactory.getTutorPersistence());
-        MatchingHandler matchingHandler = new MatchingHandler(PersistenceFactory.getSessionPersistence());
-        MessageHandler messageHandler = new MessageHandler(PersistenceFactory.getMessagePersistence());
-        SessionHandler sessionHandler = new SessionHandler(PersistenceFactory.getSessionPersistence());
-        //SupportHandler supportHandler = new SupportHandler(PersistenceFactory.getSupportPersistence());
-        FAQHandler faqHandler = new FAQHandler(); // if used elsewhere
+        // Get instances from the registry
+        ProfileHandler profileHandler = new ProfileHandler(
+                PersistenceRegistry.getStudentPersistence(),
+                PersistenceRegistry.getTutorPersistence());
+
+        MatchingHandler matchingHandler = new MatchingHandler(PersistenceRegistry.getSessionPersistence());
+        MessageHandler messageHandler = new MessageHandler(PersistenceRegistry.getMessagePersistence());
+        SessionHandler sessionHandler = new SessionHandler(PersistenceRegistry.getSessionPersistence());
+        // SupportHandler supportHandler = new SupportHandler(PersistenceRegistry.getSupportPersistence());
+        FAQHandler faqHandler = new FAQHandler(); 
         LoginHandler loginHandler = new LoginHandler();
-        
+
         // Start UI
         SwingUtilities.invokeLater(() -> {
-            new skolard.presentation.SkolardApp(profileHandler, matchingHandler, sessionHandler, messageHandler, faqHandler, loginHandler);
+            new skolard.presentation.SkolardApp(
+                profileHandler, 
+                matchingHandler, 
+                sessionHandler, 
+                messageHandler, 
+                faqHandler, 
+                loginHandler
+            );
         });
-
     }
 }
