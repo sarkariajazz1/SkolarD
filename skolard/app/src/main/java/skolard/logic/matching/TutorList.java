@@ -1,10 +1,10 @@
 package skolard.logic.matching;
 
-import skolard.objects.Session;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import skolard.objects.Session;
 
 /**
  * TutorList is a PriorityList that supports sorting tutoring sessions
@@ -22,7 +22,7 @@ public class TutorList extends PriorityList<Session> {
 
     public void sortByTutorRating() {
         sortWithComparator(Comparator.comparingDouble(
-            s -> s.getTutor().getAverageRating()
+            s -> ((Session)s).getTutor().getAverageRating()
         ).reversed());
     }
 
