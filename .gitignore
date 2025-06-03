@@ -1,6 +1,6 @@
 # Compiled class files
 *.class
-skolard.db
+
 # Build directories
 /skolard/app/build/
 /out/
@@ -25,5 +25,7 @@ skolard/.gradle/
 .idea/
 *.iml
 
+# Database files
+skolard.db
 test.db
 prod.db
