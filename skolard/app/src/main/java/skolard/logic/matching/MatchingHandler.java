@@ -10,20 +10,20 @@ import skolard.persistence.SessionPersistence;
 
 /**
  * Handles matching students with available tutoring sessions.
- * Responsible for loading sessions and allowing booking.
+ * Responsible for loading sessions and applying filters like rating, time, or tutor.
  */
 public class MatchingHandler {
-    private SessionPersistence sessionDB;
+    private final SessionPersistence sessionDB;
 
     /**
-     * Constructor for dependency injection of a custom session list.
+     * Constructor for dependency injection of a session database implementation.
      */
     public MatchingHandler(SessionPersistence sessionPersistence) {
         this.sessionDB = sessionPersistence;
     }
 
     /**
-     * Adds a session to the list of available sessions.
+     * Adds a session to the database.
      */
     public void addSession(Session session) {
         if (session == null) {
@@ -33,45 +33,49 @@ public class MatchingHandler {
     }
 
     /**
-     * Filters and returns sessions that match a course and are not booked.
-     * Applies additional filters such as rating, time range, or tutor.
+     * Returns sessions that match the given course and are not booked.
+     * Applies a filter: "rate", "time", or "tutor".
      */
     public List<Session> getAvailableSessions(String filter, String courseName, LocalDateTime start, LocalDateTime end) {
         if (courseName == null || courseName.isEmpty()) {
             throw new IllegalArgumentException("Course name cannot be null or empty.");
         }
 
-        List<Session> matchingSessions = addNonBookedSessions(courseName);
+        List<Session> matchingSessions = getNonBookedSessions(courseName);
 
-        if(filter.equalsIgnoreCase("rate")){
-            RatingList rateList = new RatingList(matchingSessions);
-            matchingSessions = rateList.sortByBestCourseRating(courseName);
-        } else if(filter.equalsIgnoreCase("time")){
-            if(!start.equals(null) && !end.equals(null)){
-                TimeList timeList = new TimeList(matchingSessions);
-                matchingSessions = timeList.filterByStudentTimeRange(start, end, courseName);
+        if (filter == null) return matchingSessions;
+
+        switch (filter.toLowerCase()) {
+            case "rate" -> {
+                RatingList rateList = new RatingList(matchingSessions);
+                matchingSessions = rateList.sortByBestCourseRating(courseName);
             }
-            
-        } else if(filter.equalsIgnoreCase("tutor")){
-            TutorList tutorList = new TutorList(matchingSessions);
-            matchingSessions = tutorList.getSessionsByTutor(courseName);
+            case "time" -> {
+                if (start != null && end != null) {
+                    TimeList timeList = new TimeList(matchingSessions);
+                    matchingSessions = timeList.filterByStudentTimeRange(start, end, courseName);
+                }
+            }
+            case "tutor" -> {
+                TutorList tutorList = new TutorList(matchingSessions);
+                matchingSessions = tutorList.getSessionsByTutor(courseName);
+            }
         }
 
         return matchingSessions;
     }
 
     /**
-     * Overloaded version for simple course-only search with no filter.
-     * Returns all non-booked sessions for the given course.
+     * Returns sessions for the course that are not yet booked (no filter applied).
      */
     public List<Session> getAvailableSessions(String courseName) {
-        return addNonBookedSessions(courseName);
+        return getNonBookedSessions(courseName);
     }
 
     /**
-     * Extracts only the non-booked sessions that match the given course.
+     * Helper method to get non-booked sessions for a course.
      */
-    public List<Session> addNonBookedSessions(String courseName) {
+    private List<Session> getNonBookedSessions(String courseName) {
         List<Session> allSessions = sessionDB.getAllSessions();
         List<Session> sessions = new ArrayList<>();
 
@@ -85,8 +89,7 @@ public class MatchingHandler {
     }
 
     /**
-     * Attempts to book a session for the provided student.
-     * Also updates tutor/student internal session state.
+     * Books a session for a student, if the session is available.
      */
     public void bookSession(Session session, Student student) {
         if (session == null || student == null) {
@@ -101,5 +104,4 @@ public class MatchingHandler {
             System.out.println("Session " + session.getSessionId() + " is already booked.");
         }
     }
-
 }
