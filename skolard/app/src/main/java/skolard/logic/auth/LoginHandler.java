@@ -49,12 +49,4 @@ public class LoginHandler {
             }
         };
     }
-
-    /**
-     * Stores login credentials via persistence layer.
-     */
-    public void registerCredentials(String email, String password, String role) {
-        LoginCredentials credentials = new LoginCredentials(email, password, role);
-        loginDB.addLoginCredentials(credentials);
-    }
 }
