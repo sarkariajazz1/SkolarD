@@ -26,6 +26,6 @@ skolard/.gradle/
 *.iml
 
 # Database files
-skolard.db
-test.db
-prod.db
+/skolard.db/
+/test.db/
+/prod.db/
