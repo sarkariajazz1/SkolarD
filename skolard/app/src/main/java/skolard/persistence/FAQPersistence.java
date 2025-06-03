@@ -9,4 +9,6 @@ public interface FAQPersistence {
     void addFAQ(FAQ faq);
 
     void deleteFAQByQuestion(String question);
+
+    List<FAQ> searchFAQs(String keyword);
 }
