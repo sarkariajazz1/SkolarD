@@ -6,14 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import skolard.logic.auth.LoginHandler;
 import skolard.logic.faq.FAQHandler;
@@ -24,11 +17,8 @@ import skolard.objects.Tutor;
 import skolard.persistence.PersistenceRegistry;
 import skolard.presentation.SkolardApp;
 import skolard.presentation.faq.FAQView;
+import skolard.utils.PasswordUtil;
 
-/**
- * GUI window for user registration in SkolarD.
- * Allows new users to sign up as either a student or tutor.
- */
 public class SignUpView extends JFrame {
 
     private final JTextField nameField = new JTextField(20);
@@ -97,9 +87,10 @@ public class SignUpView extends JFrame {
                     String name = nameField.getText().trim();
                     String email = emailField.getText().trim();
                     String password = new String(passwordField.getPassword());
+                    String hashedPassword = PasswordUtil.hash(password);
 
-                    handler.addStudent(name, email, password);
-                    storeLoginCredentials(email, password, "student");
+                    handler.addStudent(name, email, hashedPassword);
+                    storeLoginCredentials(email, hashedPassword, "student");
 
                     Student newStudent = handler.getStudent(email);
 
@@ -132,9 +123,10 @@ public class SignUpView extends JFrame {
                     String name = nameField.getText().trim();
                     String email = emailField.getText().trim();
                     String password = new String(passwordField.getPassword());
+                    String hashedPassword = PasswordUtil.hash(password);
 
-                    handler.addTutor(name, email, password);
-                    storeLoginCredentials(email, password, "tutor");
+                    handler.addTutor(name, email, hashedPassword);
+                    storeLoginCredentials(email, hashedPassword, "tutor");
 
                     Tutor newTutor = handler.getTutor(email);
 
@@ -173,15 +165,11 @@ public class SignUpView extends JFrame {
         setVisible(true);
     }
 
-    /**
-     * Store credentials in the LoginPersistence layer.
-     * Requires addLoginCredentials() to be implemented in the persistence layer.
-     */
     private void storeLoginCredentials(String email, String password, String role) {
         try {
             LoginCredentials creds = new LoginCredentials(email, password, role);
             var loginPersistence = PersistenceRegistry.getLoginPersistence();
-            //loginPersistence.addLoginCredentials(creds); // ✅ Ensure this method exists!
+            // loginPersistence.addLoginCredentials(creds); // Uncomment if implemented
         } catch (Exception e) {
             System.err.println("Warning: Could not store login credentials: " + e.getMessage());
         }
