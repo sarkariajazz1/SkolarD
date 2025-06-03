@@ -2,7 +2,12 @@ package skolard;
 
 import javax.swing.SwingUtilities;
 
-import skolard.logic.*;
+import skolard.logic.auth.LoginHandler;
+import skolard.logic.faq.FAQHandler;
+import skolard.logic.matching.MatchingHandler;
+import skolard.logic.message.MessageHandler;
+import skolard.logic.profile.ProfileHandler;
+import skolard.logic.session.SessionHandler;
 import skolard.persistence.PersistenceFactory;
 import skolard.persistence.PersistenceRegistry;
 import skolard.persistence.PersistenceType;

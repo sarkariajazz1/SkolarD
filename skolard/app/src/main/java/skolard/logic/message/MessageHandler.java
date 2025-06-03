@@ -1,4 +1,4 @@
-package skolard.logic.messaging;
+package skolard.logic.message;
 
 import java.util.List;
 
