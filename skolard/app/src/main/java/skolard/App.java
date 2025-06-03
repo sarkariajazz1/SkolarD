@@ -27,7 +27,6 @@ public class App {
         MatchingHandler matchingHandler = new MatchingHandler(PersistenceRegistry.getSessionPersistence());
         MessageHandler messageHandler = new MessageHandler(PersistenceRegistry.getMessagePersistence());
         SessionHandler sessionHandler = new SessionHandler(PersistenceRegistry.getSessionPersistence());
-        // SupportHandler supportHandler = new SupportHandler(PersistenceRegistry.getSupportPersistence());
         FAQHandler faqHandler = new FAQHandler(); 
         LoginHandler loginHandler = new LoginHandler();
 
