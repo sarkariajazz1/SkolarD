@@ -1,4 +1,4 @@
-package skolard.logic;
+package skolard.logic.matching;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

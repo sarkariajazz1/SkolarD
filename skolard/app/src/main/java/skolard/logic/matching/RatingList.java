@@ -1,7 +1,8 @@
-package skolard.logic;
+package skolard.logic.matching;
 
 import java.util.Collections;
 import java.util.List;
+
 import skolard.objects.Session;
 
 /**

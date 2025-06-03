@@ -1,18 +1,18 @@
-package skolard.logic;
+package skolard.logic.payment;
 
-import skolard.objects.Student;
-import skolard.objects.Card;
-import skolard.persistence.CardPersistence;
-import skolard.utils.CardUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.SecretKey;
+
+import skolard.objects.Card;
+import skolard.objects.Student;
+import skolard.persistence.CardPersistence;
+import skolard.utils.CardUtil;
 
 public class PaymentHandler {
     private CardPersistence cardDB;

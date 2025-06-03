@@ -1,4 +1,4 @@
-// package skolard.logic;
+// package skolard.logic.rating;
 
 // import skolard.objects.*;
 // import skolard.persistence.SessionPersistence;

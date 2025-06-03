@@ -1,4 +1,4 @@
-package skolard.logic;
+package skolard.logic.matching;
 
 import java.util.ArrayList;
 import java.util.Collections;

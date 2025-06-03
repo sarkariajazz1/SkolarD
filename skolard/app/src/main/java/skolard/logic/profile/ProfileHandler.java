@@ -1,4 +1,4 @@
-package skolard.logic;
+package skolard.logic.profile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,6 @@ import java.util.HashMap;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
-import skolard.persistence.PersistenceFactory;
 import skolard.persistence.PersistenceRegistry;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;

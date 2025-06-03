@@ -1,4 +1,4 @@
-package skolard.logic;
+package skolard.logic.support;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package skolard.logic;
+package skolard.logic.faq;
 
 import java.awt.Desktop;
 import java.io.File;

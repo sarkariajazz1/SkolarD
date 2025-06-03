@@ -1,4 +1,4 @@
-package skolard.logic;
+package skolard.logic.auth;
 
 import skolard.objects.LoginCredentials;
 import skolard.persistence.LoginPersistence;
