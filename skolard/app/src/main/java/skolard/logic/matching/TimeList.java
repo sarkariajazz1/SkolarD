@@ -1,32 +1,23 @@
 package skolard.logic.matching;
 
+import skolard.objects.Session;
+
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import skolard.objects.Session;
-
 /**
- * TimeList is a PriorityList that filters tutoring sessions by a student's available time range.
+ * TimeList filters tutoring sessions by a student's available time range.
  */
 public class TimeList extends PriorityList<Session> {
 
-    // Default constructor
     public TimeList(List<Session> sessions) {
-        items = sessions;
+        super(sessions); // defensive copy
     }
 
-    /**
-     * Filters sessions based on course name and whether they fit within the student's availability window.
-     *
-     * @param studentStart the earliest time the student is available
-     * @param studentEnd   the latest time the student is available
-     * @param courseName   the course the student is looking for
-     * @return a list of sessions that match the criteria
-     */
     public List<Session> filterByStudentTimeRange(LocalDateTime studentStart, LocalDateTime studentEnd, String courseName) {
-        if (items.isEmpty() ||studentStart == null || studentEnd == null || courseName == null || courseName.isEmpty()) {
+        if (items.isEmpty() || studentStart == null || studentEnd == null || courseName == null || courseName.isEmpty()) {
             return Collections.emptyList();
         }
 
