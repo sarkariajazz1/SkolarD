@@ -1,11 +1,11 @@
 package skolard.persistence.sqlite;
 
-import skolard.persistence.LoginPersistence;
-import skolard.utils.PasswordUtil;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+import skolard.persistence.LoginPersistence;
+import skolard.utils.PasswordUtil;
 
 public class LoginDB implements LoginPersistence {
     private final Connection connection;
