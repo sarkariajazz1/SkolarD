@@ -2,7 +2,7 @@ package skolard.logic;
 
 import skolard.objects.LoginCredentials;
 import skolard.persistence.LoginPersistence;
-import skolard.persistence.PersistenceFactory;
+import skolard.persistence.PersistenceRegistry;
 
 /**
  * Handles login logic for authenticating students and tutors.
@@ -10,7 +10,8 @@ import skolard.persistence.PersistenceFactory;
 public class LoginHandler {
     private final LoginPersistence loginDB;
     public LoginHandler() {
-        this.loginDB = PersistenceFactory.getLoginPersistence();
+        this.loginDB = PersistenceRegistry.getLoginPersistence();
+
     }
     
     public LoginHandler(LoginPersistence loginDB) {
@@ -34,9 +35,7 @@ public class LoginHandler {
             case "tutor":
                 return loginDB.authenticateTutor(email, password);
             case "support":
-                // For now, support accounts may be hardcoded or simply treated as admin
-                // This is just an example logic; adjust as needed
-                return email.equals("support@skolard.com") && password.equals("admin123");
+                return loginDB.authenticateSupport(email, password);
             default:
                 System.err.println("Unknown role: " + role);
                 return false;
