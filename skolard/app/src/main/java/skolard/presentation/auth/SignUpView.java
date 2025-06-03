@@ -6,15 +6,20 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import skolard.logic.auth.LoginHandler;
 import skolard.logic.faq.FAQHandler;
 import skolard.logic.profile.ProfileHandler;
-import skolard.objects.LoginCredentials;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
-import skolard.persistence.PersistenceRegistry;
 import skolard.presentation.SkolardApp;
 import skolard.presentation.faq.FAQView;
 
@@ -22,6 +27,8 @@ import skolard.presentation.faq.FAQView;
  * GUI window for user registration in SkolarD.
  * Allows new users to sign up as either a student or tutor.
  */
+// [imports remain unchanged]
+
 public class SignUpView extends JFrame {
 
     private final JTextField nameField = new JTextField(20);
@@ -83,75 +90,8 @@ public class SignUpView extends JFrame {
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(statusLabel, BorderLayout.NORTH);
 
-        // Sign Up as Student
-        signUpStudentBtn.addActionListener(e -> {
-            if (validateForm()) {
-                try {
-                    String name = nameField.getText().trim();
-                    String email = emailField.getText().trim();
-                    String password = new String(passwordField.getPassword());
-
-                    handler.addStudent(name, email, password);
-                    storeLoginCredentials(email, password, "student");
-
-                    Student newStudent = handler.getStudent(email);
-
-                    statusLabel.setText("Student account created successfully!");
-                    JOptionPane.showMessageDialog(this,
-                            "Student account created for: " + name,
-                            "Success", JOptionPane.INFORMATION_MESSAGE);
-
-                    parentApp.onAuthenticationSuccess(newStudent);
-                    dispose();
-
-                } catch (IllegalArgumentException ex) {
-                    statusLabel.setText("Error: " + ex.getMessage());
-                    JOptionPane.showMessageDialog(this,
-                            "Error creating account: " + ex.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (Exception ex) {
-                    statusLabel.setText("Unexpected error occurred");
-                    JOptionPane.showMessageDialog(this,
-                            "An unexpected error occurred. Please try again.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-
-        // Sign Up as Tutor
-        signUpTutorBtn.addActionListener(e -> {
-            if (validateForm()) {
-                try {
-                    String name = nameField.getText().trim();
-                    String email = emailField.getText().trim();
-                    String password = new String(passwordField.getPassword());
-
-                    handler.addTutor(name, email, password);
-                    storeLoginCredentials(email, password, "tutor");
-
-                    Tutor newTutor = handler.getTutor(email);
-
-                    statusLabel.setText("Tutor account created successfully!");
-                    JOptionPane.showMessageDialog(this,
-                            "Tutor account created for: " + name,
-                            "Success", JOptionPane.INFORMATION_MESSAGE);
-
-                    parentApp.onAuthenticationSuccess(newTutor);
-                    dispose();
-
-                } catch (IllegalArgumentException ex) {
-                    statusLabel.setText("Error: " + ex.getMessage());
-                    JOptionPane.showMessageDialog(this,
-                            "Error creating account: " + ex.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (Exception ex) {
-                    statusLabel.setText("Unexpected error occurred");
-                    JOptionPane.showMessageDialog(this,
-                            "An unexpected error occurred. Please try again.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
+        signUpStudentBtn.addActionListener(e -> handleSignup("student"));
+        signUpTutorBtn.addActionListener(e -> handleSignup("tutor"));
 
         loginBtn.addActionListener(e -> {
             new LoginView(handler, loginHandler, parentApp);
@@ -166,18 +106,44 @@ public class SignUpView extends JFrame {
         setVisible(true);
     }
 
-    /**
-     * Store credentials in the LoginPersistence layer.
-     * Requires addLoginCredentials() to be implemented in the persistence layer.
-     */
-    private void storeLoginCredentials(String email, String password, String role) {
+    private void handleSignup(String role) {
+        if (!validateForm()) return;
+
+        String name = nameField.getText().trim();
+        String email = emailField.getText().trim();
+        String password = new String(passwordField.getPassword());
+
         try {
-            LoginCredentials creds = new LoginCredentials(email, password, role);
-            var loginPersistence = PersistenceRegistry.getLoginPersistence();
-            loginPersistence.addLoginCredentials(creds); // ✅ Ensure this method exists!
-        } catch (Exception e) {
-            System.err.println("Warning: Could not store login credentials: " + e.getMessage());
+            if (role.equals("student")) {
+                handler.addStudent(name, email, password);
+                loginHandler.registerCredentials(email, password, "student");
+                Student newStudent = handler.getStudent(email);
+
+                notifySuccess("Student", name);
+                parentApp.onAuthenticationSuccess(newStudent);
+            } else {
+                handler.addTutor(name, email, password);
+                loginHandler.registerCredentials(email, password, "tutor");
+                Tutor newTutor = handler.getTutor(email);
+
+                notifySuccess("Tutor", name);
+                parentApp.onAuthenticationSuccess(newTutor);
+            }
+            dispose();
+        } catch (IllegalArgumentException ex) {
+            statusLabel.setText("Error: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            statusLabel.setText("Unexpected error occurred");
+            JOptionPane.showMessageDialog(this, "Unexpected error. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void notifySuccess(String role, String name) {
+        statusLabel.setText(role + " account created successfully!");
+        JOptionPane.showMessageDialog(this,
+                role + " account created for: " + name,
+                "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private boolean validateForm() {

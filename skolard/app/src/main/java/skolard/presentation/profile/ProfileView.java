@@ -14,6 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import skolard.logic.profile.ProfileHandler;
+import skolard.objects.Tutor;
 import skolard.objects.User;
 
 /**
@@ -94,7 +95,7 @@ public class ProfileView extends JFrame {
             }
             String newBio = JOptionPane.showInputDialog(this, "Enter new bio:");
             if (newBio != null && !newBio.isBlank()) {
-                handler.updateBio(currentUser, newBio.trim());
+                handler.updateBio((Tutor)currentUser, newBio.trim());
                 profileArea.setText(handler.viewFullProfile(currentUser));
             }
         });
