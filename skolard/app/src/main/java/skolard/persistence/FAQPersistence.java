@@ -7,4 +7,6 @@ public interface FAQPersistence {
     List<FAQ> getAllFAQs();
     
     void addFAQ(FAQ faq);
+
+    void deleteFAQByQuestion(String question);
 }
