@@ -15,6 +15,7 @@ public class SupportTicket {
     private LocalDateTime closedAt;
     private boolean isHandled;
 
+    // Constructor for new tickets
     public SupportTicket(User requester, String title, String description) {
         this.ticketId = UUID.randomUUID().toString();
         this.requester = requester;
@@ -22,6 +23,18 @@ public class SupportTicket {
         this.description = description;
         this.createdAt = LocalDateTime.now();
         this.isHandled = false;
+    }
+
+    // Constructor for loading from database
+    public SupportTicket(String ticketId, User requester, String title, String description,
+                         LocalDateTime createdAt, LocalDateTime closedAt, boolean isHandled) {
+        this.ticketId = ticketId;
+        this.requester = requester;
+        this.title = title;
+        this.description = description;
+        this.createdAt = createdAt;
+        this.closedAt = closedAt;
+        this.isHandled = isHandled;
     }
 
     public String getTicketId() {
