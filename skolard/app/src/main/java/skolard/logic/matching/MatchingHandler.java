@@ -30,6 +30,7 @@ public class MatchingHandler {
         this.sessionDB = sessionPersistence;
     }
 
+    //For BookingHandler?
     public void addSession(Session session) {
         if (session == null) {
             throw new IllegalArgumentException("Session cannot be null.");
@@ -102,7 +103,7 @@ public class MatchingHandler {
 
     /**
      * Retrieves a list of available (non-booked) tutoring sessions for a specific course,
-     * optionally applying a filter (e.g., by rating, time range, or tutor).
+     * optionally applying a filter
      *
      * @param filter      the filter to apply to the sessions; can be null for no filtering
      * @param courseName  the name of the course to search sessions for (required)
@@ -125,6 +126,10 @@ public class MatchingHandler {
         return sessions;
     }
 
+    public List<Session> getAvailableSessions(String courseName){
+        return getNonBookedSessions(courseName);
+    }
+
     private List<Session> getNonBookedSessions(String courseName) {
         List<Session> allSessions = sessionDB.getAllSessions();
         List<Session> sessions = new ArrayList<>();
@@ -138,6 +143,7 @@ public class MatchingHandler {
         return sessions;
     }
 
+    // For BookingHandler?
     public void bookSession(Session session, Student student) {
         if (session == null || student == null) {
             throw new IllegalArgumentException("Session and student cannot be null.");
