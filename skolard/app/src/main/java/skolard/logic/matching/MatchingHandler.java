@@ -37,37 +37,92 @@ public class MatchingHandler {
         sessionDB.addSession(session);
     }
 
-    public List<Session> getAvailableSessions(String filter, String courseName, LocalDateTime start, LocalDateTime end) {
+    /**
+     * Enum representing different types of filters that can be applied
+     * to a list of tutoring sessions.
+     * 
+     * Each filter defines a specific strategy to modify or refine
+     * the session list based on criteria like rating, time availability, or tutor.
+     */
+    public enum SessionFilter {
+        /**
+         * Sorts sessions by best course rating
+         */
+        RATE((sessions, course, start, end) ->
+            new RatingList(sessions).sortByBestCourseRating(course)),
+
+        /**
+         * Filters and sorts sessions based on student time range
+         */
+        TIME((sessions, course, start, end) -> {
+            // If either times are null, return an unfiltered sessions list
+            if (start != null && end != null) {
+                return new TimeList(sessions).filterByStudentTimeRange(start, end, course);
+            }
+            return sessions;
+        }),
+
+        
+        /**
+         * Sorts sessions by tutor's overall rating
+         */
+        TUTOR((sessions, course, start, end) ->
+            new TutorList(sessions).getSessionsByTutor(course));
+
+        private final SessionFilterStrategy strategy;
+
+        /**
+         * Constructor for enum constants that assigns their specific filtering strategy.
+         *
+         * @param strategy the logic to apply when this filter is used
+         */
+        SessionFilter(SessionFilterStrategy strategy) {
+            this.strategy = strategy;
+        }
+
+        /**
+         * Applies the filter's strategy to a list of sessions.
+         *
+         * @param sessions   the initial list of sessions
+         * @param courseName the name of the course
+         * @param start      the optional start time for time filtering
+         * @param end        the optional end time for time filtering
+         * @return the filtered list of sessions
+         */
+        public List<Session> apply(List<Session> sessions, String courseName, LocalDateTime start, LocalDateTime end) {
+            return strategy.apply(sessions, courseName, start, end);
+        }
+
+        //Functional interface that defines how to filter a list of sessions.Implemented by each enum constant.
+        @FunctionalInterface
+        private interface SessionFilterStrategy {
+            List<Session> apply(List<Session> sessions, String courseName, LocalDateTime start, LocalDateTime end);
+        }
+    }
+
+    /**
+     * Retrieves a list of available (non-booked) tutoring sessions for a specific course,
+     * optionally applying a filter (e.g., by rating, time range, or tutor).
+     *
+     * @param filter      the filter to apply to the sessions; can be null for no filtering
+     * @param courseName  the name of the course to search sessions for (required)
+     * @param start       the optional start time (used for time-based filtering)
+     * @param end         the optional end time (used for time-based filtering)
+     * @return a list of sessions that match the course and optional filter criteria
+     * @throws IllegalArgumentException if the courseName is null or empty
+     */
+    public List<Session> getAvailableSessions(SessionFilter filter, String courseName, LocalDateTime start, LocalDateTime end){
         if (courseName == null || courseName.isEmpty()) {
             throw new IllegalArgumentException("Course name cannot be null or empty.");
         }
 
-        List<Session> matchingSessions = getNonBookedSessions(courseName);
+        List<Session> sessions = getNonBookedSessions(courseName);
 
-        if (filter == null) return matchingSessions;
-
-        switch (filter.toLowerCase()) {
-            case "rate" -> {
-                RatingList rateList = new RatingList(matchingSessions);
-                matchingSessions = rateList.sortByBestCourseRating(courseName);
-            }
-            case "time" -> {
-                if (start != null && end != null) {
-                    TimeList timeList = new TimeList(matchingSessions);
-                    matchingSessions = timeList.filterByStudentTimeRange(start, end, courseName);
-                }
-            }
-            case "tutor" -> {
-                TutorList tutorList = new TutorList(matchingSessions);
-                matchingSessions = tutorList.getSessionsByTutor(courseName);
-            }
+        if (filter != null) {
+            sessions = filter.apply(sessions, courseName, start, end);
         }
 
-        return matchingSessions;
-    }
-
-    public List<Session> getAvailableSessions(String courseName) {
-        return getNonBookedSessions(courseName);
+        return sessions;
     }
 
     private List<Session> getNonBookedSessions(String courseName) {
