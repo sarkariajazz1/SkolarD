@@ -103,7 +103,7 @@ public class MatchingHandler {
 
     /**
      * Retrieves a list of available (non-booked) tutoring sessions for a specific course,
-     * optionally applying a filter
+     * and applying a filter
      *
      * @param filter      the filter to apply to the sessions; can be null for no filtering
      * @param courseName  the name of the course to search sessions for (required)
@@ -126,10 +126,26 @@ public class MatchingHandler {
         return sessions;
     }
 
+    /**
+     * Overloaded method that retrieves a list of available (non-booked) tutoring sessions for a specific course not filtered
+     * 
+     *
+     * @param courseName  the name of the course to search sessions for (required)
+     * @return a list of sessions not booked and not filtered
+     */
     public List<Session> getAvailableSessions(String courseName){
+        if (courseName == null || courseName.isEmpty()) {
+            throw new IllegalArgumentException("Course name cannot be null or empty.");
+        }
         return getNonBookedSessions(courseName);
     }
 
+    /**
+     * Iterates through all sessions in and filters out the non-booked tutoring sessions for a specific course
+     *
+     * @param courseName  the name of the course to search sessions for (required)
+     * @return a list of sessions that are not booked
+     */
     private List<Session> getNonBookedSessions(String courseName) {
         List<Session> allSessions = sessionDB.getAllSessions();
         List<Session> sessions = new ArrayList<>();
