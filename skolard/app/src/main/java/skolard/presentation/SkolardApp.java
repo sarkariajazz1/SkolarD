@@ -1,4 +1,3 @@
-
 package skolard.presentation;
 
 import java.awt.BorderLayout;
@@ -20,6 +19,7 @@ import skolard.logic.matching.MatchingHandler;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
 import skolard.logic.session.SessionHandler;
+import skolard.logic.support.SupportHandler;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
@@ -31,38 +31,31 @@ import skolard.presentation.faq.FAQView;
 import skolard.presentation.message.MessageView;
 import skolard.presentation.profile.ProfileView;
 import skolard.presentation.session.SessionView;
+import skolard.presentation.support.SupportView;
+import skolard.persistence.PersistenceRegistry;
 
-
-/**
- * The main application window of SkolarD that handles authentication and navigation.
- */
 public class SkolardApp extends JFrame {
 
-    final private ProfileHandler profileHandler;
-    final private MatchingHandler matchingHandler;
-    final private SessionHandler sessionHandler;
-    //final private SupportHandler supportHandler;
-    final private MessageHandler messageHandler;
-    final private FAQHandler faqHandler;
-    final private LoginHandler loginHandler;
+    private final ProfileHandler profileHandler;
+    private final MatchingHandler matchingHandler;
+    private final SessionHandler sessionHandler;
+    private final MessageHandler messageHandler;
+    private final FAQHandler faqHandler;
+    private final LoginHandler loginHandler;
 
-    // Current logged-in user
     private User currentUser;
-
-    // UI Components
     private JPanel mainPanel;
     private CardLayout cardLayout;
-    private JPanel dashboardPanel; // Store reference to recreate it
+    private JPanel dashboardPanel;
 
     public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler,
-                      SessionHandler sessionHandler,
-                      MessageHandler messageHandler, FAQHandler faqHandler, LoginHandler loginHandler) {
+                      SessionHandler sessionHandler, MessageHandler messageHandler,
+                      FAQHandler faqHandler, LoginHandler loginHandler) {
         super("SkolarD - Welcome");
 
         this.profileHandler = profileHandler;
         this.matchingHandler = matchingHandler;
         this.sessionHandler = sessionHandler;
-        //this.supportHandler = supportHandler;
         this.messageHandler = messageHandler;
         this.faqHandler = faqHandler;
         this.loginHandler = loginHandler;
@@ -80,10 +73,7 @@ public class SkolardApp extends JFrame {
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
-        // Create authentication panel (login/signup options)
         JPanel authPanel = createAuthenticationPanel();
-
-        // Create initial dashboard panel (will be updated based on user type)
         dashboardPanel = createDashboardPanel();
 
         mainPanel.add(authPanel, "AUTH");
@@ -95,12 +85,10 @@ public class SkolardApp extends JFrame {
     private JPanel createAuthenticationPanel() {
         JPanel authPanel = new JPanel(new BorderLayout(10, 10));
 
-        // Welcome message
         JLabel welcomeLabel = new JLabel("Welcome to SkolarD", SwingConstants.CENTER);
         welcomeLabel.setFont(welcomeLabel.getFont().deriveFont(Font.BOLD, 16f));
         authPanel.add(welcomeLabel, BorderLayout.NORTH);
 
-        // Authentication buttons
         JPanel buttonPanel = new JPanel(new FlowLayout());
         JButton loginBtn = new JButton("Login");
         JButton signUpBtn = new JButton("Sign Up");
@@ -111,11 +99,9 @@ public class SkolardApp extends JFrame {
         buttonPanel.add(faqBtn);
         authPanel.add(buttonPanel, BorderLayout.CENTER);
 
-        // Instructions
         JLabel instructionLabel = new JLabel("Please login or sign up to access all features", SwingConstants.CENTER);
         authPanel.add(instructionLabel, BorderLayout.SOUTH);
 
-        // Event listeners
         loginBtn.addActionListener(e -> new LoginView(profileHandler, loginHandler, this));
         signUpBtn.addActionListener(e -> new SignUpView(profileHandler, loginHandler, this));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
@@ -126,27 +112,25 @@ public class SkolardApp extends JFrame {
     private JPanel createDashboardPanel() {
         JPanel dashboardPanel = new JPanel(new BorderLayout(10, 10));
 
-        // Dashboard title with user info
         String titleText = "SkolarD Dashboard";
         if (currentUser != null) {
-            String userType = currentUser instanceof Student ? "Student" : "Tutor";
+            String userType = currentUser instanceof Student ? "Student" :
+                              currentUser instanceof Tutor ? "Tutor" : "User";
             titleText += " - " + userType + ": " + currentUser.getName();
         }
+
         JLabel dashboardLabel = new JLabel(titleText, SwingConstants.CENTER);
         dashboardLabel.setFont(dashboardLabel.getFont().deriveFont(Font.BOLD, 16f));
         dashboardPanel.add(dashboardLabel, BorderLayout.NORTH);
 
-        // Create buttons based on user type
         JPanel buttonPanel = createButtonPanelForUser();
         dashboardPanel.add(buttonPanel, BorderLayout.CENTER);
 
-        // Logout button at bottom
         JPanel bottomPanel = new JPanel(new FlowLayout());
         JButton logoutBtn = new JButton("Logout");
         bottomPanel.add(logoutBtn);
         dashboardPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Logout event listener
         logoutBtn.addActionListener(e -> logout());
 
         return dashboardPanel;
@@ -154,7 +138,6 @@ public class SkolardApp extends JFrame {
 
     private JPanel createButtonPanelForUser() {
         if (currentUser == null) {
-            // Generic panel for unauthenticated users
             JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
             JButton profileBtn = new JButton("Profile Management");
             JButton sessionBtn = new JButton("Session Management");
@@ -166,19 +149,9 @@ public class SkolardApp extends JFrame {
             buttonPanel.add(messageBtn);
             buttonPanel.add(faqBtn);
 
-            // Generic event listeners (with authentication checks)
-            profileBtn.addActionListener(e -> {
-                JOptionPane.showMessageDialog(this, "Please login first to access profile management",
-                        "Authentication Required", JOptionPane.WARNING_MESSAGE);
-            });
-            sessionBtn.addActionListener(e -> {
-                JOptionPane.showMessageDialog(this, "Please login first to access session management",
-                        "Authentication Required", JOptionPane.WARNING_MESSAGE);
-            });
-            messageBtn.addActionListener(e -> {
-                JOptionPane.showMessageDialog(this, "Please login first to access messages",
-                        "Authentication Required", JOptionPane.WARNING_MESSAGE);
-            });
+            profileBtn.addActionListener(e -> showLoginPrompt());
+            sessionBtn.addActionListener(e -> showLoginPrompt());
+            messageBtn.addActionListener(e -> showLoginPrompt());
             faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
             return buttonPanel;
@@ -189,7 +162,6 @@ public class SkolardApp extends JFrame {
         } else if (currentUser instanceof Tutor) {
             return createTutorButtonPanel();
         } else {
-            // Fallback for unknown user types
             return createGenericButtonPanel();
         }
     }
@@ -211,12 +183,11 @@ public class SkolardApp extends JFrame {
         buttonPanel.add(supportBtn);
         buttonPanel.add(faqBtn);
 
-        // Student-specific event listeners
         myDashboardBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
         findTutorsBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
         messageBtn.addActionListener(e -> new MessageView(messageHandler));
-        //supportBtn.addActionListener(e -> new SupportView(supportHandler));
+        supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence())));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
         return buttonPanel;
@@ -239,12 +210,11 @@ public class SkolardApp extends JFrame {
         buttonPanel.add(supportBtn);
         buttonPanel.add(faqBtn);
 
-        // Tutor-specific event listeners
         myDashboardBtn.addActionListener(e -> new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
         studentsBtn.addActionListener(e -> new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
         messageBtn.addActionListener(e -> new MessageView(messageHandler));
-        //supportBtn.addActionListener(e -> new SupportView(supportHandler));
+        supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence())));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
         return buttonPanel;
@@ -263,7 +233,6 @@ public class SkolardApp extends JFrame {
         buttonPanel.add(messageBtn);
         buttonPanel.add(faqBtn);
 
-        // Generic event listeners
         profileBtn.addActionListener(e -> new ProfileView(profileHandler));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
         messageBtn.addActionListener(e -> new MessageView(messageHandler));
@@ -272,57 +241,37 @@ public class SkolardApp extends JFrame {
         return buttonPanel;
     }
 
-    /**
-     * Opens the appropriate dashboard based on the user type
-     */
-    private void openUserSpecificDashboard() {
-        if (currentUser == null) {
-            JOptionPane.showMessageDialog(this, "Please login first to access your dashboard",
-                    "Authentication Required", JOptionPane.WARNING_MESSAGE);
+    private void showLoginPrompt() {
+        JOptionPane.showMessageDialog(this, "Please login first to access this feature.",
+                "Authentication Required", JOptionPane.WARNING_MESSAGE);
+    }
+
+    public void onAuthenticationSuccess(User user) {
+        this.currentUser = user;
+
+        // If support user, skip dashboard and launch SupportView directly
+        if (user instanceof skolard.objects.Support) {
+            SupportHandler supportHandler = new SupportHandler(PersistenceRegistry.getSupportPersistence());
+            new SupportView(supportHandler);
             return;
         }
 
-        if (currentUser instanceof Student) {
-            new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser);
-        } else if (currentUser instanceof Tutor) {
-            new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser);
-        } else {
-            // Fallback to the old ProfileView for any other user types
-            new ProfileView(profileHandler);
-        }
+        setTitle("SkolarD - Dashboard (" + user.getName() + ")");
+        mainPanel.remove(dashboardPanel);
+        dashboardPanel = createDashboardPanel();
+        mainPanel.add(dashboardPanel, "DASHBOARD");
+        cardLayout.show(mainPanel, "DASHBOARD");
     }
 
-    /**
-     * Called when user successfully authenticates
-     */
     public void onAuthenticationSuccess() {
         setTitle("SkolarD - Dashboard");
         cardLayout.show(mainPanel, "DASHBOARD");
     }
 
-    /**
-     * Called when user successfully authenticates with user information
-     */
-    public void onAuthenticationSuccess(User user) {
-        this.currentUser = user;
-        setTitle("SkolarD - Dashboard (" + user.getName() + ")");
-
-        // Recreate the dashboard panel with user-specific buttons
-        mainPanel.remove(dashboardPanel);
-        dashboardPanel = createDashboardPanel();
-        mainPanel.add(dashboardPanel, "DASHBOARD");
-
-        cardLayout.show(mainPanel, "DASHBOARD");
-    }
-
-    /**
-     * Shows the authentication view (login/signup)
-     */
     public void showAuthenticationView() {
         setTitle("SkolarD - Welcome");
-        this.currentUser = null; // Clear current user on logout
+        this.currentUser = null;
 
-        // Recreate the dashboard panel for unauthenticated state
         mainPanel.remove(dashboardPanel);
         dashboardPanel = createDashboardPanel();
         mainPanel.add(dashboardPanel, "DASHBOARD");
@@ -330,9 +279,6 @@ public class SkolardApp extends JFrame {
         cardLayout.show(mainPanel, "AUTH");
     }
 
-    /**
-     * Handles user logout
-     */
     private void logout() {
         int choice = JOptionPane.showConfirmDialog(this,
                 "Are you sure you want to logout?",
@@ -344,9 +290,6 @@ public class SkolardApp extends JFrame {
         }
     }
 
-    /**
-     * Gets the currently logged-in user
-     */
     public User getCurrentUser() {
         return currentUser;
     }

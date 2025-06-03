@@ -10,22 +10,22 @@ import javax.swing.*;
 
 import skolard.presentation.SkolardApp;
 import skolard.presentation.faq.FAQView;
+import skolard.presentation.support.SupportView;
 import skolard.logic.auth.LoginHandler;
 import skolard.logic.faq.FAQHandler;
 import skolard.logic.profile.ProfileHandler;
+import skolard.logic.support.SupportHandler;
 import skolard.objects.LoginCredentials;
 import skolard.objects.User;
+import skolard.persistence.PersistenceRegistry;
 
-/**
- * GUI window for user login in SkolarD.
- * Allows users to authenticate as either a student or tutor.
- */
 public class LoginView extends JFrame {
 
     private final JTextField emailField = new JTextField(20);
     private final JPasswordField passwordField = new JPasswordField(20);
     private final JButton loginStudentBtn = new JButton("Login as Student");
     private final JButton loginTutorBtn = new JButton("Login as Tutor");
+    private final JButton loginSupportBtn = new JButton("Login as Support"); // NEW
     private final JButton signUpBtn = new JButton("Go to Sign Up");
     private final JButton faqBtn = new JButton("FAQs");
     private final JLabel statusLabel = new JLabel("Enter your credentials to login");
@@ -43,7 +43,6 @@ public class LoginView extends JFrame {
 
         setLayout(new BorderLayout(10, 10));
 
-        // Login Form Panel
         JPanel formPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -60,19 +59,18 @@ public class LoginView extends JFrame {
 
         add(formPanel, BorderLayout.CENTER);
 
-        // Button Panel
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 5, 5)); // updated to fit all 5 buttons
         buttonPanel.add(loginStudentBtn);
         buttonPanel.add(loginTutorBtn);
+        buttonPanel.add(loginSupportBtn); // NEW
         buttonPanel.add(signUpBtn);
         buttonPanel.add(faqBtn);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Status Label
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(statusLabel, BorderLayout.NORTH);
 
-        // Action: Login as Student
+        // Login as Student
         loginStudentBtn.addActionListener(e -> {
             String email = emailField.getText().trim();
             String password = new String(passwordField.getPassword());
@@ -99,7 +97,7 @@ public class LoginView extends JFrame {
             }
         });
 
-        // Action: Login as Tutor
+        // Login as Tutor
         loginTutorBtn.addActionListener(e -> {
             String email = emailField.getText().trim();
             String password = new String(passwordField.getPassword());
@@ -126,13 +124,31 @@ public class LoginView extends JFrame {
             }
         });
 
-        // Action: Go to Sign Up
+        // Login as Support
+        loginSupportBtn.addActionListener(e -> {
+            String email = emailField.getText().trim();
+            String password = new String(passwordField.getPassword());
+
+            if (email.isEmpty() || password.isEmpty()) {
+                statusLabel.setText("Please enter both email and password");
+                return;
+            }
+
+            LoginCredentials creds = new LoginCredentials(email, password, "support");
+            if (loginHandler.login(creds)) {
+                SupportHandler supportHandler = new SupportHandler(PersistenceRegistry.getSupportPersistence());
+                new SupportView(supportHandler);
+                dispose();
+            } else {
+                showLoginFailed("support");
+            }
+        });
+
         signUpBtn.addActionListener(e -> {
             new SignUpView(profileHandler, loginHandler, parentApp);
             dispose();
         });
 
-        // Action: Open FAQ
         faqBtn.addActionListener(e -> new FAQView(new FAQHandler()));
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

@@ -40,16 +40,17 @@ public class SupportDB implements SupportPersistence {
     @Override
     public SupportTicket addTicket(SupportTicket ticket) {
         try (PreparedStatement stmt = conn.prepareStatement("""
-            INSERT INTO support_ticket (ticket_id, requester_email, title, description, created_at, closed_at, is_handled)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO support_ticket (ticket_id, requester_email, requester_role, title, description, created_at, closed_at, is_handled)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """)) {
             stmt.setString(1, ticket.getTicketId());
             stmt.setString(2, ticket.getRequester().getEmail());
-            stmt.setString(3, ticket.getTitle());
-            stmt.setString(4, ticket.getDescription());
-            stmt.setString(5, ticket.getCreatedAt().toString());
-            stmt.setString(6, ticket.getClosedAt() == null ? null : ticket.getClosedAt().toString());
-            stmt.setInt(7, ticket.isHandled() ? 1 : 0);
+            stmt.setString(3, ticket.getRequester().getClass().getSimpleName().toLowerCase()); // "student" or "tutor"
+            stmt.setString(4, ticket.getTitle());
+            stmt.setString(5, ticket.getDescription());
+            stmt.setString(6, ticket.getCreatedAt().toString());
+            stmt.setString(7, ticket.getClosedAt() == null ? null : ticket.getClosedAt().toString());
+            stmt.setInt(8, ticket.isHandled() ? 1 : 0);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -95,6 +96,7 @@ public class SupportDB implements SupportPersistence {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
+                String ticketId = rs.getString("ticket_id");
                 String email = rs.getString("requester_email");
                 String role = rs.getString("requester_role");
                 String title = rs.getString("title");
@@ -110,13 +112,11 @@ public class SupportDB implements SupportPersistence {
                 };
 
                 if (requester != null) {
-                    SupportTicket ticket = new SupportTicket(requester, title, desc);
-                    if (isHandled) ticket.closeTicket();
+                    SupportTicket ticket = new SupportTicket(ticketId, requester, title, desc, createdAt, closedAt, isHandled);
                     tickets.add(ticket);
                 } else {
                     System.err.println("Warning: requester not found for ticket email: " + email);
                 }
-
             }
 
         } catch (SQLException e) {
