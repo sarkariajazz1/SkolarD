@@ -22,9 +22,7 @@ public class App {
         PersistenceFactory.initialize(PersistenceType.PROD, true);
 
         // Get instances from the registry
-        ProfileHandler profileHandler = new ProfileHandler(
-                PersistenceRegistry.getStudentPersistence(),
-                PersistenceRegistry.getTutorPersistence());
+        ProfileHandler profileHandler = new ProfileHandler();
 
         MatchingHandler matchingHandler = new MatchingHandler(PersistenceRegistry.getSessionPersistence());
         MessageHandler messageHandler = new MessageHandler(PersistenceRegistry.getMessagePersistence());
