@@ -25,7 +25,7 @@ public class LoginView extends JFrame {
     private final JPasswordField passwordField = new JPasswordField(20);
     private final JButton loginStudentBtn = new JButton("Login as Student");
     private final JButton loginTutorBtn = new JButton("Login as Tutor");
-    private final JButton loginSupportBtn = new JButton("Login as Support"); // NEW
+    private final JButton loginSupportBtn = new JButton("Login as Support");
     private final JButton signUpBtn = new JButton("Go to Sign Up");
     private final JButton faqBtn = new JButton("FAQs");
     private final JLabel statusLabel = new JLabel("Enter your credentials to login");
@@ -59,10 +59,10 @@ public class LoginView extends JFrame {
 
         add(formPanel, BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 5, 5)); // updated to fit all 5 buttons
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 5, 5));
         buttonPanel.add(loginStudentBtn);
         buttonPanel.add(loginTutorBtn);
-        buttonPanel.add(loginSupportBtn); // NEW
+        buttonPanel.add(loginSupportBtn);
         buttonPanel.add(signUpBtn);
         buttonPanel.add(faqBtn);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -136,8 +136,9 @@ public class LoginView extends JFrame {
 
             LoginCredentials creds = new LoginCredentials(email, password, "support");
             if (loginHandler.login(creds)) {
+                User supportUser = new skolard.objects.Support("Support", email);
                 SupportHandler supportHandler = new SupportHandler(PersistenceRegistry.getSupportPersistence());
-                new SupportView(supportHandler);
+                new SupportView(supportHandler, supportUser); // Pass supportUser
                 dispose();
             } else {
                 showLoginFailed("support");

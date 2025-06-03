@@ -21,8 +21,10 @@ import skolard.logic.profile.ProfileHandler;
 import skolard.logic.session.SessionHandler;
 import skolard.logic.support.SupportHandler;
 import skolard.objects.Student;
+import skolard.objects.Support;
 import skolard.objects.Tutor;
 import skolard.objects.User;
+import skolard.persistence.PersistenceRegistry;
 import skolard.presentation.auth.LoginView;
 import skolard.presentation.auth.SignUpView;
 import skolard.presentation.dashboard.StudentView;
@@ -32,7 +34,6 @@ import skolard.presentation.message.MessageView;
 import skolard.presentation.profile.ProfileView;
 import skolard.presentation.session.SessionView;
 import skolard.presentation.support.SupportView;
-import skolard.persistence.PersistenceRegistry;
 
 public class SkolardApp extends JFrame {
 
@@ -187,7 +188,7 @@ public class SkolardApp extends JFrame {
         findTutorsBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
         messageBtn.addActionListener(e -> new MessageView(messageHandler));
-        supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence())));
+        supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
         return buttonPanel;
@@ -214,7 +215,7 @@ public class SkolardApp extends JFrame {
         studentsBtn.addActionListener(e -> new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
         messageBtn.addActionListener(e -> new MessageView(messageHandler));
-        supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence())));
+        supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
         return buttonPanel;
@@ -249,10 +250,9 @@ public class SkolardApp extends JFrame {
     public void onAuthenticationSuccess(User user) {
         this.currentUser = user;
 
-        // If support user, skip dashboard and launch SupportView directly
-        if (user instanceof skolard.objects.Support) {
+        if (user instanceof Support) {
             SupportHandler supportHandler = new SupportHandler(PersistenceRegistry.getSupportPersistence());
-            new SupportView(supportHandler);
+            new SupportView(supportHandler, user);
             return;
         }
 
