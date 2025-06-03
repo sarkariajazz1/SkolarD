@@ -39,8 +39,8 @@ public class LoginView extends JFrame {
     private ProfileHandler handler;
     private SkolardApp parentApp;
     private LoginHandler loginHandler;
-    
-    public LoginView(ProfileHandler profileHandler,LoginHandler loginHandler, SkolardApp parentApp) {
+
+    public LoginView(ProfileHandler profileHandler, LoginHandler loginHandler, SkolardApp parentApp) {
         super("SkolarD - Login");
 
         this.handler = profileHandler;
@@ -94,15 +94,28 @@ public class LoginView extends JFrame {
 
             if (loginHandler.login(creds)) {
                 User student = handler.getStudent(email);
-                statusLabel.setText("Login successful! Welcome " + student.getName());
-                JOptionPane.showMessageDialog(this,
-                        "Login successful as student: " + student.getName(),
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
-                parentApp.onAuthenticationSuccess();
-                dispose();
+                if (student != null) {
+                    statusLabel.setText("Login successful! Welcome " + student.getName());
+                    JOptionPane.showMessageDialog(this,
+                            "Login successful as student: " + student.getName(),
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    // Pass the user object to authentication success
+                    parentApp.onAuthenticationSuccess(student);
+                    dispose();
+                } else {
+                    statusLabel.setText("Error: Student profile not found");
+                    JOptionPane.showMessageDialog(this,
+                            "Login successful but student profile not found. Please contact support.",
+                            "Profile Error",
+                            JOptionPane.WARNING_MESSAGE);
+                }
             } else {
                 statusLabel.setText("Invalid student credentials");
+                JOptionPane.showMessageDialog(this,
+                        "Invalid email or password. Please check your credentials and try again.",
+                        "Login Failed",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -120,22 +133,35 @@ public class LoginView extends JFrame {
 
             if (loginHandler.login(creds)) {
                 User tutor = handler.getTutor(email);
-                statusLabel.setText("Login successful! Welcome " + tutor.getName());
-                JOptionPane.showMessageDialog(this,
-                        "Login successful as tutor: " + tutor.getName(),
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
-                parentApp.onAuthenticationSuccess();
-                dispose();
+                if (tutor != null) {
+                    statusLabel.setText("Login successful! Welcome " + tutor.getName());
+                    JOptionPane.showMessageDialog(this,
+                            "Login successful as tutor: " + tutor.getName(),
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    // Pass the user object to authentication success
+                    parentApp.onAuthenticationSuccess(tutor);
+                    dispose();
+                } else {
+                    statusLabel.setText("Error: Tutor profile not found");
+                    JOptionPane.showMessageDialog(this,
+                            "Login successful but tutor profile not found. Please contact support.",
+                            "Profile Error",
+                            JOptionPane.WARNING_MESSAGE);
+                }
             } else {
                 statusLabel.setText("Invalid tutor credentials");
+                JOptionPane.showMessageDialog(this,
+                        "Invalid email or password. Please check your credentials and try again.",
+                        "Login Failed",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
-
         // Switch to sign up
         signUpBtn.addActionListener(e -> {
-            new SignUpView(handler, parentApp);
+            // Pass the LoginHandler to SignUpView
+            new SignUpView(handler, loginHandler, parentApp);
             dispose(); // Close login window
         });
 
