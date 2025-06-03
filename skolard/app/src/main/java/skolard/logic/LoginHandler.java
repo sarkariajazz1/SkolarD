@@ -2,7 +2,7 @@ package skolard.logic;
 
 import skolard.objects.LoginCredentials;
 import skolard.persistence.LoginPersistence;
-import skolard.persistence.PersistenceFactory;
+import skolard.persistence.PersistenceRegistry;
 
 /**
  * Handles login logic for authenticating students and tutors.
@@ -10,7 +10,8 @@ import skolard.persistence.PersistenceFactory;
 public class LoginHandler {
     private final LoginPersistence loginDB;
     public LoginHandler() {
-        this.loginDB = PersistenceFactory.getLoginPersistence();
+        this.loginDB = PersistenceRegistry.getLoginPersistence();
+
     }
     
     public LoginHandler(LoginPersistence loginDB) {
