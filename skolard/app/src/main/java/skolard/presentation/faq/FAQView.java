@@ -1,5 +1,5 @@
 
-package skolard.presentation;
+package skolard.presentation.faq;
 
 import java.io.IOException;
 

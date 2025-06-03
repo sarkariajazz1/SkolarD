@@ -1,4 +1,4 @@
-package skolard.presentation;
+package skolard.presentation.matching;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

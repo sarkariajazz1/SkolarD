@@ -1,4 +1,4 @@
-package skolard.presentation;
+package skolard.presentation.session;
 
 import javax.swing.*;
 import java.awt.*;

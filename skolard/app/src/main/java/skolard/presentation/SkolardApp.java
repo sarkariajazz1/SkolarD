@@ -23,6 +23,15 @@ import skolard.logic.session.SessionHandler;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
+import skolard.presentation.auth.LoginView;
+import skolard.presentation.auth.SignUpView;
+import skolard.presentation.dashboard.StudentView;
+import skolard.presentation.dashboard.TutorView;
+import skolard.presentation.faq.FAQView;
+import skolard.presentation.message.MessageView;
+import skolard.presentation.profile.ProfileView;
+import skolard.presentation.session.SessionView;
+
 
 /**
  * The main application window of SkolarD that handles authentication and navigation.

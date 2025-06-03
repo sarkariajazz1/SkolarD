@@ -1,4 +1,4 @@
-package skolard.presentation;
+package skolard.presentation.profile;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
