@@ -4,6 +4,7 @@ import java.util.List;
 
 import skolard.objects.Message;
 import skolard.persistence.MessagePersistence;
+import skolard.utils.MessageUtil;
 
 /**
  * Handles logic related to sending, retrieving, and managing messages
@@ -46,6 +47,9 @@ public class MessageHandler {
     public Message sendMessage(Message message) {
         if (message == null) {
             throw new IllegalArgumentException("Message cannot be null.");
+        }
+        if (!MessageUtil.validMessage(message)) {
+            throw new IllegalArgumentException("Message is invalid");
         }
         return messageDb.addMessage(message);
     }
