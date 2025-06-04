@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import skolard.objects.Session;
-import skolard.objects.Student;
 import skolard.persistence.PersistenceRegistry;
 import skolard.persistence.SessionPersistence;
 
@@ -28,14 +27,6 @@ public class MatchingHandler {
      */
     public MatchingHandler(SessionPersistence sessionPersistence) {
         this.sessionDB = sessionPersistence;
-    }
-
-    //For BookingHandler?
-    public void addSession(Session session) {
-        if (session == null) {
-            throw new IllegalArgumentException("Session cannot be null.");
-        }
-        sessionDB.addSession(session);
     }
 
     /**
@@ -159,18 +150,4 @@ public class MatchingHandler {
         return sessions;
     }
 
-    // For BookingHandler?
-    public void bookSession(Session session, Student student) {
-        if (session == null || student == null) {
-            throw new IllegalArgumentException("Session and student cannot be null.");
-        }
-
-        if (!session.isBooked()) {
-            session.bookSession(student);
-            sessionDB.updateSession(session);
-            System.out.println("Session " + session.getSessionId() + " booked successfully for " + student.getName());
-        } else {
-            System.out.println("Session " + session.getSessionId() + " is already booked.");
-        }
-    }
 }
