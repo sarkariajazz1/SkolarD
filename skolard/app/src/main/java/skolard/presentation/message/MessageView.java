@@ -15,6 +15,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import skolard.logic.message.MessageHandler;
+import skolard.objects.User;
 import skolard.objects.Message;
 
 /**
@@ -22,6 +23,7 @@ import skolard.objects.Message;
  */
 public class MessageView extends JFrame {
     private final MessageHandler handler;
+    private final User currentUser;
 
     private final JTextField studentEmailField = new JTextField(20);
     private final JTextField tutorEmailField = new JTextField(20);
@@ -35,9 +37,10 @@ public class MessageView extends JFrame {
      *
      * @param handler the logic handler used for message operations
      */
-    public MessageView(MessageHandler handler) {
+    public MessageView(MessageHandler handler, User currentUser) {
         super("SkolarD - Message View");
         this.handler = handler;
+        this.currentUser = currentUser;
 
         setLayout(new BorderLayout(10, 10));
 
@@ -99,7 +102,7 @@ public class MessageView extends JFrame {
             return;
         }
 
-        Message msg = new Message(student, tutor, LocalDateTime.now(), content);
+        Message msg = new Message(-1, LocalDateTime.now(), student, tutor, currentUser.getEmail(), content);
         handler.sendMessage(msg);
         messageField.setText("");
         loadMessages();

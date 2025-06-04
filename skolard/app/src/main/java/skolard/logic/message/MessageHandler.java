@@ -4,7 +4,7 @@ import java.util.List;
 
 import skolard.objects.Message;
 import skolard.persistence.MessagePersistence;
-import skolard.persistence.PersistenceRegistry;
+import skolard.utils.MessageUtil;
 
 /**
  * Handles logic related to sending, retrieving, and managing messages
@@ -13,13 +13,6 @@ import skolard.persistence.PersistenceRegistry;
 public class MessageHandler {
 
     private final MessagePersistence messageDb;
-
-    /**
-     * Default constructor using the production persistence layer.
-     */
-    public MessageHandler() {
-        this(PersistenceRegistry.getMessagePersistence());
-    }
 
     /**
      * Constructor for injecting a custom MessagePersistence (for testing).
@@ -37,9 +30,26 @@ public class MessageHandler {
         return messageDb.getMessageHistory(studentEmail, tutorEmail);
     }
 
+    public List<String> getTutorsMessaged(String studentEmail) {
+        if (studentEmail == null) {
+            throw new IllegalArgumentException("Email address cannot be null.");
+        }
+        return messageDb.getTutorsMessaged(studentEmail);
+    }
+
+    public List<String> getStudentsMessaged(String tutorEmail) {
+        if (tutorEmail == null) {
+            throw new IllegalArgumentException("Email address cannot be null.");
+        }
+        return messageDb.getStudentsMessaged(tutorEmail);
+    }
+
     public Message sendMessage(Message message) {
         if (message == null) {
             throw new IllegalArgumentException("Message cannot be null.");
+        }
+        if (!MessageUtil.validMessage(message)) {
+            throw new IllegalArgumentException("Message is invalid");
         }
         return messageDb.addMessage(message);
     }
