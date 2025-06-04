@@ -29,6 +29,20 @@ public class MessageHandler {
         return messageDb.getMessageHistory(studentEmail, tutorEmail);
     }
 
+    public List<String> getTutorsMessaged(String studentEmail) {
+        if (studentEmail == null) {
+            throw new IllegalArgumentException("Email address cannot be null.");
+        }
+        return messageDb.getTutorsMessaged(studentEmail);
+    }
+
+    public List<String> getStudentsMessaged(String tutorEmail) {
+        if (tutorEmail == null) {
+            throw new IllegalArgumentException("Email address cannot be null.");
+        }
+        return messageDb.getStudentsMessaged(tutorEmail);
+    }
+
     public Message sendMessage(Message message) {
         if (message == null) {
             throw new IllegalArgumentException("Message cannot be null.");
