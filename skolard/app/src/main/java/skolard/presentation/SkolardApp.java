@@ -1,3 +1,4 @@
+
 package skolard.presentation;
 
 import java.awt.BorderLayout;
@@ -13,8 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import skolard.logic.auth.LoginHandler;
 import skolard.logic.faq.FAQHandler;
+import skolard.logic.auth.LoginHandler;
 import skolard.logic.matching.MatchingHandler;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
@@ -32,6 +33,8 @@ import skolard.presentation.dashboard.TutorView;
 import skolard.presentation.faq.FAQView;
 import skolard.presentation.message.MessageView;
 import skolard.presentation.profile.ProfileView;
+import skolard.presentation.profile.StudentProfileView;
+import skolard.presentation.profile.TutorProfileView;
 import skolard.presentation.session.SessionView;
 import skolard.presentation.support.SupportView;
 
@@ -116,7 +119,7 @@ public class SkolardApp extends JFrame {
         String titleText = "SkolarD Dashboard";
         if (currentUser != null) {
             String userType = currentUser instanceof Student ? "Student" :
-                              currentUser instanceof Tutor ? "Tutor" : "User";
+                    currentUser instanceof Tutor ? "Tutor" : "User";
             titleText += " - " + userType + ": " + currentUser.getName();
         }
 
@@ -170,24 +173,25 @@ public class SkolardApp extends JFrame {
     private JPanel createStudentButtonPanel() {
         JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
 
-        JButton myDashboardBtn = new JButton("My Dashboard");
+        JButton manageProfileBtn = new JButton("Manage Profile");  // Updated button name
         JButton findTutorsBtn = new JButton("Find Tutors");
         JButton sessionBtn = new JButton("Session Management");
         JButton messageBtn = new JButton("Messages");
         JButton supportBtn = new JButton("Support");
         JButton faqBtn = new JButton("FAQs");
 
-        buttonPanel.add(myDashboardBtn);
+        buttonPanel.add(manageProfileBtn);
         buttonPanel.add(findTutorsBtn);
         buttonPanel.add(sessionBtn);
         buttonPanel.add(messageBtn);
         buttonPanel.add(supportBtn);
         buttonPanel.add(faqBtn);
 
-        myDashboardBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
+        // Updated action listeners - using specialized profile views
+        manageProfileBtn.addActionListener(e -> new StudentProfileView(profileHandler, (Student) currentUser));
         findTutorsBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
-        messageBtn.addActionListener(e -> new MessageView(messageHandler));
+        messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
         supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
@@ -197,24 +201,25 @@ public class SkolardApp extends JFrame {
     private JPanel createTutorButtonPanel() {
         JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
 
-        JButton myDashboardBtn = new JButton("My Dashboard");
+        JButton manageProfileBtn = new JButton("Manage Profile");  // Updated button name
         JButton studentsBtn = new JButton("My Students");
         JButton sessionBtn = new JButton("Session Management");
         JButton messageBtn = new JButton("Messages");
         JButton supportBtn = new JButton("Support");
         JButton faqBtn = new JButton("FAQs");
 
-        buttonPanel.add(myDashboardBtn);
+        buttonPanel.add(manageProfileBtn);
         buttonPanel.add(studentsBtn);
         buttonPanel.add(sessionBtn);
         buttonPanel.add(messageBtn);
         buttonPanel.add(supportBtn);
         buttonPanel.add(faqBtn);
 
-        myDashboardBtn.addActionListener(e -> new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
+        // Updated action listeners - using specialized profile views
+        manageProfileBtn.addActionListener(e -> new TutorProfileView(profileHandler, (Tutor) currentUser));
         studentsBtn.addActionListener(e -> new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
-        messageBtn.addActionListener(e -> new MessageView(messageHandler));
+        messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
         supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
@@ -234,9 +239,10 @@ public class SkolardApp extends JFrame {
         buttonPanel.add(messageBtn);
         buttonPanel.add(faqBtn);
 
+        // Generic users still use the general ProfileView (for admin/support functionality)
         profileBtn.addActionListener(e -> new ProfileView(profileHandler));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
-        messageBtn.addActionListener(e -> new MessageView(messageHandler));
+        messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
         return buttonPanel;
@@ -250,6 +256,7 @@ public class SkolardApp extends JFrame {
     public void onAuthenticationSuccess(User user) {
         this.currentUser = user;
 
+        // Handle Support users separately (they get their own view)
         if (user instanceof Support) {
             SupportHandler supportHandler = new SupportHandler(PersistenceRegistry.getSupportPersistence());
             new SupportView(supportHandler, user);
