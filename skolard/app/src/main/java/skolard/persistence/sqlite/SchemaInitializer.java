@@ -64,11 +64,12 @@ public class SchemaInitializer {
         String createMessageTable = "CREATE TABLE IF NOT EXISTS messages (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "timeSent TEXT NOT NULL," +
+                "studentEmail TEXT NOT NULL," +
+                "tutorEmail TEXT NOT NULL," +
                 "senderEmail TEXT NOT NULL," +
-                "receiverEmail TEXT NOT NULL," +
                 "message TEXT NOT NULL," +
-                "FOREIGN KEY(senderEmail) REFERENCES student(email)," +
-                "FOREIGN KEY(receiverEmail) REFERENCES tutor(email)" +
+                "FOREIGN KEY(studentEmail) REFERENCES student(email)," +
+                "FOREIGN KEY(tutorEmail) REFERENCES tutor(email)" +
                 ");";
 
         // Table for student credit card info
