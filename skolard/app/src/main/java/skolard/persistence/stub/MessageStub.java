@@ -28,16 +28,15 @@ public class MessageStub implements MessagePersistence{
 
     private void addSampleMessages() {
         addMessage(new Message(uniqueID++, LocalDateTime.of(2025, 5, 26, 11, 30, 0), 
-            "yabm@myumanitoba.ca", "mattyab@myumanitoba.ca", "Hello"));
+            "yabm@myumanitoba.ca", "mattyab@myumanitoba.ca", "yabm@myumanitoba.ca", "Hello"));
         addMessage(new Message(uniqueID++, LocalDateTime.of(2025, 5, 26, 11, 32, 0), 
-             "mattyab@myumanitoba.ca", "yabm@myumanitoba.ca","Hi!"));
+            "yabm@myumanitoba.ca", "mattyab@myumanitoba.ca", "mattyab@myumanitoba.ca", "Hi!"));
         addMessage(new Message(uniqueID++, LocalDateTime.of(2025, 5, 26, 11, 35, 0), 
-            "yabm@myumanitoba.ca", "mattyab@myumanitoba.ca", "Can you tutor me?"));
+            "yabm@myumanitoba.ca", "mattyab@myumanitoba.ca", "yabm@myumanitoba.ca", "Can you tutor me?"));
     }
 
     private boolean messageHistory(Message message, String studentEmail, String tutorEmail) {
-        return (message.getReceiverEmail() == studentEmail && message.getSenderEmail() == tutorEmail)
-            || (message.getReceiverEmail() == tutorEmail && message.getSenderEmail() == studentEmail);
+        return (message.getStudentEmail() == studentEmail && message.getTutorEmail() == tutorEmail);
     }
 
     public Message addMessage(Message message) {
@@ -46,8 +45,8 @@ public class MessageStub implements MessagePersistence{
             throw new RuntimeException("Updated Existing Message, that was an update, not an add");
         }
 
-        Message newMessage = new Message(uniqueID++, message.getTimeSent(), 
-            message.getSenderEmail(), message.getReceiverEmail(), message.getMessage());
+        Message newMessage = new Message(uniqueID++, message.getTimeSent(),message.getStudentEmail(),
+            message.getTutorEmail(), message.getSenderEmail(), message.getMessage());
         messages.put(newMessage.getMessageId(), newMessage);
         return newMessage;
     }
