@@ -2,7 +2,6 @@ package skolard.logic.matching;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class PriorityList<T> {
@@ -54,13 +53,4 @@ public class PriorityList<T> {
         return items.size();
     }
 
-    public void clear() {
-        items.clear();
-    }
-
-    protected void sortWithComparator(Comparator<? super T> comparator) {
-        if (comparator != null) {
-            items.sort(comparator);
-        }
-    }
 }

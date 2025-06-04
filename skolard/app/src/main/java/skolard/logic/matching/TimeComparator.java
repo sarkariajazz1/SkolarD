@@ -35,12 +35,9 @@ public class TimeComparator{
 
         return sessions.stream()
             .filter(session -> {
-                String sessionCourse = session.getCourseName();
                 LocalDateTime sessionStart = session.getStartDateTime();
                 LocalDateTime sessionEnd = session.getEndDateTime();
-                return sessionCourse != null &&
-                    sessionCourse.equalsIgnoreCase(courseName) &&
-                    sessionStart != null && sessionEnd != null &&
+                return sessionStart != null && sessionEnd != null &&
                     !sessionStart.isBefore(start) && !sessionEnd.isAfter(end);
             })
             .sorted(Comparator.comparing(Session::getStartDateTime))
