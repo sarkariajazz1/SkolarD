@@ -1,3 +1,4 @@
+
 package skolard;
 
 import javax.swing.SwingUtilities;
@@ -27,18 +28,18 @@ public class App {
         MatchingHandler matchingHandler = new MatchingHandler(PersistenceRegistry.getSessionPersistence());
         MessageHandler messageHandler = new MessageHandler(PersistenceRegistry.getMessagePersistence());
         SessionHandler sessionHandler = new SessionHandler(PersistenceRegistry.getSessionPersistence());
-        FAQHandler faqHandler = new FAQHandler(); 
+        FAQHandler faqHandler = new FAQHandler();
         LoginHandler loginHandler = new LoginHandler();
 
         // Start UI
         SwingUtilities.invokeLater(() -> {
             new skolard.presentation.SkolardApp(
-                profileHandler, 
-                matchingHandler, 
-                sessionHandler, 
-                messageHandler, 
-                faqHandler, 
-                loginHandler
+                    profileHandler,
+                    matchingHandler,
+                    sessionHandler,
+                    messageHandler,
+                    faqHandler,
+                    loginHandler
             );
         });
     }
