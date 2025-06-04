@@ -187,7 +187,7 @@ public class SkolardApp extends JFrame {
         myDashboardBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
         findTutorsBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
-        messageBtn.addActionListener(e -> new MessageView(messageHandler));
+        messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
         supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
@@ -214,7 +214,7 @@ public class SkolardApp extends JFrame {
         myDashboardBtn.addActionListener(e -> new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
         studentsBtn.addActionListener(e -> new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
-        messageBtn.addActionListener(e -> new MessageView(messageHandler));
+        messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
         supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
@@ -236,7 +236,7 @@ public class SkolardApp extends JFrame {
 
         profileBtn.addActionListener(e -> new ProfileView(profileHandler));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
-        messageBtn.addActionListener(e -> new MessageView(messageHandler));
+        messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
         return buttonPanel;
