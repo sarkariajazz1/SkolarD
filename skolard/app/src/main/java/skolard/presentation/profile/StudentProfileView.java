@@ -29,7 +29,6 @@ public class StudentProfileView extends JFrame {
 
     // UI Components
     private final JTextArea profileInfoArea = new JTextArea(12, 50);
-    private final JButton refreshProfileBtn = new JButton("Refresh Profile");
     private final JButton backBtn = new JButton("Back");
     private final JLabel statusLabel = new JLabel("Profile loaded successfully", SwingConstants.CENTER);
 
@@ -77,7 +76,6 @@ public class StudentProfileView extends JFrame {
         // Action buttons panel
         JPanel actionPanel = new JPanel(new FlowLayout());
         actionPanel.setBorder(BorderFactory.createTitledBorder("Actions"));
-        actionPanel.add(refreshProfileBtn);
         actionPanel.add(backBtn);
 
         mainPanel.add(actionPanel, BorderLayout.SOUTH);
@@ -89,20 +87,14 @@ public class StudentProfileView extends JFrame {
     }
 
     private void setupEventHandlers() {
-        refreshProfileBtn.addActionListener(e -> loadProfileData());
         backBtn.addActionListener(e -> dispose());
     }
 
     private void loadProfileData() {
         try {
-            // Load updated student profile
-            Student updatedStudent = profileHandler.getStudent(currentStudent.getEmail());
-            if (updatedStudent != null) {
-                profileInfoArea.setText(profileHandler.viewFullProfile(updatedStudent));
-                statusLabel.setText("Profile refreshed successfully");
-            } else {
-                statusLabel.setText("Error: Could not load profile data");
-            }
+            // Load student profile data once when window opens
+            profileInfoArea.setText(profileHandler.viewFullProfile(currentStudent));
+            statusLabel.setText("Profile loaded successfully");
         } catch (Exception ex) {
             showError("Error loading profile: " + ex.getMessage());
         }
