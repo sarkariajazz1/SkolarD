@@ -4,7 +4,6 @@ import java.util.List;
 
 import skolard.objects.Message;
 import skolard.persistence.MessagePersistence;
-import skolard.persistence.PersistenceRegistry;
 
 /**
  * Handles logic related to sending, retrieving, and managing messages
@@ -13,13 +12,6 @@ import skolard.persistence.PersistenceRegistry;
 public class MessageHandler {
 
     private final MessagePersistence messageDb;
-
-    /**
-     * Default constructor using the production persistence layer.
-     */
-    public MessageHandler() {
-        this(PersistenceRegistry.getMessagePersistence());
-    }
 
     /**
      * Constructor for injecting a custom MessagePersistence (for testing).
