@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Filters and sorts sessions based on student time preferences.
+ * TimeComparator filters and sorts sessions based on student time preferences.
  */
 public class TimeComparator{
     private final List<Session> sessions;

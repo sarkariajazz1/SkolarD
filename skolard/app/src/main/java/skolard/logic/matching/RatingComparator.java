@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import skolard.objects.Session;
 
 /**
- * RatingList is a PriorityList that sorts tutoring sessions
- * based on the tutor's grade for a specific course.
+ * RatingComparator sorts tutoring sessions based on the tutor's grade for a specific course.
  */
 public class RatingComparator extends PriorityList<Session> {
     private final List<Session> sessions;
@@ -20,19 +20,17 @@ public class RatingComparator extends PriorityList<Session> {
     }
 
     public List<Session> sortByBestCourseRating(String course) {
-        if (course == null || course.isBlank()) {
-            return Collections.emptyList();
-        }
-
-        List<Session> filtered = new ArrayList<>();
-        for (Session session : sessions) {
-            String courseName = session.getCourseName();
-            Double grade = session.getTutor().getGradeForCourse(course);
-
-            if (courseName != null && courseName.equalsIgnoreCase(course) && grade != null && !grade.equals(MISSING_GRADE)) {
-                filtered.add(session);
-            }
-        }
+        
+        List<Session> filtered = sessions.stream()
+            .filter(session -> {
+                String courseName = session.getCourseName();
+                Double grade = session.getTutor().getGradeForCourse(course);
+                return courseName != null
+                    && courseName.equalsIgnoreCase(course)
+                    && grade != null
+                    && !grade.equals(MISSING_GRADE);
+            })
+            .collect(Collectors.toList());
 
         // Sort in-place by grade descending
         Collections.sort(filtered,
