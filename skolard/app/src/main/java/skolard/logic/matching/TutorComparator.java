@@ -39,9 +39,4 @@ public class TutorComparator extends PriorityList<Session> {
             ).reversed())
             .collect(Collectors.toList());
     }
-
-    @Override
-    public String toString() {
-        return items.toString();
-    }
 }
