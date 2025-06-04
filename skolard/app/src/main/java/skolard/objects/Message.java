@@ -20,10 +20,6 @@ public class Message {
         this.message = message;
     }
 
-    public Message(String student, String tutor, LocalDateTime now, String content) {
-        //TODO Auto-generated constructor stub
-    }
-
     public int getMessageId() {
         return messageId;
     }
