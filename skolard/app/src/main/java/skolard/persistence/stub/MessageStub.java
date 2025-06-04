@@ -3,8 +3,10 @@ package skolard.persistence.stub;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import skolard.objects.Message;
 import skolard.persistence.MessagePersistence;
@@ -55,12 +57,42 @@ public class MessageStub implements MessagePersistence{
     public List<Message> getMessageHistory(String studentEmail, String tutorEmail) {
         confirmCreation();
         List<Message> messageList = new ArrayList<Message>();
-        for (Message message : messages.values()) {
+        for(Message message : messages.values()) {
             if(messageHistory(message, studentEmail, tutorEmail)) {
                 messageList.add(message);
             }
         }
         return messageList;
+    }
+
+    @Override
+    public List<String> getTutorsMessaged(String studentEmail) {
+        List<String> tutors = new ArrayList<>();
+        Set<String> uniqueTutors = new HashSet<>(tutors);
+
+        for(Message message : messages.values()) {
+            if(message.getStudentEmail().equalsIgnoreCase(studentEmail)) {
+                if(uniqueTutors.add(message.getTutorEmail())) {
+                    tutors.add(message.getTutorEmail());
+                }
+            }
+        }
+        return tutors;
+    }
+
+    @Override
+    public List<String> getStudentsMessaged(String tutorEmail) {
+        List<String> students = new ArrayList<>();
+        Set<String> uniqueStudents = new HashSet<>(students);
+
+        for(Message message : messages.values()) {
+            if(message.getTutorEmail().equalsIgnoreCase(tutorEmail)) {
+                if(uniqueStudents.add(message.getStudentEmail())) {
+                    students.add(message.getStudentEmail());
+                }
+            }
+        }
+        return students;
     }
 
     @Override
