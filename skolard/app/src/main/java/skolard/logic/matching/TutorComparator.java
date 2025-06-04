@@ -14,6 +14,7 @@ import skolard.objects.Session;
 public class TutorComparator extends PriorityList<Session> {
     private final List<Session> sessions;
     public TutorComparator(List<Session> sessions) {
+        // Defensive shallow copy
         this.sessions = sessions != null ? new ArrayList<>(sessions) : new ArrayList<>();
     }
 
@@ -29,7 +30,7 @@ public class TutorComparator extends PriorityList<Session> {
             .filter(session -> courseName.equalsIgnoreCase(session.getCourseName()))
             .collect(Collectors.toList());
 
-        // Sort by tutor's average rating in descending order
+        // Sort in-place by tutor's average rating in descending order
         Collections.sort(filtered,
             Comparator.comparingDouble((Session s) -> s.getTutor().getAverageRating())
                       .reversed()

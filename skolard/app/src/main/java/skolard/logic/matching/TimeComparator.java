@@ -35,10 +35,13 @@ public class TimeComparator{
 
         return sessions.stream()
             .filter(session -> {
+                String sessionCourse = session.getCourseName();
                 LocalDateTime sessionStart = session.getStartDateTime();
                 LocalDateTime sessionEnd = session.getEndDateTime();
-                return sessionStart != null && sessionEnd != null &&
-                       !sessionStart.isBefore(start) && !sessionEnd.isAfter(end);
+                return sessionCourse != null &&
+                    sessionCourse.equalsIgnoreCase(courseName) &&
+                    sessionStart != null && sessionEnd != null &&
+                    !sessionStart.isBefore(start) && !sessionEnd.isAfter(end);
             })
             .sorted(Comparator.comparing(Session::getStartDateTime))
             .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));

@@ -16,9 +16,16 @@ public class RatingComparator extends PriorityList<Session> {
     private static final double MISSING_GRADE = 1.0;
 
     public RatingComparator(List<Session> sessions) {
+        // Defensive shallow copy
         this.sessions = sessions != null ? new ArrayList<>(sessions) : new ArrayList<>();
     }
 
+    /**
+     * Filters and sorts sessions by the tutor's grade for a specific course, in descending order.
+     *
+     * @param course The course name to filter sessions by.
+     * @return An unmodifiable list of sessions sorted by highest tutor grade for the course.
+     */
     public List<Session> sortByBestCourseRating(String course) {
         
         List<Session> filtered = sessions.stream()
