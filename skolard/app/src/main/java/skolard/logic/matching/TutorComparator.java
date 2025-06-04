@@ -10,13 +10,13 @@ import skolard.objects.Session;
  * TutorList is a PriorityList that supports sorting tutoring sessions
  * based on tutor quality and filtering by course.
  */
-public class TutorList extends PriorityList<Session> {
+public class TutorComparator extends PriorityList<Session> {
 
-    public TutorList() {
+    public TutorComparator() {
         super();
     }
 
-    public TutorList(List<Session> sessions) {
+    public TutorComparator(List<Session> sessions) {
         super(sessions); // defensive copy
     }
 

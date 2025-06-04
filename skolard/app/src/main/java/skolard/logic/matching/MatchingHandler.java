@@ -41,7 +41,7 @@ public class MatchingHandler {
          * Sorts sessions by best course rating
          */
         RATE((sessions, course, start, end) ->
-            new RatingList(sessions).sortByBestCourseRating(course)),
+            new RatingComparator(sessions).sortByBestCourseRating(course)),
 
         /**
          * Filters and sorts sessions based on student time range
@@ -49,7 +49,7 @@ public class MatchingHandler {
         TIME((sessions, course, start, end) -> {
             // If either times are null, return an unfiltered sessions list
             if (start != null && end != null) {
-                return new TimeList(sessions).filterByStudentTimeRange(start, end, course);
+                return new TimeComparator(sessions).filterByStudentTimeRange(start, end, course);
             }
             return sessions;
         }),
@@ -59,7 +59,7 @@ public class MatchingHandler {
          * Sorts sessions by tutor's overall rating
          */
         TUTOR((sessions, course, start, end) ->
-            new TutorList(sessions).getSessionsByTutor(course));
+            new TutorComparator(sessions).getSessionsByTutor(course));
 
         private final SessionFilterStrategy strategy;
 

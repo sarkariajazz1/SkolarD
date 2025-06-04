@@ -10,11 +10,11 @@ import skolard.objects.Session;
  * RatingList is a PriorityList that sorts tutoring sessions
  * based on the tutor's grade for a specific course.
  */
-public class RatingList extends PriorityList<Session> {
+public class RatingComparator extends PriorityList<Session> {
 
     private static final double MISSING_GRADE = 1.0;
 
-    public RatingList(List<Session> sessions) {
+    public RatingComparator(List<Session> sessions) {
         super(sessions); // defensive copy
     }
 
