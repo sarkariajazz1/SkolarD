@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import skolard.objects.Session;
-import skolard.objects.Student;
 import skolard.persistence.PersistenceRegistry;
 import skolard.persistence.SessionPersistence;
 
@@ -30,46 +29,114 @@ public class MatchingHandler {
         this.sessionDB = sessionPersistence;
     }
 
-    public void addSession(Session session) {
-        if (session == null) {
-            throw new IllegalArgumentException("Session cannot be null.");
+    /**
+     * Enum representing different types of filters that can be applied
+     * to a list of tutoring sessions.
+     * 
+     * Each filter defines a specific strategy to modify or refine
+     * the session list based on criteria like rating, time availability, or tutor.
+     */
+    public enum SessionFilter {
+        /**
+         * Sorts sessions by best course rating
+         */
+        RATE((sessions, course, start, end) ->
+            new RatingComparator(sessions).sortByBestCourseRating(course)),
+
+        /**
+         * Filters and sorts sessions based on student time range
+         */
+        TIME((sessions, course, start, end) -> {
+            // If either times are null, return an unfiltered sessions list
+            if (start != null && end != null) {
+                return new TimeComparator(sessions).filterByStudentTimeRange(start, end, course);
+            }
+            return sessions;
+        }),
+
+        
+        /**
+         * Sorts sessions by tutor's overall rating
+         */
+        TUTOR((sessions, course, start, end) ->
+            new TutorComparator(sessions).getSessionsByTutor(course));
+
+        private final SessionFilterStrategy strategy;
+
+        /**
+         * Constructor for enum constants that assigns their specific filtering strategy.
+         *
+         * @param strategy the logic to apply when this filter is used
+         */
+        SessionFilter(SessionFilterStrategy strategy) {
+            this.strategy = strategy;
         }
-        sessionDB.addSession(session);
+
+        /**
+         * Applies the filter's strategy to a list of sessions.
+         *
+         * @param sessions   the initial list of sessions
+         * @param courseName the name of the course
+         * @param start      the optional start time for time filtering
+         * @param end        the optional end time for time filtering
+         * @return the filtered list of sessions
+         */
+        public List<Session> apply(List<Session> sessions, String courseName, LocalDateTime start, LocalDateTime end) {
+            return strategy.apply(sessions, courseName, start, end);
+        }
+
+        //Functional interface that defines how to filter a list of sessions.Implemented by each enum constant.
+        @FunctionalInterface
+        private interface SessionFilterStrategy {
+            List<Session> apply(List<Session> sessions, String courseName, LocalDateTime start, LocalDateTime end);
+        }
     }
 
-    public List<Session> getAvailableSessions(String filter, String courseName, LocalDateTime start, LocalDateTime end) {
+    /**
+     * Retrieves a list of available (non-booked) tutoring sessions for a specific course,
+     * and applying a filter
+     *
+     * @param filter      the filter to apply to the sessions; can be null for no filtering
+     * @param courseName  the name of the course to search sessions for (required)
+     * @param start       the optional start time (used for time-based filtering)
+     * @param end         the optional end time (used for time-based filtering)
+     * @return a list of sessions that match the course and optional filter criteria
+     * @throws IllegalArgumentException if the courseName is null or empty
+     */
+    public List<Session> getAvailableSessions(SessionFilter filter, String courseName, LocalDateTime start, LocalDateTime end){
         if (courseName == null || courseName.isEmpty()) {
             throw new IllegalArgumentException("Course name cannot be null or empty.");
         }
 
-        List<Session> matchingSessions = getNonBookedSessions(courseName);
+        List<Session> sessions = getNonBookedSessions(courseName);
 
-        if (filter == null) return matchingSessions;
-
-        switch (filter.toLowerCase()) {
-            case "rate" -> {
-                RatingList rateList = new RatingList(matchingSessions);
-                matchingSessions = rateList.sortByBestCourseRating(courseName);
-            }
-            case "time" -> {
-                if (start != null && end != null) {
-                    TimeList timeList = new TimeList(matchingSessions);
-                    matchingSessions = timeList.filterByStudentTimeRange(start, end, courseName);
-                }
-            }
-            case "tutor" -> {
-                TutorList tutorList = new TutorList(matchingSessions);
-                matchingSessions = tutorList.getSessionsByTutor(courseName);
-            }
+        if (filter != null) {
+            sessions = filter.apply(sessions, courseName, start, end);
         }
 
-        return matchingSessions;
+        return sessions;
     }
 
-    public List<Session> getAvailableSessions(String courseName) {
+    /**
+     * Overloaded method that retrieves a list of available (non-booked) tutoring sessions for a specific course not filtered
+     * 
+     *
+     * @param courseName  the name of the course to search sessions for (required)
+     * @return a list of sessions not booked and not filtered
+     */
+    public List<Session> getAvailableSessions(String courseName){
+        if (courseName == null || courseName.isEmpty()) {
+            throw new IllegalArgumentException("Course name cannot be null or empty.");
+        }
         return getNonBookedSessions(courseName);
     }
 
+    /**
+     * Iterates through all sessions in and filters out the non-booked tutoring sessions for a specific course
+     *
+     * @param courseName  the name of the course to search sessions for (required)
+     * @return a list of sessions that are not booked
+     */
     private List<Session> getNonBookedSessions(String courseName) {
         List<Session> allSessions = sessionDB.getAllSessions();
         List<Session> sessions = new ArrayList<>();
@@ -83,17 +150,4 @@ public class MatchingHandler {
         return sessions;
     }
 
-    public void bookSession(Session session, Student student) {
-        if (session == null || student == null) {
-            throw new IllegalArgumentException("Session and student cannot be null.");
-        }
-
-        if (!session.isBooked()) {
-            session.bookSession(student);
-            sessionDB.updateSession(session);
-            System.out.println("Session " + session.getSessionId() + " booked successfully for " + student.getName());
-        } else {
-            System.out.println("Session " + session.getSessionId() + " is already booked.");
-        }
-    }
 }
