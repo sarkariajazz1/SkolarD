@@ -95,6 +95,48 @@ public class MessageDB implements MessagePersistence {
         return messages;
     }
 
+    @Override
+    public List<String> getTutorsMessaged(String studentEmail) {
+        String sql = "SELECT DISTINCT tutorEmail FROM messages " +
+                "WHERE studentEmail = ?";
+
+        List<String> tutors = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, studentEmail);
+
+            // Execute query and construct list of tutor emails from result set
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                tutors.add(rs.getString("tutorEmail"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error retrieving tutors messaged", e);
+        }
+
+        return tutors;
+    }
+
+    @Override
+    public List<String> getStudentsMessaged(String tutorEmail) {
+        String sql = "SELECT DISTINCT studentEmail FROM messages " +
+                "WHERE tutorEmail = ?";
+
+        List<String> students = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, tutorEmail);
+
+            // Execute query and construct list of student emails from result set
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                students.add(rs.getString("studentEmail"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error retrieving tutors messaged", e);
+        }
+
+        return students;
+    }
+
     /**
      * Deletes a specific message by its ID.
      * 
