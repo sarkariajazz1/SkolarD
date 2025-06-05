@@ -30,6 +30,7 @@ import skolard.presentation.auth.SignUpView;
 import skolard.presentation.dashboard.StudentView;
 import skolard.presentation.dashboard.TutorView;
 import skolard.presentation.faq.FAQView;
+import skolard.presentation.matching.MatchingView;
 import skolard.presentation.message.MessageView;
 import skolard.presentation.profile.ProfileView;
 import skolard.presentation.session.SessionView;
@@ -185,7 +186,7 @@ public class SkolardApp extends JFrame {
         buttonPanel.add(faqBtn);
 
         myDashboardBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
-        findTutorsBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
+        findTutorsBtn.addActionListener(e -> new MatchingView(matchingHandler));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
         messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
         supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
