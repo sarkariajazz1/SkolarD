@@ -68,7 +68,7 @@ public class MatchingView extends JFrame {
                 } else if(filter.equals("Sort by Course Rating")){
                     results = handler.getAvailableSessions(SessionFilter.RATE, course, null, null);
                 } else if(filter.equals("Sort by Overall Tutor Rating")){
-
+                    results = handler.getAvailableSessions(SessionFilter.TUTOR, course, null, null);
                 } else{
                     results = handler.getAvailableSessions(course);
                 }
