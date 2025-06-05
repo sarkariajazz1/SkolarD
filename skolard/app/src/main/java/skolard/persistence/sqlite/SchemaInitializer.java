@@ -53,8 +53,8 @@ public class SchemaInitializer {
         // Table for tutors' course history
         String createTutorCourseTable = "CREATE TABLE IF NOT EXISTS tutorCourse (" +
                 "tutorEmail TEXT NOT NULL," +
-                "grade REAL," +
-                "courseID TEXT NOT NULL," +
+                "course TEXT NOT NULL," +
+                "grade REAL NOT NULL," +
                 "PRIMARY KEY(tutorEmail, courseID)," +
                 "FOREIGN KEY(courseID) REFERENCES courses(id)," +
                 "FOREIGN KEY(tutorEmail) REFERENCES tutor(email)" +
