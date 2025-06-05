@@ -27,7 +27,7 @@ public class CardUtil {
         return Base64.getEncoder().encodeToString(cipherText);
     }
 
-    public static String decrypt(String encryptedText, SecretKey key) throws Exception {
+    public static String decrypt(String encryptedText, SecretKey key)throws Exception{
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, key);
         byte[] plainText = cipher.doFinal(Base64.getDecoder().decode(encryptedText));

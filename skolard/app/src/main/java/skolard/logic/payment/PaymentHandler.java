@@ -31,11 +31,9 @@ public class PaymentHandler {
      */
     public PaymentHandler(CardPersistence cardPersistence) {
         this.cardDB = cardPersistence;
-        try {
-            this.key = CardUtil.generateKey();
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to initialize encryption key.", e);
-        }
+        // No need for try/catch since generateKey() generates a constant key
+        this.key = CardUtil.generateKey();
+
     }
 
     public boolean payWithCard(String name, String number, String expiry, String cvv, boolean saveInfo, Student student) {
@@ -59,8 +57,8 @@ public class PaymentHandler {
             }
 
             return decryptedCards;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Card information could not be decrypted", e);
+        } catch ( Exception e) {
+            throw new IllegalArgumentException( "Card information could not be decrypted or database is null.", e);
         }
     }
 
@@ -74,7 +72,7 @@ public class PaymentHandler {
             Card savedCard = new Card(encryptedData, expiry, name);
             cardDB.addAccountCard(student.getEmail(), savedCard);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Card information could not be encrypted", e);
+            throw new IllegalArgumentException("Card information could not be encrypted or database is null.", e);
         }
     }
 
