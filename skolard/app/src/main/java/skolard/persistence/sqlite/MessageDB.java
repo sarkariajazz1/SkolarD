@@ -47,7 +47,7 @@ public class MessageDB implements MessagePersistence {
                 if (keys.next()) {
                     int id = keys.getInt(1);
                     return new Message(id, message.getTimeSent(), message.getStudentEmail(),
-                            message.getTutorEmail(), message.getSenderEmail(), message.getMessage());
+                        message.getTutorEmail(), message.getSenderEmail(), message.getMessage());
                 } else {
                     throw new RuntimeException("Failed to retrieve generated message ID.");
                 }

@@ -29,12 +29,12 @@ public class MessageStub implements MessagePersistence{
     }
 
     private void addSampleMessages() {
-        addMessage(new Message(uniqueID++, LocalDateTime.of(2025, 5, 26, 11, 30, 0),
-                "yabm@myumanitoba.ca", "mattyab@myumanitoba.ca", "yabm@myumanitoba.ca", "Hello"));
-        addMessage(new Message(uniqueID++, LocalDateTime.of(2025, 5, 26, 11, 32, 0),
-                "yabm@myumanitoba.ca", "mattyab@myumanitoba.ca", "mattyab@myumanitoba.ca", "Hi!"));
-        addMessage(new Message(uniqueID++, LocalDateTime.of(2025, 5, 26, 11, 35, 0),
-                "yabm@myumanitoba.ca", "mattyab@myumanitoba.ca", "yabm@myumanitoba.ca", "Can you tutor me?"));
+        addMessage(new Message(uniqueID++, LocalDateTime.of(2025, 5, 26, 11, 30, 0), 
+            "yabm@myumanitoba.ca", "mattyab@myumanitoba.ca", "yabm@myumanitoba.ca", "Hello"));
+        addMessage(new Message(uniqueID++, LocalDateTime.of(2025, 5, 26, 11, 32, 0), 
+            "yabm@myumanitoba.ca", "mattyab@myumanitoba.ca", "mattyab@myumanitoba.ca", "Hi!"));
+        addMessage(new Message(uniqueID++, LocalDateTime.of(2025, 5, 26, 11, 35, 0), 
+            "yabm@myumanitoba.ca", "mattyab@myumanitoba.ca", "yabm@myumanitoba.ca", "Can you tutor me?"));
     }
 
     private boolean messageHistory(Message message, String studentEmail, String tutorEmail) {
@@ -48,7 +48,7 @@ public class MessageStub implements MessagePersistence{
         }
 
         Message newMessage = new Message(uniqueID++, message.getTimeSent(),message.getStudentEmail(),
-                message.getTutorEmail(), message.getSenderEmail(), message.getMessage());
+            message.getTutorEmail(), message.getSenderEmail(), message.getMessage());
         messages.put(newMessage.getMessageId(), newMessage);
         return newMessage;
     }

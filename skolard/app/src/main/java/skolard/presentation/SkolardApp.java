@@ -34,6 +34,7 @@ import skolard.presentation.auth.SignUpView;
 import skolard.presentation.dashboard.StudentView;
 import skolard.presentation.dashboard.TutorView;
 import skolard.presentation.faq.FAQView;
+import skolard.presentation.matching.MatchingView;
 import skolard.presentation.message.MessageView;
 import skolard.presentation.profile.ProfileView;
 import skolard.presentation.profile.StudentProfileView;
@@ -293,9 +294,12 @@ public class SkolardApp extends JFrame {
             // Student dashboard content - embed StudentView content
             loadStudentDashboard(contentPanel);
 
-        } else if (currentUser instanceof Tutor) {
-            // Tutor dashboard content - embed TutorView content
-            loadTutorDashboard(contentPanel);
+        myDashboardBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
+        findTutorsBtn.addActionListener(e -> new MatchingView(matchingHandler));
+        sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
+        messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
+        supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
+        faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
         } else {
             // Generic dashboard content
@@ -309,19 +313,31 @@ public class SkolardApp extends JFrame {
         return contentPanel;
     }
 
-    private void loadStudentDashboard(JPanel contentPanel) {
-        // Create a simple student dashboard view
-        JLabel dashboardLabel = new JLabel("<html><div style='text-align: center;'>" +
-                "<h2>Student Dashboard</h2>" +
-                "<p>Welcome, " + currentUser.getName() + "!</p>" +
-                "<br>" +
-                "<p><b>Quick Actions:</b></p>" +
-                "<p>• Use 'Find Tutors' to search for tutors in your subjects</p>" +
-                "<p>• Check 'Session Management' for your upcoming sessions</p>" +
-                "<p>• Visit 'Messages' to communicate with your tutors</p>" +
-                "<p>• Update your 'Manage Profile' anytime</p>" +
-                "</div></html>", SwingConstants.CENTER);
-        contentPanel.add(dashboardLabel, BorderLayout.CENTER);
+    private JPanel createTutorButtonPanel() {
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+
+        JButton myDashboardBtn = new JButton("My Dashboard");
+        JButton studentsBtn = new JButton("My Students");
+        JButton sessionBtn = new JButton("Session Management");
+        JButton messageBtn = new JButton("Messages");
+        JButton supportBtn = new JButton("Support");
+        JButton faqBtn = new JButton("FAQs");
+
+        buttonPanel.add(myDashboardBtn);
+        buttonPanel.add(studentsBtn);
+        buttonPanel.add(sessionBtn);
+        buttonPanel.add(messageBtn);
+        buttonPanel.add(supportBtn);
+        buttonPanel.add(faqBtn);
+
+        myDashboardBtn.addActionListener(e -> new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
+        studentsBtn.addActionListener(e -> new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
+        sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
+        messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
+        supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
+        faqBtn.addActionListener(e -> new FAQView(faqHandler));
+
+        return buttonPanel;
     }
 
     private void loadTutorDashboard(JPanel contentPanel) {
@@ -344,9 +360,17 @@ public class SkolardApp extends JFrame {
         new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser);
     }
 
-    private void loadMyStudentsView() {
-        // Load the my students functionality (TutorView)
-        new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser);
+        buttonPanel.add(profileBtn);
+        buttonPanel.add(sessionBtn);
+        buttonPanel.add(messageBtn);
+        buttonPanel.add(faqBtn);
+
+        profileBtn.addActionListener(e -> new ProfileView(profileHandler));
+        sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
+        messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
+        faqBtn.addActionListener(e -> new FAQView(faqHandler));
+
+        return buttonPanel;
     }
 
     private void showLoginPrompt() {
