@@ -110,7 +110,7 @@ public class MessageStub implements MessagePersistence{
         confirmCreation();
         if(!messages.containsKey(updatedMessage.getMessageId())) {
             throw new RuntimeException("Cannot update a Message that does not exist.");
-        } 
+        }
         messages.replace(updatedMessage.getMessageId(), updatedMessage);
     }
 
