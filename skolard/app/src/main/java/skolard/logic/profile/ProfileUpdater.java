@@ -32,12 +32,11 @@ public class ProfileUpdater {
         if (!tutor.getCourses().contains(c)) {
             tutor.getCourses().add(c);
         }
-        tutor.addCourseGrade(c, grade);
+        tutor.addCourse(c, grade);
     }
 
     public void removeCourse(Tutor tutor, String course) {
         String c = course.toLowerCase();
-        tutor.getCourses().remove(c);
-        tutor.getCourseGrades().remove(c);
+        tutor.getCoursesWithGrades().remove(c);
     }
 }
