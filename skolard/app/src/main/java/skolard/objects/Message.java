@@ -10,9 +10,9 @@ public class Message {
     private String senderEmail;
     private String message;
 
-    public Message(int messageId, LocalDateTime timeSent, String studentEmail, String tutorEmail,
-                   String senderEmail, String message) {
-        this.messageId = messageId;
+    public Message(int messageId, LocalDateTime timeSent, String studentEmail, String tutorEmail, 
+        String senderEmail, String message) {
+        this.messageId = messageId; 
         this.timeSent = timeSent;
         this.studentEmail = studentEmail;
         this.tutorEmail = tutorEmail;

@@ -1,15 +1,11 @@
-
 package skolard.presentation;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.GridLayout;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -17,8 +13,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import skolard.logic.faq.FAQHandler;
 import skolard.logic.auth.LoginHandler;
+import skolard.logic.faq.FAQHandler;
 import skolard.logic.matching.MatchingHandler;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
@@ -37,8 +33,6 @@ import skolard.presentation.faq.FAQView;
 import skolard.presentation.matching.MatchingView;
 import skolard.presentation.message.MessageView;
 import skolard.presentation.profile.ProfileView;
-import skolard.presentation.profile.StudentProfileView;
-import skolard.presentation.profile.TutorProfileView;
 import skolard.presentation.session.SessionView;
 import skolard.presentation.support.SupportView;
 
@@ -55,7 +49,6 @@ public class SkolardApp extends JFrame {
     private JPanel mainPanel;
     private CardLayout cardLayout;
     private JPanel dashboardPanel;
-    private JPanel dashboardContentPanel; // Main content area for dashboard
 
     public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler,
                       SessionHandler sessionHandler, MessageHandler messageHandler,
@@ -73,7 +66,7 @@ public class SkolardApp extends JFrame {
         showAuthenticationView();
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(1000, 700); // Increased size for dashboard layout
+        setSize(600, 300);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -119,180 +112,78 @@ public class SkolardApp extends JFrame {
     }
 
     private JPanel createDashboardPanel() {
-        JPanel panel = new JPanel(new BorderLayout(10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel dashboardPanel = new JPanel(new BorderLayout(10, 10));
 
-        // Title at top
         String titleText = "SkolarD Dashboard";
         if (currentUser != null) {
             String userType = currentUser instanceof Student ? "Student" :
-                    currentUser instanceof Tutor ? "Tutor" : "User";
+                              currentUser instanceof Tutor ? "Tutor" : "User";
             titleText += " - " + userType + ": " + currentUser.getName();
         }
 
-        JLabel titleLabel = new JLabel(titleText, SwingConstants.CENTER);
-        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 18f));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
-        panel.add(titleLabel, BorderLayout.NORTH);
+        JLabel dashboardLabel = new JLabel(titleText, SwingConstants.CENTER);
+        dashboardLabel.setFont(dashboardLabel.getFont().deriveFont(Font.BOLD, 16f));
+        dashboardPanel.add(dashboardLabel, BorderLayout.NORTH);
 
-        // Left sidebar with navigation buttons
-        JPanel sidebarPanel = createSidebarPanel();
-        panel.add(sidebarPanel, BorderLayout.WEST);
+        JPanel buttonPanel = createButtonPanelForUser();
+        dashboardPanel.add(buttonPanel, BorderLayout.CENTER);
 
-        // Main content area (dashboard content)
-        dashboardContentPanel = createDashboardContentPanel();
-        panel.add(dashboardContentPanel, BorderLayout.CENTER);
-
-        // Bottom panel with logout button (centered)
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel bottomPanel = new JPanel(new FlowLayout());
         JButton logoutBtn = new JButton("Logout");
-        logoutBtn.setFont(logoutBtn.getFont().deriveFont(Font.BOLD, 14f));
         bottomPanel.add(logoutBtn);
-        panel.add(bottomPanel, BorderLayout.SOUTH);
+        dashboardPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         logoutBtn.addActionListener(e -> logout());
 
-        return panel;
+        return dashboardPanel;
     }
 
-    private JPanel createSidebarPanel() {
-        JPanel sidebar = new JPanel(new GridBagLayout());
-        sidebar.setBorder(BorderFactory.createTitledBorder("Navigation"));
-        sidebar.setPreferredSize(new java.awt.Dimension(200, 0));
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0;
-
+    private JPanel createButtonPanelForUser() {
         if (currentUser == null) {
-            // Guest user buttons
-            gbc.gridy = 0;
+            JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
             JButton profileBtn = new JButton("Profile Management");
+            JButton sessionBtn = new JButton("Session Management");
+            JButton messageBtn = new JButton("Messages");
+            JButton faqBtn = new JButton("FAQs");
+
+            buttonPanel.add(profileBtn);
+            buttonPanel.add(sessionBtn);
+            buttonPanel.add(messageBtn);
+            buttonPanel.add(faqBtn);
+
             profileBtn.addActionListener(e -> showLoginPrompt());
-            sidebar.add(profileBtn, gbc);
-
-            gbc.gridy = 1;
-            JButton sessionBtn = new JButton("Session Management");
             sessionBtn.addActionListener(e -> showLoginPrompt());
-            sidebar.add(sessionBtn, gbc);
-
-            gbc.gridy = 2;
-            JButton messageBtn = new JButton("Messages");
             messageBtn.addActionListener(e -> showLoginPrompt());
-            sidebar.add(messageBtn, gbc);
-
-            gbc.gridy = 3;
-            JButton faqBtn = new JButton("FAQs");
             faqBtn.addActionListener(e -> new FAQView(faqHandler));
-            sidebar.add(faqBtn, gbc);
 
-        } else if (currentUser instanceof Student) {
-            // Student navigation buttons
-            gbc.gridy = 0;
-            JButton manageProfileBtn = new JButton("Manage Profile");
-            manageProfileBtn.addActionListener(e -> new StudentProfileView(profileHandler, (Student) currentUser));
-            sidebar.add(manageProfileBtn, gbc);
-
-            gbc.gridy = 1;
-            JButton findTutorsBtn = new JButton("Find Tutors");
-            findTutorsBtn.addActionListener(e -> loadFindTutorsView());
-            sidebar.add(findTutorsBtn, gbc);
-
-            gbc.gridy = 2;
-            JButton sessionBtn = new JButton("Session Management");
-            sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
-            sidebar.add(sessionBtn, gbc);
-
-            gbc.gridy = 3;
-            JButton messageBtn = new JButton("Messages");
-            messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
-            sidebar.add(messageBtn, gbc);
-
-            gbc.gridy = 4;
-            JButton supportBtn = new JButton("Support");
-            supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
-            sidebar.add(supportBtn, gbc);
-
-            gbc.gridy = 5;
-            JButton faqBtn = new JButton("FAQs");
-            faqBtn.addActionListener(e -> new FAQView(faqHandler));
-            sidebar.add(faqBtn, gbc);
-
-        } else if (currentUser instanceof Tutor) {
-            // Tutor navigation buttons
-            gbc.gridy = 0;
-            JButton manageProfileBtn = new JButton("Manage Profile");
-            manageProfileBtn.addActionListener(e -> new TutorProfileView(profileHandler, (Tutor) currentUser));
-            sidebar.add(manageProfileBtn, gbc);
-
-            gbc.gridy = 1;
-            JButton studentsBtn = new JButton("My Students");
-            studentsBtn.addActionListener(e -> loadMyStudentsView());
-            sidebar.add(studentsBtn, gbc);
-
-            gbc.gridy = 2;
-            JButton sessionBtn = new JButton("Session Management");
-            sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
-            sidebar.add(sessionBtn, gbc);
-
-            gbc.gridy = 3;
-            JButton messageBtn = new JButton("Messages");
-            messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
-            sidebar.add(messageBtn, gbc);
-
-            gbc.gridy = 4;
-            JButton supportBtn = new JButton("Support");
-            supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
-            sidebar.add(supportBtn, gbc);
-
-            gbc.gridy = 5;
-            JButton faqBtn = new JButton("FAQs");
-            faqBtn.addActionListener(e -> new FAQView(faqHandler));
-            sidebar.add(faqBtn, gbc);
-
-        } else {
-            // Generic user buttons
-            gbc.gridy = 0;
-            JButton profileBtn = new JButton("Profile Management");
-            profileBtn.addActionListener(e -> new ProfileView(profileHandler));
-            sidebar.add(profileBtn, gbc);
-
-            gbc.gridy = 1;
-            JButton sessionBtn = new JButton("Session Management");
-            sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
-            sidebar.add(sessionBtn, gbc);
-
-            gbc.gridy = 2;
-            JButton messageBtn = new JButton("Messages");
-            messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
-            sidebar.add(messageBtn, gbc);
-
-            gbc.gridy = 3;
-            JButton faqBtn = new JButton("FAQs");
-            faqBtn.addActionListener(e -> new FAQView(faqHandler));
-            sidebar.add(faqBtn, gbc);
+            return buttonPanel;
         }
 
-        return sidebar;
+        if (currentUser instanceof Student) {
+            return createStudentButtonPanel();
+        } else if (currentUser instanceof Tutor) {
+            return createTutorButtonPanel();
+        } else {
+            return createGenericButtonPanel();
+        }
     }
 
-    private JPanel createDashboardContentPanel() {
-        JPanel contentPanel = new JPanel(new BorderLayout());
-        contentPanel.setBorder(BorderFactory.createTitledBorder("Dashboard"));
+    private JPanel createStudentButtonPanel() {
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
 
-        if (currentUser == null) {
-            // Guest dashboard content
-            JLabel welcomeLabel = new JLabel("<html><div style='text-align: center;'>" +
-                    "<h2>Welcome to SkolarD!</h2>" +
-                    "<p>Please login to access your personalized dashboard.</p>" +
-                    "<p>Use the navigation panel on the left to explore available features.</p>" +
-                    "</div></html>", SwingConstants.CENTER);
-            contentPanel.add(welcomeLabel, BorderLayout.CENTER);
+        JButton myDashboardBtn = new JButton("My Dashboard");
+        JButton findTutorsBtn = new JButton("Find Tutors");
+        JButton sessionBtn = new JButton("Session Management");
+        JButton messageBtn = new JButton("Messages");
+        JButton supportBtn = new JButton("Support");
+        JButton faqBtn = new JButton("FAQs");
 
-        } else if (currentUser instanceof Student) {
-            // Student dashboard content - embed StudentView content
-            loadStudentDashboard(contentPanel);
+        buttonPanel.add(myDashboardBtn);
+        buttonPanel.add(findTutorsBtn);
+        buttonPanel.add(sessionBtn);
+        buttonPanel.add(messageBtn);
+        buttonPanel.add(supportBtn);
+        buttonPanel.add(faqBtn);
 
         myDashboardBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
         findTutorsBtn.addActionListener(e -> new MatchingView(matchingHandler));
@@ -301,16 +192,7 @@ public class SkolardApp extends JFrame {
         supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
-        } else {
-            // Generic dashboard content
-            JLabel dashboardLabel = new JLabel("<html><div style='text-align: center;'>" +
-                    "<h2>Welcome, " + currentUser.getName() + "!</h2>" +
-                    "<p>Use the navigation panel on the left to access system features.</p>" +
-                    "</div></html>", SwingConstants.CENTER);
-            contentPanel.add(dashboardLabel, BorderLayout.CENTER);
-        }
-
-        return contentPanel;
+        return buttonPanel;
     }
 
     private JPanel createTutorButtonPanel() {
@@ -340,25 +222,13 @@ public class SkolardApp extends JFrame {
         return buttonPanel;
     }
 
-    private void loadTutorDashboard(JPanel contentPanel) {
-        // Create a simple tutor dashboard view
-        JLabel dashboardLabel = new JLabel("<html><div style='text-align: center;'>" +
-                "<h2>Tutor Dashboard</h2>" +
-                "<p>Welcome, " + currentUser.getName() + "!</p>" +
-                "<br>" +
-                "<p><b>Quick Actions:</b></p>" +
-                "<p>• Check 'My Students' to see your current students</p>" +
-                "<p>• Manage your 'Session Management' and availability</p>" +
-                "<p>• Use 'Messages' to communicate with students</p>" +
-                "<p>• Keep your 'Manage Profile' up to date with courses and bio</p>" +
-                "</div></html>", SwingConstants.CENTER);
-        contentPanel.add(dashboardLabel, BorderLayout.CENTER);
-    }
+    private JPanel createGenericButtonPanel() {
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
 
-    private void loadFindTutorsView() {
-        // Load the find tutors functionality (StudentView)
-        new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser);
-    }
+        JButton profileBtn = new JButton("Profile Management");
+        JButton sessionBtn = new JButton("Session Management");
+        JButton messageBtn = new JButton("Messages");
+        JButton faqBtn = new JButton("FAQs");
 
         buttonPanel.add(profileBtn);
         buttonPanel.add(sessionBtn);
@@ -381,14 +251,12 @@ public class SkolardApp extends JFrame {
     public void onAuthenticationSuccess(User user) {
         this.currentUser = user;
 
-        // Handle Support users separately (they get their own view)
         if (user instanceof Support) {
             SupportHandler supportHandler = new SupportHandler(PersistenceRegistry.getSupportPersistence());
             new SupportView(supportHandler, user);
             return;
         }
 
-        // Update the dashboard with user-specific content
         setTitle("SkolarD - Dashboard (" + user.getName() + ")");
         mainPanel.remove(dashboardPanel);
         dashboardPanel = createDashboardPanel();
