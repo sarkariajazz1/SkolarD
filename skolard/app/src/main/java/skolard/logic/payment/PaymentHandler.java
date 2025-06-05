@@ -7,12 +7,6 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
 import javax.crypto.SecretKey;
 
 import skolard.objects.Card;
@@ -63,10 +57,8 @@ public class PaymentHandler {
             }
 
             return decryptedCards;
-        } catch ( NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-            throw new IllegalArgumentException( "Card information could not be decrypted.", e);
-        } catch (NullPointerException npEx){
-            throw new IllegalArgumentException("Card information could not be retrieved since database is null", npEx);
+        } catch ( Exception e) {
+            throw new IllegalArgumentException( "Card information could not be decrypted or database is null.", e);
         }
     }
 
@@ -79,14 +71,8 @@ public class PaymentHandler {
             String encryptedData = CardUtil.encrypt(number, key);
             Card savedCard = new Card(encryptedData, expiry, name);
             cardDB.addAccountCard(student.getEmail(), savedCard);
-        } catch (NoSuchAlgorithmException |
-                NoSuchPaddingException |
-                InvalidKeyException |
-                IllegalBlockSizeException |
-                BadPaddingException e) {
-            throw new IllegalArgumentException("Card information could not be encrypted", e);
-        } catch (NullPointerException npEx){
-            throw new IllegalArgumentException("Card information could not be saved since database is null", npEx);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Card information could not be encrypted or database is null.", e);
         }
     }
 

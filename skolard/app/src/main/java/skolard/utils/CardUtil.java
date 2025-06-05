@@ -1,13 +1,8 @@
 package skolard.utils;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.InvalidKeyException;
 import java.util.Base64;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -25,28 +20,17 @@ public class CardUtil {
         return new SecretKeySpec(keyBytes, "AES");
     }
 
-    public static String encrypt(String plainText, SecretKey key) 
-        throws NoSuchAlgorithmException,
-               NoSuchPaddingException,
-               InvalidKeyException,
-               IllegalBlockSizeException,
-               BadPaddingException {
+    public static String encrypt(String plainText, SecretKey key) throws Exception {
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] cipherText = cipher.doFinal(plainText.getBytes());
         return Base64.getEncoder().encodeToString(cipherText);
     }
 
-    public static String decrypt(String encryptedText, SecretKey key)
-        throws NoSuchAlgorithmException,
-               NoSuchPaddingException,
-               InvalidKeyException,
-               IllegalBlockSizeException,
-               BadPaddingException {
-
-    Cipher cipher = Cipher.getInstance("AES");
-    cipher.init(Cipher.DECRYPT_MODE, key);
-    byte[] plainText = cipher.doFinal(Base64.getDecoder().decode(encryptedText));
-    return new String(plainText);
-}
+    public static String decrypt(String encryptedText, SecretKey key)throws Exception{
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] plainText = cipher.doFinal(Base64.getDecoder().decode(encryptedText));
+        return new String(plainText);
+    }
 }

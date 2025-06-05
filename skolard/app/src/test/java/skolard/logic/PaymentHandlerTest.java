@@ -10,8 +10,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Before; 
@@ -29,6 +31,7 @@ public class PaymentHandlerTest {
     public void setup(){
         cp = mock(CardPersistence.class);
         handler = new PaymentHandler(cp);
+        student = new Student("John Doe", "johndoe@example.com");
 
     }
 
@@ -67,7 +70,12 @@ public class PaymentHandlerTest {
         student = new Student("John Doe", "johndoe@example.com");
         
         assertTrue(handler.payWithCard("John Doe", "4111 1111 1111 1111", "12/29", "123", true, student));
-        verify(cp).addAccountCard(eq(student.getEmail()), any(Card.class));
+        verify(cp, times(1)).addAccountCard(eq(student.getEmail()), any(Card.class));
+        //Invalid same digit number
+        assertFalse(handler.payWithCard("John Doe", "1111 1111 1111 1111", "12/29", "123", true, student));
+
+        // Should only save once (for the valid card)
+        verify(cp, times(1)).addAccountCard(anyString(), any(Card.class));
     }
 
     @Test
@@ -83,16 +91,12 @@ public class PaymentHandlerTest {
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
             newHandler.payWithCard(name, number, expiry, cvv, true, student);
         });
-        assertEquals("Card information could not be saved since database is null", ex.getMessage());
+        assertEquals("Card information could not be encrypted or database is null.", ex.getMessage());
     }
 
     @Test
     public void testRetrieveRecordedCards_Successfull(){
-        String name = "John Doe";
-        String number = "4111 1111 1111 1111"; // Valid Visa Luhn number
-        String expiry = "12/29"; // Future expiry
-        student = new Student(name, "johndoe@example.com");
-        handler.saveCard(name, number, expiry, student);
+        handler.saveCard("John Doe", "4111 1111 1111 1111", "12/29", student);
         List<Card> cards = handler.retrieveRecordedCards(student);
 
         assertEquals(1, cards.size());
@@ -110,7 +114,7 @@ public class PaymentHandlerTest {
             () -> newHandler.retrieveRecordedCards(student)
         );
 
-        assertEquals("Card information could not be retrieved since database is null", exception.getMessage());
+        assertEquals("Card information could not be decrypted or database is null.", exception.getMessage());
 
     }
 
