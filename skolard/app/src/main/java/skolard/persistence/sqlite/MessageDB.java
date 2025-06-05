@@ -27,7 +27,7 @@ public class MessageDB implements MessagePersistence {
     /**
      * Inserts a new message into the messages table.
      * Uses auto-increment to generate a new ID and returns the full message object.
-     *
+     * 
      * @param message the message to insert
      * @return the message with the generated ID included
      */
@@ -60,7 +60,7 @@ public class MessageDB implements MessagePersistence {
     /**
      * Retrieves the entire message history between a student and tutor.
      * Messages are ordered chronologically by time sent.
-     *
+     * 
      * @param studentEmail the student's email
      * @param tutorEmail the tutor's email
      * @return list of messages exchanged between the two users
@@ -139,7 +139,7 @@ public class MessageDB implements MessagePersistence {
 
     /**
      * Deletes a specific message by its ID.
-     *
+     * 
      * @param id the unique ID of the message to delete
      */
     @Override
@@ -155,7 +155,7 @@ public class MessageDB implements MessagePersistence {
 
     /**
      * Updates the content of a message using its ID.
-     *
+     * 
      * @param updatedMessage the message object containing the new text and original ID
      */
     @Override
@@ -173,7 +173,7 @@ public class MessageDB implements MessagePersistence {
     /**
      * Deletes all messages exchanged between a student and tutor.
      * This is a bulk operation used for clearing an entire conversation.
-     *
+     * 
      * @param studentEmail the student's email
      * @param tutorEmail the tutor's email
      */
