@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -15,6 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import skolard.logic.matching.MatchingHandler;
+import skolard.logic.matching.MatchingHandler.SessionFilter;
 import skolard.objects.Session;
 
 /**
@@ -39,6 +41,13 @@ public class MatchingView extends JFrame {
         inputPanel.add(courseField);
         JButton searchBtn = new JButton("Find Tutors");
         inputPanel.add(searchBtn);
+        JComboBox<String> filterDropdown = new JComboBox<>(new String[]{
+            "",
+            "Sort by Time",
+            "Sort by Course Rating",
+            "Sort by Overall Tutor Rating"
+        });
+        inputPanel.add(filterDropdown);
         add(inputPanel, BorderLayout.NORTH);
 
         // Scrollable center panel showing sessions
@@ -48,9 +57,22 @@ public class MatchingView extends JFrame {
         // Action: when "Find Tutors" is clicked
         searchBtn.addActionListener(e -> {
             String course = courseField.getText().trim(); // get input
+            String filter = (String) filterDropdown.getSelectedItem();
             sessionModel.clear(); // clear old results
+
             if (!course.isEmpty()) {
-                List<Session> results = handler.getAvailableSessions(course); // fetch sessions
+                List<Session> results = null; 
+                // fetch sessions
+                if(filter.equals("Sort by Time")){
+                    results = handler.getAvailableSessions(SessionFilter.TIME, course, null, null);
+                } else if(filter.equals("Sort by Course Rating")){
+                    results = handler.getAvailableSessions(SessionFilter.RATE, course, null, null);
+                } else if(filter.equals("Sort by Overall Tutor Rating")){
+
+                } else{
+                    results = handler.getAvailableSessions(course);
+                }
+
                 for (Session s : results) {
                     sessionModel.addElement(s.toString()); // display them
                 }
