@@ -40,7 +40,7 @@ public class TutorCoursesDB {
 
             while (rs.next()) {
                 courses.put(rs.getString("courseID"), 
-                    (Double)rs.getDouble("grade"));
+                    rs.getDouble("grade"));
             }
 
         } catch (SQLException e) {
