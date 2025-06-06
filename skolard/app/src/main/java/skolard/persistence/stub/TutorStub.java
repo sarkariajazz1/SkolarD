@@ -47,21 +47,16 @@ public class TutorStub implements TutorPersistence {
         String course1 = "COMP 1010";
         String course2 = "COMP 3350";
 
-        ArrayList<String> courses = new ArrayList<>();
-        courses.add(course1);
-        courses.add(course2);
-
-        Map<String, Double> courseGrades = new HashMap<>();
-        courseGrades.put(course1, 4.0);
-        courseGrades.put(course2, 3.5);
+        Map<String, Double> courses = new HashMap<>();
+        courses.put(course1, 4.0);
+        courses.put(course2, 3.5);
 
         Tutor sampleTutor = new Tutor(
                 "Yab Matt",
                 "mattyab@myumanitoba.ca",
                 hash("pass123"),
                 "Experienced in Java and C++ tutoring.",
-                courses,
-                courseGrades
+                courses
         );
 
         addTutor(sampleTutor);
@@ -130,6 +125,28 @@ public class TutorStub implements TutorPersistence {
     public List<Tutor> getAllTutors() {
         confirmCreation();
         return new ArrayList<>(tutors.values());
+    }
+
+    @Override
+    public void addCourseToTutor(Tutor tutor, String course, Double grade) {
+        confirmCreation();
+        if(course != null && grade != null) {
+            tutor.addCourse(course, grade);
+            updateTutor(tutor);
+        }
+    }
+
+    @Override
+    public void removeCourseFromTutor(Tutor tutor, String course) {
+        confirmCreation();
+        Map<String, Double> courses = new HashMap<>();
+        if(course != null) {
+            courses = tutor.getCoursesWithGrades();
+            courses.remove(course);
+            tutor = new Tutor(tutor.getName(), tutor.getEmail(), 
+                tutor.getHashedPassword(), tutor.getBio(), courses);
+            updateTutor(tutor);
+        }
     }
 
     /**

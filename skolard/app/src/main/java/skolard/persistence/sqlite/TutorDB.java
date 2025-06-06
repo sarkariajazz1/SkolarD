@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import skolard.objects.Tutor;
 import skolard.persistence.TutorPersistence;
@@ -19,12 +20,14 @@ public class TutorDB implements TutorPersistence {
 
     // Active database connection
     private final Connection connection;
+    private final TutorCoursesDB tutorCoursesDB;
 
     /**
      * Constructor that accepts a SQLite connection.
      */
     public TutorDB(Connection connection) {
         this.connection = connection;
+        this.tutorCoursesDB = new TutorCoursesDB(connection);
     }
 
     /**
@@ -33,6 +36,8 @@ public class TutorDB implements TutorPersistence {
      */
     @Override
     public List<Tutor> getAllTutors() {
+        String email;
+        Map<String, Double> courses;
         List<Tutor> tutors = new ArrayList<>();
         String sql = "SELECT name, email, bio FROM tutor";
 
@@ -40,10 +45,14 @@ public class TutorDB implements TutorPersistence {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
+                email = rs.getString("email");
+                courses = tutorCoursesDB.getTutorCourses(email);
                 tutors.add(new Tutor(
                     rs.getString("name"),
-                    rs.getString("email"),
-                    rs.getString("bio")
+                    rs.getString(email),
+                    null,
+                    rs.getString("bio"),
+                    courses
                 ));
             }
 
@@ -59,6 +68,7 @@ public class TutorDB implements TutorPersistence {
      */
     @Override
     public Tutor getTutorByEmail(String email) {
+        Map<String, Double> courses;
         String sql = "SELECT name, email, bio FROM tutor WHERE email = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -66,10 +76,14 @@ public class TutorDB implements TutorPersistence {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                email = rs.getString("email");
+                courses = tutorCoursesDB.getTutorCourses(email);
                 return new Tutor(
                     rs.getString("name"),
                     rs.getString("email"),
-                    rs.getString("bio")
+                    null,
+                    rs.getString("bio"),
+                    courses
                 );
             }
 
@@ -107,10 +121,10 @@ public class TutorDB implements TutorPersistence {
     public void deleteTutorByEmail(String email) {
         String sql = "DELETE FROM tutor WHERE email = ?";
 
+        tutorCoursesDB.deleteAllTutorCourses(email);
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
             stmt.executeUpdate();
-
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting tutor", e);
         }
@@ -128,11 +142,20 @@ public class TutorDB implements TutorPersistence {
             stmt.setString(1, updatedTutor.getName());
             stmt.setString(2, updatedTutor.getBio());
             stmt.setString(3, updatedTutor.getEmail());
-            stmt.executeUpdate();
-
+            stmt.executeUpdate();            
         } catch (SQLException e) {
             throw new RuntimeException("Error updating tutor", e);
         }
+    }
+
+    @Override
+    public void addCourseToTutor(Tutor tutor, String course, Double grade) {
+        tutorCoursesDB.addCourse(tutor.getEmail(), course, grade);
+    }
+
+    @Override
+    public void removeCourseFromTutor(Tutor tutor, String course) {
+        tutorCoursesDB.deleteTutorCourse(tutor.getEmail(), course);
     }
 
     /**
@@ -155,7 +178,7 @@ public class TutorDB implements TutorPersistence {
                         rs.getString("email"),
                         hashedPassword,                        // known match
                         rs.getString("bio"),
-                        null, null                             // courses and grades null for now
+                        null                            // courses and grades null for now
                     );
                 }
             }

@@ -11,8 +11,7 @@ import java.util.Map;
  */
 public class Tutor extends User {
     private String bio;
-    private List<String> courses;
-    private Map<String, Double> courseGrades; // course → numeric grade
+    private Map<String, Double> courses; // course → numeric grade
     private List<Session> pastSessions;
     private List<Session> upcomingSessions;
 
@@ -27,11 +26,10 @@ public class Tutor extends User {
      * @param courseGrades   Grades received for each course
      */
     public Tutor(String name, String email, String hashedPassword, String bio,
-                 List<String> courses, Map<String, Double> courseGrades) {
+        Map<String, Double> courses) {
         super(name, email, hashedPassword);
         this.bio = bio != null ? bio : "Edit your bio...";
-        this.courses = courses != null ? new ArrayList<>(courses) : new ArrayList<>();
-        this.courseGrades = courseGrades != null ? new HashMap<>(courseGrades) : new HashMap<>();
+        this.courses = courses != null ? new HashMap<>(courses) : new HashMap<>();
         this.pastSessions = new ArrayList<>();
         this.upcomingSessions = new ArrayList<>();
     }
@@ -41,7 +39,7 @@ public class Tutor extends User {
      * Password is not included here.
      */
     public Tutor(String name, String email, String bio) {
-        this(name, email, null, bio, null, null);
+        this(name, email, null, bio, null);
     }
 
     // ===========================
@@ -53,11 +51,11 @@ public class Tutor extends User {
     }
 
     public List<String> getCourses() {
-        return new ArrayList<>(courses); // return copy for safety
+        return new ArrayList<>(courses.keySet()); // return copy for safety
     }
 
-    public Map<String, Double> getCourseGrades() {
-        return new HashMap<>(courseGrades); // return copy for safety
+    public Map<String, Double> getCoursesWithGrades() {
+        return new HashMap<>(courses); // return copy for safety
     }
 
     public List<Session> getPastSessions() {
@@ -76,12 +74,8 @@ public class Tutor extends User {
         this.bio = bio;
     }
 
-    public void setCourses(List<String> courses) {
-        this.courses = courses != null ? new ArrayList<>(courses) : new ArrayList<>();
-    }
-
-    public void setCourseGrades(Map<String, Double> grades) {
-        this.courseGrades = grades != null ? new HashMap<>(grades) : new HashMap<>();
+    public void setCourses(Map<String, Double> grades) {
+        this.courses = grades != null ? new HashMap<>(grades) : new HashMap<>();
     }
 
     public void setPastSessions(List<Session> sessions) {
@@ -99,9 +93,9 @@ public class Tutor extends User {
     /**
      * Adds or updates a course grade for the tutor.
      */
-    public void addCourseGrade(String course, Double grade) {
+    public void addCourse(String course, Double grade) {
         if (course != null && grade != null) {
-            this.courseGrades.put(course, grade);
+            this.courses.put(course, grade);
         }
     }
 
@@ -110,20 +104,20 @@ public class Tutor extends User {
      * Returns 1.0 by default if course not found.
      */
     public Double getGradeForCourse(String course) {
-        return this.courseGrades.getOrDefault(course, 1.0);
+        return this.courses.getOrDefault(course, 1.0);
     }
 
     /**
      * Calculates the average rating across all graded courses.
      */
     public double getAverageRating() {
-        if (courseGrades.isEmpty()) return 0.0;
+        if (courses.isEmpty()) return 0.0;
 
         double total = 0.0;
-        for (double grade : courseGrades.values()) {
+        for (double grade : courses.values()) {
             total += grade;
         }
-        return total / courseGrades.size();
+        return total / courses.size();
     }
 
     /**

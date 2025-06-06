@@ -47,6 +47,10 @@ public interface TutorPersistence {
      */
     void updateTutor(Tutor updatedTutor);
 
+    void addCourseToTutor(Tutor tutor, String Course, Double grade);
+
+    void removeCourseFromTutor(Tutor tutor, String Course);
+
     /**
      * Save any public course feedback posted by a student for a tutor.
      * This allows feedback to be available on the tutor's profile.
