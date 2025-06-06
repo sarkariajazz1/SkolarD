@@ -1,10 +1,29 @@
 package skolard.presentation.rating;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 
 import skolard.logic.rating.RatingHandler;
 import skolard.objects.RatingRequest;
@@ -120,9 +139,20 @@ public class RatingView extends JFrame {
         requestList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int selectedIndex = requestList.getSelectedIndex();
-                if (selectedIndex >= 0) {
+                String selectedValue = requestList.getSelectedValue();
+
+                if (selectedIndex >= 0 && !"No pending rating requests".equals(selectedValue)) {
                     List<RatingRequest> requests = ratingHandler.getAllRequests();
-                    selectedRequest = requests.get(selectedIndex);
+                    int actualRequestIndex = 0;
+                    for (RatingRequest r : requests) {
+                        if (!r.isCompleted()) {
+                            if (actualRequestIndex == selectedIndex) {
+                                selectedRequest = r;
+                                break;
+                            }
+                            actualRequestIndex++;
+                        }
+                    }
                     enableRatingForm(true);
                     updateStatusForSelectedRequest();
                 } else {
@@ -161,27 +191,35 @@ public class RatingView extends JFrame {
     private void loadRatingRequests() {
         requestModel.clear();
         List<RatingRequest> requests = ratingHandler.getAllRequests();
-        
+        int added = 0;
+
         for (RatingRequest request : requests) {
-            if (!request.isCompleted()) { // Only show pending requests
+            if (!request.isCompleted()) {
                 Session session = request.getSession();
                 Student student = request.getStudent();
-                String displayText = String.format("Session %d - %s (%s) - Student: %s", 
-                    session.getSessionId(),
-                    session.getCourseName(),
-                    session.getTutor().getName(),
-                    student.getName());
+                String displayText = String.format("Session %d - %s (%s) - Student: %s",
+                        session.getSessionId(),
+                        session.getCourseName(),
+                        session.getTutor().getName(),
+                        student.getName());
                 requestModel.addElement(displayText);
+                added++;
             }
         }
-        
-        if (requestModel.isEmpty()) {
+
+        if (added == 0) {
             requestModel.addElement("No pending rating requests");
+            requestList.setEnabled(false); // prevent selection
+            statusLabel.setText("No pending requests available");
+        } else {
+            requestList.setEnabled(true);
+            statusLabel.setText("Loaded " + added + " pending request" + (added > 1 ? "s" : ""));
         }
-        
-        statusLabel.setText("Loaded " + requestModel.getSize() + " pending requests");
+
+        selectedRequest = null;
+        enableRatingForm(false);
     }
-    
+
     private void submitRating() {
         if (selectedRequest == null) {
             showError("Please select a rating request first");
@@ -205,20 +243,20 @@ public class RatingView extends JFrame {
     }
     
     private void skipRating() {
-        // if (selectedRequest == null) {
-        //     showError("Please select a rating request first");
-        //     return;
-        // }
+        if (selectedRequest == null) {
+            showError("Please select a rating request first");
+            return;
+        }
         
-        // try {
-        //     ratingHandler.processRatingSkip(selectedRequest);
-        //     showSuccess("Rating request skipped");
-        //     clearForm();
-        //     loadRatingRequests(); // Refresh the list
+        try {
+            ratingHandler.processRatingSkip(selectedRequest);
+            showSuccess("Rating request skipped");
+            clearForm();
+            loadRatingRequests(); // Refresh the list
             
-        // } catch (Exception e) {
-        //     showError("Error skipping rating: " + e.getMessage());
-        // }
+        } catch (Exception e) {
+            showError("Error skipping rating: " + e.getMessage());
+        }
     }
     
     private void clearForm() {
