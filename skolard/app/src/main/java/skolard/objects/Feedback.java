@@ -1,26 +1,44 @@
 package skolard.objects;
 
 public class Feedback {
-    private final String sessionId;
+    private final int sessionId;
     private final String courseName;
-    private final String tutorId;
-    private final String studentId;
-    private final int rating;
-    private final String comment;
+    private final String tutorName;
+    private final String studentName;
+    private final int rating; // Typically the course/session rating
 
-    public Feedback(String sessionId, String courseName, String tutorId, String studentId, int rating, String comment) {
+    public Feedback(int sessionId, String courseName, String tutorName, String studentId, int rating) {
         this.sessionId = sessionId;
         this.courseName = courseName;
-        this.tutorId = tutorId;
-        this.studentId = studentId;
+        this.tutorName = tutorName;
+        this.studentName = studentId;
         this.rating = rating;
-        this.comment = comment;
     }
 
-    public String getSessionId() { return sessionId; }
-    public String getCourseName() { return courseName; }
-    public String getTutorId() { return tutorId; }
-    public String getStudentId() { return studentId; }
-    public int getRating() { return rating; }
-    public String getComment() { return comment; }
+    public int getSessionId() {
+        return sessionId;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public String getTutorId() {
+        return tutorName;
+    }
+
+    public String getStudentId() {
+        return studentName;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    @Override
+    public String toString() {
+        return "Session: " + sessionId + ", Course: " + courseName +
+               ", Tutor: " + tutorName + ", Student: " + studentName +
+               ", Rating: " + rating;
+    }
 }

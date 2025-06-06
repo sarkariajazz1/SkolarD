@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 /**
  * Represents a single rating request sent to a student after a session.
- * Tracks whether it was filled or skipped, and stores rating data.
+ * Tracks completion and numeric ratings (1–5) only.
  */
 public class RatingRequest {
     private final Session session;
@@ -13,7 +13,6 @@ public class RatingRequest {
     private boolean completed;
     private int tutorRating;
     private int courseRating;
-    private String feedback;
     private final LocalDateTime createdAt;
 
     public RatingRequest(Session session, Student student) {
@@ -48,18 +47,13 @@ public class RatingRequest {
         return courseRating;
     }
 
-    public String getFeedback() {
-        return feedback;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void submit(int tutorRating, int courseRating, String feedback) {
+    public void submit(int tutorRating, int courseRating) {
         this.tutorRating = tutorRating;
         this.courseRating = courseRating;
-        this.feedback = feedback;
         this.completed = true;
         this.skipped = false;
     }
@@ -67,5 +61,26 @@ public class RatingRequest {
     public void skip() {
         this.completed = true;
         this.skipped = true;
+    }
+
+    /**
+     * Converts this request into a Feedback object using course rating only.
+     */
+    public Feedback toFeedback() {
+        return new Feedback(
+            session.getSessionId(),
+            session.getCourseName(),
+            session.getTutor().getName(),
+            student.getName(),
+            courseRating // Used as the representative rating
+        );
+    }
+
+    @Override
+    public String toString() {
+        return "RatingRequest for Session: " + session.getSessionId() +
+               ", Student: " + student.getName() +
+               ", Completed: " + completed +
+               ", Skipped: " + skipped;
     }
 }

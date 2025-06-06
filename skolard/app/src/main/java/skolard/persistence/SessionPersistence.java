@@ -2,7 +2,6 @@ package skolard.persistence;
 
 import java.util.List;
 
-import skolard.objects.Feedback;
 import skolard.objects.Session;
 
 /**
@@ -25,19 +24,4 @@ public interface SessionPersistence {
 
     void updateSession(Session updatedSession);
 
-    /**
-     * Persist a feedback record associated with a completed session.
-     * Should be linked to courseName in the database via foreign key.
-     *
-     * @param feedback Feedback object containing rating and comment.
-     */
-    //void saveFeedback(Feedback feedback);
-
-    /**
-     * Retrieve all feedback entries related to a specific course.
-     *
-     * @param courseName the course name (e.g., "COMP2150")
-     * @return list of feedback records linked to that course
-     */
-    //List<Feedback> getFeedbackByCourse(String courseName);
 }

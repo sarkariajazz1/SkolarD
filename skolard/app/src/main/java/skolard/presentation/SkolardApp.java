@@ -44,15 +44,21 @@ public class SkolardApp extends JFrame {
     private final MessageHandler messageHandler;
     private final FAQHandler faqHandler;
     private final LoginHandler loginHandler;
+    //private final RatingHandler ratingHandler; // Uncomment if RatingHandler is implemented
 
     private User currentUser;
     private JPanel mainPanel;
     private CardLayout cardLayout;
     private JPanel dashboardPanel;
 
-    public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler,
-                      SessionHandler sessionHandler, MessageHandler messageHandler,
-                      FAQHandler faqHandler, LoginHandler loginHandler) {
+    public SkolardApp(ProfileHandler profileHandler, 
+                      MatchingHandler matchingHandler,
+                      SessionHandler sessionHandler, 
+                      MessageHandler messageHandler,
+                      FAQHandler faqHandler, 
+                      LoginHandler loginHandler
+                      //, RatingHandler ratingHandler
+                      ) {
         super("SkolarD - Welcome");
 
         this.profileHandler = profileHandler;
@@ -61,6 +67,7 @@ public class SkolardApp extends JFrame {
         this.messageHandler = messageHandler;
         this.faqHandler = faqHandler;
         this.loginHandler = loginHandler;
+        //this.ratingHandler = ratingHandler;
 
         initializeUI();
         showAuthenticationView();
@@ -177,6 +184,7 @@ public class SkolardApp extends JFrame {
         JButton messageBtn = new JButton("Messages");
         JButton supportBtn = new JButton("Support");
         JButton faqBtn = new JButton("FAQs");
+        JButton rateBtn = new JButton("Rate Tutor/Session");
 
         buttonPanel.add(myDashboardBtn);
         buttonPanel.add(findTutorsBtn);
@@ -184,6 +192,7 @@ public class SkolardApp extends JFrame {
         buttonPanel.add(messageBtn);
         buttonPanel.add(supportBtn);
         buttonPanel.add(faqBtn);
+        buttonPanel.add(rateBtn);
 
         myDashboardBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
         findTutorsBtn.addActionListener(e -> new MatchingView(matchingHandler));
@@ -191,6 +200,7 @@ public class SkolardApp extends JFrame {
         messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
         supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
+        //rateBtn.addActionListener(e-> new RatingView(ratingHandler));
 
         return buttonPanel;
     }
