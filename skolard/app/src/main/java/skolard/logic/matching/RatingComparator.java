@@ -13,7 +13,6 @@ import skolard.objects.Session;
  */
 public class RatingComparator extends PriorityList<Session> {
     private final List<Session> sessions;
-    private static final double MISSING_GRADE = 1.0;
 
     public RatingComparator(List<Session> sessions) {
         // Defensive shallow copy
@@ -34,8 +33,7 @@ public class RatingComparator extends PriorityList<Session> {
                 Double grade = session.getTutor().getGradeForCourse(course);
                 return courseName != null
                     && courseName.equalsIgnoreCase(course)
-                    && grade != null
-                    && !grade.equals(MISSING_GRADE);
+                    && grade != null;
             })
             .collect(Collectors.toList());
 
