@@ -75,6 +75,7 @@ public class SessionHandler {
             // Check if the session is already booked
             if(!session.isBooked()){
                 session.bookSession(student); // Book the session for the student
+                sessionPersistence.updateSession(session);
             } else {
                 // Session is booked — check if by the same student or another
                 if(session.getStudent().equals(user)){
