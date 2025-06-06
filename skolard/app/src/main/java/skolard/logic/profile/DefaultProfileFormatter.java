@@ -27,9 +27,9 @@ public class DefaultProfileFormatter implements ProfileFormatter {
                 sb.append("Courses: ").append(String.join(", ", tutor.getCourses())).append("\n");
             }
 
-            if (!tutor.getCourseGrades().isEmpty()) {
+            if (!tutor.getCoursesWithGrades().isEmpty()) {
                 sb.append("Grades:\n");
-                tutor.getCourseGrades().forEach((course, grade) ->
+                tutor.getCoursesWithGrades().forEach((course, grade) ->
                     sb.append(" - ").append(course).append(": ").append(grade).append("\n")
                 );
             }
