@@ -1,6 +1,5 @@
 package skolard.logic.profile;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import skolard.objects.Student;
@@ -27,7 +26,7 @@ public class ProfileCreator {
     public void addTutor(String name, String email, String hashedPassword) {
         ValidationUtil.validateNewUser(name, email);
         tutorDB.addTutor(new Tutor(name.trim(), EmailUtil.normalize(email), hashedPassword,
-                                   "Edit your bio...", new ArrayList<>(), new HashMap<>()));
+                                   "Edit your bio...", new HashMap<>()));
     }
 
     public Student getStudent(String email) {

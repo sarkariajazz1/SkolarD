@@ -44,7 +44,6 @@ public class SessionStub implements SessionPersistence {
                 "amrit@skolard.ca",
                 hash("amrit123"),
                 "CS & Math Tutor",
-                new ArrayList<>(List.of("COMP 1010", "MATH 1500")),
                 Map.of("COMP 1010", 4.5, "MATH 1500", 4.0)
         );
 
@@ -53,7 +52,6 @@ public class SessionStub implements SessionPersistence {
                 "sukhdeep@skolard.ca",
                 hash("sukhdeep123"),
                 "Physics tutor",
-                new ArrayList<>(List.of("PHYS 1050")),
                 Map.of("PHYS 1050", 4.0)
         );
 
