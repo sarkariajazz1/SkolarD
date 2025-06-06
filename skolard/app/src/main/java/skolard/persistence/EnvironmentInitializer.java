@@ -16,7 +16,6 @@ public class EnvironmentInitializer {
 
         if (seed) {
             DatabaseSeeder.seed(conn, List.of(
-                "/seed_courses.sql",
                 "/seed_students.sql",
                 "/seed_tutors.sql",
                 "/seed_tutorCourse.sql",
