@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -36,38 +37,45 @@ public class MatchingView extends JFrame {
     private final JTextField endTimeField = new JTextField(16); // User input for endTime range
     private final JPanel timePanel = new JPanel(new FlowLayout()); //Panel to input time
     private final JLabel statusLabel = new JLabel(" "); // empty space initially
+    private List<Session> currentResults;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public MatchingView(MatchingHandler matchingHandler) {
         super("SkolarD - Matching View");
         this.handler = matchingHandler;
 
-        setLayout(new BorderLayout(10, 10)); // Window layout with spacing
+        setLayout(new BorderLayout(10, 10));
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        setupInputPanel();
+        setupTablePanel();
+        setupTableClickListener();
 
-        // Top input panel with label and text field
-        // Top-level vertical layout panel
-        // Row 1: course input and filter options
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private void setupInputPanel() {
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
 
+        // First row: course + filter
         JPanel topRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topRow.add(new JLabel("Course:"));
         topRow.add(courseField);
+
         JButton searchBtn = new JButton("Find Tutors");
         topRow.add(searchBtn);
+
         JComboBox<String> filterDropdown = new JComboBox<>(new String[]{
-            "",
-            "Sort by Time",
-            "Sort by Course Rating",
-            "Sort by Overall Tutor Rating"
+            "", "Sort by Time", "Sort by Course Rating", "Sort by Overall Tutor Rating"
         });
         topRow.add(filterDropdown);
-        add(inputPanel, BorderLayout.NORTH);
+        inputPanel.add(topRow);
 
-        // Row 2: Time input fields and example label
+        // Second row: time input
         timePanel.setLayout(new BoxLayout(timePanel, BoxLayout.Y_AXIS));
-
         JPanel timeFieldsRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         timeFieldsRow.add(new JLabel("Start:"));
         timeFieldsRow.add(startTimeField);
@@ -75,90 +83,99 @@ public class MatchingView extends JFrame {
         timeFieldsRow.add(endTimeField);
 
         JLabel timeExampleLabel = new JLabel("Example: 2025-06-01 09:00");
-
         timePanel.add(timeFieldsRow);
         timePanel.add(timeExampleLabel);
         timePanel.setVisible(false);
 
-
-
-        // Add both rows to the input panel
-        inputPanel.add(topRow);
         inputPanel.add(timePanel);
-
-        //Add status label above table panel to indicate input status
-        JPanel tablePanel = new JPanel();
-        tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));
-        tablePanel.add(statusLabel);
-        tablePanel.add(new JScrollPane(sessionTable));
-        add(tablePanel, BorderLayout.CENTER);
-
         add(inputPanel, BorderLayout.NORTH);
 
-        // Center panel table showing sessions
-        sessionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        // Show/hide timePanel based on dropdown
+        // Filter dropdown listener
         filterDropdown.addActionListener(e -> {
             String selected = (String) filterDropdown.getSelectedItem();
-            timePanel.setVisible("Sort by Time".equals(selected));
-
-            // Clear time input fields every time the filter changes
+            boolean showTime = "Sort by Time".equals(selected);
+            timePanel.setVisible(showTime);
             startTimeField.setText("");
             endTimeField.setText("");
         });
 
-        // Action: when "Find Tutors" is clicked
+        // Search button logic
         searchBtn.addActionListener(e -> {
-            String course = courseField.getText().trim(); // get input
+            String course = courseField.getText().trim();
             String filter = (String) filterDropdown.getSelectedItem();
 
-            if (!course.isEmpty()) {
-                List<Session> results = null; 
-                LocalDateTime start = null;
-                LocalDateTime end = null;
-                // fetch sessions
-                if(filter.equals("Sort by Time")){
-                    try {
-                        start = LocalDateTime.parse(startTimeField.getText().trim(), formatter);
-                        end = LocalDateTime.parse(endTimeField.getText().trim(), formatter);
-                    } catch (DateTimeParseException ex) {
-                        statusLabel.setText("Invalid date-time format or empty input. Use yyyy-MM-dd HH:mm");
-                        return;
-                    }
-                    results = handler.getAvailableSessions(SessionFilter.TIME, course, start, end);
-                } else if(filter.equals("Sort by Course Rating")){
-                    results = handler.getAvailableSessions(SessionFilter.RATE, course, start, end);
-                } else if(filter.equals("Sort by Overall Tutor Rating")){
-                    results = handler.getAvailableSessions(SessionFilter.TUTOR, course, start, end);
-                } else{
-                    results = handler.getAvailableSessions(course);
-                }
-
-                //Clears old data displayed
-                tableModel.setRowCount(0);
-                if(!results.isEmpty()){
-                    for (Session s : results) {
-                        Object[] row = {
-                            s.getTutor().getName(),
-                            s.getStartDateTime().format(formatter),
-                            s.getEndDateTime().format(formatter)
-                        };
-                        tableModel.addRow(row);
-                    }
-                } else{
-                    statusLabel.setText("No sessions found for the given criteria.");
-                }
-            } else{
+            if (course.isEmpty()) {
                 statusLabel.setText("Please enter a course.");
                 return;
             }
 
-        });
+            List<Session> results = null;
+            LocalDateTime start = null, end = null;
 
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only this window
-        pack(); // Adjust size
-        setLocationRelativeTo(null); // Center
-        setVisible(true); // Show window
+            try {
+                if ("Sort by Time".equals(filter)) {
+                    start = LocalDateTime.parse(startTimeField.getText().trim(), formatter);
+                    end = LocalDateTime.parse(endTimeField.getText().trim(), formatter);
+                    results = handler.getAvailableSessions(SessionFilter.TIME, course, start, end);
+                } else if ("Sort by Course Rating".equals(filter)) {
+                    results = handler.getAvailableSessions(SessionFilter.RATE, course, null, null);
+                } else if ("Sort by Overall Tutor Rating".equals(filter)) {
+                    results = handler.getAvailableSessions(SessionFilter.TUTOR, course, null, null);
+                } else {
+                    results = handler.getAvailableSessions(course);
+                }
+            } catch (DateTimeParseException ex) {
+                statusLabel.setText("Invalid date-time format. Use yyyy-MM-dd HH:mm");
+                return;
+            }
+
+            tableModel.setRowCount(0);
+            currentResults = results;
+
+            if (results == null || results.isEmpty()) {
+                statusLabel.setText("No sessions found for the given criteria.");
+            } else {
+                statusLabel.setText("Results:");
+                for (Session s : results) {
+                    tableModel.addRow(new Object[]{
+                        s.getTutor().getName(),
+                        s.getStartDateTime().format(formatter),
+                        s.getEndDateTime().format(formatter)
+                    });
+                }
+            }
+        });
+    }
+
+    private void setupTablePanel() {
+        JPanel tablePanel = new JPanel();
+        tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));
+        tablePanel.add(statusLabel);
+        tablePanel.add(new JScrollPane(sessionTable));
+        sessionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        add(tablePanel, BorderLayout.CENTER);
+    }
+
+    private void setupTableClickListener() {
+        sessionTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow = sessionTable.getSelectedRow();
+            if (!e.getValueIsAdjusting() && selectedRow >= 0 && currentResults != null && selectedRow < currentResults.size()) {
+                Session session = currentResults.get(selectedRow);
+                showSessionDetailsPopup(session);
+            }
+        });
+    }
+
+    private void showSessionDetailsPopup(Session session) {
+        String message = String.format(
+            "<html><b>Tutor:</b> %s<br><b>Email:</b> %s<br><b>Start:</b> %s<br><b>End:</b> %s<br><b>Course:</b> %s<br><b>Bio:</b> %s</html>",
+            session.getTutor().getName(),
+            session.getTutor().getEmail(),
+            session.getStartDateTime().format(formatter),
+            session.getEndDateTime().format(formatter),
+            session.getCourseName(),
+            session.getTutor().getBio()
+        );
+        JOptionPane.showMessageDialog(this, message, "Session Details", JOptionPane.INFORMATION_MESSAGE);
     }
 }
