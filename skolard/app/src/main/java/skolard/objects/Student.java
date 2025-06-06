@@ -38,8 +38,13 @@ public class Student extends User {
         upcomingSessions.add(session);
     }
 
-    // Unused method: could be removed or renamed properly
-    public void setUpcomingSession(Session session) { }
+    public void replaceUpcomingSession(Session oldSession, Session newSession) { 
+        int index = upcomingSessions.indexOf(oldSession);
+
+        if(index != -1){
+            upcomingSessions.set(index, newSession);
+        }
+    }
 
     // Replaces all upcoming sessions
     public void setUpcomingSessions(List<Session> upcomingSessions) {
