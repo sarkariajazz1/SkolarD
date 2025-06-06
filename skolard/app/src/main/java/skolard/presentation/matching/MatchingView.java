@@ -185,6 +185,14 @@ public class MatchingView extends JFrame {
                 );
                 if (confirm == JOptionPane.YES_OPTION) {
                     sessionHandler.bookASession(student, session.getSessionId());
+                                currentResults.remove(selectedRow);
+
+                    tableModel.removeRow(selectedRow);
+
+                    sessionTable.clearSelection();
+                    bookButton.setEnabled(false);
+                    infoButton.setEnabled(false);
+                    
                     JOptionPane.showMessageDialog(this, "Session booked!", "Booking Confirmed", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
