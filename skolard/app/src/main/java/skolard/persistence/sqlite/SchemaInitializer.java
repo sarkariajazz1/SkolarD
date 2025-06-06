@@ -17,10 +17,10 @@ public class SchemaInitializer {
      */
     public static void initializeSchema(Connection connection) {
         // Table for storing course identifiers and names
-        String createCourseTable = "CREATE TABLE IF NOT EXISTS courses (" +
-                "id TEXT PRIMARY KEY NOT NULL," +
-                "name TEXT NOT NULL" +
-                ");";
+        //String createCourseTable = "CREATE TABLE IF NOT EXISTS courses (" +
+        //        "id TEXT PRIMARY KEY NOT NULL," +
+        //        "name TEXT NOT NULL" +
+        //        ");";
 
         // Table for storing tutor profiles
         String createTutorTable = "CREATE TABLE IF NOT EXISTS tutor (" +
@@ -53,10 +53,9 @@ public class SchemaInitializer {
         // Table for tutors' course history
         String createTutorCourseTable = "CREATE TABLE IF NOT EXISTS tutorCourse (" +
                 "tutorEmail TEXT NOT NULL," +
-                "course TEXT NOT NULL," +
+                "courseID TEXT NOT NULL," +
                 "grade REAL NOT NULL," +
                 "PRIMARY KEY(tutorEmail, courseID)," +
-                "FOREIGN KEY(courseID) REFERENCES courses(id)," +
                 "FOREIGN KEY(tutorEmail) REFERENCES tutor(email)" +
                 ");";
 
@@ -103,7 +102,7 @@ public class SchemaInitializer {
                 ");";
 
         try (Statement stmt = connection.createStatement()) {
-            stmt.execute(createCourseTable);
+            //stmt.execute(createCourseTable);
             stmt.execute(createTutorTable);
             stmt.execute(createStudentTable);
             stmt.execute(createSessionTable);
