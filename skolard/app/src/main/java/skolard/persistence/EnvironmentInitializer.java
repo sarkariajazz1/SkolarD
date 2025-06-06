@@ -20,10 +20,10 @@ public class EnvironmentInitializer {
                 "/seed_tutors.sql",
                 "/seed_tutorCourse.sql",
                 "/seed_sessions.sql",
-                "/seed_messages.sql",
                 "/seed_card.sql",
                 "/seed_support_user.sql",
-                "/seed_support.sql"
+                "/seed_support.sql",
+                "/seed_messages.sql"
             ));
         }
 
