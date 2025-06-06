@@ -36,7 +36,7 @@ public class TutorCoursesDB {
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
-            ResultSet rs = stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 courses.put(rs.getString("courseID"), 
