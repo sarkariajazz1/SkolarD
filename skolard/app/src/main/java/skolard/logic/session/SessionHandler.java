@@ -54,7 +54,7 @@ public class SessionHandler {
                 }
             }
 
-            // No conflicts, add new session with unassigned student (null)
+            // No conflicts, add new session with unassigned student (null), Session id is -1 and will auto increment in database
             sessionPersistence.addSession(new Session(-1, tutor, null, start, end, courseName));
         }
     }

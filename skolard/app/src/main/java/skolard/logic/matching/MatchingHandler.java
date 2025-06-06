@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import skolard.objects.Session;
-import skolard.persistence.PersistenceRegistry;
 import skolard.persistence.SessionPersistence;
 
 /**
@@ -14,13 +13,6 @@ import skolard.persistence.SessionPersistence;
  */
 public class MatchingHandler {
     private final SessionPersistence sessionDB;
-
-    /**
-     * Default constructor using the real persistence layer.
-     */
-    public MatchingHandler() {
-        this(PersistenceRegistry.getSessionPersistence());
-    }
 
     /**
      * Constructor for injecting a custom session database (mock/stub).
