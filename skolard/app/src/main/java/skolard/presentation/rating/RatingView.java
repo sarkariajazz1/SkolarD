@@ -100,16 +100,7 @@ public class RatingView extends JFrame {
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
         setupRatingSlider(courseRatingSlider);
         rightPanel.add(courseRatingSlider, gbc);
-        
-        // Feedback
-        gbc.gridx = 0; gbc.gridy = 2; gbc.fill = GridBagConstraints.NONE;
-        rightPanel.add(new JLabel("Feedback:"), gbc);
-        gbc.gridx = 1; gbc.fill = GridBagConstraints.BOTH;
-        feedbackArea.setLineWrap(true);
-        feedbackArea.setWrapStyleWord(true);
-        feedbackArea.setBorder(BorderFactory.createLoweredBevelBorder());
-        rightPanel.add(new JScrollPane(feedbackArea), gbc);
-        
+                
         // Buttons
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(submitRatingBtn);
@@ -229,7 +220,7 @@ public class RatingView extends JFrame {
         try {
             int tutorRating = tutorRatingSlider.getValue();
             int courseRating = courseRatingSlider.getValue();
-            String feedback = feedbackArea.getText().trim();
+            
             
             ratingHandler.processRatingSubmission(selectedRequest, tutorRating, courseRating);
             
