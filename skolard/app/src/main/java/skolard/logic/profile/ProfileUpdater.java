@@ -1,5 +1,7 @@
 package skolard.logic.profile;
 
+import java.util.Map;
+
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.persistence.StudentPersistence;
@@ -37,7 +39,9 @@ public class ProfileUpdater {
 
     public void removeCourse(Tutor tutor, String course) {
         String c = course.toLowerCase();
-        tutor.getCoursesWithGrades().remove(c);
+        Map<String, Double> courses = tutor.getCoursesWithGrades();
+        courses.remove(c);
+        tutor.setCourses(courses);
         tutorDB.removeCourseFromTutor(tutor, course);
     }
 }
