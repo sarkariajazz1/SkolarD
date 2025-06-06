@@ -18,6 +18,7 @@ import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
+import skolard.presentation.datetime.DateTimeLabel;
 
 /**
  * GUI window for student-specific functionality in SkolarD.
@@ -62,10 +63,14 @@ public class StudentView extends JFrame {
         setLayout(new BorderLayout(10, 10));
         
         // Welcome panel
-        JPanel welcomePanel = new JPanel(new FlowLayout());
-        welcomePanel.add(new JLabel("Welcome, " + currentStudent.getName() + "!"));
+        JPanel welcomePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        JLabel welcomeLabel = new JLabel("Welcome, " + currentStudent.getName() + "!");
+        welcomeLabel.setFont(welcomeLabel.getFont().deriveFont(java.awt.Font.BOLD, 16f));
+        DateTimeLabel clockLabel = new DateTimeLabel(); // shows date + time
+        welcomePanel.add(welcomeLabel);
+        welcomePanel.add(clockLabel);
         add(welcomePanel, BorderLayout.NORTH);
-        
+
         // Search panel
         JPanel searchPanel = new JPanel(new FlowLayout());
         searchPanel.add(new JLabel("Search by course or tutor name:"));
