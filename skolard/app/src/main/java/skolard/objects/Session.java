@@ -85,8 +85,22 @@ public class Session {
         this.booked = true;
         this.student = student;
         this.tutor.addUpcomingSession(this); // Add to tutor's schedule
-        student.setUpcomingSession(this);    // Add to student's schedule
+        student.addUpcomingSession(this);    // Add to student's schedule
         System.out.println("Session " + sessionId + " booked by " + student.getName());
+    }
+
+    public void unbookSession(Student student){
+        Session oldSession = this;
+
+        if(!this.booked){
+            throw new IllegalArgumentException("This session is not booked");
+        }
+
+        this.booked = false;
+        this.student = null;
+        student.replaceUpcomingSession(oldSession, this);
+
+        System.out.println("Session " + sessionId + " unbooked by " + student.getName());
     }
 
 }

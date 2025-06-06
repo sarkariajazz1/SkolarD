@@ -21,34 +21,43 @@ import javax.swing.ListSelectionModel;
 
 import skolard.logic.matching.MatchingHandler;
 import skolard.logic.matching.MatchingHandler.SessionFilter;
+import skolard.logic.session.SessionHandler;
 import skolard.objects.Session;
+import skolard.objects.Student;
 
 /**
- * A simple GUI window to allow users to find available tutoring sessions for a specific course.
+ * A simple GUI window to allow users to find available tutoring sessions for a specific course and book it.
  */
 public class MatchingView extends JFrame {
-    private MatchingHandler handler; // Logic handler
+    private MatchingHandler matchingHandler; // Logic handler
+    private SessionHandler sessionHandler;
 
-    private final JTextField courseField = new JTextField(15); // User input for course name
-    private final String[] columnNames = { "Tutor", "Start Time", "End Time"};
+    private final JTextField courseField = new JTextField(15);
+    private final String[] columnNames = { "Tutor", "Start Time", "End Time" };
     private final javax.swing.table.DefaultTableModel tableModel = new javax.swing.table.DefaultTableModel(columnNames, 0);
     private final JTable sessionTable = new JTable(tableModel);
-    private final JTextField startTimeField = new JTextField(16); // User input for startTime range
-    private final JTextField endTimeField = new JTextField(16); // User input for endTime range
-    private final JPanel timePanel = new JPanel(new FlowLayout()); //Panel to input time
-    private final JLabel statusLabel = new JLabel(" "); // empty space initially
+    private final JTextField startTimeField = new JTextField(16);
+    private final JTextField endTimeField = new JTextField(16);
+    private final JPanel timePanel = new JPanel(new FlowLayout());
+    private final JLabel statusLabel = new JLabel(" ");
     private List<Session> currentResults;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public MatchingView(MatchingHandler matchingHandler) {
+    // New buttons
+    private final JButton bookButton = new JButton("Book");
+    private final JButton infoButton = new JButton("View Info");
+
+    public MatchingView(MatchingHandler matchingHandler, SessionHandler sessionHandler, Student student) {
         super("SkolarD - Matching View");
-        this.handler = matchingHandler;
+        this.matchingHandler = matchingHandler;
+        this.sessionHandler = sessionHandler;
 
         setLayout(new BorderLayout(10, 10));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         setupInputPanel();
         setupTablePanel();
+        setupButtonPanel(student);
         setupTableClickListener();
 
         pack();
@@ -60,7 +69,6 @@ public class MatchingView extends JFrame {
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
 
-        // First row: course + filter
         JPanel topRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topRow.add(new JLabel("Course:"));
         topRow.add(courseField);
@@ -68,13 +76,12 @@ public class MatchingView extends JFrame {
         JButton searchBtn = new JButton("Find Tutors");
         topRow.add(searchBtn);
 
-        JComboBox<String> filterDropdown = new JComboBox<>(new String[]{
+        JComboBox<String> filterDropdown = new JComboBox<>(new String[] {
             "", "Sort by Time", "Sort by Course Rating", "Sort by Overall Tutor Rating"
         });
         topRow.add(filterDropdown);
         inputPanel.add(topRow);
 
-        // Second row: time input
         timePanel.setLayout(new BoxLayout(timePanel, BoxLayout.Y_AXIS));
         JPanel timeFieldsRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         timeFieldsRow.add(new JLabel("Start:"));
@@ -90,7 +97,6 @@ public class MatchingView extends JFrame {
         inputPanel.add(timePanel);
         add(inputPanel, BorderLayout.NORTH);
 
-        // Filter dropdown listener
         filterDropdown.addActionListener(e -> {
             String selected = (String) filterDropdown.getSelectedItem();
             boolean showTime = "Sort by Time".equals(selected);
@@ -99,7 +105,6 @@ public class MatchingView extends JFrame {
             endTimeField.setText("");
         });
 
-        // Search button logic
         searchBtn.addActionListener(e -> {
             String course = courseField.getText().trim();
             String filter = (String) filterDropdown.getSelectedItem();
@@ -116,13 +121,13 @@ public class MatchingView extends JFrame {
                 if ("Sort by Time".equals(filter)) {
                     start = LocalDateTime.parse(startTimeField.getText().trim(), formatter);
                     end = LocalDateTime.parse(endTimeField.getText().trim(), formatter);
-                    results = handler.getAvailableSessions(SessionFilter.TIME, course, start, end);
+                    results = matchingHandler.getAvailableSessions(SessionFilter.TIME, course, start, end);
                 } else if ("Sort by Course Rating".equals(filter)) {
-                    results = handler.getAvailableSessions(SessionFilter.RATE, course, null, null);
+                    results = matchingHandler.getAvailableSessions(SessionFilter.RATE, course, null, null);
                 } else if ("Sort by Overall Tutor Rating".equals(filter)) {
-                    results = handler.getAvailableSessions(SessionFilter.TUTOR, course, null, null);
+                    results = matchingHandler.getAvailableSessions(SessionFilter.TUTOR, course, null, null);
                 } else {
-                    results = handler.getAvailableSessions(course);
+                    results = matchingHandler.getAvailableSessions(course);
                 }
             } catch (DateTimeParseException ex) {
                 statusLabel.setText("Invalid date-time format. Use yyyy-MM-dd HH:mm");
@@ -132,12 +137,15 @@ public class MatchingView extends JFrame {
             tableModel.setRowCount(0);
             currentResults = results;
 
+            bookButton.setEnabled(false);
+            infoButton.setEnabled(false);
+
             if (results == null || results.isEmpty()) {
                 statusLabel.setText("No sessions found for the given criteria.");
             } else {
                 statusLabel.setText("Results:");
                 for (Session s : results) {
-                    tableModel.addRow(new Object[]{
+                    tableModel.addRow(new Object[] {
                         s.getTutor().getName(),
                         s.getStartDateTime().format(formatter),
                         s.getEndDateTime().format(formatter)
@@ -156,13 +164,55 @@ public class MatchingView extends JFrame {
         add(tablePanel, BorderLayout.CENTER);
     }
 
-    private void setupTableClickListener() {
-        sessionTable.getSelectionModel().addListSelectionListener(e -> {
+    private void setupButtonPanel(Student student) {
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        bookButton.setEnabled(false);
+        infoButton.setEnabled(false);
+
+        buttonPanel.add(bookButton);
+        buttonPanel.add(infoButton);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        bookButton.addActionListener(e -> {
             int selectedRow = sessionTable.getSelectedRow();
-            if (!e.getValueIsAdjusting() && selectedRow >= 0 && currentResults != null && selectedRow < currentResults.size()) {
+            if (selectedRow >= 0 && selectedRow < currentResults.size()) {
+                Session session = currentResults.get(selectedRow);
+                int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Do you want to book this session with " + session.getTutor().getName() + "?",
+                    "Confirm Booking",
+                    JOptionPane.YES_NO_OPTION
+                );
+                if (confirm == JOptionPane.YES_OPTION) {
+                    sessionHandler.bookASession(student, session.getSessionId());
+                                currentResults.remove(selectedRow);
+
+                    tableModel.removeRow(selectedRow);
+
+                    sessionTable.clearSelection();
+                    bookButton.setEnabled(false);
+                    infoButton.setEnabled(false);
+                    
+                    JOptionPane.showMessageDialog(this, "Session booked!", "Booking Confirmed", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
+
+        infoButton.addActionListener(e -> {
+            int selectedRow = sessionTable.getSelectedRow();
+            if (selectedRow >= 0 && selectedRow < currentResults.size()) {
                 Session session = currentResults.get(selectedRow);
                 showSessionDetailsPopup(session);
             }
+        });
+    }
+
+    private void setupTableClickListener() {
+        sessionTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow = sessionTable.getSelectedRow();
+            boolean valid = !e.getValueIsAdjusting() && selectedRow >= 0 && currentResults != null && selectedRow < currentResults.size();
+            bookButton.setEnabled(valid);
+            infoButton.setEnabled(valid);
         });
     }
 
