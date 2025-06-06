@@ -40,11 +40,11 @@ public class TutorCoursesDB {
 
             while (rs.next()) {
                 courses.put(rs.getString("courseID"), 
-                    rs.getDouble("grade"));
+                    (Double)rs.getDouble("grade"));
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error retrieving tutors", e);
+            throw new RuntimeException("Error retrieving tutor courses", e);
         }
 
         return courses;
