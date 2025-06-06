@@ -172,7 +172,7 @@ public class SkolardApp extends JFrame {
         JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
 
         JButton myDashboardBtn = new JButton("My Dashboard");
-        JButton findTutorsBtn = new JButton("Find Tutors");
+        JButton findTutorsBtn = new JButton("Find Tutor Sessions");
         JButton sessionBtn = new JButton("Session Management");
         JButton messageBtn = new JButton("Messages");
         JButton supportBtn = new JButton("Support");
