@@ -205,20 +205,20 @@
 //     }
     
 //     private void skipRating() {
-//         if (selectedRequest == null) {
-//             showError("Please select a rating request first");
-//             return;
-//         }
+//         // if (selectedRequest == null) {
+//         //     showError("Please select a rating request first");
+//         //     return;
+//         // }
         
-//         try {
-//             ratingHandler.processRatingSkip(selectedRequest);
-//             showSuccess("Rating request skipped");
-//             clearForm();
-//             loadRatingRequests(); // Refresh the list
+//         // try {
+//         //     ratingHandler.processRatingSkip(selectedRequest);
+//         //     showSuccess("Rating request skipped");
+//         //     clearForm();
+//         //     loadRatingRequests(); // Refresh the list
             
-//         } catch (Exception e) {
-//             showError("Error skipping rating: " + e.getMessage());
-//         }
+//         // } catch (Exception e) {
+//         //     showError("Error skipping rating: " + e.getMessage());
+//         // }
 //     }
     
 //     private void clearForm() {
