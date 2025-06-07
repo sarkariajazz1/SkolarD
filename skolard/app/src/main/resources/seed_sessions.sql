@@ -11,6 +11,16 @@ INSERT OR IGNORE INTO session (id, tutorEmail, studentEmail, startTime, endTime,
 (7, 'li@example.com', 'hank@example.com', '2025-06-05T10:00', '2025-06-05T11:00', 'COMP101'),
 (8, 'david@example.com', 'irene@example.com', '2025-06-05T11:30', '2025-06-05T12:30', 'PHYS1050'),
 (9, 'alice@example.com', 'james@example.com', '2025-06-06T09:00', '2025-06-06T10:00', 'COMP1010'),
-(10, 'bob@example.com', 'kate@example.com', '2025-06-06T13:00', '2025-06-06T14:00', 'MATH1500');
+(10, 'bob@example.com', 'kate@example.com', '2025-06-06T13:00', '2025-06-06T14:00', 'MATH1500'),
+(11, 'carol@example.com', 'leo@example.com', '2025-06-07T10:00', '2025-06-07T11:00', 'COMP1010'),
+(12, 'erin@example.com', 'maya@example.com', '2025-06-07T14:00', '2025-06-07T15:00', 'PHYS1050'),
+(13, 'frank@example.com', 'nina@example.com', '2025-06-08T09:00', '2025-06-08T10:00', 'MATH1500'),
+(14, 'grace@example.com', 'oliver@example.com', '2025-06-08T11:00', '2025-06-08T12:00', 'COMP1010'),
+(15, 'hank@example.com', 'paula@example.com', '2025-06-09T08:30', '2025-06-09T09:30', 'COMP101'),
+(16, 'irene@example.com', 'quentin@example.com', '2025-06-09T13:00', '2025-06-09T14:00', 'PHYS1050'),
+(17, 'james@example.com', 'rachel@example.com', '2025-06-10T10:30', '2025-06-10T11:30', 'MATH1500'),
+(18, 'kate@example.com', 'sam@example.com', '2025-06-10T15:00', '2025-06-10T16:00', 'COMP1010'),
+(19, 'alice@example.com', 'tina@example.com', '2025-06-11T09:00', '2025-06-11T10:00', 'COMP1010'),
+(20, 'bob@example.com', 'umar@example.com', '2025-06-11T14:00', '2025-06-11T15:00', 'MATH1500');
 
 COMMIT;
