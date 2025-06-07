@@ -2,11 +2,11 @@ package skolard.logic.session;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
-import skolard.objects.User;
 import skolard.persistence.SessionPersistence;
 
 /**
@@ -37,22 +37,29 @@ public class SessionHandler {
         List<Session> tutorSessions = sessionPersistence.getSessionsByTutorEmail(tutor.getEmail());
 
         // Check for scheduling conflicts with existing sessions
-        for(int i = 0; i < tutorSessions.size(); i++){
-            LocalDateTime tutorStartTime = tutorSessions.get(i).getStartDateTime();
-            LocalDateTime tutorEndTime = tutorSessions.get(i).getEndDateTime();
+        boolean hasConflict = tutorSessions.stream().anyMatch(session -> {
+            LocalDateTime tutorStart = session.getStartDateTime();
+            LocalDateTime tutorEnd = session.getEndDateTime();
+            // Overlap if start < existingEnd && end > existingStart
+            return start.isBefore(tutorEnd) && end.isAfter(tutorStart);
+        });
 
-            // Conflict if new session overlaps with existing session
-            if(start.isAfter(tutorStartTime) && start.isBefore(tutorEndTime) 
-                    || end.isAfter(tutorStartTime) && end.isBefore(tutorEndTime)){
-                throw new IllegalArgumentException("Session conflicts within existing sessions");
-            } else if(tutorStartTime.isAfter(start) && tutorStartTime.isBefore(end) 
-                    || tutorEndTime.isAfter(start) && tutorEndTime.isBefore(end)){
-                throw new IllegalArgumentException("Existing sessions conflicts within session");
-            }
+        if (hasConflict) {
+            throw new IllegalArgumentException("Session conflicts with existing sessions");
         }
 
         // No conflicts, add new session with unassigned student (null), Session id is -1 and will auto increment in database
         sessionPersistence.addSession(new Session(-1, tutor, null, start, end, courseName));
+    }
+
+    public void deleteSession(Tutor tutor, Session session){
+        List<Session> tutorSessions = sessionPersistence.getSessionsByTutorEmail(tutor.getEmail());
+
+        if(tutorSessions.contains(session)){
+            sessionPersistence.removeSession(session.getSessionId());
+        } else{
+            throw new IllegalArgumentException("Session not found in database, cannot remove");
+        }
     }
 
     /**
@@ -88,5 +95,37 @@ public class SessionHandler {
         } else {
             throw new IllegalArgumentException("Session has not been booked");
         }
+    }
+
+    public void setStudentSessionLists(Student student){
+        List<Session> studentSessions = sessionPersistence.getSessionsByStudentEmail(student.getEmail());
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Session> upcomingSessions = studentSessions.stream()
+            .filter(session -> session.getStartDateTime().isAfter(now))
+            .collect(Collectors.toList());
+
+        List<Session> pastSessions = studentSessions.stream()
+            .filter(session -> session.getEndDateTime().isBefore(now))
+            .collect(Collectors.toList());
+
+        student.setPastSessions(pastSessions);
+        student.setUpcomingSessions(upcomingSessions);
+    }
+
+    public void setTutorSessionLists(Tutor tutor){
+        List<Session> tutorSessions = sessionPersistence.getSessionsByTutorEmail(tutor.getEmail());
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Session> upcomingSessions = tutorSessions.stream()
+            .filter(session -> session.getStartDateTime().isAfter(now))
+            .collect(Collectors.toList());
+
+        List<Session> pastSessions = tutorSessions.stream()
+            .filter(session -> session.getEndDateTime().isBefore(now))
+            .collect(Collectors.toList());
+
+        tutor.setPastSessions(pastSessions);
+        tutor.setUpcomingSessions(upcomingSessions);
     }
 }
