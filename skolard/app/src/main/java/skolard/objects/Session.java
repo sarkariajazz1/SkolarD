@@ -62,7 +62,11 @@ public class Session {
     }
 
     public boolean isBooked() {
-        return booked;
+        if(student != null){
+            return true;
+        } else{
+            return false;
+        }
     }
 
     public String getCourseName() {
