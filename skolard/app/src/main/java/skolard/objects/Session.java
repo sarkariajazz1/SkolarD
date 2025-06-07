@@ -98,15 +98,13 @@ public class Session {
     }
 
     public void unbookSession(Student student){
-        Session oldSession = this;
-
         if(!this.booked){
             throw new IllegalArgumentException("This session is not booked");
         }
 
         this.booked = false;
         this.student = null;
-        student.replaceUpcomingSession(oldSession, this);
+        student.removeUpcomingSession(this);
 
         System.out.println("Session " + sessionId + " unbooked by " + student.getName());
     }
