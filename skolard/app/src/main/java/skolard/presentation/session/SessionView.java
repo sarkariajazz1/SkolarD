@@ -151,7 +151,7 @@ public class SessionView extends JFrame {
                 return;
             }
             
-            sessionHandler.createSession(currentUser, startTime, endTime, courseName);
+            sessionHandler.createSession((Tutor) currentUser, startTime, endTime, courseName);
             
             showSuccess("Session created successfully!");
             clearCreateSessionFields();
@@ -175,7 +175,7 @@ public class SessionView extends JFrame {
             }
             
             int sessionId = Integer.parseInt(sessionIdStr);
-            sessionHandler.bookASession(currentUser, sessionId);
+            sessionHandler.bookASession((Student) currentUser, sessionId);
             
             showSuccess("Session booked successfully!");
             sessionIdField.setText("");
