@@ -111,6 +111,7 @@ public class MatchingView extends JFrame {
 
             if (course.isEmpty()) {
                 statusLabel.setText("Please enter a course.");
+                tableModel.setRowCount(0);
                 return;
             }
 
