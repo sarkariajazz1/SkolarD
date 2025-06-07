@@ -7,6 +7,7 @@ import skolard.logic.faq.FAQHandler;
 import skolard.logic.matching.MatchingHandler;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
+import skolard.logic.rating.RatingHandler;
 import skolard.logic.session.SessionHandler;
 import skolard.persistence.PersistenceFactory;
 import skolard.persistence.PersistenceRegistry;
@@ -29,7 +30,7 @@ public class App {
         SessionHandler sessionHandler = new SessionHandler(PersistenceRegistry.getSessionPersistence());
         FAQHandler faqHandler = new FAQHandler(); 
         LoginHandler loginHandler = new LoginHandler();
-        // RatingHandler ratingHandler = new RatingHandler();
+        RatingHandler ratingHandler = new RatingHandler(PersistenceRegistry.getSessionPersistence(),PersistenceRegistry.getTutorPersistence());
 
         // Start UI
         SwingUtilities.invokeLater(() -> {
@@ -39,8 +40,8 @@ public class App {
                 sessionHandler, 
                 messageHandler, 
                 faqHandler, 
-                loginHandler
-                //,ratingHandler
+                loginHandler,
+                ratingHandler
             );
         });
     }
