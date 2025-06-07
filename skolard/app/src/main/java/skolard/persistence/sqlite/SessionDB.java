@@ -1,16 +1,20 @@
 package skolard.persistence.sqlite;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.persistence.SessionPersistence;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
-
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * SQLite-based implementation of SessionPersistence.
@@ -194,7 +198,10 @@ public class SessionDB implements SessionPersistence {
         String courseId = rs.getString("courseID");
 
         Tutor tutor = tutorPersistence.getTutorByEmail(tutorEmail);
-        Student student = studentPersistence.getStudentByEmail(studentEmail);
+        Student student = null;
+        if (studentEmail != null) {
+            student = studentPersistence.getStudentByEmail(studentEmail);
+        }
 
         return new Session(
             id,
@@ -205,4 +212,5 @@ public class SessionDB implements SessionPersistence {
             courseId
         );
     }
+
 }
