@@ -128,4 +128,8 @@ public class SessionHandler {
         tutor.setPastSessions(pastSessions);
         tutor.setUpcomingSessions(upcomingSessions);
     }
+
+    public Session getSessionByID(int id){
+        return sessionPersistence.getSessionById(id);
+    }
 }
