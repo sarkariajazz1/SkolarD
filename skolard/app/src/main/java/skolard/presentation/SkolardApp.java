@@ -18,6 +18,7 @@ import skolard.logic.faq.FAQHandler;
 import skolard.logic.matching.MatchingHandler;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
+import skolard.logic.rating.RatingHandler;
 import skolard.logic.session.SessionHandler;
 import skolard.logic.support.SupportHandler;
 import skolard.objects.Student;
@@ -33,6 +34,7 @@ import skolard.presentation.faq.FAQView;
 import skolard.presentation.matching.MatchingView;
 import skolard.presentation.message.MessageView;
 import skolard.presentation.profile.ProfileView;
+import skolard.presentation.rating.RatingView;
 import skolard.presentation.session.SessionView;
 import skolard.presentation.support.SupportView;
 
@@ -44,7 +46,7 @@ public class SkolardApp extends JFrame {
     private final MessageHandler messageHandler;
     private final FAQHandler faqHandler;
     private final LoginHandler loginHandler;
-    //private final RatingHandler ratingHandler; // Uncomment if RatingHandler is implemented
+    private final RatingHandler ratingHandler; // Uncomment if RatingHandler is implemented
 
     private User currentUser;
     private JPanel mainPanel;
@@ -56,8 +58,8 @@ public class SkolardApp extends JFrame {
                       SessionHandler sessionHandler, 
                       MessageHandler messageHandler,
                       FAQHandler faqHandler, 
-                      LoginHandler loginHandler
-                      //, RatingHandler ratingHandler
+                      LoginHandler loginHandler,
+                      RatingHandler ratingHandler
                       ) {
         super("SkolarD - Welcome");
 
@@ -67,7 +69,7 @@ public class SkolardApp extends JFrame {
         this.messageHandler = messageHandler;
         this.faqHandler = faqHandler;
         this.loginHandler = loginHandler;
-        //this.ratingHandler = ratingHandler;
+        this.ratingHandler = ratingHandler;
 
         initializeUI();
         showAuthenticationView();
@@ -200,7 +202,7 @@ public class SkolardApp extends JFrame {
         messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
         supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
-        //rateBtn.addActionListener(e-> new RatingView(ratingHandler));
+        rateBtn.addActionListener(e-> new RatingView(ratingHandler));
 
         return buttonPanel;
     }
