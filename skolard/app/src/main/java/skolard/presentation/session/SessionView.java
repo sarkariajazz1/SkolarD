@@ -1,20 +1,39 @@
 package skolard.presentation.session;
 
-import javax.swing.*;
-import java.awt.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.event.ListSelectionListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+
 import skolard.logic.session.SessionHandler;
 import skolard.objects.Session;
-import skolard.objects.User;
-import skolard.objects.Tutor;
 import skolard.objects.Student;
+import skolard.objects.Tutor;
+import skolard.objects.User;
 
 public class SessionView extends JFrame {
     private final SessionHandler sessionHandler;
@@ -113,7 +132,7 @@ public class SessionView extends JFrame {
     private JPanel createSessionsPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createTitledBorder("Sessions"));
-
+        
         upcomingModel = new DefaultTableModel(new String[]{"ID", "Course", "Start", "End"}, 0) {
             public boolean isCellEditable(int row, int column) { return false; }
         };

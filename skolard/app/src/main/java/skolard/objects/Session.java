@@ -43,6 +43,10 @@ public class Session {
 
     public void setStudent(Student student) {
         this.student = student;
+    }   
+
+    public void setSessionId(int id) {
+    this.sessionId = id;
     }
 
     public LocalDateTime getStartDateTime() {

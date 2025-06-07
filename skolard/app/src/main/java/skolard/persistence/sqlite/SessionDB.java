@@ -41,20 +41,28 @@ public class SessionDB implements SessionPersistence {
      */
     @Override
     public void addSession(Session session) {
-        String sql = "INSERT INTO session (id, tutorEmail, studentEmail, startTime, endTime, courseID) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO session (tutorEmail, studentEmail, startTime, endTime, courseID) VALUES (?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, session.getSessionId());
-            stmt.setString(2, session.getTutor().getEmail());
-            stmt.setString(3, session.getStudent().getEmail());
-            stmt.setString(4, session.getStartDateTime().toString());
-            stmt.setString(5, session.getEndDateTime().toString());
-            stmt.setString(6, session.getCourseName());
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, session.getTutor().getEmail());
+            stmt.setString(2, null); // unbooked session
+            stmt.setString(3, session.getStartDateTime().toString());
+            stmt.setString(4, session.getEndDateTime().toString());
+            stmt.setString(5, session.getCourseName());
             stmt.executeUpdate();
+
+            // Set the generated ID back to the session object
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    session.setSessionId(rs.getInt(1));
+                }
+            }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new RuntimeException("Error adding session", e);
         }
     }
+
 
     /**
      * Retrieves a specific session by its ID.
@@ -181,7 +189,7 @@ public class SessionDB implements SessionPersistence {
             stmt.setInt(6, updatedSession.getSessionId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Error adding session", e);
+            throw new RuntimeException("Error updating session", e);
         }
     }
 
