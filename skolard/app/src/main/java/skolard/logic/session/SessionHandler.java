@@ -98,14 +98,19 @@ public class SessionHandler {
     }
 
     public void setStudentSessionLists(Student student){
-        List<Session> studentSessions = sessionPersistence.getSessionsByStudentEmail(student.getEmail());
+        List<Session> allSessions = sessionPersistence.getAllSessions(); // Use full list instead
         LocalDateTime now = LocalDateTime.now();
 
-        List<Session> upcomingSessions = studentSessions.stream()
+        List<Session> bookedByStudent = allSessions.stream()
+            .filter(s -> s.getStudent() != null)
+            .filter(s -> s.getStudent().getEmail().equals(student.getEmail()))
+            .collect(Collectors.toList());
+
+        List<Session> upcomingSessions = bookedByStudent.stream()
             .filter(session -> session.getStartDateTime().isAfter(now))
             .collect(Collectors.toList());
 
-        List<Session> pastSessions = studentSessions.stream()
+        List<Session> pastSessions = bookedByStudent.stream()
             .filter(session -> session.getEndDateTime().isBefore(now))
             .collect(Collectors.toList());
 

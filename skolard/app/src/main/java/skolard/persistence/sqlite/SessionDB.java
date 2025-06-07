@@ -182,7 +182,13 @@ public class SessionDB implements SessionPersistence {
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, updatedSession.getTutor().getEmail());
-            stmt.setString(2, updatedSession.getStudent().getEmail());
+
+            if (updatedSession.getStudent() != null) {
+                stmt.setString(2, updatedSession.getStudent().getEmail());
+            } else {
+                stmt.setNull(2, java.sql.Types.VARCHAR);
+            }
+
             stmt.setString(3, updatedSession.getStartDateTime().toString());
             stmt.setString(4, updatedSession.getEndDateTime().toString());
             stmt.setString(5, updatedSession.getCourseName());
