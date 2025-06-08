@@ -3,6 +3,7 @@ package skolard.persistence.stub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import skolard.objects.Tutor;
+import skolard.utils.PasswordUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,7 @@ class TutorStubTest {
 
     @Test
     void testAddTutor_Success() {
-        Tutor newTutor = new Tutor("Alice Smith", "alice@example.com", "abc123", "Math expert", new HashMap<>());
+        Tutor newTutor = new Tutor("Alice Smith", "alice@example.com", PasswordUtil.hash("abc123"), "Math expert", new HashMap<>());
         Tutor added = tutorStub.addTutor(newTutor);
         assertNotNull(added);
         assertEquals("alice@example.com", added.getEmail());
@@ -29,9 +30,8 @@ class TutorStubTest {
 
     @Test
     void testAddTutor_DuplicateEmail() {
-        Tutor duplicate = new Tutor("Yab Matt", "mattyab@myumanitoba.ca", "pass123", "Duplicate", new HashMap<>());
-        Tutor result = tutorStub.addTutor(duplicate);
-        assertNull(result);
+        Tutor duplicate = new Tutor("Yab Matt", "mattyab@myumanitoba.ca", PasswordUtil.hash("pass123"), "Duplicate", new HashMap<>());
+        assertThrows(RuntimeException.class, () -> tutorStub.addTutor(duplicate));
     }
 
     @Test
@@ -55,7 +55,7 @@ class TutorStubTest {
 
     @Test
     void testUpdateTutor() {
-        Tutor updated = new Tutor("Yab Matt", "mattyab@myumanitoba.ca", "newpass", "Updated bio", new HashMap<>());
+        Tutor updated = new Tutor("Yab Matt", "mattyab@myumanitoba.ca", PasswordUtil.hash("newpass"), "Updated bio", new HashMap<>());
         tutorStub.updateTutor(updated);
         Tutor result = tutorStub.getTutorByEmail("mattyab@myumanitoba.ca");
         assertEquals("Updated bio", result.getBio());
@@ -85,7 +85,7 @@ class TutorStubTest {
 
     @Test
     void testUpdateTutor_NonExistent() {
-        Tutor nonExistent = new Tutor("Ghost", "ghost@nowhere.com", "ghostpass", "Invisible", new HashMap<>());
+        Tutor nonExistent = new Tutor("Ghost", "ghost@nowhere.com", PasswordUtil.hash("ghostpass"), "Invisible", new HashMap<>());
         assertDoesNotThrow(() -> tutorStub.updateTutor(nonExistent));
         assertNull(tutorStub.getTutorByEmail("ghost@nowhere.com"));
     }
@@ -116,21 +116,20 @@ class TutorStubTest {
 
     @Test
     void testAuthenticate_NullEmailOrPassword() {
-        assertNull(tutorStub.authenticate(null, "somehash"));
+        assertNull(tutorStub.authenticate(null, PasswordUtil.hash("somepass")));
         assertNull(tutorStub.authenticate("mattyab@myumanitoba.ca", null));
     }
 
-
     @Test
     void testAuthenticate_Success() {
-        String hashed = Integer.toHexString("pass123".hashCode());
+        String hashed = PasswordUtil.hash("pass123");
         Tutor tutor = tutorStub.authenticate("mattyab@myumanitoba.ca", hashed);
         assertNotNull(tutor);
     }
 
     @Test
     void testAuthenticate_Failure() {
-        Tutor tutor = tutorStub.authenticate("mattyab@myumanitoba.ca", "wronghash");
+        Tutor tutor = tutorStub.authenticate("mattyab@myumanitoba.ca", PasswordUtil.hash("wrongpass"));
         assertNull(tutor);
     }
 }

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
+import skolard.utils.PasswordUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,8 +24,8 @@ class SessionStubTest {
 
     @Test
     void testAddSession() {
-        Tutor tutor = new Tutor("Test Tutor", "test@skolard.ca", "hashed", "Test Subject", Map.of("TEST 1000", 5.0));
-        Student student = new Student("Test Student", "student@skolard.ca", "hashed");
+        Tutor tutor = new Tutor("Test Tutor", "test@skolard.ca", PasswordUtil.hash("test123"), "Test Subject", Map.of("TEST 1000", 5.0));
+        Student student = new Student("Test Student", "student@skolard.ca", PasswordUtil.hash("student123"));
         Session session = new Session(-1, tutor, student, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "TEST 1000");
 
         Session added = sessionStub.addSession(session);
@@ -55,6 +56,7 @@ class SessionStubTest {
         List<Session> sessions = sessionStub.getSessionsByStudentEmail("simran@skolard.ca");
         assertFalse(sessions.isEmpty());
         for (Session s : sessions) {
+            assertNotNull(s.getStudent());
             assertEquals("simran@skolard.ca", s.getStudent().getEmail());
         }
     }
@@ -83,18 +85,23 @@ class SessionStubTest {
     }
 
     @Test
+    void testAddDuplicateSessionThrowsException() {
+        Session session = sessionStub.getAllSessions().get(0);
+        assertThrows(IllegalArgumentException.class, () -> sessionStub.addSession(session));
+    }
+
+    @Test
     void testRemoveNonExistentSessionThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> sessionStub.removeSession(9999));
     }
 
     @Test
     void testUpdateNonExistentSessionDoesNothing() {
-        Tutor tutor = new Tutor("Ghost Tutor", "ghost@skolard.ca", "hashed", "Ghost Subject", Map.of());
-        Student student = new Student("Ghost Student", "ghost@student.ca", "hashed");
+        Tutor tutor = new Tutor("Ghost Tutor", "ghost@skolard.ca", PasswordUtil.hash("ghost123"), "Ghost Subject", Map.of());
+        Student student = new Student("Ghost Student", "ghost@student.ca", PasswordUtil.hash("ghost123"));
         Session ghostSession = new Session(9999, tutor, student,
                 LocalDateTime.now(), LocalDateTime.now().plusHours(1), "GHOST 0000");
 
-        // Should not throw or add anything
         sessionStub.updateSession(ghostSession);
         assertNull(sessionStub.getSessionById(9999));
     }
@@ -108,5 +115,22 @@ class SessionStubTest {
         List<Session> sessions = sessionStub.getSessionsByStudentEmail("nonexistent@student.ca");
         assertTrue(sessions.isEmpty());
     }
+
+    @Test
+    void testHydrateTutorSessions() {
+        Tutor tutor = new Tutor("Amrit Singh", "amrit@skolard.ca", PasswordUtil.hash("amrit123"), "CS & Math Tutor", Map.of());
+        sessionStub.hydrateTutorSessions(tutor);
+        assertNotNull(tutor.getPastSessions());
+        assertNotNull(tutor.getUpcomingSessions());
+    }
+
+    @Test
+    void testHydrateStudentSessions() {
+        Student student = new Student("Simran Dhillon", "simran@skolard.ca", PasswordUtil.hash("simran123"));
+        sessionStub.hydrateStudentSessions(student);
+        assertNotNull(student.getPastSessions());
+        assertNotNull(student.getUpcomingSessions());
+    }
 }
+
 
