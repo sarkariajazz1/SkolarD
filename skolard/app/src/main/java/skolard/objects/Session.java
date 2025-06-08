@@ -72,8 +72,8 @@ public class Session {
     }
 
     public void bookSession(Student student) {
-        if (isBooked()) {
-            throw new IllegalStateException("This session is already booked.");
+        if (this.booked) {
+            throw new IllegalStateException("Session " + sessionId + " is already booked.");
         }
 
         this.student = student;

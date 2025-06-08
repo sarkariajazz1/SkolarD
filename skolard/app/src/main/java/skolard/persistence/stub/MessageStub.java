@@ -67,6 +67,7 @@ public class MessageStub implements MessagePersistence{
 
     @Override
     public List<String> getTutorsMessaged(String studentEmail) {
+        confirmCreation();
         List<String> tutors = new ArrayList<>();
         Set<String> uniqueTutors = new HashSet<>(tutors);
 
@@ -82,6 +83,7 @@ public class MessageStub implements MessagePersistence{
 
     @Override
     public List<String> getStudentsMessaged(String tutorEmail) {
+        confirmCreation();
         List<String> students = new ArrayList<>();
         Set<String> uniqueStudents = new HashSet<>(students);
 
@@ -114,17 +116,18 @@ public class MessageStub implements MessagePersistence{
         messages.replace(updatedMessage.getMessageId(), updatedMessage);
     }
 
+    
     @Override
     public void deleteMessageHistory(String studentEmail, String tutorEmail) {
-        for(Message message : messages.values()) {
-            if(messageHistory(message, studentEmail, tutorEmail)) {
-                messages.remove(message.getMessageId());
+        confirmCreation();
+        List<Integer> idsToDelete = new ArrayList<>();
+        for (Message message : messages.values()) {
+            if (messageHistory(message, studentEmail, tutorEmail)) {
+                idsToDelete.add(message.getMessageId());
             }
         }
+        for (int id : idsToDelete) {
+            messages.remove(id);
+        }
     }
-
-    public void close() {
-        this.messages = null;
-    }
-
 }

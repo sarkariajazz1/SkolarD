@@ -20,17 +20,8 @@ public class StudentStub implements StudentPersistence {
      * Constructor initializes student storage and adds demo data.
      */
     public StudentStub() {
-        confirmCreation();
+        students = new HashMap<>();
         addSampleStudents();
-    }
-
-    /**
-     * Ensures the students map is initialized before use.
-     */
-    private void confirmCreation() {
-        if (students == null) {
-            students = new HashMap<>();
-        }
     }
 
     /**
@@ -56,8 +47,6 @@ public class StudentStub implements StudentPersistence {
      * @return The new student object, or null if email already exists
      */
     public Student addStudent(Student student) {
-        confirmCreation();
-
         if (!students.containsKey(student.getEmail())) {
             students.put(student.getEmail(), student); // Store original object with password
             return student;
@@ -74,7 +63,6 @@ public class StudentStub implements StudentPersistence {
      */
     @Override
     public Student getStudentByEmail(String email) {
-        confirmCreation();
         return students.get(email);
     }
 
@@ -85,7 +73,6 @@ public class StudentStub implements StudentPersistence {
      */
     @Override
     public void deleteStudentByEmail(String email) {
-        confirmCreation();
         students.remove(email);
     }
 
@@ -96,7 +83,6 @@ public class StudentStub implements StudentPersistence {
      */
     @Override
     public void updateStudent(Student updatedStudent) {
-        confirmCreation();
         if (students.containsKey(updatedStudent.getEmail())) {
             students.replace(updatedStudent.getEmail(), updatedStudent);
         }
@@ -109,7 +95,6 @@ public class StudentStub implements StudentPersistence {
      */
     @Override
     public List<Student> getAllStudents() {
-        confirmCreation();
         return new ArrayList<>(students.values());
     }
 
@@ -122,18 +107,10 @@ public class StudentStub implements StudentPersistence {
      */
     @Override
     public Student authenticate(String email, String hashedPassword) {
-        confirmCreation();
         Student student = students.get(email);
         if (student != null && student.getHashedPassword().equals(hashedPassword)) {
             return student;
         }
         return null;
-    }
-
-    /**
-     * Clears all student records from memory.
-     */
-    public void close() {
-        this.students = null;
     }
 }

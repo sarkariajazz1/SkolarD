@@ -1,13 +1,12 @@
 package skolard.objects;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * Represents a support ticket submitted by a student or tutor.
  */
 public class SupportTicket {
-    private final String ticketId;
+    private final int ticketId;
     private final User requester;
     private final String title;
     private final String description;
@@ -17,7 +16,7 @@ public class SupportTicket {
 
     // Constructor for new tickets
     public SupportTicket(User requester, String title, String description) {
-        this.ticketId = UUID.randomUUID().toString();
+        this.ticketId = -1;
         this.requester = requester;
         this.title = title;
         this.description = description;
@@ -26,7 +25,7 @@ public class SupportTicket {
     }
 
     // Constructor for loading from database
-    public SupportTicket(String ticketId, User requester, String title, String description,
+    public SupportTicket(int ticketId, User requester, String title, String description,
                          LocalDateTime createdAt, LocalDateTime closedAt, boolean isHandled) {
         this.ticketId = ticketId;
         this.requester = requester;
@@ -37,7 +36,7 @@ public class SupportTicket {
         this.isHandled = isHandled;
     }
 
-    public String getTicketId() {
+    public int getTicketId() {
         return ticketId;
     }
 

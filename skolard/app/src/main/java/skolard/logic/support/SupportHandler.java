@@ -57,7 +57,7 @@ public class SupportHandler {
     /**
      * Look up a specific ticket by ID.
      */
-    public SupportTicket getTicketById(String ticketId) {
+    public SupportTicket getTicketById(int ticketId) {
         return supportDB.getTicketById(ticketId);
     }
 }

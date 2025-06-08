@@ -10,7 +10,7 @@ import skolard.objects.Session;
  */
 public interface SessionPersistence {
 
-    void addSession(Session session);
+    Session addSession(Session session);
 
     Session getSessionById(int sessionId);
 

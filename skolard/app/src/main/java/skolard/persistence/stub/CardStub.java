@@ -12,22 +12,16 @@ public class CardStub implements CardPersistence{
     private Map<String, Card> cards;
 
     public CardStub() {
-        confirmCreation();
-    }
-
-    private void confirmCreation() {
-        if(cards == null) {
-            cards = new HashMap<>();
-        }
+        cards = new HashMap<>();
     }
 
     private String generateKey(String email, Card card) {
-        return email + "|" + card.getCardNumber() + "|" + card.getExpiry();
+        return email + "," + card.getCardNumber() + "," + card.getExpiry();
     }
 
     private String getEmailFromKey(String key) {
         String tok[];
-        tok = key.split("|");
+        tok = key.split(",");
 
         //The account email should be at tok[0] after spliting the key
         return tok[0];
@@ -35,8 +29,6 @@ public class CardStub implements CardPersistence{
 
     @Override
     public Card addAccountCard(String accountEmail, Card card) {
-        confirmCreation();
-
         Card newCard = null;
         String key = generateKey(accountEmail, card);
 
@@ -50,12 +42,10 @@ public class CardStub implements CardPersistence{
 
     @Override
     public List<Card> getCardsByAccount(String accountEmail) {
-        confirmCreation();
-
         List<Card> cardList = new ArrayList<>();
 
         for (String key : cards.keySet()) {
-            if(!getEmailFromKey(key).equalsIgnoreCase(accountEmail)) {
+            if(getEmailFromKey(key).equals(accountEmail)) {
                 cardList.add(cards.get(key));
             }
         }
@@ -64,16 +54,10 @@ public class CardStub implements CardPersistence{
 
     @Override
     public void deleteCard(String accountEmail, Card card) {
-        confirmCreation();
-
         String key = generateKey(accountEmail, card);
 
         if(cards.containsKey(key)) {
             cards.remove(key);
         }
-    }
-
-    public void close() {
-        this.cards = null;
     }
 }
