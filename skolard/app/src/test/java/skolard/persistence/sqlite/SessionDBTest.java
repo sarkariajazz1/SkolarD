@@ -52,13 +52,13 @@ public class SessionDBTest {
 
     @Test
     void testUpdateSession() {
-        Session original = new Session(2, tutor, student, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "COMP1010");
-        sessionDB.addSession(original);
+        Session original = new Session(-1, tutor, student, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "COMP1010");
+        original = sessionDB.addSession(original);
 
-        Session updated = new Session(2, tutor, student, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).plusHours(1), "MATH2020");
+        Session updated = new Session(original.getSessionId(), tutor, student, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).plusHours(1), "MATH2020");
         sessionDB.updateSession(updated);
 
-        Session fetched = sessionDB.getSessionById(2);
+        Session fetched = sessionDB.getSessionById(updated.getSessionId());
         assertEquals("MATH2020", fetched.getCourseName());
     }
 
@@ -98,8 +98,10 @@ public class SessionDBTest {
 
     @Test
     void testGetSessionsByStudentEmail() {
-        Session s1 = new Session(30, tutor, student, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "CHEM1110");
-        sessionDB.addSession(s1);
+        Session s1 = new Session(-1, tutor, null, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "CHEM1110");
+        s1 = sessionDB.addSession(s1);
+        s1.bookSession(student);
+        sessionDB.updateSession(s1);
 
         List<Session> sessions = sessionDB.getSessionsByStudentEmail("student@skolard.ca");
         assertEquals(1, sessions.size());
