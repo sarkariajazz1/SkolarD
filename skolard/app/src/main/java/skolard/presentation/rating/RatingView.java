@@ -36,7 +36,7 @@ import skolard.objects.Student;
  * Allows students to submit ratings for completed sessions.
  */
 public class RatingView extends JFrame {
-    private RatingHandler ratingHandler;
+    private final RatingHandler ratingHandler;
     
     // UI Components
     private final DefaultListModel<String> requestModel = new DefaultListModel<>();
