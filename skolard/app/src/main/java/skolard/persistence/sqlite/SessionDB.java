@@ -203,6 +203,24 @@ public class SessionDB implements SessionPersistence {
         }
     }
 
+    public void hydrateTutorSessions(Tutor tutor) {
+    List<Session> sessions = getSessionsByTutorEmail(tutor.getEmail());
+
+    List<Session> upcoming = new ArrayList<>();
+    List<Session> past = new ArrayList<>();
+
+    for (Session session : sessions) {
+        if (session.getEndDateTime().isBefore(LocalDateTime.now())) {
+            past.add(session);
+        } else {
+            upcoming.add(session);
+        }
+    }
+
+    tutor.setPastSessions(past);
+    tutor.setUpcomingSessions(upcoming);
+}
+
     /**
      * Helper method that converts a ResultSet row into a Session object.
      * Resolves tutor and student using their respective persistence layers.

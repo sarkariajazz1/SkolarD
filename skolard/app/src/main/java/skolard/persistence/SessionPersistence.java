@@ -3,6 +3,7 @@ package skolard.persistence;
 import java.util.List;
 
 import skolard.objects.Session;
+import skolard.objects.Tutor;
 
 /**
  * Interface that defines the required operations for managing Session data.
@@ -24,4 +25,5 @@ public interface SessionPersistence {
 
     void updateSession(Session updatedSession);
 
+    void hydrateTutorSessions(Tutor tutor);
 }
