@@ -29,11 +29,11 @@ public class RatingHandler {
         request.submit(tutorRating, courseRating);
 
         ratingPersistence.saveRating(
-            request.getSession().getTutor().getId(),
+            request.getSession().getTutor().getName(),
             String.valueOf(request.getSession().getSessionId()),
             tutorRating,
             courseRating,
-            request.getStudent().getId()
+            request.getStudent().getName()
         );
     }
 
