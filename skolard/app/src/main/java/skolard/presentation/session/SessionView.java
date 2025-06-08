@@ -233,37 +233,53 @@ public class SessionView extends JFrame {
         endTimeField.setText("");
     }
 
-    private void refreshSessionTables() {
-        upcomingModel.setRowCount(0);
-        pastModel.setRowCount(0);
-        List<Session> pastSessions = new ArrayList<>();
-        List<Session> upcomingSessions = new ArrayList<>();
+private void refreshSessionTables() {
+    upcomingModel.setRowCount(0);
+    pastModel.setRowCount(0);
+    List<Session> pastSessions = new ArrayList<>();
+    List<Session> upcomingSessions = new ArrayList<>();
 
-        if (currentUser instanceof Student) {
-            sessionHandler.setStudentSessionLists((Student) currentUser);
-            pastSessions = ((Student) currentUser).getPastSessions();
-            upcomingSessions = ((Student) currentUser).getUpcomingSessions();
-        } else if (currentUser instanceof Tutor) {
-            sessionHandler.setTutorSessionLists((Tutor) currentUser);
-            pastSessions = ((Tutor) currentUser).getPastSessions();
-            upcomingSessions = ((Tutor) currentUser).getUpcomingSessions();
-        }
-
-        for (Session pastS : pastSessions) {
-            Object[] pastRow = {pastS.getSessionId(), pastS.getCourseName(), pastS.getStartDateTime(), pastS.getEndDateTime()};
-            pastModel.addRow(pastRow);
-        }
-
-        for (Session upcomingS : upcomingSessions) {
-            Object[] upcomingRow = {upcomingS.getSessionId(), upcomingS.getCourseName(), upcomingS.getStartDateTime(), upcomingS.getEndDateTime()};
-            upcomingModel.addRow(upcomingRow);
-        }
-
-        upcomingTable.clearSelection();
-        pastTable.clearSelection();
-        infoBtn.setEnabled(false);
-        unbookBtn.setEnabled(false);
+    if (currentUser instanceof Student) {
+        sessionHandler.setStudentSessionLists((Student) currentUser);
+        pastSessions = ((Student) currentUser).getPastSessions();
+        upcomingSessions = ((Student) currentUser).getUpcomingSessions();
+    } else if (currentUser instanceof Tutor) {
+        sessionHandler.setTutorSessionLists((Tutor) currentUser);
+        pastSessions = ((Tutor) currentUser).getPastSessions();
+        upcomingSessions = ((Tutor) currentUser).getUpcomingSessions();
     }
+
+    for (Session pastS : pastSessions) {
+        Object[] pastRow = {
+            pastS.getSessionId(),
+            pastS.getCourseName(),
+            pastS.getStartDateTime(),
+            pastS.getEndDateTime()
+        };
+        pastModel.addRow(pastRow);
+    }
+
+    for (Session upcomingS : upcomingSessions) {
+        // Skip unbooked sessions for Student
+        if (currentUser instanceof Student && upcomingS.getStudent() == null) {
+            continue;
+        }
+
+        Object[] upcomingRow = {
+            upcomingS.getSessionId(),
+            upcomingS.getCourseName(),
+            upcomingS.getStartDateTime(),
+            upcomingS.getEndDateTime()
+        };
+        upcomingModel.addRow(upcomingRow);
+    }
+
+    upcomingTable.clearSelection();
+    pastTable.clearSelection();
+    infoBtn.setEnabled(false);
+    unbookBtn.setEnabled(false);
+}
+
 
     private void showSelectedSessionInfo() {
         Session selectedSession = getSelectedSession();

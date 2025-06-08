@@ -45,6 +45,14 @@ public class Student extends User {
 
     // Replaces all upcoming sessions
     public void setUpcomingSessions(List<Session> upcomingSessions) {
-        this.upcomingSessions.addAll(upcomingSessions);
+        this.upcomingSessions = new ArrayList<>(upcomingSessions);
+        for (Session s : upcomingSessions) {
+            boolean exists = this.upcomingSessions.stream()
+                .anyMatch(existing -> existing.getSessionId() == s.getSessionId());
+
+            if (!exists) {
+                this.upcomingSessions.add(s);
+            }
+        }
     }
 }
