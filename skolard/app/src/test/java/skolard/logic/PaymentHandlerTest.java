@@ -97,18 +97,18 @@ public class PaymentHandlerTest {
     }
 
     @Test
-public void testRetrieveRecordedCards_Successfull() throws Exception {
-    String rawCardNumber = "4111111111111111";
-    String encryptedCardNumber = CardUtil.encrypt(rawCardNumber, CardUtil.generateKey());
+    public void testRetrieveRecordedCards_Successfull() throws Exception {
+        String rawCardNumber = "4111111111111111";
+        String encryptedCardNumber = CardUtil.encrypt(rawCardNumber, CardUtil.generateKey());
 
-    Card encryptedCard = new Card(encryptedCardNumber, "12/29", "John Doe");
-    when(cp.getCardsByAccount(student.getEmail())).thenReturn(List.of(encryptedCard));
+        Card encryptedCard = new Card(encryptedCardNumber, "12/29", "John Doe");
+        when(cp.getCardsByAccount(student.getEmail())).thenReturn(List.of(encryptedCard));
 
-    List<Card> cards = handler.retrieveRecordedCards(student);
+        List<Card> cards = handler.retrieveRecordedCards(student);
 
-    assertEquals(1, cards.size());
-    assertEquals(rawCardNumber, cards.get(0).getCardNumber());
-}
+        assertEquals(1, cards.size());
+        assertEquals(rawCardNumber, cards.get(0).getCardNumber());
+    }
 
 
     @Test
