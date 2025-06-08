@@ -122,4 +122,40 @@ public class SessionStub implements SessionPersistence {
             sessions.replace(updatedSession.getSessionId(), updatedSession);
         }
     }
+
+    @Override
+    public void hydrateTutorSessions(Tutor tutor) {
+    List<Session> all = getSessionsByTutorEmail(tutor.getEmail());
+    List<Session> past = new ArrayList<>();
+    List<Session> upcoming = new ArrayList<>();
+
+    for (Session s : all) {
+        if (s.getEndDateTime().isBefore(LocalDateTime.now())) {
+            past.add(s);
+        } else {
+            upcoming.add(s);
+        }
+    }
+
+    tutor.setPastSessions(past);
+    tutor.setUpcomingSessions(upcoming);
+    }
+    @Override
+    public void hydrateStudentSessions(Student student) {
+        List<Session> all = getSessionsByStudentEmail(student.getEmail());
+        List<Session> past = new ArrayList<>();
+        List<Session> upcoming = new ArrayList<>();
+
+        for (Session s : all) {
+            if (s.getEndDateTime().isBefore(LocalDateTime.now())) {
+                past.add(s);
+            } else {
+                upcoming.add(s);
+            }
+        }
+
+        student.setPastSessions(past);
+        student.setUpcomingSessions(upcoming);
+    }
+
 }
