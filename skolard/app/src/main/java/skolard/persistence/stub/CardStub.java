@@ -22,12 +22,12 @@ public class CardStub implements CardPersistence{
     }
 
     private String generateKey(String email, Card card) {
-        return email + "|" + card.getCardNumber() + "|" + card.getExpiry();
+        return email + "," + card.getCardNumber() + "," + card.getExpiry();
     }
 
     private String getEmailFromKey(String key) {
         String tok[];
-        tok = key.split("\\|");
+        tok = key.split(",");
 
         //The account email should be at tok[0] after spliting the key
         return tok[0];
