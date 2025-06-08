@@ -80,7 +80,7 @@ public class Session {
      */
     public void bookSession(Student student) {
         if (this.booked) {
-            throw new IllegalStateException("This session is already booked.");
+            throw new IllegalStateException("Session " + sessionId + " is already booked.");
         }
         this.booked = true;
         this.student = student;

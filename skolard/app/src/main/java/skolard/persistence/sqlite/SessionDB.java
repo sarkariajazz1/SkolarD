@@ -36,7 +36,7 @@ public class SessionDB implements SessionPersistence {
      * Inserts a new session into the database.
      */
     @Override
-    public void addSession(Session session) {
+    public Session addSession(Session session) {
         String sql = "INSERT INTO session (id, tutorEmail, studentEmail, startTime, endTime, courseID) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -47,6 +47,17 @@ public class SessionDB implements SessionPersistence {
             stmt.setString(5, session.getEndDateTime().toString());
             stmt.setString(6, session.getCourseName());
             stmt.executeUpdate();
+
+            // Retrieve the auto-generated message ID from the database
+            try (ResultSet keys = stmt.getGeneratedKeys()) {
+                if (keys.next()) {
+                    int id = keys.getInt(1);
+                    return new Session(id, session.getTutor(), session.getStudent(),
+                        session.getStartDateTime(), session.getEndDateTime(), session.getCourseName());
+                } else {
+                    throw new RuntimeException("Failed to retrieve generated session ID.");
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Error adding session", e);
         }
