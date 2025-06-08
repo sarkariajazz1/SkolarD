@@ -34,6 +34,7 @@ import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
+import skolard.utils.CourseUtil;
 
 public class SessionView extends JFrame {
     private final SessionHandler sessionHandler;
@@ -94,7 +95,7 @@ public class SessionView extends JFrame {
 
         instructionsArea.setEditable(false);
         instructionsArea.setBackground(getBackground());
-        instructionsArea.setText("Date/Time format: yyyy-MM-dd HH:mm (e.g., 2024-12-25 14:30)\n");
+        instructionsArea.setText("Date/Time format: yyyy-MM-dd HH:mm (e.g., 2025-12-25 14:30)\n");
         instructionsArea.setWrapStyleWord(true);
         instructionsArea.setLineWrap(true);
         add(new JScrollPane(instructionsArea), BorderLayout.SOUTH);
@@ -196,7 +197,7 @@ public class SessionView extends JFrame {
 
     private void createSession() {
         try {
-            String courseName = courseNameField.getText().trim();
+            String courseName = CourseUtil.normalizeCourseCode(courseNameField.getText().trim());
             String startStr = startTimeField.getText().trim();
             String endStr = endTimeField.getText().trim();
 
