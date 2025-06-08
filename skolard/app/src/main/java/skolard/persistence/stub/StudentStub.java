@@ -129,11 +129,4 @@ public class StudentStub implements StudentPersistence {
         }
         return null;
     }
-
-    /**
-     * Clears all student records from memory.
-     */
-    public void close() {
-        this.students = null;
-    }
 }

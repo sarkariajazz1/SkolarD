@@ -165,11 +165,4 @@ public class TutorStub implements TutorPersistence {
         }
         return null;
     }
-
-    /**
-     * Clears all tutor records from memory.
-     */
-    public void close() {
-        this.tutors = null;
-    }
 }
