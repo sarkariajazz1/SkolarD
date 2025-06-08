@@ -4,6 +4,7 @@ import skolard.logic.payment.PaymentHandler;
 import skolard.objects.Student;
 import skolard.objects.Card;
 import skolard.persistence.CardPersistence;
+import skolard.utils.CardUtil;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -15,6 +16,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before; 
 import org.junit.Test;
@@ -95,13 +97,19 @@ public class PaymentHandlerTest {
     }
 
     @Test
-    public void testRetrieveRecordedCards_Successfull(){
-        handler.saveCard("John Doe", "4111 1111 1111 1111", "12/29", student);
-        List<Card> cards = handler.retrieveRecordedCards(student);
+public void testRetrieveRecordedCards_Successfull() throws Exception {
+    String rawCardNumber = "4111111111111111";
+    String encryptedCardNumber = CardUtil.encrypt(rawCardNumber, CardUtil.generateKey());
 
-        assertEquals(1, cards.size());
+    Card encryptedCard = new Card(encryptedCardNumber, "12/29", "John Doe");
+    when(cp.getCardsByAccount(student.getEmail())).thenReturn(List.of(encryptedCard));
 
-    }
+    List<Card> cards = handler.retrieveRecordedCards(student);
+
+    assertEquals(1, cards.size());
+    assertEquals(rawCardNumber, cards.get(0).getCardNumber());
+}
+
 
     @Test
     public void testRetrieveRecordedCards_ThrowException(){
@@ -119,15 +127,21 @@ public class PaymentHandlerTest {
     }
 
     @Test
-    public void testDeleteRecordedCard(){
-        String name = "John Doe";
-        String number = "4111 1111 1111 1111"; // Valid Visa Luhn number
-        String expiry = "12/29"; // Future expiry
-        student = new Student("John Doe", "johndoe@example.com");
-        handler.saveCard(name, number, expiry, student);
+    public void testDeleteRecordedCard() throws Exception {
+        String rawCardNumber = "4111111111111111";
+        String encryptedCardNumber = CardUtil.encrypt(rawCardNumber, CardUtil.generateKey());
+
+        Card encryptedCard = new Card(encryptedCardNumber, "12/29", "John Doe");
+
+        // First call returns the card, second call returns empty list after deletion
+        when(cp.getCardsByAccount(student.getEmail()))
+            .thenReturn(List.of(encryptedCard))
+            .thenReturn(List.of());
+
         List<Card> cardsOne = handler.retrieveRecordedCards(student);
         handler.deleteRecordedCard(student, cardsOne.get(0));
         List<Card> cardsTwo = handler.retrieveRecordedCards(student);
+
         assertEquals(0, cardsTwo.size());
     }
 }
