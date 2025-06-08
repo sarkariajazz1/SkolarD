@@ -40,17 +40,16 @@ public class SupportDB implements SupportPersistence {
     @Override
     public SupportTicket addTicket(SupportTicket ticket) {
         try (PreparedStatement stmt = conn.prepareStatement("""
-            INSERT INTO support_ticket (ticket_id, requester_email, requester_role, title, description, created_at, closed_at, is_handled)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO support_ticket (requester_email, requester_role, title, description, created_at, closed_at, is_handled)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         """)) {
-            stmt.setString(1, ticket.getTicketId());
-            stmt.setString(2, ticket.getRequester().getEmail());
-            stmt.setString(3, ticket.getRequester().getClass().getSimpleName().toLowerCase()); // "student" or "tutor"
-            stmt.setString(4, ticket.getTitle());
-            stmt.setString(5, ticket.getDescription());
-            stmt.setString(6, ticket.getCreatedAt().toString());
-            stmt.setString(7, ticket.getClosedAt() == null ? null : ticket.getClosedAt().toString());
-            stmt.setInt(8, ticket.isHandled() ? 1 : 0);
+            stmt.setString(1, ticket.getRequester().getEmail());
+            stmt.setString(2, ticket.getRequester().getClass().getSimpleName().toLowerCase()); // "student" or "tutor"
+            stmt.setString(3, ticket.getTitle());
+            stmt.setString(4, ticket.getDescription());
+            stmt.setString(5, ticket.getCreatedAt().toString());
+            stmt.setString(6, ticket.getClosedAt() == null ? null : ticket.getClosedAt().toString());
+            stmt.setInt(7, ticket.isHandled() ? 1 : 0);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,7 +66,7 @@ public class SupportDB implements SupportPersistence {
         """)) {
             stmt.setString(1, ticket.getClosedAt() == null ? null : ticket.getClosedAt().toString());
             stmt.setInt(2, ticket.isHandled() ? 1 : 0);
-            stmt.setString(3, ticket.getTicketId());
+            stmt.setInt(3, ticket.getTicketId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -75,9 +74,9 @@ public class SupportDB implements SupportPersistence {
     }
 
     @Override
-    public void deleteTicketById(String ticketId) {
+    public void deleteTicketById(int ticketId) {
         try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM support_ticket WHERE ticket_id = ?")) {
-            stmt.setString(1, ticketId);
+            stmt.setInt(1, ticketId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,7 +84,7 @@ public class SupportDB implements SupportPersistence {
     }
 
     @Override
-    public SupportTicket getTicketById(String ticketId) {
+    public SupportTicket getTicketById(int ticketId) {
         List<SupportTicket> result = getTicketsByQuery("SELECT * FROM support_ticket WHERE ticket_id = '" + ticketId + "'");
         return result.isEmpty() ? null : result.get(0);
     }
@@ -96,7 +95,7 @@ public class SupportDB implements SupportPersistence {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                String ticketId = rs.getString("ticket_id");
+                int ticketId = rs.getInt("ticket_id");
                 String email = rs.getString("requester_email");
                 String role = rs.getString("requester_role");
                 String title = rs.getString("title");

@@ -3,18 +3,34 @@ package skolard.persistence.stub;
 import skolard.objects.SupportTicket;
 import skolard.persistence.SupportPersistence;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SupportStub implements SupportPersistence {
-    private final Map<String, SupportTicket> ticketMap = new HashMap<>();
+    private Map<Integer, SupportTicket> ticketMap;
+    private int uniqueID = 0;
+
+    public SupportStub() {
+        confirmCreation();
+    }
+
+    private void confirmCreation() {
+        if(ticketMap == null) {
+            ticketMap = new HashMap<>();
+        }
+    }
 
     @Override
     public List<SupportTicket> getAllTickets() {
+        confirmCreation();
         return new ArrayList<>(ticketMap.values());
     }
 
     @Override
     public List<SupportTicket> getActiveTickets() {
+        confirmCreation();
         return ticketMap.values().stream()
             .filter(t -> !t.isHandled())
             .toList();
@@ -22,6 +38,7 @@ public class SupportStub implements SupportPersistence {
 
     @Override
     public List<SupportTicket> getHandledTickets() {
+        confirmCreation();
         return ticketMap.values().stream()
             .filter(SupportTicket::isHandled)
             .toList();
@@ -29,22 +46,28 @@ public class SupportStub implements SupportPersistence {
 
     @Override
     public SupportTicket addTicket(SupportTicket ticket) {
-        ticketMap.put(ticket.getTicketId(), ticket);
-        return ticket;
+        confirmCreation();
+        SupportTicket newTicket = new SupportTicket(uniqueID++, ticket.getRequester(), ticket.getTitle(),
+            ticket.getDescription(), ticket.getCreatedAt(), ticket.getClosedAt(), ticket.isHandled());
+        ticketMap.put(newTicket.getTicketId(), newTicket);
+        return newTicket;
     }
 
     @Override
     public void updateTicket(SupportTicket updatedTicket) {
+        confirmCreation();
         ticketMap.put(updatedTicket.getTicketId(), updatedTicket);
     }
 
     @Override
-    public void deleteTicketById(String ticketId) {
+    public void deleteTicketById(int ticketId) {
+        confirmCreation();
         ticketMap.remove(ticketId);
     }
 
     @Override
-    public SupportTicket getTicketById(String ticketId) {
+    public SupportTicket getTicketById(int ticketId) {
+        confirmCreation();
         return ticketMap.get(ticketId);
     }
 }
