@@ -2,7 +2,6 @@ package skolard.logic.session;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import skolard.objects.Session;
 import skolard.objects.Student;
@@ -97,43 +96,17 @@ public class SessionHandler {
         }
     }
 
-    public void setStudentSessionLists(Student student){
-        List<Session> allSessions = sessionPersistence.getAllSessions(); // Use full list instead
-        LocalDateTime now = LocalDateTime.now();
-
-        List<Session> bookedByStudent = allSessions.stream()
-            .filter(s -> s.getStudent() != null)
-            .filter(s -> s.getStudent().getEmail().equals(student.getEmail()))
-            .collect(Collectors.toList());
-
-        List<Session> upcomingSessions = bookedByStudent.stream()
-            .filter(session -> session.getStartDateTime().isAfter(now))
-            .collect(Collectors.toList());
-
-        List<Session> pastSessions = bookedByStudent.stream()
-            .filter(session -> session.getEndDateTime().isBefore(now))
-            .collect(Collectors.toList());
-
-        student.setPastSessions(pastSessions);
-        student.setUpcomingSessions(upcomingSessions);
+    public void setStudentSessionLists(Student student) {
+        sessionPersistence.hydrateStudentSessions(student);
     }
 
-    public void setTutorSessionLists(Tutor tutor){
-        List<Session> tutorSessions = sessionPersistence.getSessionsByTutorEmail(tutor.getEmail());
-        LocalDateTime now = LocalDateTime.now();
-
-        List<Session> upcomingSessions = tutorSessions.stream()
-            .filter(session -> session.getStartDateTime().isAfter(now))
-            .collect(Collectors.toList());
-
-        List<Session> pastSessions = tutorSessions.stream()
-            .filter(session -> session.getEndDateTime().isBefore(now))
-            .collect(Collectors.toList());
-
-        tutor.setPastSessions(pastSessions);
-        tutor.setUpcomingSessions(upcomingSessions);
+    public void setTutorSessionLists(Tutor tutor) {
+        sessionPersistence.hydrateTutorSessions(tutor);
     }
 
+    public List<Session> getSessionsByTutor(Tutor tutor) {
+    return sessionPersistence.getSessionsByTutorEmail(tutor.getEmail());
+    }
     public Session getSessionByID(int id){
         return sessionPersistence.getSessionById(id);
     }

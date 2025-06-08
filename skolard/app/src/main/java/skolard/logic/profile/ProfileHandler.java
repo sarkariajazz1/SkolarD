@@ -1,5 +1,6 @@
 package skolard.logic.profile;
 
+import skolard.logic.session.SessionHandler;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
@@ -15,19 +16,20 @@ public class ProfileHandler {
     /**
      * Default constructor using the real database from PersistenceRegistry.
      */
-    public ProfileHandler() {
+    public ProfileHandler(SessionHandler sessionHandler) {
         this(PersistenceRegistry.getStudentPersistence(),
              PersistenceRegistry.getTutorPersistence(),
-             new DefaultProfileFormatter());
+             new DefaultProfileFormatter(),
+             sessionHandler);
     }
 
     /**
      * Constructor allowing injection of custom persistence and formatter.
      */
-    public ProfileHandler(StudentPersistence sp, TutorPersistence tp, ProfileFormatter formatter) {
+    public ProfileHandler(StudentPersistence sp, TutorPersistence tp, ProfileFormatter formatter, SessionHandler sessionHandler) {
         this.creator = new ProfileCreator(sp, tp);
         this.updater = new ProfileUpdater(sp, tp);
-        this.viewer = new ProfileViewer(formatter);
+        this.viewer = new ProfileViewer(formatter, sessionHandler);
     }
 
     // Profile creation
@@ -70,11 +72,10 @@ public class ProfileHandler {
     }
 
     public Student getStudent(String email) {
-    return creator.getStudent(email);
-}
+        return creator.getStudent(email);
+    }
 
-public Tutor getTutor(String email) {
-    return creator.getTutor(email);
-}
-
+    public Tutor getTutor(String email) {
+        return creator.getTutor(email);
+    }
 }
