@@ -40,7 +40,7 @@ public class SessionDB implements SessionPersistence {
      * Inserts a new session into the database.
      */
     @Override
-    public void addSession(Session session) {
+    public Session addSession(Session session) {
         String sql = "INSERT INTO session (tutorEmail, studentEmail, startTime, endTime, courseID) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {

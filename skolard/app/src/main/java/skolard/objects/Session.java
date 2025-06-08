@@ -72,7 +72,7 @@ public class Session {
     }
 
     public void bookSession(Student student) {
-        if (this.booked) {
+        if (this.student != null) {
             throw new IllegalStateException("Session " + sessionId + " is already booked.");
         }
 
