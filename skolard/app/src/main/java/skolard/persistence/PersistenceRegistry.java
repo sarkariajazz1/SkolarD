@@ -68,10 +68,10 @@ public class PersistenceRegistry {
         supportPersistence = sp;
     }
 
-    public RatingPersistence getRatingPersistence() {
+    public static RatingPersistence getRatingPersistence() {
         return ratingPersistence;
     }
-    public void setRatingPersistence(RatingPersistence rp) {
+    public static void setRatingPersistence(RatingPersistence rp) {
         ratingPersistence = rp;
     }
 }
