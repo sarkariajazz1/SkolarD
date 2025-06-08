@@ -62,7 +62,7 @@ public class SessionDB implements SessionPersistence {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             throw new RuntimeException("Error adding session", e);
         }
     }
@@ -202,7 +202,7 @@ public class SessionDB implements SessionPersistence {
             throw new RuntimeException("Error updating session", e);
         }
     }
-
+    @Override
     public void hydrateTutorSessions(Tutor tutor) {
     List<Session> sessions = getSessionsByTutorEmail(tutor.getEmail());
 
@@ -219,7 +219,24 @@ public class SessionDB implements SessionPersistence {
 
     tutor.setPastSessions(past);
     tutor.setUpcomingSessions(upcoming);
-}
+    }
+    @Override
+    public void hydrateStudentSessions(Student student) {
+    List<Session> all = getSessionsByStudentEmail(student.getEmail());
+    List<Session> past = new ArrayList<>();
+    List<Session> upcoming = new ArrayList<>();
+
+    for (Session s : all) {
+        if (s.getEndDateTime().isBefore(LocalDateTime.now())) {
+            past.add(s);
+        } else {
+            upcoming.add(s);
+        }
+    }
+
+    student.setPastSessions(past);
+    student.setUpcomingSessions(upcoming);
+    }
 
     /**
      * Helper method that converts a ResultSet row into a Session object.

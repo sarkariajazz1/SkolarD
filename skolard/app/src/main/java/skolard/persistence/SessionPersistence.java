@@ -3,6 +3,7 @@ package skolard.persistence;
 import java.util.List;
 
 import skolard.objects.Session;
+import skolard.objects.Student;
 import skolard.objects.Tutor;
 
 /**
@@ -26,4 +27,7 @@ public interface SessionPersistence {
     void updateSession(Session updatedSession);
 
     void hydrateTutorSessions(Tutor tutor);
+    
+    void hydrateStudentSessions(Student student);
+
 }

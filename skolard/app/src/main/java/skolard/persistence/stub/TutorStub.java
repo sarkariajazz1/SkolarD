@@ -14,7 +14,7 @@ import skolard.persistence.TutorPersistence;
  */
 public class TutorStub implements TutorPersistence {
 
-    private Map<String, Tutor> tutors; // Map to hold tutors keyed by email
+    final private Map<String, Tutor> tutors; // Map to hold tutors keyed by email
 
     /**
      * Constructor initializes the in-memory structure and populates it with sample data.
@@ -122,7 +122,7 @@ public class TutorStub implements TutorPersistence {
 
     @Override
     public void removeCourseFromTutor(Tutor tutor, String course) {
-        Map<String, Double> courses = new HashMap<>();
+        Map<String, Double> courses;
         if(course != null) {
             courses = tutor.getCoursesWithGrades();
             courses.remove(course);
