@@ -38,16 +38,21 @@ public class Student extends User {
         upcomingSessions.add(session);
     }
 
-    public void replaceUpcomingSession(Session oldSession, Session newSession) { 
-        int index = upcomingSessions.indexOf(oldSession);
-
-        if(index != -1){
-            upcomingSessions.set(index, newSession);
-        }
+    public void removeUpcomingSession(Session session) {
+        upcomingSessions.remove(session);
     }
+
 
     // Replaces all upcoming sessions
     public void setUpcomingSessions(List<Session> upcomingSessions) {
-        this.upcomingSessions.addAll(upcomingSessions);
+        this.upcomingSessions = new ArrayList<>(upcomingSessions);
+        for (Session s : upcomingSessions) {
+            boolean exists = this.upcomingSessions.stream()
+                .anyMatch(existing -> existing.getSessionId() == s.getSessionId());
+
+            if (!exists) {
+                this.upcomingSessions.add(s);
+            }
+        }
     }
 }

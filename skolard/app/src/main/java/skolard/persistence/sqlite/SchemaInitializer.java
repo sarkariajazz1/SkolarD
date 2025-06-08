@@ -41,7 +41,7 @@ public class SchemaInitializer {
         String createSessionTable = "CREATE TABLE IF NOT EXISTS session (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "tutorEmail TEXT NOT NULL," +
-                "studentEmail TEXT NOT NULL," +
+                "studentEmail TEXT," +
                 "startTime TEXT NOT NULL," +
                 "endTime TEXT NOT NULL," +
                 "courseID TEXT NOT NULL," +
@@ -83,7 +83,7 @@ public class SchemaInitializer {
 
         // Table for support tickets
         String createSupportTicketTable = "CREATE TABLE IF NOT EXISTS support_ticket (" +
-                "ticket_id TEXT PRIMARY KEY," +
+                "ticket_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "requester_email TEXT NOT NULL," +
                 "requester_role TEXT NOT NULL," +
                 "title TEXT NOT NULL," +

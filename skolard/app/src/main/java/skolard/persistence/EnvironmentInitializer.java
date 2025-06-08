@@ -1,9 +1,9 @@
 package skolard.persistence;
 
-import skolard.persistence.sqlite.SchemaInitializer;
-
 import java.sql.Connection;
 import java.util.List;
+
+import skolard.persistence.sqlite.SchemaInitializer;
 
 public class EnvironmentInitializer {
 
@@ -23,7 +23,8 @@ public class EnvironmentInitializer {
                 "/seed_card.sql",
                 "/seed_support_user.sql",
                 "/seed_support.sql",
-                "/seed_messages.sql"
+                "/seed_messages.sql"//,
+                   // "/seed_ratings.sql"
             ));
         }
 

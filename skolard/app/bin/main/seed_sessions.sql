@@ -1,7 +1,5 @@
 BEGIN TRANSACTION;
 
 INSERT OR IGNORE INTO session (id, tutorEmail, studentEmail, startTime, endTime, courseID) VALUES
-(1, 'sukhdeep@example.com', 'alice@example.com', '2025-06-01T10:00', '2025-06-01T11:00', 'COMP101'),
-(2, 'amrit@example.com', 'bob@example.com', '2025-06-02T14:00', '2025-06-02T15:00', 'MATH200');
-
+(1, 'sukhdeep@example.com', 'test@example.com', '2025-06-10T10:00', '2025-06-10T11:00', 'COMP1010');
 COMMIT;

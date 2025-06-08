@@ -1,6 +1,6 @@
 BEGIN TRANSACTION;
 
 INSERT OR IGNORE INTO support (email, name, password) VALUES
-('support@skolard.ca', 'Support Admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'); -- password: admin123
+('support@skolard.ca', 'Support Admin', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'); -- password: password
 
 COMMIT;
