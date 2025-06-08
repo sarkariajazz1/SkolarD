@@ -12,13 +12,7 @@ public class CardStub implements CardPersistence{
     private Map<String, Card> cards;
 
     public CardStub() {
-        confirmCreation();
-    }
-
-    private void confirmCreation() {
-        if(cards == null) {
-            cards = new HashMap<>();
-        }
+        cards = new HashMap<>();
     }
 
     private String generateKey(String email, Card card) {
@@ -35,8 +29,6 @@ public class CardStub implements CardPersistence{
 
     @Override
     public Card addAccountCard(String accountEmail, Card card) {
-        confirmCreation();
-
         Card newCard = null;
         String key = generateKey(accountEmail, card);
 
@@ -50,8 +42,6 @@ public class CardStub implements CardPersistence{
 
     @Override
     public List<Card> getCardsByAccount(String accountEmail) {
-        confirmCreation();
-
         List<Card> cardList = new ArrayList<>();
 
         for (String key : cards.keySet()) {
@@ -64,8 +54,6 @@ public class CardStub implements CardPersistence{
 
     @Override
     public void deleteCard(String accountEmail, Card card) {
-        confirmCreation();
-
         String key = generateKey(accountEmail, card);
 
         if(cards.containsKey(key)) {

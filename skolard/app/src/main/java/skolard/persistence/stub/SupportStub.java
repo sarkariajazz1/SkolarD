@@ -13,24 +13,16 @@ public class SupportStub implements SupportPersistence {
     private int uniqueID = 0;
 
     public SupportStub() {
-        confirmCreation();
-    }
-
-    private void confirmCreation() {
-        if(ticketMap == null) {
-            ticketMap = new HashMap<>();
-        }
+        ticketMap = new HashMap<>();
     }
 
     @Override
     public List<SupportTicket> getAllTickets() {
-        confirmCreation();
         return new ArrayList<>(ticketMap.values());
     }
 
     @Override
     public List<SupportTicket> getActiveTickets() {
-        confirmCreation();
         return ticketMap.values().stream()
             .filter(t -> !t.isHandled())
             .toList();
@@ -38,7 +30,6 @@ public class SupportStub implements SupportPersistence {
 
     @Override
     public List<SupportTicket> getHandledTickets() {
-        confirmCreation();
         return ticketMap.values().stream()
             .filter(SupportTicket::isHandled)
             .toList();
@@ -46,7 +37,6 @@ public class SupportStub implements SupportPersistence {
 
     @Override
     public SupportTicket addTicket(SupportTicket ticket) {
-        confirmCreation();
         SupportTicket newTicket = new SupportTicket(uniqueID++, ticket.getRequester(), ticket.getTitle(),
             ticket.getDescription(), ticket.getCreatedAt(), ticket.getClosedAt(), ticket.isHandled());
         ticketMap.put(newTicket.getTicketId(), newTicket);
@@ -55,19 +45,16 @@ public class SupportStub implements SupportPersistence {
 
     @Override
     public void updateTicket(SupportTicket updatedTicket) {
-        confirmCreation();
         ticketMap.put(updatedTicket.getTicketId(), updatedTicket);
     }
 
     @Override
     public void deleteTicketById(int ticketId) {
-        confirmCreation();
         ticketMap.remove(ticketId);
     }
 
     @Override
     public SupportTicket getTicketById(int ticketId) {
-        confirmCreation();
         return ticketMap.get(ticketId);
     }
 }
