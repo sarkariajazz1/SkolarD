@@ -51,7 +51,7 @@ public interface SupportPersistence {
      *
      * @param ticketId the ID of the ticket to delete
      */
-    void deleteTicketById(String ticketId);
+    void deleteTicketById(int ticketId);
 
     /**
      * Retrieve a ticket by its unique ID.
@@ -59,6 +59,6 @@ public interface SupportPersistence {
      * @param ticketId the ID of the ticket
      * @return the ticket object, or null if not found
      */
-    SupportTicket getTicketById(String ticketId);
+    SupportTicket getTicketById(int ticketId);
 }
 

@@ -51,10 +51,14 @@ public class SessionDB implements SessionPersistence {
             stmt.setString(5, session.getCourseName());
             stmt.executeUpdate();
 
-            // Set the generated ID back to the session object
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    session.setSessionId(rs.getInt(1));
+            // Retrieve the auto-generated message ID from the database
+            try (ResultSet keys = stmt.getGeneratedKeys()) {
+                if (keys.next()) {
+                    int id = keys.getInt(1);
+                    return new Session(id, session.getTutor(), session.getStudent(),
+                        session.getStartDateTime(), session.getEndDateTime(), session.getCourseName());
+                } else {
+                    throw new RuntimeException("Failed to retrieve generated session ID.");
                 }
             }
         } catch (SQLException e) {

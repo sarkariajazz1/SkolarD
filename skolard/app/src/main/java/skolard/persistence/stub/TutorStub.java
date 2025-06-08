@@ -20,17 +20,8 @@ public class TutorStub implements TutorPersistence {
      * Constructor initializes the in-memory structure and populates it with sample data.
      */
     public TutorStub() {
-        confirmCreation();
+        tutors = new HashMap<>();
         addSampleTutors();
-    }
-
-    /**
-     * Ensures the tutors map is initialized before use.
-     */
-    private void confirmCreation() {
-        if (tutors == null) {
-            tutors = new HashMap<>();
-        }
     }
 
     /**
@@ -70,8 +61,6 @@ public class TutorStub implements TutorPersistence {
      */
     @Override
     public Tutor addTutor(Tutor tutor) {
-        confirmCreation();
-
         if (!tutors.containsKey(tutor.getEmail())) {
             tutors.put(tutor.getEmail(), tutor);
             return tutor;
@@ -88,7 +77,6 @@ public class TutorStub implements TutorPersistence {
      */
     @Override
     public Tutor getTutorByEmail(String email) {
-        confirmCreation();
         return tutors.get(email);
     }
 
@@ -99,7 +87,6 @@ public class TutorStub implements TutorPersistence {
      */
     @Override
     public void deleteTutorByEmail(String email) {
-        confirmCreation();
         tutors.remove(email);
     }
 
@@ -110,7 +97,6 @@ public class TutorStub implements TutorPersistence {
      */
     @Override
     public void updateTutor(Tutor updatedTutor) {
-        confirmCreation();
         if (tutors.containsKey(updatedTutor.getEmail())) {
             tutors.replace(updatedTutor.getEmail(), updatedTutor);
         }
@@ -123,13 +109,11 @@ public class TutorStub implements TutorPersistence {
      */
     @Override
     public List<Tutor> getAllTutors() {
-        confirmCreation();
         return new ArrayList<>(tutors.values());
     }
 
     @Override
     public void addCourseToTutor(Tutor tutor, String course, Double grade) {
-        confirmCreation();
         if(course != null && grade != null) {
             tutor.addCourse(course, grade);
             updateTutor(tutor);
@@ -138,7 +122,6 @@ public class TutorStub implements TutorPersistence {
 
     @Override
     public void removeCourseFromTutor(Tutor tutor, String course) {
-        confirmCreation();
         Map<String, Double> courses = new HashMap<>();
         if(course != null) {
             courses = tutor.getCoursesWithGrades();
@@ -158,18 +141,10 @@ public class TutorStub implements TutorPersistence {
      */
     @Override
     public Tutor authenticate(String email, String hashedPassword) {
-        confirmCreation();
         Tutor tutor = tutors.get(email);
         if (tutor != null && tutor.getHashedPassword().equals(hashedPassword)) {
             return tutor;
         }
         return null;
-    }
-
-    /**
-     * Clears all tutor records from memory.
-     */
-    public void close() {
-        this.tutors = null;
     }
 }
