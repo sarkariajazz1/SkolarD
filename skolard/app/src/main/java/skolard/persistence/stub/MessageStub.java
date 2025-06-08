@@ -114,17 +114,17 @@ public class MessageStub implements MessagePersistence{
         messages.replace(updatedMessage.getMessageId(), updatedMessage);
     }
 
+    
     @Override
     public void deleteMessageHistory(String studentEmail, String tutorEmail) {
-        for(Message message : messages.values()) {
-            if(messageHistory(message, studentEmail, tutorEmail)) {
-                messages.remove(message.getMessageId());
+        List<Integer> idsToDelete = new ArrayList<>();
+        for (Message message : messages.values()) {
+            if (messageHistory(message, studentEmail, tutorEmail)) {
+                idsToDelete.add(message.getMessageId());
             }
         }
+        for (int id : idsToDelete) {
+            messages.remove(id);
+        }
     }
-
-    public void close() {
-        this.messages = null;
-    }
-
 }
