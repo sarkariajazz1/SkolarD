@@ -3,6 +3,7 @@ package skolard.presentation.dashboard;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,9 +17,14 @@ import javax.swing.JTextField;
 import skolard.logic.matching.MatchingHandler;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
-import skolard.objects.Student;
+import skolard.logic.rating.RatingHandler;
+import skolard.logic.session.SessionHandler;
+import skolard.objects.Session;
+import skolard.objects.Student; // at the top
 import skolard.objects.Tutor;
 import skolard.presentation.datetime.DateTimeLabel;
+
+
 
 /**
  * GUI window for student-specific functionality in SkolarD.
@@ -30,6 +36,8 @@ public class StudentView extends JFrame {
     private final MatchingHandler matchingHandler;
     private final MessageHandler messageHandler;
     private final Student currentStudent;
+    private final RatingHandler ratingHandler; // add this as a field
+    private final SessionHandler sessionHandler; // Assuming you have a SessionHandler class
     
     // UI Components
     private final JTextField searchField = new JTextField(20);
@@ -41,14 +49,22 @@ public class StudentView extends JFrame {
     
     private Tutor selectedTutor; // Currently selected tutor
     
-    public StudentView(ProfileHandler profileHandler, MatchingHandler matchingHandler, 
-                      MessageHandler messageHandler, Student student) {
+public StudentView(ProfileHandler profileHandler,
+                   MatchingHandler matchingHandler,
+                   MessageHandler messageHandler,
+                   SessionHandler sessionHandler,
+                   RatingHandler ratingHandler,
+                   Student student)
+ {
         super("SkolarD - Student Dashboard");
         
         this.profileHandler = profileHandler;
         this.matchingHandler = matchingHandler;
         this.messageHandler = messageHandler;
         this.currentStudent = student;
+        this.ratingHandler = ratingHandler; // initialize the rating handler
+        this.sessionHandler = sessionHandler; // initialize the session handler
+
         
         initializeUI();
         setupEventListeners();
@@ -156,20 +172,45 @@ public class StudentView extends JFrame {
             JOptionPane.showMessageDialog(this, "Please select a tutor first.");
             return;
         }
-        
+
         String course = JOptionPane.showInputDialog(this, 
             "Enter the course you want tutoring for:");
-        
+
         if (course != null && !course.trim().isEmpty()) {
-            // Here you would typically create a session booking
-            // For now, we'll show a confirmation message
-            JOptionPane.showMessageDialog(this, 
-                "Booking request sent to " + selectedTutor.getName() + 
-                " for " + course.trim() + " tutoring.");
-            
-            displayArea.append("\n\nBooking request sent for " + course.trim() + " tutoring.");
+            try {
+                // Find first unbooked session by this tutor for the course
+                List <Session> sessions = matchingHandler.getAvailableSessions(course.trim());
+                Session session = sessions.stream()
+                    .filter(s -> s.getTutor().equals(selectedTutor) && !s.isBooked())
+                    .findFirst()
+                    .orElse(null);
+
+                if (session != null) {
+                    int sessionId = session.getSessionId();
+
+                    // Call the proper booking method from SessionHandler
+                    sessionHandler.bookASession(currentStudent, sessionId);
+
+                    // Add to rating queue
+                    ratingHandler.createRatingRequest((Session)session, currentStudent);
+
+                    JOptionPane.showMessageDialog(this,
+                        "Session booked successfully! You can rate it after it ends.");
+                    displayArea.append("\n\nBooked session ID " + sessionId +
+                        " for " + course.trim() + " with " + selectedTutor.getName());
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                        "No available sessions for this tutor and course.");
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                    "Error booking session: " + ex.getMessage());
+            }
         }
     }
+
+
     
     private void messageTutor() {
         if (selectedTutor == null) {

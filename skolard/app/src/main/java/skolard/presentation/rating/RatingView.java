@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -216,6 +217,11 @@ public class RatingView extends JFrame {
             showError("Please select a rating request first");
             return;
         }
+        if (LocalDateTime.now().isBefore(selectedRequest.getSession().getEndDateTime())) {
+            showError("You can only rate the session after it has ended.");
+            return;
+        }
+
         
         try {
             int tutorRating = tutorRatingSlider.getValue();
