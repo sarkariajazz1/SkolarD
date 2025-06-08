@@ -23,7 +23,8 @@ public class EnvironmentInitializer {
                 "/seed_card.sql",
                 "/seed_support_user.sql",
                 "/seed_support.sql",
-                "/seed_messages.sql"
+                "/seed_messages.sql",
+                    "/seed_ratings.sql"
             ));
         }
 
