@@ -14,10 +14,10 @@ INSERT OR IGNORE INTO session (id, tutorEmail, studentEmail, startTime, endTime,
 (12, 'sukhdeep@example.com', NULL, '2025-05-11T11:00', '2025-05-11T12:00', 'COMP1010'),
 (13, 'sukhdeep@example.com', NULL, '2025-05-12T13:00', '2025-05-12T14:00', 'COMP1010'),
 (14, 'sukhdeep@example.com', NULL, '2025-05-13T15:00', '2025-05-13T16:00', 'COMP1010'),
-(15, 'sukhdeep@example.com', NULL, '2025-05-14T17:00', '2025-05-14T18:00', 'COMP1010'),
-(16, 'sukhdeep@example.com', NULL, '2025-05-15T09:30', '2025-05-15T10:30', 'COMP1010'),
-(17, 'sukhdeep@example.com', NULL, '2025-05-15T11:00', '2025-05-15T12:00', 'COMP1010'),
-(18, 'sukhdeep@example.com', NULL, '2025-05-16T14:00', '2025-05-16T15:00', 'COMP1010'),
-(19, 'sukhdeep@example.com', NULL, '2025-05-17T16:00', '2025-05-17T17:00', 'COMP1010');
+(15, 'sukhdeep@example.com', 'alice@example.com', '2025-05-14T17:00', '2025-05-14T18:00', 'COMP1010'),
+(16, 'sukhdeep@example.com', 'alice@example.com', '2025-05-15T09:30', '2025-05-15T10:30', 'COMP1010'),
+(17, 'sukhdeep@example.com', 'alice@example.com', '2025-05-15T11:00', '2025-05-15T12:00', 'COMP1010'),
+(18, 'sukhdeep@example.com', 'alice@example.com', '2025-05-16T14:00', '2025-05-16T15:00', 'COMP1010'),
+(19, 'sukhdeep@example.com', 'alice@example.com', '2025-05-17T16:00', '2025-05-17T17:00', 'COMP1010');
 
 COMMIT;
