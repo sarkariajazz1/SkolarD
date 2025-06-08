@@ -20,8 +20,8 @@ public class StubFactory {
         return new MessageStub();
     }
 
-    public static LoginPersistence createLoginPersistence() {
-        return new LoginStub();
+    public static LoginPersistence createLoginPersistence(StudentPersistence sp, TutorPersistence tp) {
+        return new LoginStub(sp, tp);
     }
 
     public static CardPersistence createCardPersistence() {

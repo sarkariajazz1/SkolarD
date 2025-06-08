@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import skolard.persistence.LoginPersistence;
+import skolard.persistence.StudentPersistence;
+import skolard.persistence.TutorPersistence;
+import skolard.utils.PasswordUtil;
 
 /**
  * In-memory stub for login authentication.
@@ -11,20 +14,14 @@ import skolard.persistence.LoginPersistence;
  */
 public class LoginStub implements LoginPersistence {
 
-    private final Map<String, String> studentCredentials = new HashMap<>();
-    private final Map<String, String> tutorCredentials = new HashMap<>();
-    private final Map<String, String> supportCredentials = new HashMap<>(); // ✅ Support users
+    private final StudentPersistence sp;
+    private final TutorPersistence tp;
 
-    public LoginStub() {
-        // Students
-        studentCredentials.put("test@student.com", hash("pass123"));
-        studentCredentials.put("raj@skolard.ca", hash("raj123"));
-        studentCredentials.put("simran@skolard.ca", hash("simran123"));
+    private final Map<String, String> supportCredentials = new HashMap<>(); // ✅ Support user
 
-        // Tutors
-        tutorCredentials.put("test@tutor.com", hash("pass123"));
-        tutorCredentials.put("amrit@skolard.ca", hash("amrit123"));
-        tutorCredentials.put("sukhdeep@skolard.ca", hash("sukhdeep123"));
+    public LoginStub(StudentPersistence sp, TutorPersistence tp) {
+        this.sp = sp;
+        this.tp = tp;
 
         // Support
         supportCredentials.put("support@skolard.ca", hash("admin123")); // ✅ Add support login
@@ -32,14 +29,12 @@ public class LoginStub implements LoginPersistence {
 
     @Override
     public boolean authenticateStudent(String email, String password) {
-        return studentCredentials.containsKey(email)
-                && studentCredentials.get(email).equals(hash(password));
+        return sp.authenticate(email, hash(password)) != null;
     }
 
     @Override
     public boolean authenticateTutor(String email, String password) {
-        return tutorCredentials.containsKey(email)
-                && tutorCredentials.get(email).equals(hash(password));
+        return tp.authenticate(email, hash(password)) != null;
     }
 
     @Override
@@ -49,6 +44,6 @@ public class LoginStub implements LoginPersistence {
     }
 
     private String hash(String password) {
-        return Integer.toHexString(password.hashCode());
+        return PasswordUtil.hash(password);
     }
 }

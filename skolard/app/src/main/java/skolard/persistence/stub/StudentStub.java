@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import skolard.utils.PasswordUtil;
 import skolard.objects.Student;
 import skolard.persistence.StudentPersistence;
 
@@ -28,7 +29,7 @@ public class StudentStub implements StudentPersistence {
      * Simple stub hash function (placeholder).
      */
     private String hash(String plain) {
-        return Integer.toHexString(plain.hashCode()); // For development only
+        return PasswordUtil.hash(plain);
     }
 
     /**
@@ -47,12 +48,11 @@ public class StudentStub implements StudentPersistence {
      * @return The new student object, or null if email already exists
      */
     public Student addStudent(Student student) {
-        if (!students.containsKey(student.getEmail())) {
-            students.put(student.getEmail(), student); // Store original object with password
-            return student;
+        if (students.containsKey(student.getEmail())) {
+            throw new RuntimeException("Student account already exists");
         }
-
-        return null;
+        students.put(student.getEmail(), student); // Store original object with password
+        return student;
     }
 
     /**
