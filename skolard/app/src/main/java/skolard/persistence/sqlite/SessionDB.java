@@ -1,16 +1,20 @@
 package skolard.persistence.sqlite;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.persistence.SessionPersistence;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
-
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * SQLite-based implementation of SessionPersistence.
@@ -37,20 +41,28 @@ public class SessionDB implements SessionPersistence {
      */
     @Override
     public void addSession(Session session) {
-        String sql = "INSERT INTO session (id, tutorEmail, studentEmail, startTime, endTime, courseID) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO session (tutorEmail, studentEmail, startTime, endTime, courseID) VALUES (?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, session.getSessionId());
-            stmt.setString(2, session.getTutor().getEmail());
-            stmt.setString(3, session.getStudent().getEmail());
-            stmt.setString(4, session.getStartDateTime().toString());
-            stmt.setString(5, session.getEndDateTime().toString());
-            stmt.setString(6, session.getCourseName());
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, session.getTutor().getEmail());
+            stmt.setString(2, null); // unbooked session
+            stmt.setString(3, session.getStartDateTime().toString());
+            stmt.setString(4, session.getEndDateTime().toString());
+            stmt.setString(5, session.getCourseName());
             stmt.executeUpdate();
+
+            // Set the generated ID back to the session object
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    session.setSessionId(rs.getInt(1));
+                }
+            }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new RuntimeException("Error adding session", e);
         }
     }
+
 
     /**
      * Retrieves a specific session by its ID.
@@ -170,14 +182,20 @@ public class SessionDB implements SessionPersistence {
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, updatedSession.getTutor().getEmail());
-            stmt.setString(2, updatedSession.getStudent().getEmail());
+
+            if (updatedSession.getStudent() != null) {
+                stmt.setString(2, updatedSession.getStudent().getEmail());
+            } else {
+                stmt.setNull(2, java.sql.Types.VARCHAR);
+            }
+
             stmt.setString(3, updatedSession.getStartDateTime().toString());
             stmt.setString(4, updatedSession.getEndDateTime().toString());
             stmt.setString(5, updatedSession.getCourseName());
             stmt.setInt(6, updatedSession.getSessionId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Error adding session", e);
+            throw new RuntimeException("Error updating session", e);
         }
     }
 
@@ -194,7 +212,10 @@ public class SessionDB implements SessionPersistence {
         String courseId = rs.getString("courseID");
 
         Tutor tutor = tutorPersistence.getTutorByEmail(tutorEmail);
-        Student student = studentPersistence.getStudentByEmail(studentEmail);
+        Student student = null;
+        if (studentEmail != null) {
+            student = studentPersistence.getStudentByEmail(studentEmail);
+        }
 
         return new Session(
             id,
@@ -205,4 +226,5 @@ public class SessionDB implements SessionPersistence {
             courseId
         );
     }
+
 }

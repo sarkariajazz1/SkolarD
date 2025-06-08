@@ -41,7 +41,7 @@ public class SchemaInitializer {
         String createSessionTable = "CREATE TABLE IF NOT EXISTS session (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "tutorEmail TEXT NOT NULL," +
-                "studentEmail TEXT NOT NULL," +
+                "studentEmail TEXT," +
                 "startTime TEXT NOT NULL," +
                 "endTime TEXT NOT NULL," +
                 "courseID TEXT NOT NULL," +
