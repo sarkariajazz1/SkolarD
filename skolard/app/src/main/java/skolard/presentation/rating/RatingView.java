@@ -6,8 +6,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -156,28 +154,13 @@ public class RatingView extends JFrame {
         });
         
         // Submit rating handler
-        submitRatingBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                submitRating();
-            }
-        });
+        submitRatingBtn.addActionListener(e -> submitRating());
         
         // Skip rating handler
-        skipRatingBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                skipRating();
-            }
-        });
+        skipRatingBtn.addActionListener(e -> skipRating());
         
         // Refresh handler
-        refreshBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                loadRatingRequests();
-            }
-        });
+        refreshBtn.addActionListener(e -> loadRatingRequests());
     }
     
     private void loadRatingRequests() {

@@ -1,7 +1,7 @@
 package skolard.utils;
 
-import java.security.MessageDigest;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 
 public class PasswordUtil {
     public static String hash(String password) {
@@ -11,7 +11,7 @@ public class PasswordUtil {
             StringBuilder sb = new StringBuilder();
             for (byte b : encodedHash) sb.append(String.format("%02x", b));
             return sb.toString();
-        } catch (Exception e) {
+        } catch (java.security.NoSuchAlgorithmException e) {
             throw new RuntimeException("Password hashing failed", e);
         }
     }

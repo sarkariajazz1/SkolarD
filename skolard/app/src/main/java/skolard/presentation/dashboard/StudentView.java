@@ -203,15 +203,16 @@ public StudentView(ProfileHandler profileHandler,
                         "No available sessions for this tutor and course.");
                 }
 
-            } catch (Exception ex) {
+            } catch (IllegalArgumentException | NullPointerException ex) {
                 JOptionPane.showMessageDialog(this,
-                    "Error booking session: " + ex.getMessage());
+                    "Error: " + ex.getMessage());
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(this,
+                    "An unexpected runtime error occurred: " + ex.getMessage());
             }
         }
     }
 
-
-    
     private void messageTutor() {
         if (selectedTutor == null) {
             JOptionPane.showMessageDialog(this, "Please select a tutor first.");
