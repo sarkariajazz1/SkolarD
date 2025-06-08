@@ -20,11 +20,11 @@ public class RatingDB implements RatingPersistence {
             stmt.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS ratings (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    tutorId TEXT NOT NULL,
-                    sessionId TEXT NOT NULL,
-                    tutorRating INTEGER NOT NULL,
-                    courseRating INTEGER NOT NULL,
-                    studentId TEXT NOT NULL
+                    tutorName TEXT NOT NULL,
+                    sessionId INTEGER NOT NULL,
+                    courseName TEXT NOT NULL,
+                    studentName TEXT NOT NULL,
+                    rating INTEGER NOT NULL
                 )
             """);
         } catch (SQLException e) {
@@ -34,15 +34,17 @@ public class RatingDB implements RatingPersistence {
 
     @Override
     public void saveRating(String tutorId, String sessionId, int tutorRating, int courseRating, String studentId) {
+        // Assume: tutorId = tutorName, sessionId = int sessionId, courseRating (or tutorRating) = rating
+        // Choose which rating you want to store, here using courseRating
         try (PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO ratings (tutorId, sessionId, tutorRating, courseRating, studentId) VALUES (?, ?, ?, ?, ?)")) {
-            ps.setString(1, tutorId);
-            ps.setString(2, sessionId);
-            ps.setInt(3, tutorRating);
-            ps.setInt(4, courseRating);
-            ps.setString(5, studentId);
+                "INSERT INTO ratings (tutorName, sessionId, courseName, studentName, rating) VALUES (?, ?, ?, ?, ?)")) {
+            ps.setString(1, tutorId); // tutorName
+            ps.setInt(2, Integer.parseInt(sessionId)); // sessionId as int
+            ps.setString(3, ""); // courseName is required, adapt to real value if available
+            ps.setString(4, studentId); // studentName
+            ps.setInt(5, courseRating); // rating
             ps.executeUpdate();
-        } catch (SQLException e) {
+        } catch (SQLException | NumberFormatException e) {
             System.err.println("Failed to save rating: " + e.getMessage());
         }
     }
@@ -51,7 +53,7 @@ public class RatingDB implements RatingPersistence {
     public List<Feedback> getAllFeedbackForTutor(String tutorId) {
         List<Feedback> feedbacks = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM ratings WHERE tutorId = ?")) {
+                "SELECT * FROM ratings WHERE tutorName = ?")) {
             ps.setString(1, tutorId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -67,7 +69,7 @@ public class RatingDB implements RatingPersistence {
     public List<Feedback> getAllFeedbackForCourse(String courseName) {
         List<Feedback> feedbacks = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM ratings WHERE sessionId = ?")) { // Adjust to courseName if schema supports it
+                "SELECT * FROM ratings WHERE courseName = ?")) {
             ps.setString(1, courseName);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -81,11 +83,11 @@ public class RatingDB implements RatingPersistence {
 
     private Feedback extractFeedback(ResultSet rs) throws SQLException {
         return new Feedback(
-            rs.getString("tutorId"),
-            rs.getString("sessionId"),
-            rs.getInt("tutorRating"),
-            rs.getInt("courseRating"),
-            rs.getString("studentId")
+                rs.getInt("sessionId"),
+                rs.getString("courseName"),
+                rs.getString("tutorName"),
+                rs.getString("studentName"),
+                rs.getInt("rating")
         );
     }
 }
