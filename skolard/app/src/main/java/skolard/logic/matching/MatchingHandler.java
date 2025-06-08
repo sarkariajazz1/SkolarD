@@ -3,6 +3,7 @@ package skolard.logic.matching;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import skolard.objects.Session;
 import skolard.persistence.SessionPersistence;
@@ -101,6 +102,9 @@ public class MatchingHandler {
         }
 
         List<Session> sessions = getNonBookedSessions(courseName);
+        sessions = getNonPastSession(sessions);
+
+
 
         if (filter != null) {
             sessions = filter.apply(sessions, courseName, start, end);
@@ -117,10 +121,16 @@ public class MatchingHandler {
      * @return a list of sessions not booked and not filtered
      */
     public List<Session> getAvailableSessions(String courseName){
+        List<Session> sessions = new ArrayList<>();
+
         if (courseName == null || courseName.isEmpty()) {
             throw new IllegalArgumentException("Course name cannot be null or empty.");
         }
-        return getNonBookedSessions(courseName);
+        
+        sessions = getNonBookedSessions(courseName);
+        sessions = getNonPastSession(sessions);
+
+        return sessions;
     }
 
     /**
@@ -131,15 +141,23 @@ public class MatchingHandler {
      */
     private List<Session> getNonBookedSessions(String courseName) {
         List<Session> allSessions = sessionDB.getAllSessions();
-        List<Session> sessions = new ArrayList<>();
 
-        for (Session session : allSessions) {
-            if (session.getCourseName().equalsIgnoreCase(courseName) && !session.isBooked()) {
-                sessions.add(session);
-            }
-        }
+        return allSessions.stream()
+            .filter(session -> session.getCourseName().equalsIgnoreCase(courseName) && !session.isBooked())
+            .collect(Collectors.toList());
+    }
 
-        return sessions;
+    /**
+     * Filters and returns only the sessions that are scheduled to start in the future.
+     *
+     * @param sessions the list of all session objects to filter
+     * @return a list of sessions that have not yet started (upcoming sessions)
+     */
+    private List<Session> getNonPastSession(List<Session> sessions){
+        LocalDateTime now = LocalDateTime.now();
+        return sessions.stream()
+                .filter(session -> session.getStartDateTime() != null && session.getStartDateTime().isAfter(now))
+                .collect(Collectors.toList());
     }
 
 }
