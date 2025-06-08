@@ -2,10 +2,10 @@ package skolard.presentation.matching;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -24,7 +24,7 @@ import skolard.logic.matching.MatchingHandler.SessionFilter;
 import skolard.logic.session.SessionHandler;
 import skolard.objects.Session;
 import skolard.objects.Student;
-
+import skolard.utils.CourseUtil;
 /**
  * A simple GUI window to allow users to find available tutoring sessions for a specific course and book it.
  */
@@ -106,7 +106,7 @@ public class MatchingView extends JFrame {
         });
 
         searchBtn.addActionListener(e -> {
-            String course = courseField.getText().trim();
+            String course = CourseUtil.normalizeCourseCode(courseField.getText().trim());
             String filter = (String) filterDropdown.getSelectedItem();
 
             if (course.isEmpty()) {
