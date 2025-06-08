@@ -27,7 +27,7 @@ public class CardStub implements CardPersistence{
 
     private String getEmailFromKey(String key) {
         String tok[];
-        tok = key.split("|");
+        tok = key.split("\\|");
 
         //The account email should be at tok[0] after spliting the key
         return tok[0];
@@ -71,9 +71,5 @@ public class CardStub implements CardPersistence{
         if(cards.containsKey(key)) {
             cards.remove(key);
         }
-    }
-
-    public void close() {
-        this.cards = null;
     }
 }
