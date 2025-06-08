@@ -52,7 +52,7 @@ public class TutorCoursesDB {
 
     
     public void deleteTutorCourse(String email, String course) {
-        String sql = "DELETE FROM tutor WHERE email = ? AND courseID = ?";
+        String sql = "DELETE FROM tutorCourse WHERE tutorEmail = ? AND courseID = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
@@ -65,7 +65,7 @@ public class TutorCoursesDB {
     }
 
     public void deleteAllTutorCourses(String email) {
-        String sql = "DELETE FROM tutorCourse WHERE email = ?";
+        String sql = "DELETE FROM tutorCourse WHERE tutorEmail = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
