@@ -10,6 +10,7 @@ import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.persistence.SessionPersistence;
+import skolard.utils.PasswordUtil;
 
 /**
  * Stub implementation of SessionPersistence that stores session data in-memory using a HashMap.
@@ -27,7 +28,7 @@ public class SessionStub implements SessionPersistence {
 
     // Simulate password hashing (stub use only)
     private String hash(String password) {
-        return Integer.toHexString(password.hashCode());
+        return PasswordUtil.hash(password);
     }
 
     // Populate with mock tutor/student and sessions
