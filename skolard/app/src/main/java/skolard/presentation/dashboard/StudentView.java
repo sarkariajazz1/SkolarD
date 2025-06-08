@@ -214,6 +214,10 @@ public StudentView(ProfileHandler profileHandler,
     }
 
     private void messageTutor() {
+        if(messageHandler == null) {
+            JOptionPane.showMessageDialog(this, "Message handler is not initialized.");
+            return;
+        }
         if (selectedTutor == null) {
             JOptionPane.showMessageDialog(this, "Please select a tutor first.");
             return;
