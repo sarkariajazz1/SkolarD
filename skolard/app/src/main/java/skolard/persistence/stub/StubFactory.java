@@ -1,4 +1,7 @@
 package skolard.persistence.stub;
+import skolard.persistence.FAQPersistence;
+import skolard.persistence.stub.FAQStub;
+
 
 import skolard.persistence.*;
 
@@ -30,5 +33,9 @@ public class StubFactory {
 
     public static SupportPersistence createSupportPersistence() {
         return new SupportStub();
+    }
+
+    public static FAQPersistence createFAQPersistence() {
+        return new FAQStub(); // ✅ NEW LINE
     }
 }

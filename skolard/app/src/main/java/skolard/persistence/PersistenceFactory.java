@@ -28,5 +28,8 @@ public class PersistenceFactory {
         PersistenceRegistry.setMessagePersistence(null);
         PersistenceRegistry.setLoginPersistence(null);
         PersistenceRegistry.setCardPersistence(null);
+        PersistenceRegistry.setSupportPersistence(null);
+        PersistenceRegistry.setRatingPersistence(null);
+        PersistenceRegistry.setFAQPersistence(null); // ✅ NEW
     }
 }

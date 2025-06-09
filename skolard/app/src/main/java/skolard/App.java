@@ -23,13 +23,11 @@ public class App {
         PersistenceFactory.initialize(PersistenceType.PROD, true);
 
         // Get instances from the registry
-        
-
         MatchingHandler matchingHandler = new MatchingHandler(PersistenceRegistry.getSessionPersistence());
         MessageHandler messageHandler = new MessageHandler(PersistenceRegistry.getMessagePersistence());
         SessionHandler sessionHandler = new SessionHandler(PersistenceRegistry.getSessionPersistence());
         ProfileHandler profileHandler = new ProfileHandler(sessionHandler);
-        FAQHandler faqHandler = new FAQHandler(); 
+        FAQHandler faqHandler = new FAQHandler(PersistenceRegistry.getFAQPersistence()); // ✅ uses DB
         LoginHandler loginHandler = new LoginHandler();
         RatingHandler ratingHandler = new RatingHandler(PersistenceRegistry.getRatingPersistence());
 

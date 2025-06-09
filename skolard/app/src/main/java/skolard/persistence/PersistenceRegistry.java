@@ -1,6 +1,7 @@
 package skolard.persistence;
 
 import skolard.persistence.sqlite.RatingDB;
+import skolard.persistence.FAQPersistence;
 
 public class PersistenceRegistry {
     private static StudentPersistence studentPersistence;
@@ -9,8 +10,9 @@ public class PersistenceRegistry {
     private static MessagePersistence messagePersistence;
     private static LoginPersistence loginPersistence;
     private static CardPersistence cardPersistence;
-    private static SupportPersistence supportPersistence; // NEW
+    private static SupportPersistence supportPersistence;
     private static RatingPersistence ratingPersistence;
+    private static FAQPersistence faqPersistence; // ✅ NEW
 
     public static StudentPersistence getStudentPersistence() {
         return studentPersistence;
@@ -71,7 +73,16 @@ public class PersistenceRegistry {
     public static RatingPersistence getRatingPersistence() {
         return ratingPersistence;
     }
+
     public static void setRatingPersistence(RatingPersistence rp) {
         ratingPersistence = rp;
+    }
+
+    public static FAQPersistence getFAQPersistence() {
+        return faqPersistence;
+    }
+
+    public static void setFAQPersistence(FAQPersistence fp) {
+        faqPersistence = fp;
     }
 }
