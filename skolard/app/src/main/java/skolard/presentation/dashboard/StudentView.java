@@ -117,7 +117,7 @@ public class StudentView extends JFrame {
         displayArea.setText("Searching for tutors...\n\n");
 
         try {
-            var sessions = matchingHandler.getAvailableSessions(searchQuery);
+            var sessions = matchingHandler.getAvailableSessions(searchQuery, currentStudent.getEmail());
             if (!sessions.isEmpty()) {
                 displayArea.append("Available tutoring sessions for '" + searchQuery + "':\n");
                 for (var session : sessions) {
