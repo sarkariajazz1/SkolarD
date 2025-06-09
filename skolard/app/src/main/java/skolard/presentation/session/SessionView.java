@@ -43,6 +43,7 @@ public class SessionView extends JFrame {
     private final JTextField startTimeField = new JTextField(20);
     private final JTextField endTimeField = new JTextField(20);
     private final JButton createSessionBtn = new JButton("Create Session");
+    private final JButton deleteBtn = new JButton("Delete Session");
 
     private DefaultTableModel upcomingModel;
     private DefaultTableModel pastModel;
@@ -164,6 +165,10 @@ public class SessionView extends JFrame {
             buttonsPanel.add(unbookBtn);
         }
 
+        if (currentUser instanceof Tutor) {
+            deleteBtn.setEnabled(false);
+            buttonsPanel.add(deleteBtn);
+        }
         buttonsPanel.add(closeBtn);
 
         panel.add(buttonsPanel, BorderLayout.SOUTH);
@@ -179,6 +184,7 @@ public class SessionView extends JFrame {
 
         infoBtn.addActionListener(e -> showSelectedSessionInfo());
         unbookBtn.addActionListener(e -> unbookSelectedSession());
+        deleteBtn.addActionListener(e -> deleteSelectedSession());
         closeBtn.addActionListener(e -> dispose());
     }
 
@@ -189,6 +195,10 @@ public class SessionView extends JFrame {
 
         if (currentUser instanceof Student) {
             unbookBtn.setEnabled(upcomingSelected);
+        }
+
+        if (currentUser instanceof Tutor) {
+            deleteBtn.setEnabled(upcomingSelected);
         }
     }
 
@@ -357,6 +367,37 @@ public class SessionView extends JFrame {
                 clearSelection();
             } else {
                 super.changeSelection(rowIndex, columnIndex, toggle, extend);
+            }
+        }
+    }
+
+    private void deleteSelectedSession() {
+        int row = upcomingTable.getSelectedRow();
+        if (row == -1) {
+            showError("Please select an upcoming session to delete.");
+            return;
+        }
+
+        int sessionId = (int) upcomingModel.getValueAt(row, 0);
+        Session session = sessionHandler.getSessionByID(sessionId);
+
+        String warningMsg = session.getStudent() != null
+            ? "This session has a student. Deleting it will trigger a refund.\nContinue?"
+            : "Are you sure you want to delete this session?";
+
+        int confirm = JOptionPane.showConfirmDialog(this, warningMsg, "Confirm Delete", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                sessionHandler.deleteSession( (Tutor) currentUser , session);
+                if (session.getStudent() != null) {
+                    showSuccess("Session deleted. A refund will be processed for the student.");
+                } else {
+                    showSuccess("Session deleted successfully.");
+                }
+                refreshSessionTables();
+            } catch (Exception e) {
+                showError("Failed to delete session: " + e.getMessage());
             }
         }
     }
