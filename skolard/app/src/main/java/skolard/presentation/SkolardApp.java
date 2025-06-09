@@ -36,14 +36,12 @@ import skolard.persistence.PersistenceRegistry;
 import skolard.presentation.auth.LoginView;
 import skolard.presentation.auth.SignUpView;
 import skolard.presentation.faq.FAQView;
-import skolard.presentation.dashboard.StudentView;
 import skolard.presentation.matching.MatchingView;
 import skolard.presentation.session.SessionView;
 import skolard.presentation.message.MessageView;
 import skolard.presentation.support.SupportView;
 import skolard.presentation.rating.RatingView;
 import skolard.presentation.dashboard.TutorView;
-import skolard.presentation.support.SupportView;
 
 public class SkolardApp extends JFrame {
 
