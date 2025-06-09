@@ -25,7 +25,7 @@ import skolard.presentation.datetime.DateTimeLabel;
 public class StudentView extends JFrame {
 
     private final ProfileHandler profileHandler;
-    private final BookingHandler matchingHandler;
+    private final BookingHandler bookingHandler;
     private final MessageHandler messageHandler;
     private final Student currentStudent;
     private final RatingHandler ratingHandler;
@@ -41,7 +41,7 @@ public class StudentView extends JFrame {
     private Tutor selectedTutor;
 
     public StudentView(ProfileHandler profileHandler,
-                       BookingHandler matchingHandler,
+                       BookingHandler bookingHandler,
                        MessageHandler messageHandler,
                        SessionHandler sessionHandler,
                        RatingHandler ratingHandler,
@@ -49,7 +49,7 @@ public class StudentView extends JFrame {
         super("SkolarD - Student Dashboard");
 
         this.profileHandler = profileHandler;
-        this.matchingHandler = matchingHandler;
+        this.bookingHandler = bookingHandler;
         this.messageHandler = messageHandler;
         this.currentStudent = student;
         this.ratingHandler = ratingHandler;
@@ -117,7 +117,7 @@ public class StudentView extends JFrame {
         displayArea.setText("Searching for tutors...\n\n");
 
         try {
-            var sessions = matchingHandler.getAvailableSessions(searchQuery, currentStudent.getEmail());
+            var sessions = bookingHandler.getAvailableSessions(searchQuery, currentStudent.getEmail());
             if (!sessions.isEmpty()) {
                 displayArea.append("Available tutoring sessions for '" + searchQuery + "':\n");
                 for (var session : sessions) {

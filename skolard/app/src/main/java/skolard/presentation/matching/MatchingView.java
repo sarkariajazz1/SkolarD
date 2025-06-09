@@ -33,7 +33,7 @@ import skolard.utils.CourseUtil;
  * A simple GUI window to allow users to find available tutoring sessions for a specific course and book it.
  */
 public class MatchingView extends JFrame {
-    private final BookingHandler matchingHandler; // Logic handler
+    private final BookingHandler bookingHandler; // Logic handler
     private final SessionHandler sessionHandler;
 
     private final JTextField courseField = new JTextField(15);
@@ -54,9 +54,9 @@ public class MatchingView extends JFrame {
 
 private final RatingHandler ratingHandler;
 
-    public MatchingView(BookingHandler matchingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler,PaymentHandler paymentHandler, Student student) {
+    public MatchingView(BookingHandler bookingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler,PaymentHandler paymentHandler, Student student) {
         super("SkolarD - Matching View");
-        this.matchingHandler = matchingHandler;
+        this.bookingHandler = bookingHandler;
         this.sessionHandler = sessionHandler;
         this.ratingHandler = ratingHandler;
 
@@ -136,13 +136,13 @@ private final RatingHandler ratingHandler;
                 if ("Sort by Time".equals(filter)) {
                     start = LocalDateTime.parse(startTimeField.getText().trim(), formatter);
                     end = LocalDateTime.parse(endTimeField.getText().trim(), formatter);
-                    results = matchingHandler.getAvailableSessions(SessionFilter.TIME, course, start, end, student.getEmail());
+                    results = bookingHandler.getAvailableSessions(SessionFilter.TIME, course, start, end, student.getEmail());
                 } else if ("Sort by Course Rating".equals(filter)) {
-                    results = matchingHandler.getAvailableSessions(SessionFilter.RATE, course, null, null, student.getEmail());
+                    results = bookingHandler.getAvailableSessions(SessionFilter.RATE, course, null, null, student.getEmail());
                 } else if ("Sort by Overall Tutor Rating".equals(filter)) {
-                    results = matchingHandler.getAvailableSessions(SessionFilter.TUTOR, course, null, null, student.getEmail());
+                    results = bookingHandler.getAvailableSessions(SessionFilter.TUTOR, course, null, null, student.getEmail());
                 } else {
-                    results = matchingHandler.getAvailableSessions(course, student.getEmail());
+                    results = bookingHandler.getAvailableSessions(course, student.getEmail());
                 }
             } catch (DateTimeParseException ex) {
                 statusLabel.setText("Invalid date-time format. Use yyyy-MM-dd HH:mm");
