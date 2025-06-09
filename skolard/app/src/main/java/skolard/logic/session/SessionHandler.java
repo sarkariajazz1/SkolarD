@@ -9,105 +9,61 @@ import skolard.objects.Tutor;
 import skolard.persistence.SessionPersistence;
 
 /**
- * Handles the creation and booking of tutoring sessions.
+ * Facade that delegates session operations to specialized handlers.
  */
 public class SessionHandler {
-    private SessionPersistence sessionPersistence;
+    private final SessionManagement managementHandler;
+    private final SessionBooking bookingHandler;
+    private final SessionAccess accessHandler;
 
     /**
-     * Constructor that initializes the session persistence layer.
+     * Constructs the SessionHandler with a shared persistence layer.
      *
-     * @param sessionPersistence the persistence layer to handle session data
+     * @param sessionPersistence the persistence interface used across all handlers
      */
-    public SessionHandler(SessionPersistence sessionPersistence){
-        this.sessionPersistence = sessionPersistence;
+    public SessionHandler(SessionPersistence sessionPersistence) {
+        this.managementHandler = new SessionManagement(sessionPersistence);
+        this.bookingHandler = new SessionBooking(sessionPersistence);
+        this.accessHandler = new SessionAccess(sessionPersistence);
     }
 
-    /**
-     * Creates a new session for a tutor if there is no scheduling conflict.
-     *
-     * @param user the user attempting to create the session (must be a Tutor)
-     * @param start the start time of the session
-     * @param end the end time of the session
-     * @param courseName the name of the course for the session
-     */
-    public void createSession(Tutor tutor, LocalDateTime start, LocalDateTime end, String courseName){
-        // Get all sessions for the tutor
-        List<Session> tutorSessions = sessionPersistence.getSessionsByTutorEmail(tutor.getEmail());
-
-        // Check for scheduling conflicts with existing sessions
-        boolean hasConflict = tutorSessions.stream().anyMatch(session -> {
-            LocalDateTime tutorStart = session.getStartDateTime();
-            LocalDateTime tutorEnd = session.getEndDateTime();
-            // Overlap if start < existingEnd && end > existingStart
-            return start.isBefore(tutorEnd) && end.isAfter(tutorStart);
-        });
-
-        if (hasConflict) {
-            throw new IllegalArgumentException("Session conflicts with existing sessions");
-        }
-
-        // No conflicts, add new session with unassigned student (null), Session id is -1 and will auto increment in database
-        sessionPersistence.addSession(new Session(-1, tutor, null, start, end, courseName));
+    /** Delegates to SessionManagement to create a new session */
+    public void createSession(Tutor tutor, LocalDateTime start, LocalDateTime end, String courseName) {
+        managementHandler.createSession(tutor, start, end, courseName);
     }
 
-    public void deleteSession(Tutor tutor, Session session){
-        List<Session> tutorSessions = sessionPersistence.getSessionsByTutorEmail(tutor.getEmail());
-
-        if(tutorSessions.contains(session)){
-            sessionPersistence.removeSession(session.getSessionId());
-        } else{
-            throw new IllegalArgumentException("Session not found in database, cannot remove");
-        }
+    /** Delegates to SessionManagement to delete a session */
+    public void deleteSession(Tutor tutor, Session session) {
+        managementHandler.deleteSession(tutor, session);
     }
 
-    /**
-     * Books a session for a student if it is not already booked.
-     *
-     * @param user the user attempting to book the session (must be a Student)
-     * @param sessionID the ID of the session to be booked
-     */
-    public void bookASession(Student student, int sessionID){
-        // Retrieve the session to be booked
-        Session session = sessionPersistence.getSessionById(sessionID);
-
-        // Check if the session is already booked
-        if(!session.isBooked()){
-            session.bookSession(student); // Book the session for the student
-            sessionPersistence.updateSession(session);
-        } else {
-            // Session is booked — check if by the same student or another
-            if(session.getStudent().equals(student)){
-                throw new IllegalArgumentException("Session is already booked");
-            } else {
-                throw new IllegalArgumentException("Session is already booked by someone else");
-            }
-        }
+    /** Delegates to SessionBooking to book a session */
+    public void bookASession(Student student, int sessionID) {
+        bookingHandler.bookASession(student, sessionID);
     }
 
-    public void unbookASession(Student student, int sessionID){
-        Session session = sessionPersistence.getSessionById(sessionID);
-
-        if(session.isBooked()){
-            session.unbookSession(student);
-            sessionPersistence.updateSession(session);
-        } else {
-            throw new IllegalArgumentException("Session has not been booked");
-        }
+    /** Delegates to SessionBooking to unbook a session */
+    public void unbookASession(Student student, int sessionID) {
+        bookingHandler.unbookASession(student, sessionID);
     }
 
+    /** Delegates to SessionAccess to hydrate the student's session list */
     public void setStudentSessionLists(Student student) {
-        sessionPersistence.hydrateStudentSessions(student);
+        accessHandler.setStudentSessionLists(student);
     }
 
+    /** Delegates to SessionAccess to hydrate the tutor's session list */
     public void setTutorSessionLists(Tutor tutor) {
-        sessionPersistence.hydrateTutorSessions(tutor);
+        accessHandler.setTutorSessionLists(tutor);
     }
 
+    /** Delegates to SessionAccess to retrieve all sessions for a tutor */
     public List<Session> getSessionsByTutor(Tutor tutor) {
-    return sessionPersistence.getSessionsByTutorEmail(tutor.getEmail());
+        return accessHandler.getSessionsByTutor(tutor);
     }
-    public Session getSessionByID(int id){
-        return sessionPersistence.getSessionById(id);
+
+    /** Delegates to SessionAccess to retrieve a session by ID */
+    public Session getSessionByID(int id) {
+        return accessHandler.getSessionByID(id);
     }
 }
