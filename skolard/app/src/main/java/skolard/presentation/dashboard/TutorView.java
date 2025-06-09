@@ -19,13 +19,10 @@ import javax.swing.ListSelectionModel;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
 import skolard.logic.session.SessionHandler;
+import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 
-/**
- * GUI window for tutor-specific functionality in SkolarD.
- * Allows tutors to view student profiles, manage sessions, and send messages.
- */
 public class TutorView extends JFrame {
 
     private final ProfileHandler profileHandler;
@@ -33,7 +30,6 @@ public class TutorView extends JFrame {
     private final MessageHandler messageHandler;
     private final Tutor currentTutor;
 
-    // UI Components
     private final JTextField emailField = new JTextField(20);
     private final JTextArea displayArea = new JTextArea(15, 50);
     private final JButton viewStudentBtn = new JButton("View Student Profile");
@@ -45,7 +41,7 @@ public class TutorView extends JFrame {
     private final DefaultListModel<String> studentListModel = new DefaultListModel<>();
     private final JList<String> studentList = new JList<>(studentListModel);
 
-    private Student selectedStudent; // Currently selected student
+    private Student selectedStudent;
 
     public TutorView(ProfileHandler profileHandler, SessionHandler sessionHandler,
                      MessageHandler messageHandler, Tutor tutor) {
@@ -69,19 +65,16 @@ public class TutorView extends JFrame {
     private void initializeUI() {
         setLayout(new BorderLayout(10, 10));
 
-        // Welcome panel
         JPanel welcomePanel = new JPanel(new FlowLayout());
         welcomePanel.add(new JLabel("Welcome, " + currentTutor.getName() + " (Tutor)"));
         add(welcomePanel, BorderLayout.NORTH);
 
-        // Left panel for student list and search
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.add(new JLabel("My Students:"), BorderLayout.NORTH);
 
         studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         leftPanel.add(new JScrollPane(studentList), BorderLayout.CENTER);
 
-        // Search panel
         JPanel searchPanel = new JPanel(new FlowLayout());
         searchPanel.add(new JLabel("Student Email:"));
         searchPanel.add(emailField);
@@ -90,15 +83,16 @@ public class TutorView extends JFrame {
 
         add(leftPanel, BorderLayout.WEST);
 
-        // Center display area
         displayArea.setEditable(false);
-        displayArea.setText("Welcome to your tutor dashboard!\n\n" +
-                "• Select a student from the list to view their profile\n" +
-                "• Enter a student email to search for specific students\n" +
-                "• Manage your profile and bio using the buttons below");
+        displayArea.setText("""
+                Welcome to your tutor dashboard!
+
+                • Select a student from the list to view their profile
+                • Enter a student email to search for specific students
+                • Manage your profile and bio using the buttons below
+                """);
         add(new JScrollPane(displayArea), BorderLayout.CENTER);
 
-        // Action buttons panel
         JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         buttonPanel.add(messageStudentBtn);
         buttonPanel.add(updateBioBtn);
@@ -106,7 +100,6 @@ public class TutorView extends JFrame {
         buttonPanel.add(viewMyStudentsBtn);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Initially disable student-specific buttons
         messageStudentBtn.setEnabled(false);
     }
 
@@ -117,12 +110,10 @@ public class TutorView extends JFrame {
         viewMyProfileBtn.addActionListener(e -> viewMyProfile());
         viewMyStudentsBtn.addActionListener(e -> loadMyStudents());
 
-        // Handle student list selection
         studentList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 String selectedEmail = studentList.getSelectedValue();
                 if (selectedEmail != null) {
-                    // Extract email from the list item (assuming format: "Name (email)")
                     int startIndex = selectedEmail.lastIndexOf('(') + 1;
                     int endIndex = selectedEmail.lastIndexOf(')');
                     if (startIndex > 0 && endIndex > startIndex) {
@@ -147,23 +138,35 @@ public class TutorView extends JFrame {
             displayArea.setText("Student Profile:\n\n");
             displayArea.append(profileHandler.viewFullProfile(selectedStudent));
 
-            // Show student's sessions with this tutor
+            // Fetch all sessions for this tutor
+            var allSessions = sessionHandler.getSessionsByTutor(currentTutor);
+            var pastSessions = allSessions.stream()
+                    .filter(s -> s.getStudent() != null && s.getStudent().getEmail().equals(email))
+                    .filter(s -> s.getEndDateTime().isBefore(java.time.LocalDateTime.now()))
+                    .toList();
+
+            var upcomingSessions = allSessions.stream()
+                    .filter(s -> s.getStudent() != null && s.getStudent().getEmail().equals(email))
+                    .filter(s -> s.getStartDateTime().isAfter(java.time.LocalDateTime.now()))
+                    .toList();
+
+            // Show session summary
             displayArea.append("\n\nSessions with this student:\n");
-            var pastSessions = currentTutor.getPastSessions().stream()
-                    .filter(session -> session.getStudent() != null && session.getStudent().getEmail().equals(email))
-                    .toList();
-            var upcomingSessions = currentTutor.getUpcomingSessions().stream()
-                    .filter(session -> session.getStudent() != null && session.getStudent().getEmail().equals(email))
-                    .toList();
+            displayArea.append("Upcoming sessions: " + upcomingSessions.size() + "\n");
+            displayArea.append("Past sessions: " + pastSessions.size() + "\n\n");
 
             if (!pastSessions.isEmpty()) {
                 displayArea.append("Past sessions:\n");
-                pastSessions.forEach(session -> displayArea.append("- " + session.toString() + "\n"));
+                for (var session : pastSessions) {
+                    displayArea.append("- " + formatSession(session) + "\n");
+                }
             }
 
             if (!upcomingSessions.isEmpty()) {
                 displayArea.append("Upcoming sessions:\n");
-                upcomingSessions.forEach(session -> displayArea.append("- " + session.toString() + "\n"));
+                for (var session : upcomingSessions) {
+                    displayArea.append("- " + formatSession(session) + "\n");
+                }
             }
 
             if (pastSessions.isEmpty() && upcomingSessions.isEmpty()) {
@@ -179,6 +182,10 @@ public class TutorView extends JFrame {
     }
 
     private void messageStudent() {
+        if(messageHandler == null) {
+            JOptionPane.showMessageDialog(this, "Message handler is not initialized.");
+            return;
+        }
         if (selectedStudent == null) {
             JOptionPane.showMessageDialog(this, "Please select a student first.");
             return;
@@ -188,10 +195,8 @@ public class TutorView extends JFrame {
                 "Enter your message to " + selectedStudent.getName() + ":");
 
         if (message != null && !message.trim().isEmpty()) {
-            // Here you would typically send the message using MessageHandler
             JOptionPane.showMessageDialog(this,
                     "Message sent to " + selectedStudent.getName() + "!");
-
             displayArea.append("\n\nMessage sent to " + selectedStudent.getName());
         }
     }
@@ -210,7 +215,6 @@ public class TutorView extends JFrame {
     private void viewMyProfile() {
         displayArea.setText("My Profile:\n\n");
         displayArea.append(profileHandler.viewFullProfile(currentTutor));
-
         selectedStudent = null;
         messageStudentBtn.setEnabled(false);
     }
@@ -219,8 +223,10 @@ public class TutorView extends JFrame {
         studentListModel.clear();
         displayArea.setText("Loading students you have tutored...\n\n");
 
-        // Get students from past and upcoming sessions
-        var allSessions = currentTutor.getPastSessions();
+        // Ensure session lists are up to date
+        sessionHandler.setTutorSessionLists(currentTutor);
+
+        var allSessions = new java.util.ArrayList<>(currentTutor.getPastSessions());
         allSessions.addAll(currentTutor.getUpcomingSessions());
 
         var studentEmails = allSessions.stream()
@@ -247,5 +253,12 @@ public class TutorView extends JFrame {
         }
 
         displayArea.append("\nClick on a student from the list to view their profile.");
+    }
+
+    private String formatSession(Session session) {
+    return session.getCourseName() + " on " +
+           session.getStartDateTime().toLocalDate() + " from " +
+           session.getStartDateTime().toLocalTime() + " to " +
+           session.getEndDateTime().toLocalTime();
     }
 }

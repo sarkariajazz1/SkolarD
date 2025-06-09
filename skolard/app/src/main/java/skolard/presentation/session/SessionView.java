@@ -145,9 +145,11 @@ public class SessionView extends JFrame {
         panel.setBorder(BorderFactory.createTitledBorder("Sessions"));
 
         upcomingModel = new DefaultTableModel(new String[]{"ID", "Course", "Start", "End"}, 0) {
+            @Override
             public boolean isCellEditable(int row, int column) { return false; }
         };
         pastModel = new DefaultTableModel(new String[]{"ID", "Course", "Start", "End"}, 0) {
+            @Override
             public boolean isCellEditable(int row, int column) { return false; }
         };
 

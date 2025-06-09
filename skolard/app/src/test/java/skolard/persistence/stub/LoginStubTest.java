@@ -2,16 +2,34 @@ package skolard.persistence.stub;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import skolard.objects.Student;
+import skolard.objects.Tutor;
+import skolard.utils.PasswordUtil;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class LoginStubTest {
 
     private LoginStub loginStub;
+    private StudentStub studentStub;
+    private TutorStub tutorStub;
 
     @BeforeEach
     void setUp() {
-        loginStub = new LoginStub();
+        studentStub = new StudentStub();
+        tutorStub = new TutorStub();
+
+        // Add test students
+        studentStub.addStudent(new Student("Test Student", "test@student.com", PasswordUtil.hash("pass123")));
+        studentStub.addStudent(new Student("Raj", "raj@skolard.ca", PasswordUtil.hash("raj123")));
+        studentStub.addStudent(new Student("Simran", "simran@skolard.ca", PasswordUtil.hash("simran123")));
+
+        // Add test tutors
+        tutorStub.addTutor(new Tutor("Test Tutor", "test@tutor.com", PasswordUtil.hash("pass123"), null, null));
+        tutorStub.addTutor(new Tutor("Amrit", "amrit@skolard.ca", PasswordUtil.hash("amrit123"), null, null));
+        tutorStub.addTutor(new Tutor("Sukhdeep", "sukhdeep@skolard.ca", PasswordUtil.hash("sukhdeep123"), null, null));
+
+        loginStub = new LoginStub(studentStub, tutorStub);
     }
 
     // Student Authentication Tests

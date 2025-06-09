@@ -38,9 +38,9 @@ public class MessageStub implements MessagePersistence{
     }
 
     private boolean messageHistory(Message message, String studentEmail, String tutorEmail) {
-        return (message.getStudentEmail() == studentEmail && message.getTutorEmail() == tutorEmail);
+        return (message.getStudentEmail().equals(studentEmail) && message.getTutorEmail().equals(tutorEmail));
     }
-
+    @Override
     public Message addMessage(Message message) {
         confirmCreation();
         if(messages.containsKey(message.getMessageId())) {
@@ -56,7 +56,7 @@ public class MessageStub implements MessagePersistence{
     @Override
     public List<Message> getMessageHistory(String studentEmail, String tutorEmail) {
         confirmCreation();
-        List<Message> messageList = new ArrayList<Message>();
+        List<Message> messageList = new ArrayList<>();
         for(Message message : messages.values()) {
             if(messageHistory(message, studentEmail, tutorEmail)) {
                 messageList.add(message);

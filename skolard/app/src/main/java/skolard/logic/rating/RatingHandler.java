@@ -27,16 +27,17 @@ public class RatingHandler {
     
     public void processRatingSubmission(RatingRequest request, int tutorRating, int courseRating) {
         request.submit(tutorRating, courseRating);
+        Feedback feedback = request.toFeedback();
 
         ratingPersistence.saveRating(
-            request.getSession().getTutor().getName(),
-            String.valueOf(request.getSession().getSessionId()),
-            tutorRating,
-            courseRating,
-            request.getStudent().getName()
+            feedback.getTutorName(),
+            String.valueOf(feedback.getSessionId()),
+            feedback.getTutorRating(),
+            feedback.getCourseRating(),
+            feedback.getStudentName()
         );
     }
-
+    
     public void processRatingSkip(RatingRequest request) {
         request.skip();
     }

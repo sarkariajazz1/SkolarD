@@ -7,6 +7,7 @@ import java.util.Map;
 
 import skolard.objects.Tutor;
 import skolard.persistence.TutorPersistence;
+import skolard.utils.PasswordUtil;
 
 /**
  * In-memory stub implementation of TutorPersistence.
@@ -14,7 +15,7 @@ import skolard.persistence.TutorPersistence;
  */
 public class TutorStub implements TutorPersistence {
 
-    private Map<String, Tutor> tutors; // Map to hold tutors keyed by email
+    final private Map<String, Tutor> tutors; // Map to hold tutors keyed by email
 
     /**
      * Constructor initializes the in-memory structure and populates it with sample data.
@@ -28,7 +29,7 @@ public class TutorStub implements TutorPersistence {
      * Basic stub hash method for passwords (development use only).
      */
     private String hash(String plain) {
-        return Integer.toHexString(plain.hashCode());
+        return PasswordUtil.hash(plain);
     }
 
     /**
@@ -61,12 +62,11 @@ public class TutorStub implements TutorPersistence {
      */
     @Override
     public Tutor addTutor(Tutor tutor) {
-        if (!tutors.containsKey(tutor.getEmail())) {
-            tutors.put(tutor.getEmail(), tutor);
-            return tutor;
+        if (tutors.containsKey(tutor.getEmail())) {
+            throw new RuntimeException("Tutor account already exists");
         }
-
-        return null;
+        tutors.put(tutor.getEmail(), tutor);
+        return tutor;
     }
 
     /**
@@ -122,7 +122,7 @@ public class TutorStub implements TutorPersistence {
 
     @Override
     public void removeCourseFromTutor(Tutor tutor, String course) {
-        Map<String, Double> courses = new HashMap<>();
+        Map<String, Double> courses;
         if(course != null) {
             courses = tutor.getCoursesWithGrades();
             courses.remove(course);

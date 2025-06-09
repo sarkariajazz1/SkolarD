@@ -139,10 +139,18 @@ public class SkolardApp extends JFrame {
     }
 
     private JPanel createDashboardPanel() {
-        JPanel dashboardPanel = new JPanel(new BorderLayout(10, 10));
+        JPanel localDashboardPanel = new JPanel(new BorderLayout(10, 10));
 
-        // Create main content panel with BorderLayout
-        JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
+        String titleText = "SkolarD Dashboard";
+        if (currentUser != null) {
+            String userType = currentUser instanceof Student ? "Student" :
+                              currentUser instanceof Tutor ? "Tutor" : "User";
+            titleText += " - " + userType + ": " + currentUser.getName();
+        }
+
+        JLabel dashboardLabel = new JLabel(titleText, SwingConstants.CENTER);
+        dashboardLabel.setFont(dashboardLabel.getFont().deriveFont(Font.BOLD, 16f));
+        localDashboardPanel.add(dashboardLabel, BorderLayout.NORTH);
 
         // Left side - Button panel
         JPanel buttonPanel = createButtonPanelForUser();
@@ -158,11 +166,11 @@ public class SkolardApp extends JFrame {
         JPanel bottomPanel = new JPanel(new FlowLayout());
         JButton logoutBtn = new JButton("Logout");
         bottomPanel.add(logoutBtn);
-        dashboardPanel.add(bottomPanel, BorderLayout.SOUTH);
+        localDashboardPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         logoutBtn.addActionListener(e -> logout());
 
-        return dashboardPanel;
+        return localDashboardPanel;
     }
 
     private JPanel createWelcomePanel() {
@@ -366,7 +374,7 @@ public class SkolardApp extends JFrame {
             return;
         }
 
-        setTitle("SkolarD - Dashboard (" + user.getName() + ")");
+        setTitle("SkolarD - Dashboard (" + (user != null ? user.getName() : "Unknown") + ")");
         mainPanel.remove(dashboardPanel);
         dashboardPanel = createDashboardPanel();
         mainPanel.add(dashboardPanel, "DASHBOARD");

@@ -10,6 +10,7 @@ import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.persistence.SessionPersistence;
+import skolard.utils.PasswordUtil;
 
 /**
  * Stub implementation of SessionPersistence that stores session data in-memory using a HashMap.
@@ -27,7 +28,7 @@ public class SessionStub implements SessionPersistence {
 
     // Simulate password hashing (stub use only)
     private String hash(String password) {
-        return Integer.toHexString(password.hashCode());
+        return PasswordUtil.hash(password);
     }
 
     // Populate with mock tutor/student and sessions
@@ -122,4 +123,40 @@ public class SessionStub implements SessionPersistence {
             sessions.replace(updatedSession.getSessionId(), updatedSession);
         }
     }
+
+    @Override
+    public void hydrateTutorSessions(Tutor tutor) {
+    List<Session> all = getSessionsByTutorEmail(tutor.getEmail());
+    List<Session> past = new ArrayList<>();
+    List<Session> upcoming = new ArrayList<>();
+
+    for (Session s : all) {
+        if (s.getEndDateTime().isBefore(LocalDateTime.now())) {
+            past.add(s);
+        } else {
+            upcoming.add(s);
+        }
+    }
+
+    tutor.setPastSessions(past);
+    tutor.setUpcomingSessions(upcoming);
+    }
+    @Override
+    public void hydrateStudentSessions(Student student) {
+        List<Session> all = getSessionsByStudentEmail(student.getEmail());
+        List<Session> past = new ArrayList<>();
+        List<Session> upcoming = new ArrayList<>();
+
+        for (Session s : all) {
+            if (s.getEndDateTime().isBefore(LocalDateTime.now())) {
+                past.add(s);
+            } else {
+                upcoming.add(s);
+            }
+        }
+
+        student.setPastSessions(past);
+        student.setUpcomingSessions(upcoming);
+    }
+
 }

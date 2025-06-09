@@ -6,8 +6,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -35,8 +34,8 @@ import skolard.objects.Student;
  * Allows students to submit ratings for completed sessions.
  */
 public class RatingView extends JFrame {
-    private RatingHandler ratingHandler;
-
+    private final RatingHandler ratingHandler;
+    
     // UI Components
     private final DefaultListModel<String> requestModel = new DefaultListModel<>();
     private final JList<String> requestList = new JList<>(requestModel);
@@ -225,7 +224,12 @@ public class RatingView extends JFrame {
             showError("Please select a rating request first");
             return;
         }
+        if (LocalDateTime.now().isBefore(selectedRequest.getSession().getEndDateTime())) {
+            showError("You can only rate the session after it has ended.");
+            return;
+        }
 
+        
         try {
             int tutorRating = tutorRatingSlider.getValue();
             int courseRating = courseRatingSlider.getValue();
