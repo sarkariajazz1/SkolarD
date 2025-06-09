@@ -1,10 +1,27 @@
-package skolard.presentation;
+package skolard.presentation.profile;
 
-import skolard.logic.ProfileHandler;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import skolard.logic.profile.ProfileHandler;
+import skolard.objects.Tutor;
 import skolard.objects.User;
+<<<<<<< HEAD:skolard/app/src/main/java/skolard/presentation/ProfileView.java
 
 import javax.swing.*;
 import java.awt.*;
+=======
+>>>>>>> dev:skolard/app/src/main/java/skolard/presentation/profile/ProfileView.java
 
 /**
  * GUI window for viewing and managing user profiles in SkolarD.
@@ -84,7 +101,7 @@ public class ProfileView extends JFrame {
             }
             String newBio = JOptionPane.showInputDialog(this, "Enter new bio:");
             if (newBio != null && !newBio.isBlank()) {
-                handler.updateBio(currentUser, newBio.trim());
+                handler.updateBio((Tutor)currentUser, newBio.trim());
                 profileArea.setText(handler.viewFullProfile(currentUser));
             }
         });
@@ -93,10 +110,11 @@ public class ProfileView extends JFrame {
         addStudentBtn.addActionListener(e -> {
             JTextField nameField = new JTextField();
             JTextField emailField = new JTextField();
-            Object[] fields = {"Name:", nameField, "Email:", emailField};
+            JPasswordField passwordField = new JPasswordField();
+            Object[] fields = {"Name:", nameField, "Email:", emailField, "Password:", passwordField};
             int option = JOptionPane.showConfirmDialog(this, fields, "Add Student", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
-                handler.addStudent(nameField.getText().trim(), emailField.getText().trim());
+                handler.addStudent(nameField.getText().trim(), emailField.getText().trim(),new String(passwordField.getPassword()).trim());
                 JOptionPane.showMessageDialog(this, "Student added!");
             }
         });
@@ -105,10 +123,11 @@ public class ProfileView extends JFrame {
         addTutorBtn.addActionListener(e -> {
             JTextField nameField = new JTextField();
             JTextField emailField = new JTextField();
-            Object[] fields = {"Name:", nameField, "Email:", emailField};
+            JPasswordField passwordField = new JPasswordField();
+            Object[] fields = {"Name:", nameField, "Email:", emailField, "Password:", passwordField};
             int option = JOptionPane.showConfirmDialog(this, fields, "Add Tutor", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
-                handler.addTutor(nameField.getText().trim(), emailField.getText().trim());
+                handler.addTutor(nameField.getText().trim(), emailField.getText().trim(),new String(passwordField.getPassword()).trim());
                 JOptionPane.showMessageDialog(this, "Tutor added!");
             }
         });

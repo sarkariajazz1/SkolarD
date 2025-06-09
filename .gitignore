@@ -5,7 +5,7 @@
 /skolard/app/build/
 /out/
 /bin/
-
+/.bin/
 # Gradle files
 /.gradle/
 skolard/.gradle/
@@ -25,5 +25,7 @@ skolard/.gradle/
 .idea/
 *.iml
 
+# Database files
+skolard.db
 test.db
 prod.db

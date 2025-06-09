@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import skolard.utils.PasswordUtil;
 import skolard.objects.Student;
 import skolard.persistence.StudentPersistence;
 
@@ -14,32 +15,30 @@ import skolard.persistence.StudentPersistence;
  */
 public class StudentStub implements StudentPersistence {
 
-    private Map<String, Student> students;      // Map of students keyed by email
+    private Map<String, Student> students; // Map of students keyed by email
 
     /**
      * Constructor initializes student storage and adds demo data.
      */
     public StudentStub() {
-        confirmCreation();
+        students = new HashMap<>();
         addSampleStudents();
     }
 
     /**
-     * Ensures the students map is initialized before use.
+     * Simple stub hash function (placeholder).
      */
-    private void confirmCreation() {
-        if(students == null) {
-            students = new HashMap<>();
-        }
+    private String hash(String plain) {
+        return PasswordUtil.hash(plain);
     }
 
     /**
      * Adds a few predefined student accounts for testing purposes.
      */
     private void addSampleStudents() {
-        addStudent(new Student("Matt Yab", "yabm@myumanitoba.ca"));
-        addStudent(new Student("Group Six", "sixg@myumanitoba.ca"));
-        addStudent(new Student("John Wick", "wickj@myumanitoba.ca"));
+        addStudent(new Student("Matt Yab", "yabm@myumanitoba.ca", hash("pass123")));
+        addStudent(new Student("Group Six", "sixg@myumanitoba.ca", hash("sixgroup")));
+        addStudent(new Student("John Wick", "wickj@myumanitoba.ca", hash("babaYaga")));
     }
 
     /**
@@ -49,6 +48,7 @@ public class StudentStub implements StudentPersistence {
      * @return The new student object, or null if email already exists
      */
     public Student addStudent(Student student) {
+<<<<<<< HEAD
         confirmCreation();
 
         Student newStudent = null;
@@ -56,9 +56,13 @@ public class StudentStub implements StudentPersistence {
         if(!students.containsKey(student.getEmail())) {
             newStudent = new Student(student.getName(), student.getEmail());
             students.put(newStudent.getEmail(), newStudent);
+=======
+        if (students.containsKey(student.getEmail())) {
+            throw new RuntimeException("Student account already exists");
+>>>>>>> dev
         }
-
-        return newStudent;
+        students.put(student.getEmail(), student); // Store original object with password
+        return student;
     }
 
     /**
@@ -69,7 +73,6 @@ public class StudentStub implements StudentPersistence {
      */
     @Override
     public Student getStudentByEmail(String email) {
-        confirmCreation();
         return students.get(email);
     }
 
@@ -80,10 +83,7 @@ public class StudentStub implements StudentPersistence {
      */
     @Override
     public void deleteStudentByEmail(String email) {
-        confirmCreation();
-        if(students.containsKey(email)) {
-            students.remove(email);
-        }
+        students.remove(email);
     }
 
     /**
@@ -93,8 +93,7 @@ public class StudentStub implements StudentPersistence {
      */
     @Override
     public void updateStudent(Student updatedStudent) {
-        confirmCreation();
-        if(students.containsKey(updatedStudent.getEmail())) {
+        if (students.containsKey(updatedStudent.getEmail())) {
             students.replace(updatedStudent.getEmail(), updatedStudent);
         }
     }
@@ -106,20 +105,31 @@ public class StudentStub implements StudentPersistence {
      */
     @Override
     public List<Student> getAllStudents() {
+<<<<<<< HEAD
         confirmCreation();
         List<Student> studentList = new ArrayList<>();
         for (Student student : students.values()) {
             studentList.add(student);
         }
         return studentList;
+=======
+        return new ArrayList<>(students.values());
+>>>>>>> dev
     }
 
     /**
-     * Clears all student records from memory.
+     * Authenticates a student based on email and hashed password.
+     *
+     * @param email          Student email
+     * @param hashedPassword Hashed password
+     * @return The matching student or null if authentication fails
      */
-    public void close() {
-        this.students = null;
+    @Override
+    public Student authenticate(String email, String hashedPassword) {
+        Student student = students.get(email);
+        if (student != null && student.getHashedPassword().equals(hashedPassword)) {
+            return student;
+        }
+        return null;
     }
 }
-
-

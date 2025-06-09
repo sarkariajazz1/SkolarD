@@ -1,6 +1,7 @@
 package skolard.persistence;
 
 import java.sql.Connection;
+<<<<<<< HEAD
 import java.util.List;
 
 import skolard.persistence.sqlite.SchemaInitializer;
@@ -101,5 +102,34 @@ public class PersistenceFactory {
         studentPersistence = null;
         tutorPersistence = null;
         sessionPersistence = null;
+=======
+
+public class PersistenceFactory {
+
+    public static void initialize(PersistenceType type, boolean seed) {
+        try {
+            if (type == PersistenceType.STUB) {
+                PersistenceProvider.initializeStubs();
+                return;
+            }
+
+            Connection conn = EnvironmentInitializer.setupEnvironment(type, seed);
+            PersistenceProvider.initializeSqlite(conn);
+
+        } catch (Exception e) {
+            System.err.println("Falling back to stubs due to: " + e.getMessage());
+            PersistenceProvider.initializeStubs();
+        }
+    }
+
+    public static void reset() {
+        ConnectionManager.close();
+        PersistenceRegistry.setStudentPersistence(null);
+        PersistenceRegistry.setTutorPersistence(null);
+        PersistenceRegistry.setSessionPersistence(null);
+        PersistenceRegistry.setMessagePersistence(null);
+        PersistenceRegistry.setLoginPersistence(null);
+        PersistenceRegistry.setCardPersistence(null);
+>>>>>>> dev
     }
 }

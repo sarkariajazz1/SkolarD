@@ -9,6 +9,7 @@ public class GradeUtil {
     public static double toNumeric(String grade) {
         if (grade == null) return -1.0;
 
+<<<<<<< HEAD
         switch (grade.toUpperCase()) {
             case "A+": return 90.0;
             case "A":  return 80.0;
@@ -25,6 +26,25 @@ public class GradeUtil {
                     return -1.0;
                 }
         }
+=======
+        return switch (grade.toUpperCase()) {
+            case "A+" -> 90.0;
+            case "A"  -> 80.0;
+            case "B+" -> 75.0;
+            case "B"  -> 70.0;
+            case "C+" -> 65.0;
+            case "C"  -> 60.0;
+            case "D"  -> 50.0;
+            case "F"  -> 40.0;
+            default -> {
+                try {
+                    yield Double.parseDouble(grade);
+                } catch (NumberFormatException e) {
+                    yield -1.0;
+                }
+            }
+        };
+>>>>>>> dev
     }
 }
 

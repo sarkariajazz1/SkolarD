@@ -2,11 +2,36 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+<<<<<<< HEAD
     <loc>/faq/categories/</loc>
   </url><url>
     <loc>/faq/faq/</loc>
   </url><url>
     <loc>/faq/</loc>
+=======
+    <loc>/faq/faq/booking/</loc>
+    <lastmod>2025-05-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/faq/faq/contact-support/</loc>
+    <lastmod>2025-05-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/faq/faq/</loc>
+    <lastmod>2025-05-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/faq/faq/getting-started/</loc>
+    <lastmod>2025-05-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/faq/</loc>
+    <lastmod>2025-05-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/faq/faq/troubleshooting/</loc>
+    <lastmod>2025-05-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/faq/faq/tutor-guide/</loc>
+    <lastmod>2025-05-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/faq/categories/</loc>
+>>>>>>> dev
   </url><url>
     <loc>/faq/tags/</loc>
   </url>

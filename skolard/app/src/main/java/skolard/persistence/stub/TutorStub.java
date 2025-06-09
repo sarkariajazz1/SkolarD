@@ -7,6 +7,7 @@ import java.util.Map;
 
 import skolard.objects.Tutor;
 import skolard.persistence.TutorPersistence;
+import skolard.utils.PasswordUtil;
 
 /**
  * In-memory stub implementation of TutorPersistence.
@@ -14,72 +15,69 @@ import skolard.persistence.TutorPersistence;
  */
 public class TutorStub implements TutorPersistence {
 
-    private Map<String, Tutor> tutors;           // Map to hold tutors keyed by email
+    final private Map<String, Tutor> tutors; // Map to hold tutors keyed by email
 
     /**
      * Constructor initializes the in-memory structure and populates it with sample data.
      */
     public TutorStub() {
-        confirmCreation();
-        addSampleTutor();
+        tutors = new HashMap<>();
+        addSampleTutors();
     }
 
     /**
-     * Ensures the tutors map is initialized before use.
+     * Basic stub hash method for passwords (development use only).
      */
-    private void confirmCreation() {
-        if(tutors == null) {
-            tutors = new HashMap<>();
-        }
+    private String hash(String plain) {
+        return PasswordUtil.hash(plain);
     }
 
     /**
-     * Adds a sample tutor with two courses and example grades.
-     * This is for demonstration and testing purposes only.
+     * Adds a sample tutor for demonstration and testing purposes.
      */
-    private void addSampleTutor() {
+    private void addSampleTutors() {
         String course1 = "COMP 1010";
         String course2 = "COMP 3350";
+<<<<<<< HEAD
         ArrayList<String> courses = new ArrayList<String>();
         Map<String, Double> courseGrades = new HashMap<>();
+=======
+>>>>>>> dev
 
-        courses.add(course1);
-        courses.add(course2);
+        Map<String, Double> courses = new HashMap<>();
+        courses.put(course1, 4.0);
+        courses.put(course2, 3.5);
 
+<<<<<<< HEAD
         courseGrades.put(course1, 4.0);
         courseGrades.put(course2, 3.5);
+=======
+        Tutor sampleTutor = new Tutor(
+                "Yab Matt",
+                "mattyab@myumanitoba.ca",
+                hash("pass123"),
+                "Experienced in Java and C++ tutoring.",
+                courses
+        );
+>>>>>>> dev
 
-        addTutor(new Tutor("Yab Matt", "mattyab@myumanitoba.ca",
-                "", courses, courseGrades));
+        addTutor(sampleTutor);
     }
 
     /**
-     * Adds a tutor if a tutor with the same email already exists.
-     * (This logic may need revision — typically you'd only add if email is NOT present.)
+     * Adds a tutor if their email is not already registered.
      *
      * @param tutor The tutor to add
-     * @return The newly created tutor object, or null if not added
+     * @return The added tutor, or null if one with same email exists
      */
     @Override
     public Tutor addTutor(Tutor tutor) {
-        confirmCreation();
-
-        // Only add the tutor if they don't already exist
-        if (!tutors.containsKey(tutor.getEmail())) {
-            Tutor newTutor = new Tutor(
-                    tutor.getName(),
-                    tutor.getEmail(),
-                    tutor.getBio(),
-                    tutor.getCourses(),
-                    tutor.getCourseGrades()
-            );
-            tutors.put(newTutor.getEmail(), newTutor);
-            return newTutor;
+        if (tutors.containsKey(tutor.getEmail())) {
+            throw new RuntimeException("Tutor account already exists");
         }
-
-        return null; // Return null if already exists (or you can choose to return existing)
+        tutors.put(tutor.getEmail(), tutor);
+        return tutor;
     }
-
 
     /**
      * Retrieves a tutor by their email address.
@@ -89,7 +87,6 @@ public class TutorStub implements TutorPersistence {
      */
     @Override
     public Tutor getTutorByEmail(String email) {
-        confirmCreation();
         return tutors.get(email);
     }
 
@@ -100,10 +97,7 @@ public class TutorStub implements TutorPersistence {
      */
     @Override
     public void deleteTutorByEmail(String email) {
-        confirmCreation();
-        if(tutors.containsKey(email)) {
-            tutors.remove(email);
-        }
+        tutors.remove(email);
     }
 
     /**
@@ -113,8 +107,7 @@ public class TutorStub implements TutorPersistence {
      */
     @Override
     public void updateTutor(Tutor updatedTutor) {
-        confirmCreation();
-        if(tutors.containsKey(updatedTutor.getEmail())) {
+        if (tutors.containsKey(updatedTutor.getEmail())) {
             tutors.replace(updatedTutor.getEmail(), updatedTutor);
         }
     }
@@ -126,20 +119,42 @@ public class TutorStub implements TutorPersistence {
      */
     @Override
     public List<Tutor> getAllTutors() {
-        confirmCreation();
-        List<Tutor> tutorList = new ArrayList<>();
-        for (Tutor tutor : tutors.values()) {
-            tutorList.add(tutor);
+        return new ArrayList<>(tutors.values());
+    }
+
+    @Override
+    public void addCourseToTutor(Tutor tutor, String course, Double grade) {
+        if(course != null && grade != null) {
+            tutor.addCourse(course, grade);
+            updateTutor(tutor);
         }
-        return tutorList;
+    }
+
+    @Override
+    public void removeCourseFromTutor(Tutor tutor, String course) {
+        Map<String, Double> courses;
+        if(course != null) {
+            courses = tutor.getCoursesWithGrades();
+            courses.remove(course);
+            tutor = new Tutor(tutor.getName(), tutor.getEmail(), 
+                tutor.getHashedPassword(), tutor.getBio(), courses);
+            updateTutor(tutor);
+        }
     }
 
     /**
-     * Clears all tutor records from memory (optional helper).
+     * Authenticates a tutor by comparing stored and provided hashed passwords.
+     *
+     * @param email          Tutor's email
+     * @param hashedPassword Hashed password to check
+     * @return Tutor if credentials match, otherwise null
      */
-    public void close() {
-        this.tutors = null;
+    @Override
+    public Tutor authenticate(String email, String hashedPassword) {
+        Tutor tutor = tutors.get(email);
+        if (tutor != null && tutor.getHashedPassword().equals(hashedPassword)) {
+            return tutor;
+        }
+        return null;
     }
 }
-
-

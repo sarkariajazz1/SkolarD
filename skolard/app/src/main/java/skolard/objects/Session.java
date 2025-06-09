@@ -2,18 +2,13 @@ package skolard.objects;
 
 import java.time.LocalDateTime;
 
-/**
- * Represents a tutoring session between a Tutor and a Student.
- * Tracks scheduling details and booking status.
- */
 public class Session {
-    private int sessionId; // Unique identifier for the session
-    private Tutor tutor;      // Tutor assigned to the session
-    private Student student;  // Student attending the session
-    private LocalDateTime startDateTime; // When the session starts
-    private LocalDateTime endDateTime;   // When the session ends
-    private String courseName;           // Course associated with the session
-    private boolean booked;              // Whether the session is booked
+    private int sessionId;
+    private Tutor tutor;
+    private Student student;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
+    private String courseName;
 
     public Session(int sessionId, Tutor tutor, Student student, LocalDateTime startDateTime, LocalDateTime endDateTime, String courseName) {
         this.sessionId = sessionId;
@@ -22,13 +17,19 @@ public class Session {
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.courseName = courseName;
-        this.booked = false; // Default to unbooked
     }
 
     public int getSessionId() {
         return sessionId;
     }
 
+<<<<<<< HEAD
+=======
+    public void setSessionId(int id) {
+        this.sessionId = id;
+    }
+
+>>>>>>> dev
     public Tutor getTutor() {
         return tutor;
     }
@@ -57,13 +58,8 @@ public class Session {
         return endDateTime;
     }
 
-    // Typo: This should probably be "setEndDateTime"
-    public void getEndDateTime(LocalDateTime endDateTime) {
+    public void setEndDateTime(LocalDateTime endDateTime) {
         this.endDateTime = endDateTime;
-    }
-
-    public boolean isBooked() {
-        return booked;
     }
 
     public String getCourseName() {
@@ -74,20 +70,37 @@ public class Session {
         this.courseName = courseName;
     }
 
-    /**
-     * Books the session with a student.
-     * Also updates tutor and student with the session info.
-     * Throws an exception if the session is already booked.
-     */
+    public boolean isBooked() {
+        return student != null;
+    }
+
     public void bookSession(Student student) {
-        if (this.booked) {
-            throw new IllegalStateException("This session is already booked.");
+        if (this.student != null) {
+            throw new IllegalStateException("Session " + sessionId + " is already booked.");
         }
-        this.booked = true;
+
         this.student = student;
-        this.tutor.setUpcomingSession(this); // Add to tutor's schedule
-        student.setUpcomingSession(this);    // Add to student's schedule
+        this.tutor.addUpcomingSession(this);
+        student.addUpcomingSession(this);
+
         System.out.println("Session " + sessionId + " booked by " + student.getName());
     }
 
+<<<<<<< HEAD
+=======
+    public void unbookSession(Student student) {
+        if (!isBooked()) {
+            throw new IllegalArgumentException("This session is not booked");
+        }
+
+        if (!this.student.getEmail().equals(student.getEmail())) {
+            throw new IllegalArgumentException("You can only unbook sessions you booked");
+        }
+
+        this.student = null;
+        student.removeUpcomingSession(this);
+
+        System.out.println("Session " + sessionId + " unbooked by " + student.getName());
+    }
+>>>>>>> dev
 }
