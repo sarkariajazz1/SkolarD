@@ -23,13 +23,10 @@ public class Session {
         return sessionId;
     }
 
-<<<<<<< HEAD
-=======
     public void setSessionId(int id) {
         this.sessionId = id;
     }
 
->>>>>>> dev
     public Tutor getTutor() {
         return tutor;
     }
@@ -86,8 +83,6 @@ public class Session {
         System.out.println("Session " + sessionId + " booked by " + student.getName());
     }
 
-<<<<<<< HEAD
-=======
     public void unbookSession(Student student) {
         if (!isBooked()) {
             throw new IllegalArgumentException("This session is not booked");
@@ -102,5 +97,4 @@ public class Session {
 
         System.out.println("Session " + sessionId + " unbooked by " + student.getName());
     }
->>>>>>> dev
 }

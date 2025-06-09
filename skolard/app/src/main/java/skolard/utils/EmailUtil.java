@@ -2,12 +2,6 @@ package skolard.utils;
 
 import java.util.regex.Pattern;
 
-<<<<<<< HEAD
-public class EmailUtil {
-    private static final Pattern EMAIL_REGEX =
-        Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
-
-=======
 /**
  * Utility class for validating and normalizing email addresses.
  */
@@ -27,14 +21,11 @@ public final class EmailUtil {
      * @param email the raw email input
      * @return true if valid format, false otherwise
      */
->>>>>>> dev
     public static boolean isValid(String email) {
         if (email == null) return false;
         String trimmed = email.trim().toLowerCase();
         return EMAIL_REGEX.matcher(trimmed).matches();
     }
-<<<<<<< HEAD
-=======
 
     /**
      * Normalizes the given email by trimming and converting to lowercase.
@@ -45,5 +36,4 @@ public final class EmailUtil {
     public static String normalize(String email) {
         return (email == null) ? null : email.trim().toLowerCase();
     }
->>>>>>> dev
 }

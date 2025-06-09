@@ -1,15 +1,6 @@
 
 package skolard.presentation;
 
-<<<<<<< HEAD
-import javax.swing.*;
-
-import skolard.logic.FAQHandler;
-import skolard.logic.MatchingHandler;
-import skolard.logic.ProfileHandler;
-
-import java.awt.*;
-=======
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
@@ -52,18 +43,9 @@ import skolard.presentation.support.SupportView;
 import skolard.presentation.rating.RatingView;
 import skolard.presentation.dashboard.TutorView;
 import skolard.presentation.support.SupportView;
->>>>>>> dev
 
 public class SkolardApp extends JFrame {
 
-<<<<<<< HEAD
-    public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler) {
-        this(profileHandler, matchingHandler, new FAQHandler());
-    }
-
-    public SkolardApp(ProfileHandler profileHandler, MatchingHandler matchingHandler, FAQHandler faqHandler) {
-        super("SkolarD - Dashboard"); 
-=======
     private final ProfileHandler profileHandler;
     private final MatchingHandler matchingHandler;
     private final SessionHandler sessionHandler;
@@ -71,7 +53,6 @@ public class SkolardApp extends JFrame {
     private final FAQHandler faqHandler;
     private final LoginHandler loginHandler;
     private final RatingHandler ratingHandler;
->>>>>>> dev
 
     private User currentUser;
     private JPanel mainPanel;
@@ -79,31 +60,6 @@ public class SkolardApp extends JFrame {
     private JPanel dashboardPanel;
     private boolean isFirstLogin = false;
 
-<<<<<<< HEAD
-        // Create navigation buttons for profile, matching, and FAQ views
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 10, 10));
-        JButton profileBtn = new JButton("View Profiles");
-        JButton matchBtn = new JButton("Find Tutors");
-        JButton faqBtn = new JButton("FAQs");
-
-        buttonPanel.add(profileBtn);
-        buttonPanel.add(matchBtn);
-        buttonPanel.add(faqBtn);
-        add(buttonPanel, BorderLayout.CENTER);
-
-        // Open Profile View
-        profileBtn.addActionListener(e -> new ProfileView(profileHandler));
-
-        // Open Matching View
-        matchBtn.addActionListener(e -> new MatchingView(matchingHandler));
-
-        // Open FAQ View
-        faqBtn.addActionListener(e -> new FAQView(faqHandler));
-
-        setDefaultCloseOperation(EXIT_ON_CLOSE); // Full app exits
-        setSize(500, 150);
-        setLocationRelativeTo(null); // Center
-=======
     // Window state management
     private final List<Window> openWindows = new ArrayList<>();
 
@@ -131,7 +87,6 @@ public class SkolardApp extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(800, 500);
         setLocationRelativeTo(null);
->>>>>>> dev
         setVisible(true);
 
         // Add window listener to clean up open windows when main app closes

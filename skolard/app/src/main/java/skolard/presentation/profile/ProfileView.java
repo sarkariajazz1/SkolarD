@@ -16,12 +16,6 @@ import javax.swing.JTextField;
 import skolard.logic.profile.ProfileHandler;
 import skolard.objects.Tutor;
 import skolard.objects.User;
-<<<<<<< HEAD:skolard/app/src/main/java/skolard/presentation/ProfileView.java
-
-import javax.swing.*;
-import java.awt.*;
-=======
->>>>>>> dev:skolard/app/src/main/java/skolard/presentation/profile/ProfileView.java
 
 /**
  * GUI window for viewing and managing user profiles in SkolarD.
