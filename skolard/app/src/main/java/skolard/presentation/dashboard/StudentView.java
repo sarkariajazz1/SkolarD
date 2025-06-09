@@ -13,7 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import skolard.logic.matching.MatchingHandler;
+import skolard.logic.booking.BookingHandler;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
 import skolard.logic.rating.RatingHandler;
@@ -25,7 +25,7 @@ import skolard.presentation.datetime.DateTimeLabel;
 public class StudentView extends JFrame {
 
     private final ProfileHandler profileHandler;
-    private final MatchingHandler matchingHandler;
+    private final BookingHandler matchingHandler;
     private final MessageHandler messageHandler;
     private final Student currentStudent;
     private final RatingHandler ratingHandler;
@@ -41,7 +41,7 @@ public class StudentView extends JFrame {
     private Tutor selectedTutor;
 
     public StudentView(ProfileHandler profileHandler,
-                       MatchingHandler matchingHandler,
+                       BookingHandler matchingHandler,
                        MessageHandler messageHandler,
                        SessionHandler sessionHandler,
                        RatingHandler ratingHandler,
@@ -129,20 +129,22 @@ public class StudentView extends JFrame {
             // Continue to search by tutor name
         }
 
-        Tutor tutor = profileHandler.getTutor(searchQuery);
-        if (tutor != null) {
-            selectedTutor = tutor;
-            displayArea.append("Tutor found:\n");
-            displayArea.append(profileHandler.viewFullProfile(tutor));
-            displayArea.append("\n\nYou can now send a message to this tutor.");
-            messageTutorBtn.setEnabled(true);
-        } else {
-            if (displayArea.getText().equals("Searching for tutors...\n\n")) {
-                displayArea.setText("No tutors found for '" + searchQuery + "'.\nTry searching by course name or tutor email.");
-            }
-            selectedTutor = null;
-            messageTutorBtn.setEnabled(false);
-        }
+        /* TO REMOVE */
+
+        // Tutor tutor = profileHandler.getTutor(searchQuery);
+        // if (tutor != null) {
+        //     selectedTutor = tutor;
+        //     displayArea.append("Tutor found:\n");
+        //     displayArea.append(profileHandler.viewFullProfile(tutor));
+        //     displayArea.append("\n\nYou can now send a message to this tutor.");
+        //     messageTutorBtn.setEnabled(true);
+        // } else {
+        //     if (displayArea.getText().equals("Searching for tutors...\n\n")) {
+        //         displayArea.setText("No tutors found for '" + searchQuery + "'.\nTry searching by course name or tutor email.");
+        //     }
+        //     selectedTutor = null;
+        //     messageTutorBtn.setEnabled(false);
+        // }
     }
 
     private void messageTutor() {

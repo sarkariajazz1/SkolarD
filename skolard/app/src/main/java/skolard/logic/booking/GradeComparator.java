@@ -1,4 +1,4 @@
-package skolard.logic.matching;
+package skolard.logic.booking;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,10 +11,10 @@ import skolard.objects.Session;
 /**
  * RatingComparator sorts tutoring sessions based on the tutor's grade for a specific course.
  */
-public class RatingComparator extends PriorityList<Session> {
+public class GradeComparator extends PriorityList<Session> {
     private final List<Session> sessions;
 
-    public RatingComparator(List<Session> sessions) {
+    public GradeComparator(List<Session> sessions) {
         // Defensive shallow copy
         this.sessions = sessions != null ? new ArrayList<>(sessions) : new ArrayList<>();
     }

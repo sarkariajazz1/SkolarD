@@ -26,7 +26,6 @@ import skolard.logic.payment.PaymentHandler;
 
 public class PaymentView extends JDialog {
     private boolean wasPaid = false;
-    private boolean saveCardInfo = false;
 
     public PaymentView(Window parent, PaymentHandler paymentHandler, Student student) {
         super(parent, "Payment", ModalityType.APPLICATION_MODAL);
@@ -112,7 +111,6 @@ public class PaymentView extends JDialog {
             if (success) {
                 JOptionPane.showMessageDialog(this, "Payment successful using entered card.");
                 wasPaid = true;
-                saveCardInfo = save;
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid card details. Please check again.", "Payment Failed", JOptionPane.ERROR_MESSAGE);

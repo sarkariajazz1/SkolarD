@@ -20,10 +20,10 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
-import skolard.logic.matching.MatchingHandler;
-import skolard.logic.matching.MatchingHandler.SessionFilter;
 import skolard.logic.rating.RatingHandler;
 import skolard.logic.session.SessionHandler;
+import skolard.logic.booking.BookingHandler;
+import skolard.logic.booking.BookingHandler.SessionFilter;
 import skolard.logic.payment.PaymentHandler;
 import skolard.objects.Session;
 import skolard.objects.Student;
@@ -33,7 +33,7 @@ import skolard.utils.CourseUtil;
  * A simple GUI window to allow users to find available tutoring sessions for a specific course and book it.
  */
 public class MatchingView extends JFrame {
-    private final MatchingHandler matchingHandler; // Logic handler
+    private final BookingHandler matchingHandler; // Logic handler
     private final SessionHandler sessionHandler;
 
     private final JTextField courseField = new JTextField(15);
@@ -54,7 +54,7 @@ public class MatchingView extends JFrame {
 
 private final RatingHandler ratingHandler;
 
-    public MatchingView(MatchingHandler matchingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler,PaymentHandler paymentHandler, Student student) {
+    public MatchingView(BookingHandler matchingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler,PaymentHandler paymentHandler, Student student) {
         super("SkolarD - Matching View");
         this.matchingHandler = matchingHandler;
         this.sessionHandler = sessionHandler;

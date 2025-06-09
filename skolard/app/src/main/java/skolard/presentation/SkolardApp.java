@@ -14,8 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import skolard.logic.auth.LoginHandler;
+import skolard.logic.booking.BookingHandler;
 import skolard.logic.faq.FAQHandler;
-import skolard.logic.matching.MatchingHandler;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
 import skolard.logic.rating.RatingHandler;
@@ -42,7 +42,7 @@ import skolard.presentation.support.SupportView;
 public class SkolardApp extends JFrame {
 
     private final ProfileHandler profileHandler;
-    private final MatchingHandler matchingHandler;
+    private final BookingHandler matchingHandler;
     private final SessionHandler sessionHandler;
     private final MessageHandler messageHandler;
     private final FAQHandler faqHandler;
@@ -56,7 +56,7 @@ public class SkolardApp extends JFrame {
     private JPanel dashboardPanel;
 
     public SkolardApp(ProfileHandler profileHandler, 
-                      MatchingHandler matchingHandler,
+                      BookingHandler matchingHandler,
                       SessionHandler sessionHandler, 
                       MessageHandler messageHandler,
                       FAQHandler faqHandler, 
