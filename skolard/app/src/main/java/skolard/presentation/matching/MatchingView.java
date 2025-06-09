@@ -98,7 +98,7 @@ private final RatingHandler ratingHandler;
         timeFieldsRow.add(new JLabel("End:"));
         timeFieldsRow.add(endTimeField);
 
-        JLabel timeExampleLabel = new JLabel("Example: 2025-06-01 09:00");
+        JLabel timeExampleLabel = new JLabel("Format Example: 2025-06-01 09:00");
         timePanel.add(timeFieldsRow);
         timePanel.add(timeExampleLabel);
         timePanel.setVisible(false);
