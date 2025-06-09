@@ -13,10 +13,14 @@ import java.util.List;
  *
  */
 public class SessionManagement{
-    public class SessionCreationHandler {
     private final SessionPersistence sessionPersistence;
 
-    public SessionCreationHandler(SessionPersistence sessionPersistence) {
+    /**
+     * Constructor that initializes the session persistence layer.
+     *
+     * @param sessionPersistence the persistence layer to handle session data
+     */
+    public SessionManagement(SessionPersistence sessionPersistence) {
         this.sessionPersistence = sessionPersistence;
     }
 
@@ -59,5 +63,4 @@ public class SessionManagement{
             throw new IllegalArgumentException("Session not found in database, cannot remove");
         }
     }
-}
 }

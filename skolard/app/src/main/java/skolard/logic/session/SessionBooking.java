@@ -12,6 +12,11 @@ import skolard.persistence.SessionPersistence;
 public class SessionBooking {
     private final SessionPersistence sessionPersistence;
 
+    /**
+     * Constructor that initializes the session persistence layer.
+     *
+     * @param sessionPersistence the persistence layer to handle session data
+     */
     public SessionBooking(SessionPersistence sessionPersistence) {
         this.sessionPersistence = sessionPersistence;
     }
