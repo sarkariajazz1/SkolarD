@@ -87,7 +87,8 @@ public class LoginView extends JFrame {
                     statusLabel.setText("Login successful! Welcome " + student.getName());
                     JOptionPane.showMessageDialog(this, "Login successful as student: " + student.getName(),
                             "Success", JOptionPane.INFORMATION_MESSAGE);
-                    parentApp.onAuthenticationSuccess(student);
+                    // Call with false for login (not first time)
+                    parentApp.onAuthenticationSuccess(student, false);
                     dispose();
                 } else {
                     showProfileNotFound("Student");
@@ -114,7 +115,8 @@ public class LoginView extends JFrame {
                     statusLabel.setText("Login successful! Welcome " + tutor.getName());
                     JOptionPane.showMessageDialog(this, "Login successful as tutor: " + tutor.getName(),
                             "Success", JOptionPane.INFORMATION_MESSAGE);
-                    parentApp.onAuthenticationSuccess(tutor);
+                    // Call with false for login (not first time)
+                    parentApp.onAuthenticationSuccess(tutor, false);
                     dispose();
                 } else {
                     showProfileNotFound("Tutor");
@@ -138,7 +140,7 @@ public class LoginView extends JFrame {
             if (loginHandler.login(creds)) {
                 User supportUser = new skolard.objects.Support("Support", email);
                 SupportHandler supportHandler = new SupportHandler(PersistenceRegistry.getSupportPersistence());
-                new SupportView(supportHandler, supportUser); // Pass supportUser
+                new SupportView(supportHandler, supportUser);
                 dispose();
             } else {
                 showLoginFailed("support");
