@@ -84,10 +84,13 @@ public class TutorView extends JFrame {
         add(leftPanel, BorderLayout.WEST);
 
         displayArea.setEditable(false);
-        displayArea.setText("Welcome to your tutor dashboard!\n\n" +
-                "• Select a student from the list to view their profile\n" +
-                "• Enter a student email to search for specific students\n" +
-                "• Manage your profile and bio using the buttons below");
+        displayArea.setText("""
+                Welcome to your tutor dashboard!
+
+                • Select a student from the list to view their profile
+                • Enter a student email to search for specific students
+                • Manage your profile and bio using the buttons below
+                """);
         add(new JScrollPane(displayArea), BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 5, 5));
@@ -179,6 +182,10 @@ public class TutorView extends JFrame {
     }
 
     private void messageStudent() {
+        if(messageHandler == null) {
+            JOptionPane.showMessageDialog(this, "Message handler is not initialized.");
+            return;
+        }
         if (selectedStudent == null) {
             JOptionPane.showMessageDialog(this, "Please select a student first.");
             return;

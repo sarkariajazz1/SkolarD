@@ -72,7 +72,8 @@ public class RatingRequest {
             session.getCourseName(),
             session.getTutor().getName(),
             student.getName(),
-            courseRating // Used as the representative rating
+            courseRating,
+            tutorRating
         );
     }
 
