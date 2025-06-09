@@ -45,9 +45,9 @@ public class MatchingView extends JFrame {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final JLabel timeRangeLabel = new JLabel("Preferred time range:");
 
-    // New buttons
     private final JButton bookButton = new JButton("Book");
     private final JButton infoButton = new JButton("View Info");
+    private final JButton closeButton = new JButton("Close");
 
 private final RatingHandler ratingHandler;
 
@@ -181,6 +181,7 @@ private final RatingHandler ratingHandler;
         bookButton.setEnabled(false);
         infoButton.setEnabled(false);
 
+        buttonPanel.add(closeButton);
         buttonPanel.add(bookButton);
         buttonPanel.add(infoButton);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -219,6 +220,8 @@ private final RatingHandler ratingHandler;
                 showSessionDetailsPopup(session);
             }
         });
+
+        closeButton.addActionListener(e -> dispose());
     }
 
     private void setupTableClickListener() {
