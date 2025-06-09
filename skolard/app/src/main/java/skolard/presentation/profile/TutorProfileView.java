@@ -51,7 +51,7 @@ public class TutorProfileView extends JFrame {
 
         initializeUI();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(600, 400);
+        setSize(700, 600);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -68,8 +68,20 @@ public class TutorProfileView extends JFrame {
         welcomeLabel.setFont(welcomeLabel.getFont().deriveFont(Font.BOLD, 18f));
         add(welcomeLabel, BorderLayout.NORTH);
 
+        // Instructions panel
+        JTextArea instructionsArea = new JTextArea(12, 60);
+        instructionsArea.setEditable(false);
+        instructionsArea.setBackground(getBackground());
+        instructionsArea.setText(getInstructionsText());
+        instructionsArea.setWrapStyleWord(true);
+        instructionsArea.setLineWrap(true);
+        instructionsArea.setFont(instructionsArea.getFont().deriveFont(14f));
+
+        JScrollPane instructionsScrollPane = new JScrollPane(instructionsArea);
+        add(instructionsScrollPane, BorderLayout.CENTER);
+
         // Button panel
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(4, 2, 10, 10));
 
         JButton myStudentsBtn = new JButton("My Students");
         JButton manageProfileBtn = new JButton("Manage Profile");
@@ -87,7 +99,10 @@ public class TutorProfileView extends JFrame {
         buttonPanel.add(faqBtn);
         buttonPanel.add(backBtn);
 
-        add(buttonPanel, BorderLayout.CENTER);
+        // Bottom panel for buttons
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(buttonPanel, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
 
         // Setup event listeners
         myStudentsBtn.addActionListener(e -> {
@@ -120,6 +135,17 @@ public class TutorProfileView extends JFrame {
         });
 
         backBtn.addActionListener(e -> dispose());
+    }
+
+    private String getInstructionsText() {
+        return "Welcome to your Tutor Dashboard! Here's what each button does:\n\n" +
+                "• My Students: View and manage your current students, see who has booked your sessions, and track your tutoring relationships.\n\n" +
+                "• Manage Profile: Update your bio, view your complete profile information, and modify your tutoring details.\n\n" +
+                "• Session Management: Create new tutoring sessions, view your upcoming and past sessions, and manage session details.\n\n" +
+                "• Messages: Communicate with students who have booked your sessions or are interested in your tutoring services.\n\n" +
+                "• Support: Submit support tickets if you encounter any issues or need assistance with the platform.\n\n" +
+                "• FAQs: Access frequently asked questions and helpful information about using SkolarD as a tutor.\n\n" +
+                "Select any option below to get started!";
     }
 
     private void showManageProfileView() {
