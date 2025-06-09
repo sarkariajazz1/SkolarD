@@ -101,6 +101,14 @@ public class SchemaInitializer {
                 "password TEXT NOT NULL" +
                 ");";
 
+        // Table for FAQ
+        String createFAQTable = "CREATE TABLE IF NOT EXISTS faq (" +
+        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+        "question TEXT NOT NULL UNIQUE," +
+        "answer TEXT NOT NULL" +
+        ");";
+
+
         try (Statement stmt = connection.createStatement()) {
             //stmt.execute(createCourseTable);
             stmt.execute(createTutorTable);
@@ -110,7 +118,9 @@ public class SchemaInitializer {
             stmt.execute(createMessageTable);
             stmt.execute(createCardTable);
             stmt.execute(createSupportTicketTable);
-            stmt.execute(createSupportUserTable); // ✅ Added support user table
+            stmt.execute(createSupportUserTable);
+            stmt.execute(createFAQTable);
+
         } catch (SQLException e) {
             System.err.println("SQL Error: " + e.getMessage());
             throw new RuntimeException("Failed to initialize database schema", e);
