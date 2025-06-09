@@ -25,16 +25,16 @@ public class RatingHandler {
     }
 
     
-    public void processRatingSubmission(RatingRequest request, int tutorRating, int courseRating) {
-        request.submit(tutorRating, courseRating);
+    public void processRatingSubmission(RatingRequest request, int rating) {
+        request.submit(rating);
         Feedback feedback = request.toFeedback();
 
         ratingPersistence.saveRating(
             feedback.getTutorEmail(),
             feedback.getSessionId(),
-            feedback.getTutorRating(),
-            feedback.getCourseRating(),
-            feedback.getStudentEmail()
+            feedback.getStudentEmail(),
+            feedback.getCourseName(),
+            feedback.getRating()
         );
     }
     
@@ -58,9 +58,5 @@ public class RatingHandler {
 
     public List<Feedback> getTutorFeedback(String tutorEmail) {
         return ratingPersistence.getAllFeedbackForTutor(tutorEmail);
-    }
-
-    public List<Feedback> getCourseFeedback(String courseName) {
-        return ratingPersistence.getAllFeedbackForCourse(courseName);
     }
 }

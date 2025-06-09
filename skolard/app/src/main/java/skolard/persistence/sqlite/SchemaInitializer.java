@@ -101,8 +101,8 @@ public class SchemaInitializer {
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "tutorEmail TEXT NOT NULL," +
                     "sessionId INTEGER NOT NULL," +
-                    "courseName TEXT NOT NULL," +
                     "studentEmail TEXT NOT NULL," +
+                    "courseName TEXT NOT NULL," +
                     "rating INTEGER NOT NULL," +
                     "FOREIGN KEY(tutorEmail) REFERENCES tutor(email)," +
                     "FOREIGN KEY(studentEmail) REFERENCES student(email)," +

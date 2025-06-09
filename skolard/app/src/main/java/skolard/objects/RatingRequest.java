@@ -11,8 +11,7 @@ public class RatingRequest {
     private final Student student;
     private boolean skipped;
     private boolean completed;
-    private int tutorRating;
-    private int courseRating;
+    private int rating;
     private final LocalDateTime createdAt;
 
     public RatingRequest(Session session, Student student) {
@@ -39,21 +38,16 @@ public class RatingRequest {
         return skipped;
     }
 
-    public int getTutorRating() {
-        return tutorRating;
-    }
-
-    public int getCourseRating() {
-        return courseRating;
+    public int getRating() {
+        return rating;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void submit(int tutorRating, int courseRating) {
-        this.tutorRating = tutorRating;
-        this.courseRating = courseRating;
+    public void submit(int rating) {
+        this.rating = rating;
         this.completed = true;
         this.skipped = false;
     }
@@ -72,8 +66,7 @@ public class RatingRequest {
             session.getCourseName(),
             session.getTutor().getEmail(),
             student.getEmail(),
-            courseRating,
-            tutorRating
+            rating
         );
     }
 
