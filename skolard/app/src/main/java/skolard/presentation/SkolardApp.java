@@ -121,7 +121,7 @@ public class SkolardApp extends JFrame {
     }
 
     private JPanel createDashboardPanel() {
-        JPanel dashboardPanel = new JPanel(new BorderLayout(10, 10));
+        JPanel localDashboardPanel = new JPanel(new BorderLayout(10, 10));
 
         String titleText = "SkolarD Dashboard";
         if (currentUser != null) {
@@ -132,19 +132,19 @@ public class SkolardApp extends JFrame {
 
         JLabel dashboardLabel = new JLabel(titleText, SwingConstants.CENTER);
         dashboardLabel.setFont(dashboardLabel.getFont().deriveFont(Font.BOLD, 16f));
-        dashboardPanel.add(dashboardLabel, BorderLayout.NORTH);
+        localDashboardPanel.add(dashboardLabel, BorderLayout.NORTH);
 
         JPanel buttonPanel = createButtonPanelForUser();
-        dashboardPanel.add(buttonPanel, BorderLayout.CENTER);
+        localDashboardPanel.add(buttonPanel, BorderLayout.CENTER);
 
         JPanel bottomPanel = new JPanel(new FlowLayout());
         JButton logoutBtn = new JButton("Logout");
         bottomPanel.add(logoutBtn);
-        dashboardPanel.add(bottomPanel, BorderLayout.SOUTH);
+        localDashboardPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         logoutBtn.addActionListener(e -> logout());
 
-        return dashboardPanel;
+        return localDashboardPanel;
     }
 
     private JPanel createButtonPanelForUser() {
@@ -196,7 +196,7 @@ public class SkolardApp extends JFrame {
         buttonPanel.add(faqBtn);
         buttonPanel.add(rateBtn);
 
-        myDashboardBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
+        myDashboardBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, sessionHandler, ratingHandler, (Student) currentUser));
         findTutorsBtn.addActionListener(e -> new MatchingView(matchingHandler, sessionHandler, (Student) currentUser));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
         messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
@@ -269,7 +269,7 @@ public class SkolardApp extends JFrame {
             return;
         }
 
-        setTitle("SkolarD - Dashboard (" + user.getName() + ")");
+        setTitle("SkolarD - Dashboard (" + (user != null ? user.getName() : "Unknown") + ")");
         mainPanel.remove(dashboardPanel);
         dashboardPanel = createDashboardPanel();
         mainPanel.add(dashboardPanel, "DASHBOARD");
