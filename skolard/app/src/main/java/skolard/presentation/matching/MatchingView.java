@@ -25,6 +25,7 @@ import skolard.logic.session.SessionHandler;
 import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.utils.CourseUtil;
+
 /**
  * A simple GUI window to allow users to find available tutoring sessions for a specific course and book it.
  */
@@ -43,9 +44,10 @@ public class MatchingView extends JFrame {
     private List<Session> currentResults;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    // New buttons
+    // Buttons
     private final JButton bookButton = new JButton("Book");
     private final JButton infoButton = new JButton("View Info");
+    private final JButton backButton = new JButton("Back");
 
     public MatchingView(MatchingHandler matchingHandler, SessionHandler sessionHandler, Student student) {
         super("SkolarD - Matching View");
@@ -77,7 +79,7 @@ public class MatchingView extends JFrame {
         topRow.add(searchBtn);
 
         JComboBox<String> filterDropdown = new JComboBox<>(new String[] {
-            "", "Sort by Time", "Sort by Course Rating", "Sort by Overall Tutor Rating"
+                "", "Sort by Time", "Sort by Course Rating", "Sort by Overall Tutor Rating"
         });
         topRow.add(filterDropdown);
         inputPanel.add(topRow);
@@ -147,9 +149,9 @@ public class MatchingView extends JFrame {
                 statusLabel.setText("Results:");
                 for (Session s : results) {
                     tableModel.addRow(new Object[] {
-                        s.getTutor().getName(),
-                        s.getStartDateTime().format(formatter),
-                        s.getEndDateTime().format(formatter)
+                            s.getTutor().getName(),
+                            s.getStartDateTime().format(formatter),
+                            s.getEndDateTime().format(formatter)
                     });
                 }
             }
@@ -172,6 +174,7 @@ public class MatchingView extends JFrame {
 
         buttonPanel.add(bookButton);
         buttonPanel.add(infoButton);
+        buttonPanel.add(backButton); // Add the back button to the panel
         add(buttonPanel, BorderLayout.SOUTH);
 
         bookButton.addActionListener(e -> {
@@ -179,21 +182,21 @@ public class MatchingView extends JFrame {
             if (selectedRow >= 0 && selectedRow < currentResults.size()) {
                 Session session = currentResults.get(selectedRow);
                 int confirm = JOptionPane.showConfirmDialog(
-                    this,
-                    "Do you want to book this session with " + session.getTutor().getName() + "?",
-                    "Confirm Booking",
-                    JOptionPane.YES_NO_OPTION
+                        this,
+                        "Do you want to book this session with " + session.getTutor().getName() + "?",
+                        "Confirm Booking",
+                        JOptionPane.YES_NO_OPTION
                 );
                 if (confirm == JOptionPane.YES_OPTION) {
                     sessionHandler.bookASession(student, session.getSessionId());
-                                currentResults.remove(selectedRow);
+                    currentResults.remove(selectedRow);
 
                     tableModel.removeRow(selectedRow);
 
                     sessionTable.clearSelection();
                     bookButton.setEnabled(false);
                     infoButton.setEnabled(false);
-                    
+
                     JOptionPane.showMessageDialog(this, "Session booked!", "Booking Confirmed", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -206,6 +209,9 @@ public class MatchingView extends JFrame {
                 showSessionDetailsPopup(session);
             }
         });
+
+        // Add action listener for the back button
+        backButton.addActionListener(e -> dispose());
     }
 
     private void setupTableClickListener() {
@@ -219,13 +225,13 @@ public class MatchingView extends JFrame {
 
     private void showSessionDetailsPopup(Session session) {
         String message = String.format(
-            "<html><b>Tutor:</b> %s<br><b>Email:</b> %s<br><b>Start:</b> %s<br><b>End:</b> %s<br><b>Course:</b> %s<br><b>Bio:</b> %s</html>",
-            session.getTutor().getName(),
-            session.getTutor().getEmail(),
-            session.getStartDateTime().format(formatter),
-            session.getEndDateTime().format(formatter),
-            session.getCourseName(),
-            session.getTutor().getBio()
+                "<html><b>Tutor:</b> %s<br><b>Email:</b> %s<br><b>Start:</b> %s<br><b>End:</b> %s<br><b>Course:</b> %s<br><b>Bio:</b> %s</html>",
+                session.getTutor().getName(),
+                session.getTutor().getEmail(),
+                session.getStartDateTime().format(formatter),
+                session.getEndDateTime().format(formatter),
+                session.getCourseName(),
+                session.getTutor().getBio()
         );
         JOptionPane.showMessageDialog(this, message, "Session Details", JOptionPane.INFORMATION_MESSAGE);
     }
