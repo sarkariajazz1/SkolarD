@@ -21,6 +21,7 @@ import javax.swing.ListSelectionModel;
 
 import skolard.logic.matching.MatchingHandler;
 import skolard.logic.matching.MatchingHandler.SessionFilter;
+import skolard.logic.rating.RatingHandler;
 import skolard.logic.session.SessionHandler;
 import skolard.objects.Session;
 import skolard.objects.Student;
@@ -29,8 +30,8 @@ import skolard.utils.CourseUtil;
  * A simple GUI window to allow users to find available tutoring sessions for a specific course and book it.
  */
 public class MatchingView extends JFrame {
-    private MatchingHandler matchingHandler; // Logic handler
-    private SessionHandler sessionHandler;
+    private final MatchingHandler matchingHandler; // Logic handler
+    private final SessionHandler sessionHandler;
 
     private final JTextField courseField = new JTextField(15);
     private final String[] columnNames = { "Tutor", "Start Time", "End Time" };
@@ -47,10 +48,13 @@ public class MatchingView extends JFrame {
     private final JButton bookButton = new JButton("Book");
     private final JButton infoButton = new JButton("View Info");
 
-    public MatchingView(MatchingHandler matchingHandler, SessionHandler sessionHandler, Student student) {
+private final RatingHandler ratingHandler;
+
+    public MatchingView(MatchingHandler matchingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler, Student student) {
         super("SkolarD - Matching View");
         this.matchingHandler = matchingHandler;
         this.sessionHandler = sessionHandler;
+        this.ratingHandler = ratingHandler;
 
         setLayout(new BorderLayout(10, 10));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -186,15 +190,17 @@ public class MatchingView extends JFrame {
                 );
                 if (confirm == JOptionPane.YES_OPTION) {
                     sessionHandler.bookASession(student, session.getSessionId());
-                                currentResults.remove(selectedRow);
+                    ratingHandler.createRatingRequest(session, student); // enqueue for future rating
 
+                    currentResults.remove(selectedRow);
                     tableModel.removeRow(selectedRow);
-
                     sessionTable.clearSelection();
                     bookButton.setEnabled(false);
                     infoButton.setEnabled(false);
-                    
-                    JOptionPane.showMessageDialog(this, "Session booked!", "Booking Confirmed", JOptionPane.INFORMATION_MESSAGE);
+
+                    JOptionPane.showMessageDialog(this,
+                        "Session booked successfully! You can rate it after it ends.",
+                        "Booking Confirmed", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });

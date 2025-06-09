@@ -12,7 +12,7 @@ import skolard.persistence.SessionPersistence;
  * Handles the creation and booking of tutoring sessions.
  */
 public class SessionHandler {
-    private SessionPersistence sessionPersistence;
+    private final SessionPersistence sessionPersistence;
 
     /**
      * Constructor that initializes the session persistence layer.

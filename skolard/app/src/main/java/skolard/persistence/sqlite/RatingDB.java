@@ -1,11 +1,15 @@
 package skolard.persistence.sqlite;
 
-import skolard.objects.Feedback;
-import skolard.persistence.RatingPersistence;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import skolard.objects.Feedback;
+import skolard.persistence.RatingPersistence;
 
 public class RatingDB implements RatingPersistence {
     private final Connection conn;
@@ -87,7 +91,8 @@ public class RatingDB implements RatingPersistence {
                 rs.getString("courseName"),
                 rs.getString("tutorName"),
                 rs.getString("studentName"),
-                rs.getInt("rating")
+                rs.getInt("courseRating"),
+                rs.getInt("tutorRating") // Assuming rating is the courseRating
         );
     }
 }
