@@ -43,6 +43,7 @@ public class MatchingView extends JFrame {
     private final JLabel statusLabel = new JLabel(" ");
     private List<Session> currentResults;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final JLabel timeRangeLabel = new JLabel("Preferred time range:");
 
     // New buttons
     private final JButton bookButton = new JButton("Book");
@@ -87,6 +88,10 @@ private final RatingHandler ratingHandler;
         inputPanel.add(topRow);
 
         timePanel.setLayout(new BoxLayout(timePanel, BoxLayout.Y_AXIS));
+        timeRangeLabel.setAlignmentX(LEFT_ALIGNMENT);
+        timePanel.add(timeRangeLabel);
+
+        timePanel.setLayout(new BoxLayout(timePanel, BoxLayout.Y_AXIS));
         JPanel timeFieldsRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         timeFieldsRow.add(new JLabel("Start:"));
         timeFieldsRow.add(startTimeField);
@@ -97,6 +102,7 @@ private final RatingHandler ratingHandler;
         timePanel.add(timeFieldsRow);
         timePanel.add(timeExampleLabel);
         timePanel.setVisible(false);
+        timeRangeLabel.setVisible(false);
 
         inputPanel.add(timePanel);
         add(inputPanel, BorderLayout.NORTH);
@@ -105,6 +111,7 @@ private final RatingHandler ratingHandler;
             String selected = (String) filterDropdown.getSelectedItem();
             boolean showTime = "Sort by Time".equals(selected);
             timePanel.setVisible(showTime);
+            timeRangeLabel.setVisible(showTime);
             startTimeField.setText("");
             endTimeField.setText("");
         });
