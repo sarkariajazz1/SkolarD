@@ -94,14 +94,13 @@ public class MatchingHandler {
      * @param start       the optional start time (used for time-based filtering)
      * @param end         the optional end time (used for time-based filtering)
      * @return a list of sessions that match the course and optional filter criteria
-     * @throws IllegalArgumentException if the courseName is null or empty
      */
-    public List<Session> getAvailableSessions(SessionFilter filter, String courseName, LocalDateTime start, LocalDateTime end){
+    public List<Session> getAvailableSessions(SessionFilter filter, String courseName, LocalDateTime start, LocalDateTime end, String studentEmail){
         if (courseName == null || courseName.isEmpty()) {
             throw new IllegalArgumentException("Course name cannot be null or empty.");
         }
 
-        List<Session> sessions = getNonBookedSessions(courseName);
+        List<Session> sessions = getNonBookedSessions(courseName, studentEmail);
         sessions = getNonPastSession(sessions);
 
         if (filter != null) {
@@ -118,14 +117,14 @@ public class MatchingHandler {
      * @param courseName  the name of the course to search sessions for (required)
      * @return a list of sessions not booked and not filtered
      */
-    public List<Session> getAvailableSessions(String courseName){
+    public List<Session> getAvailableSessions(String courseName, String studentEmail){
         List<Session> sessions = new ArrayList<>();
 
         if (courseName == null || courseName.isEmpty()) {
             throw new IllegalArgumentException("Course name cannot be null or empty.");
         }
         
-        sessions = getNonBookedSessions(courseName);
+        sessions = getNonBookedSessions(courseName,studentEmail);
         sessions = getNonPastSession(sessions);
 
         return sessions;
@@ -137,11 +136,12 @@ public class MatchingHandler {
      * @param courseName  the name of the course to search sessions for (required)
      * @return a list of sessions that are not booked
      */
-    private List<Session> getNonBookedSessions(String courseName) {
+    private List<Session> getNonBookedSessions(String courseName, String studentEmail) {
         List<Session> allSessions = sessionDB.getAllSessions();
 
         return allSessions.stream()
             .filter(session -> session.getCourseName().equalsIgnoreCase(courseName) && !session.isBooked())
+            .filter(session -> isStudentDifferentFromTutor(session.getTutor().getEmail(), studentEmail))
             .collect(Collectors.toList());
     }
 
@@ -156,6 +156,16 @@ public class MatchingHandler {
         return sessions.stream()
                 .filter(session -> session.getStartDateTime() != null && session.getStartDateTime().isAfter(now))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Checks if the student and tutor in a session have different emails.
+     *
+     * @param session the session to check
+     * @return true if emails are different or student is null, false otherwise
+     */
+    private boolean isStudentDifferentFromTutor(String tutorEmail, String studentEmail) {
+        return !studentEmail.equalsIgnoreCase(tutorEmail);
     }
 
 }

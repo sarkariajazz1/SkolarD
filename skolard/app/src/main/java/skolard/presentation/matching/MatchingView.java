@@ -59,7 +59,7 @@ private final RatingHandler ratingHandler;
         setLayout(new BorderLayout(10, 10));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        setupInputPanel();
+        setupInputPanel(student);
         setupTablePanel();
         setupButtonPanel(student);
         setupTableClickListener();
@@ -69,7 +69,7 @@ private final RatingHandler ratingHandler;
         setVisible(true);
     }
 
-    private void setupInputPanel() {
+    private void setupInputPanel(Student student) {
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
 
@@ -126,13 +126,13 @@ private final RatingHandler ratingHandler;
                 if ("Sort by Time".equals(filter)) {
                     start = LocalDateTime.parse(startTimeField.getText().trim(), formatter);
                     end = LocalDateTime.parse(endTimeField.getText().trim(), formatter);
-                    results = matchingHandler.getAvailableSessions(SessionFilter.TIME, course, start, end);
+                    results = matchingHandler.getAvailableSessions(SessionFilter.TIME, course, start, end, student.getEmail());
                 } else if ("Sort by Course Rating".equals(filter)) {
-                    results = matchingHandler.getAvailableSessions(SessionFilter.RATE, course, null, null);
+                    results = matchingHandler.getAvailableSessions(SessionFilter.RATE, course, null, null, student.getEmail());
                 } else if ("Sort by Overall Tutor Rating".equals(filter)) {
-                    results = matchingHandler.getAvailableSessions(SessionFilter.TUTOR, course, null, null);
+                    results = matchingHandler.getAvailableSessions(SessionFilter.TUTOR, course, null, null, student.getEmail());
                 } else {
-                    results = matchingHandler.getAvailableSessions(course);
+                    results = matchingHandler.getAvailableSessions(course, student.getEmail());
                 }
             } catch (DateTimeParseException ex) {
                 statusLabel.setText("Invalid date-time format. Use yyyy-MM-dd HH:mm");
