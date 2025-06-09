@@ -104,8 +104,6 @@ public class MatchingHandler {
         List<Session> sessions = getNonBookedSessions(courseName);
         sessions = getNonPastSession(sessions);
 
-
-
         if (filter != null) {
             sessions = filter.apply(sessions, courseName, start, end);
         }
