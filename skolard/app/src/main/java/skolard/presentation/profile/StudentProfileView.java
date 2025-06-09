@@ -2,8 +2,8 @@
 package skolard.presentation.profile;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -105,7 +105,7 @@ public class StudentProfileView extends JFrame {
         });
         
         findTutorsBtn.addActionListener(e -> {
-            new MatchingView(matchingHandler, sessionHandler, currentStudent);
+            new MatchingView(matchingHandler, sessionHandler, ratingHandler,currentStudent);
             dispose();
         });
         

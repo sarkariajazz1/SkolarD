@@ -16,7 +16,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import java.awt.event.ActionListener;
 import javax.swing.JPanel;
+import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
@@ -161,7 +163,7 @@ public class RatingView extends JFrame {
 
         // Submit rating handler
         submitRatingBtn.addActionListener(new ActionListener() {
-            @Override
+
             public void actionPerformed(ActionEvent e) {
                 submitRating();
             }
@@ -169,7 +171,7 @@ public class RatingView extends JFrame {
 
         // Skip rating handler
         skipRatingBtn.addActionListener(new ActionListener() {
-            @Override
+
             public void actionPerformed(ActionEvent e) {
                 skipRating();
             }
@@ -177,7 +179,7 @@ public class RatingView extends JFrame {
 
         // Refresh handler
         refreshBtn.addActionListener(new ActionListener() {
-            @Override
+
             public void actionPerformed(ActionEvent e) {
                 loadRatingRequests();
             }

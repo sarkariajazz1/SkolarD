@@ -16,8 +16,6 @@ import javax.swing.JTextField;
 import skolard.logic.matching.MatchingHandler;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
-import skolard.logic.rating.RatingHandler;
-import skolard.logic.session.SessionHandler;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.presentation.datetime.DateTimeLabel;
@@ -28,8 +26,6 @@ public class StudentView extends JFrame {
     private final MatchingHandler matchingHandler;
     private final MessageHandler messageHandler;
     private final Student currentStudent;
-    private final RatingHandler ratingHandler;
-    private final SessionHandler sessionHandler;
 
     // UI Components
     private final JTextField searchField = new JTextField(20);
@@ -43,8 +39,6 @@ public class StudentView extends JFrame {
     public StudentView(ProfileHandler profileHandler,
                        MatchingHandler matchingHandler,
                        MessageHandler messageHandler,
-                       SessionHandler sessionHandler,
-                       RatingHandler ratingHandler,
                        Student student) {
         super("SkolarD - Student Dashboard");
 
@@ -52,8 +46,6 @@ public class StudentView extends JFrame {
         this.matchingHandler = matchingHandler;
         this.messageHandler = messageHandler;
         this.currentStudent = student;
-        this.ratingHandler = ratingHandler;
-        this.sessionHandler = sessionHandler;
 
         initializeUI();
         setupEventListeners();
@@ -102,48 +94,48 @@ public class StudentView extends JFrame {
     }
 
     private void setupEventListeners() {
-        searchTutorsBtn.addActionListener(e -> searchTutors());
+        //searchTutorsBtn.addActionListener(e -> searchTutors());
         messageTutorBtn.addActionListener(e -> messageTutor());
         viewMyProfileBtn.addActionListener(e -> viewMyProfile());
     }
 
-    private void searchTutors() {
-        String searchQuery = searchField.getText().trim();
-        if (searchQuery.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a search term.");
-            return;
-        }
+    // private void searchTutors() {
+    //     String searchQuery = searchField.getText().trim();
+    //     if (searchQuery.isEmpty()) {
+    //         JOptionPane.showMessageDialog(this, "Please enter a search term.");
+    //         return;
+    //     }
 
-        displayArea.setText("Searching for tutors...\n\n");
+    //     displayArea.setText("Searching for tutors...\n\n");
 
-        try {
-            var sessions = matchingHandler.getAvailableSessions(searchQuery, currentStudent.getEmail());
-            if (!sessions.isEmpty()) {
-                displayArea.append("Available tutoring sessions for '" + searchQuery + "':\n");
-                for (var session : sessions) {
-                    displayArea.append("- " + session.toString() + "\n");
-                }
-                displayArea.append("\nTo message a tutor, search for the specific tutor by name.\n\n");
-            }
-        } catch (Exception ex) {
-            // Continue to search by tutor name
-        }
+    //     try {
+    //         var sessions = matchingHandler.getAvailableSessions(searchQuery, currentStudent.getEmail());
+    //         if (!sessions.isEmpty()) {
+    //             displayArea.append("Available tutoring sessions for '" + searchQuery + "':\n");
+    //             for (var session : sessions) {
+    //                 displayArea.append("- " + session.toString() + "\n");
+    //             }
+    //             displayArea.append("\nTo message a tutor, search for the specific tutor by name.\n\n");
+    //         }
+    //     } catch (Exception ex) {
+    //         // Continue to search by tutor name
+    //     }
 
-        Tutor tutor = profileHandler.getTutor(searchQuery);
-        if (tutor != null) {
-            selectedTutor = tutor;
-            displayArea.append("Tutor found:\n");
-            displayArea.append(profileHandler.viewFullProfile(tutor));
-            displayArea.append("\n\nYou can now send a message to this tutor.");
-            messageTutorBtn.setEnabled(true);
-        } else {
-            if (displayArea.getText().equals("Searching for tutors...\n\n")) {
-                displayArea.setText("No tutors found for '" + searchQuery + "'.\nTry searching by course name or tutor email.");
-            }
-            selectedTutor = null;
-            messageTutorBtn.setEnabled(false);
-        }
-    }
+    //     Tutor tutor = profileHandler.getTutor(searchQuery);
+    //     if (tutor != null) {
+    //         selectedTutor = tutor;
+    //         displayArea.append("Tutor found:\n");
+    //         displayArea.append(profileHandler.viewFullProfile(tutor));
+    //         displayArea.append("\n\nYou can now send a message to this tutor.");
+    //         messageTutorBtn.setEnabled(true);
+    //     } else {
+    //         if (displayArea.getText().equals("Searching for tutors...\n\n")) {
+    //             displayArea.setText("No tutors found for '" + searchQuery + "'.\nTry searching by course name or tutor email.");
+    //         }
+    //         selectedTutor = null;
+    //         messageTutorBtn.setEnabled(false);
+    //     }
+    // }
 
     private void messageTutor() {
         if (messageHandler == null) {

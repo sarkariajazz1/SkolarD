@@ -152,6 +152,9 @@ public class SkolardApp extends JFrame {
         dashboardLabel.setFont(dashboardLabel.getFont().deriveFont(Font.BOLD, 16f));
         localDashboardPanel.add(dashboardLabel, BorderLayout.NORTH);
 
+        // Center panel to hold content
+        JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
+
         // Left side - Button panel
         JPanel buttonPanel = createButtonPanelForUser();
         contentPanel.add(buttonPanel, BorderLayout.WEST);
@@ -160,7 +163,7 @@ public class SkolardApp extends JFrame {
         JPanel welcomePanel = createWelcomePanel();
         contentPanel.add(welcomePanel, BorderLayout.CENTER);
 
-        dashboardPanel.add(contentPanel, BorderLayout.CENTER);
+        localDashboardPanel.add(contentPanel, BorderLayout.CENTER);
 
         // Bottom panel for logout
         JPanel bottomPanel = new JPanel(new FlowLayout());
@@ -237,11 +240,11 @@ public class SkolardApp extends JFrame {
 
         // Setup event listeners
         myDashboardBtn.addActionListener(e -> {
-            openWindow(new StudentView(profileHandler, matchingHandler, messageHandler, (Student) currentUser));
+            openWindow(new StudentView(profileHandler, matchingHandler, messageHandler,(Student) currentUser));
         });
 
         findTutorsBtn.addActionListener(e -> {
-            openWindow(new MatchingView(matchingHandler, sessionHandler, (Student) currentUser));
+            openWindow(new MatchingView(matchingHandler, sessionHandler, ratingHandler,(Student) currentUser));
         });
 
         sessionBtn.addActionListener(e -> {
