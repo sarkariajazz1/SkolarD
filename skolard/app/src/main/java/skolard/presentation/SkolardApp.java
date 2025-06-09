@@ -29,10 +29,10 @@ import skolard.objects.User;
 import skolard.persistence.PersistenceRegistry;
 import skolard.presentation.auth.LoginView;
 import skolard.presentation.auth.SignUpView;
+import skolard.presentation.booking.BookingView;
 import skolard.presentation.dashboard.StudentView;
 import skolard.presentation.dashboard.TutorView;
 import skolard.presentation.faq.FAQView;
-import skolard.presentation.matching.MatchingView;
 import skolard.presentation.message.MessageView;
 import skolard.presentation.profile.ProfileView;
 import skolard.presentation.rating.RatingView;
@@ -201,7 +201,7 @@ public class SkolardApp extends JFrame {
         buttonPanel.add(rateBtn);
 
         myDashboardBtn.addActionListener(e -> new StudentView(profileHandler, bookingHandler, messageHandler, sessionHandler, ratingHandler, (Student) currentUser));
-        findTutorsBtn.addActionListener(e -> new MatchingView(bookingHandler, sessionHandler, ratingHandler, paymentHandler, (Student) currentUser));
+        findTutorsBtn.addActionListener(e -> new BookingView(bookingHandler, sessionHandler, ratingHandler, paymentHandler, (Student) currentUser));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
         messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
         supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));

@@ -1,4 +1,4 @@
-package skolard.presentation.matching;
+package skolard.presentation.booking;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -32,7 +32,7 @@ import skolard.utils.CourseUtil;
 /**
  * A simple GUI window to allow users to find available tutoring sessions for a specific course and book it.
  */
-public class MatchingView extends JFrame {
+public class BookingView extends JFrame {
     private final BookingHandler bookingHandler; // Logic handler
     private final SessionHandler sessionHandler;
 
@@ -54,7 +54,7 @@ public class MatchingView extends JFrame {
 
 private final RatingHandler ratingHandler;
 
-    public MatchingView(BookingHandler bookingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler,PaymentHandler paymentHandler, Student student) {
+    public BookingView(BookingHandler bookingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler,PaymentHandler paymentHandler, Student student) {
         super("SkolarD - Matching View");
         this.bookingHandler = bookingHandler;
         this.sessionHandler = sessionHandler;
@@ -81,11 +81,11 @@ private final RatingHandler ratingHandler;
         topRow.add(new JLabel("Course:"));
         topRow.add(courseField);
 
-        JButton searchBtn = new JButton("Find Tutors");
+        JButton searchBtn = new JButton("Find Sessions");
         topRow.add(searchBtn);
 
         JComboBox<String> filterDropdown = new JComboBox<>(new String[] {
-            "", "Sort by Time", "Sort by Course Rating", "Sort by Overall Tutor Rating"
+            "", "Sort by Time", "Sort by Tutor Course Grade", "Sort by Overall Tutor Rating"
         });
         topRow.add(filterDropdown);
         inputPanel.add(topRow);
@@ -247,15 +247,16 @@ private final RatingHandler ratingHandler;
     }
 
     private void showSessionDetailsPopup(Session session) {
-        String message = String.format(
-            "<html><b>Tutor:</b> %s<br><b>Email:</b> %s<br><b>Start:</b> %s<br><b>End:</b> %s<br><b>Course:</b> %s<br><b>Bio:</b> %s</html>",
-            session.getTutor().getName(),
-            session.getTutor().getEmail(),
-            session.getStartDateTime().format(formatter),
-            session.getEndDateTime().format(formatter),
-            session.getCourseName(),
-            session.getTutor().getBio()
-        );
+    String message = String.format(
+        "<html><b>Tutor:</b> %s<br><b>Email:</b> %s<br><b>Start:</b> %s<br><b>End:</b> %s<br><b>Course:</b> %s<br><b>Bio:</b> %s<br><b>Tutor course grade:</b> %s</html>",
+        session.getTutor().getName(),
+        session.getTutor().getEmail(),
+        session.getStartDateTime().format(formatter),
+        session.getEndDateTime().format(formatter),
+        session.getCourseName(),
+        session.getTutor().getBio(),
+        session.getTutor().getGradeForCourse(session.getCourseName()) // Make sure this method exists
+    );
         JOptionPane.showMessageDialog(this, message, "Session Details", JOptionPane.INFORMATION_MESSAGE);
     }
 }

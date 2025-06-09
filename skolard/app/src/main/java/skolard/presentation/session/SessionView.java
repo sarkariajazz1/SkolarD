@@ -95,7 +95,7 @@ public class SessionView extends JFrame {
 
     private JPanel createSessionCreationPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Create Session (Tutor Only)"));
+        panel.setBorder(BorderFactory.createTitledBorder("Create Session"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
