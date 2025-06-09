@@ -22,7 +22,6 @@ import skolard.logic.session.SessionHandler;
 import skolard.logic.support.SupportHandler;
 import skolard.objects.Student;
 import skolard.persistence.PersistenceRegistry;
-import skolard.presentation.dashboard.StudentView;
 import skolard.presentation.faq.FAQView;
 import skolard.presentation.matching.MatchingView;
 import skolard.presentation.message.MessageView;
