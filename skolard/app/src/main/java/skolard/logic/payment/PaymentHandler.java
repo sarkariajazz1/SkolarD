@@ -12,19 +12,11 @@ import javax.crypto.SecretKey;
 import skolard.objects.Card;
 import skolard.objects.Student;
 import skolard.persistence.CardPersistence;
-import skolard.persistence.PersistenceRegistry;
 import skolard.utils.CardUtil;
 
 public class PaymentHandler {
     private final CardPersistence cardDB;
     private final SecretKey key;
-
-    /**
-     * Default constructor using real persistence layer.
-     */
-    public PaymentHandler() {
-        this(PersistenceRegistry.getCardPersistence());
-    }
 
     /**
      * Constructor for injecting a custom CardPersistence (mockable).
@@ -52,12 +44,14 @@ public class PaymentHandler {
             List<Card> decryptedCards = new ArrayList<>();
 
             for (Card currentCard : encryptedCards) {
+                System.out.println(currentCard.getCardNumber());
                 String decryptedData = CardUtil.decrypt(currentCard.getCardNumber(), key);
                 decryptedCards.add(new Card(decryptedData, currentCard.getExpiry(), currentCard.getName()));
             }
 
             return decryptedCards;
-        } catch ( Exception e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new IllegalArgumentException( "Card information could not be decrypted or database is null.", e);
         }
     }

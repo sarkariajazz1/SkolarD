@@ -21,6 +21,7 @@ import skolard.logic.profile.ProfileHandler;
 import skolard.logic.rating.RatingHandler;
 import skolard.logic.session.SessionHandler;
 import skolard.logic.support.SupportHandler;
+import skolard.logic.payment.PaymentHandler;
 import skolard.objects.Student;
 import skolard.objects.Support;
 import skolard.objects.Tutor;
@@ -47,6 +48,7 @@ public class SkolardApp extends JFrame {
     private final FAQHandler faqHandler;
     private final LoginHandler loginHandler;
     private final RatingHandler ratingHandler; // Uncomment if RatingHandler is implemented
+    private final PaymentHandler paymentHandler;
 
     private User currentUser;
     private JPanel mainPanel;
@@ -59,7 +61,8 @@ public class SkolardApp extends JFrame {
                       MessageHandler messageHandler,
                       FAQHandler faqHandler, 
                       LoginHandler loginHandler,
-                      RatingHandler ratingHandler
+                      RatingHandler ratingHandler,
+                      PaymentHandler paymentHandler
                       ) {
         super("SkolarD - Welcome");
 
@@ -70,6 +73,7 @@ public class SkolardApp extends JFrame {
         this.faqHandler = faqHandler;
         this.loginHandler = loginHandler;
         this.ratingHandler = ratingHandler;
+        this.paymentHandler = paymentHandler;
 
         initializeUI();
         showAuthenticationView();
@@ -197,7 +201,7 @@ public class SkolardApp extends JFrame {
         buttonPanel.add(rateBtn);
 
         myDashboardBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, sessionHandler, ratingHandler, (Student) currentUser));
-        findTutorsBtn.addActionListener(e -> new MatchingView(matchingHandler, sessionHandler, ratingHandler,(Student) currentUser));
+        findTutorsBtn.addActionListener(e -> new MatchingView(matchingHandler, sessionHandler, ratingHandler, paymentHandler, (Student) currentUser));
         sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
         messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
         supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));

@@ -18,13 +18,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 
 import skolard.logic.matching.MatchingHandler;
 import skolard.logic.matching.MatchingHandler.SessionFilter;
 import skolard.logic.rating.RatingHandler;
 import skolard.logic.session.SessionHandler;
+import skolard.logic.payment.PaymentHandler;
 import skolard.objects.Session;
 import skolard.objects.Student;
+import skolard.presentation.payment.PaymentView;
 import skolard.utils.CourseUtil;
 /**
  * A simple GUI window to allow users to find available tutoring sessions for a specific course and book it.
@@ -51,7 +54,7 @@ public class MatchingView extends JFrame {
 
 private final RatingHandler ratingHandler;
 
-    public MatchingView(MatchingHandler matchingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler, Student student) {
+    public MatchingView(MatchingHandler matchingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler,PaymentHandler paymentHandler, Student student) {
         super("SkolarD - Matching View");
         this.matchingHandler = matchingHandler;
         this.sessionHandler = sessionHandler;
@@ -62,7 +65,7 @@ private final RatingHandler ratingHandler;
 
         setupInputPanel(student);
         setupTablePanel();
-        setupButtonPanel(student);
+        setupButtonPanel(paymentHandler, student);
         setupTableClickListener();
 
         pack();
@@ -176,7 +179,7 @@ private final RatingHandler ratingHandler;
         add(tablePanel, BorderLayout.CENTER);
     }
 
-    private void setupButtonPanel(Student student) {
+    private void setupButtonPanel(PaymentHandler paymentHandler, Student student) {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bookButton.setEnabled(false);
         infoButton.setEnabled(false);
@@ -192,23 +195,33 @@ private final RatingHandler ratingHandler;
                 Session session = currentResults.get(selectedRow);
                 int confirm = JOptionPane.showConfirmDialog(
                     this,
-                    "Do you want to book this session with " + session.getTutor().getName() + "?",
+                    "Do you want to book this session with " + session.getTutor().getName() + "? " + "Pre-payment is required.",
                     "Confirm Booking",
                     JOptionPane.YES_NO_OPTION
                 );
                 if (confirm == JOptionPane.YES_OPTION) {
-                    sessionHandler.bookASession(student, session.getSessionId());
-                    ratingHandler.createRatingRequest(session, student); // enqueue for future rating
+                    // Show payment window
+                    PaymentView paymentDialog = new PaymentView(SwingUtilities.getWindowAncestor(this), paymentHandler, student);
+                    paymentDialog.setVisible(true); // this blocks until dialog is closed
 
-                    currentResults.remove(selectedRow);
-                    tableModel.removeRow(selectedRow);
-                    sessionTable.clearSelection();
-                    bookButton.setEnabled(false);
-                    infoButton.setEnabled(false);
+                    if (paymentDialog.wasPaid()) {
+                        sessionHandler.bookASession(student, session.getSessionId());
+                        ratingHandler.createRatingRequest(session, student); // enqueue for future rating
 
-                    JOptionPane.showMessageDialog(this,
-                        "Session booked successfully! You can rate it after it ends.",
-                        "Booking Confirmed", JOptionPane.INFORMATION_MESSAGE);
+                        currentResults.remove(selectedRow);
+                        tableModel.removeRow(selectedRow);
+                        sessionTable.clearSelection();
+                        bookButton.setEnabled(false);
+                        infoButton.setEnabled(false);
+
+                        JOptionPane.showMessageDialog(this,
+                            "Session booked successfully! Payment will be finalized and rating survey will open after session ends.",
+                            "Booking Confirmed", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                            "Payment was not completed. Session not booked.",
+                            "Payment Cancelled", JOptionPane.WARNING_MESSAGE);
+                    }
                 }
             }
         });

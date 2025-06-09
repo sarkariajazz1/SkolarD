@@ -6,6 +6,7 @@ import skolard.logic.auth.LoginHandler;
 import skolard.logic.faq.FAQHandler;
 import skolard.logic.matching.MatchingHandler;
 import skolard.logic.message.MessageHandler;
+import skolard.logic.payment.PaymentHandler;
 import skolard.logic.profile.ProfileHandler;
 import skolard.logic.rating.RatingHandler;
 import skolard.logic.session.SessionHandler;
@@ -32,6 +33,7 @@ public class App {
         FAQHandler faqHandler = new FAQHandler(); 
         LoginHandler loginHandler = new LoginHandler();
         RatingHandler ratingHandler = new RatingHandler(PersistenceRegistry.getRatingPersistence());
+        PaymentHandler paymentHandler = new PaymentHandler(PersistenceRegistry.getCardPersistence());
 
         // Start UI
         SwingUtilities.invokeLater(() -> {
@@ -42,7 +44,8 @@ public class App {
                 messageHandler, 
                 faqHandler, 
                 loginHandler,
-                ratingHandler
+                ratingHandler,
+                paymentHandler
             );
         });
     }
