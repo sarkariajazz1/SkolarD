@@ -1,92 +1,39 @@
 package skolard.logic.faq;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import skolard.objects.FAQ;
+import skolard.persistence.FAQPersistence;
+import skolard.persistence.stub.FAQStub;
+
+import java.util.List;
 
 /**
- * Handles the business logic for accessing the FAQ documentation.
- * Ensures that the FAQ HTML properly references the CSS stylesheet for styling.
+ * Handles the business logic for accessing FAQ entries.
  */
 public class FAQHandler {
-    private final String faqPath;
-    private final String cssPath;
+
+    private final FAQPersistence faqPersistence;
 
     public FAQHandler() {
-        this("skolard/hugo-faq-site/public/index.html",
-                "skolard/hugo-faq-site/public/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css");
+        this.faqPersistence = new FAQStub(); // You can swap this out for a real DB later
     }
 
-    public FAQHandler(String faqPath) {
-        this(faqPath, "skolard/hugo-faq-site/public/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css");
+    public FAQHandler(FAQPersistence faqPersistence) {
+        this.faqPersistence = faqPersistence;
     }
 
-    public FAQHandler(String faqPath, String cssPath) {
-        this.faqPath = faqPath;
-        this.cssPath = cssPath;
+    public List<FAQ> getAllFAQs() {
+        return faqPersistence.getAllFAQs();
     }
 
-    public boolean openFAQ() throws IOException {
-        File htmlFile = new File(faqPath);
-
-        // Check if Desktop is supported
-        if (!Desktop.isDesktopSupported()) {
-            return false;
-        }
-
-        Desktop desktop = Desktop.getDesktop();
-
-        // Check if the file exists
-        if (!htmlFile.exists()) {
-            return false;
-        }
-
-        // Ensure the HTML file properly references the CSS stylesheet
-        ensureCSSIntegration(htmlFile);
-
-        // Open the file in the default browser
-        desktop.browse(htmlFile.toURI());
-        return true;
+    public void addFAQ(String question, String answer) {
+        faqPersistence.addFAQ(new FAQ(question, answer));
     }
 
-    /**
-     * Ensures that the HTML file properly references the CSS stylesheet
-     */
-    private void ensureCSSIntegration(File htmlFile) throws IOException {
-        Path htmlPath = htmlFile.toPath();
-        String content = Files.readString(htmlPath);
-
-        // Check if CSS is already linked
-        String cssFileName = Paths.get(cssPath).getFileName().toString();
-        String cssLinkTag = "<link rel=\"stylesheet\" href=\"assets/css/" + cssFileName + "\">";
-
-        if (!content.contains(cssLinkTag) && !content.contains("stylesheet")) {
-            // Find the </head> tag and insert CSS link before it
-            if (content.contains("</head>")) {
-                content = content.replace("</head>",
-                        "    " + cssLinkTag + "\n</head>");
-
-                // Write the updated content back to the file
-                Files.writeString(htmlPath, content);
-            }
-        }
+    public void deleteFAQ(String question) {
+        faqPersistence.deleteFAQByQuestion(question);
     }
 
-    public String getFAQPath() {
-        return faqPath;
-    }
-
-    public String getCSSPath() {
-        return cssPath;
-    }
-
-    /**
-     * Checks if the CSS file exists
-     */
-    public boolean isCSSAvailable() {
-        return new File(cssPath).exists();
+    public List<FAQ> searchFAQs(String keyword) {
+        return faqPersistence.searchFAQs(keyword);
     }
 }
