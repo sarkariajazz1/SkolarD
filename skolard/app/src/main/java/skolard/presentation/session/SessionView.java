@@ -52,9 +52,9 @@ public class SessionView extends JFrame {
 
     private final JButton infoBtn = new JButton("Show Info");
     private final JButton unbookBtn = new JButton("Unbook Session");
+    private final JButton closeBtn = new JButton("Close");
 
     private final JLabel statusLabel = new JLabel("Session Management");
-    private final JTextArea instructionsArea = new JTextArea(4, 40);
 
     public SessionView(SessionHandler sessionHandler, User currentUser) {
         super("SkolarD - Session Management");
@@ -92,13 +92,6 @@ public class SessionView extends JFrame {
         statusLabel.setFont(statusLabel.getFont().deriveFont(Font.BOLD, 16f));
         statusLabel.setForeground(Color.BLACK);
         add(statusLabel, BorderLayout.NORTH);
-
-        instructionsArea.setEditable(false);
-        instructionsArea.setBackground(getBackground());
-        instructionsArea.setText("Date/Time format: yyyy-MM-dd HH:mm (e.g., 2025-12-25 14:30)\n");
-        instructionsArea.setWrapStyleWord(true);
-        instructionsArea.setLineWrap(true);
-        add(new JScrollPane(instructionsArea), BorderLayout.SOUTH);
     }
 
     private JPanel createSessionCreationPanel() {
@@ -133,7 +126,7 @@ public class SessionView extends JFrame {
     private JPanel createSessionsPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createTitledBorder("Sessions"));
-        
+
         upcomingModel = new DefaultTableModel(new String[]{"ID", "Course", "Start", "End"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) { return false; }
@@ -143,8 +136,8 @@ public class SessionView extends JFrame {
             public boolean isCellEditable(int row, int column) { return false; }
         };
 
-        upcomingTable = new JTable(upcomingModel);
-        pastTable = new JTable(pastModel);
+        upcomingTable = new DeselectableTable(upcomingModel);
+        pastTable = new DeselectableTable(pastModel);
 
         upcomingTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         pastTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -172,6 +165,8 @@ public class SessionView extends JFrame {
             buttonsPanel.add(unbookBtn);
         }
 
+        buttonsPanel.add(closeBtn);
+
         panel.add(buttonsPanel, BorderLayout.SOUTH);
         return panel;
     }
@@ -185,6 +180,7 @@ public class SessionView extends JFrame {
 
         infoBtn.addActionListener(e -> showSelectedSessionInfo());
         unbookBtn.addActionListener(e -> unbookSelectedSession());
+        closeBtn.addActionListener(e -> dispose());
     }
 
     private void updateButtonsState() {
@@ -236,53 +232,52 @@ public class SessionView extends JFrame {
         endTimeField.setText("");
     }
 
-private void refreshSessionTables() {
-    upcomingModel.setRowCount(0);
-    pastModel.setRowCount(0);
-    List<Session> pastSessions = new ArrayList<>();
-    List<Session> upcomingSessions = new ArrayList<>();
+    private void refreshSessionTables() {
+        upcomingModel.setRowCount(0);
+        pastModel.setRowCount(0);
+        List<Session> pastSessions = new ArrayList<>();
+        List<Session> upcomingSessions = new ArrayList<>();
 
-    if (currentUser instanceof Student) {
-        sessionHandler.setStudentSessionLists((Student) currentUser);
-        pastSessions = ((Student) currentUser).getPastSessions();
-        upcomingSessions = ((Student) currentUser).getUpcomingSessions();
-    } else if (currentUser instanceof Tutor) {
-        sessionHandler.setTutorSessionLists((Tutor) currentUser);
-        pastSessions = ((Tutor) currentUser).getPastSessions();
-        upcomingSessions = ((Tutor) currentUser).getUpcomingSessions();
-    }
-
-    for (Session pastS : pastSessions) {
-        Object[] pastRow = {
-            pastS.getSessionId(),
-            pastS.getCourseName(),
-            pastS.getStartDateTime(),
-            pastS.getEndDateTime()
-        };
-        pastModel.addRow(pastRow);
-    }
-
-    for (Session upcomingS : upcomingSessions) {
-        // Skip unbooked sessions for Student
-        if (currentUser instanceof Student && upcomingS.getStudent() == null) {
-            continue;
+        if (currentUser instanceof Student) {
+            sessionHandler.setStudentSessionLists((Student) currentUser);
+            pastSessions = ((Student) currentUser).getPastSessions();
+            upcomingSessions = ((Student) currentUser).getUpcomingSessions();
+        } else if (currentUser instanceof Tutor) {
+            sessionHandler.setTutorSessionLists((Tutor) currentUser);
+            pastSessions = ((Tutor) currentUser).getPastSessions();
+            upcomingSessions = ((Tutor) currentUser).getUpcomingSessions();
         }
 
-        Object[] upcomingRow = {
-            upcomingS.getSessionId(),
-            upcomingS.getCourseName(),
-            upcomingS.getStartDateTime(),
-            upcomingS.getEndDateTime()
-        };
-        upcomingModel.addRow(upcomingRow);
+        for (Session pastS : pastSessions) {
+            Object[] pastRow = {
+                pastS.getSessionId(),
+                pastS.getCourseName(),
+                pastS.getStartDateTime(),
+                pastS.getEndDateTime()
+            };
+            pastModel.addRow(pastRow);
+        }
+
+        for (Session upcomingS : upcomingSessions) {
+            // Skip unbooked sessions for Student
+            if (currentUser instanceof Student && upcomingS.getStudent() == null) {
+                continue;
+            }
+
+            Object[] upcomingRow = {
+                upcomingS.getSessionId(),
+                upcomingS.getCourseName(),
+                upcomingS.getStartDateTime(),
+                upcomingS.getEndDateTime()
+            };
+            upcomingModel.addRow(upcomingRow);
+        }
+
+        upcomingTable.clearSelection();
+        pastTable.clearSelection();
+        infoBtn.setEnabled(false);
+        unbookBtn.setEnabled(false);
     }
-
-    upcomingTable.clearSelection();
-    pastTable.clearSelection();
-    infoBtn.setEnabled(false);
-    unbookBtn.setEnabled(false);
-}
-
 
     private void showSelectedSessionInfo() {
         Session selectedSession = getSelectedSession();
@@ -296,12 +291,12 @@ private void refreshSessionTables() {
         info.append("Course: ").append(selectedSession.getCourseName()).append("\n");
         info.append("Start Time: ").append(selectedSession.getStartDateTime()).append("\n");
         info.append("End Time: ").append(selectedSession.getEndDateTime()).append("\n");
-        info.append("Tutor: ").append(selectedSession.getTutor().getEmail()).append("\n");
-        info.append("Student: ").append(
-                selectedSession.getStudent() != null ? selectedSession.getStudent().getEmail() : "[unbooked]"
-        ).append("\n");
+        info.append("Tutor: ").append(selectedSession.getTutor().getName()).append("\n");
+        info.append("Email: ").append(selectedSession.getTutor().getEmail()).append("\n");
+        info.append("Bio: ").append(selectedSession.getTutor().getBio());
 
-        instructionsArea.setText(info.toString());
+        // Show info in a popup dialog instead of instructions area
+        JOptionPane.showMessageDialog(this, info.toString(), "Session Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private Session getSelectedSession() {
@@ -331,7 +326,7 @@ private void refreshSessionTables() {
         if (confirm == JOptionPane.YES_OPTION) {
             try {
                 sessionHandler.unbookASession((Student) currentUser, sessionId);
-                showSuccess("Session unbooked successfully!");
+                showSuccess("Session unbooked and refunded successfully! \n Refund will take a few days to process.");
                 refreshSessionTables();
             } catch (IllegalArgumentException e) {
                 showError("Error unbooking session: " + e.getMessage());
@@ -349,5 +344,21 @@ private void refreshSessionTables() {
     private void showSuccess(String msg) {
         statusLabel.setText("\u2705 " + msg);
         statusLabel.setForeground(new Color(0, 128, 0));
+    }
+
+    // Custom JTable that supports deselecting by clicking the selected row again
+    private static class DeselectableTable extends JTable {
+        public DeselectableTable(DefaultTableModel model) {
+            super(model);
+        }
+
+        @Override
+        public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend) {
+            if (rowIndex == getSelectedRow()) {
+                clearSelection();
+            } else {
+                super.changeSelection(rowIndex, columnIndex, toggle, extend);
+            }
+        }
     }
 }
