@@ -4,6 +4,11 @@ import skolard.objects.Student;
 import skolard.objects.Session;
 import skolard.persistence.SessionPersistence;
 
+
+/**
+ * Handles booking and unbooking of tutoring sessions for students.
+ *
+ */
 public class SessionBooking {
     private final SessionPersistence sessionPersistence;
 
