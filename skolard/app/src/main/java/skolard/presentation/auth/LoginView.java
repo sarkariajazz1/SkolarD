@@ -9,13 +9,15 @@ import java.awt.Insets;
 import javax.swing.*;
 
 import skolard.presentation.SkolardApp;
+import skolard.presentation.dashboard.SupportDashboard;
 import skolard.presentation.faq.FAQView;
-import skolard.presentation.support.SupportView;
 import skolard.logic.auth.LoginHandler;
 import skolard.logic.faq.FAQHandler;
+import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
 import skolard.logic.support.SupportHandler;
 import skolard.objects.LoginCredentials;
+import skolard.objects.Support;
 import skolard.objects.User;
 import skolard.persistence.PersistenceRegistry;
 
@@ -87,7 +89,8 @@ public class LoginView extends JFrame {
                     statusLabel.setText("Login successful! Welcome " + student.getName());
                     JOptionPane.showMessageDialog(this, "Login successful as student: " + student.getName(),
                             "Success", JOptionPane.INFORMATION_MESSAGE);
-                    parentApp.onAuthenticationSuccess(student);
+                    // Call with false for login (not first time)
+                    parentApp.onAuthenticationSuccess(student, false);
                     dispose();
                 } else {
                     showProfileNotFound("Student");
@@ -114,7 +117,8 @@ public class LoginView extends JFrame {
                     statusLabel.setText("Login successful! Welcome " + tutor.getName());
                     JOptionPane.showMessageDialog(this, "Login successful as tutor: " + tutor.getName(),
                             "Success", JOptionPane.INFORMATION_MESSAGE);
-                    parentApp.onAuthenticationSuccess(tutor);
+                    // Call with false for login (not first time)
+                    parentApp.onAuthenticationSuccess(tutor, false);
                     dispose();
                 } else {
                     showProfileNotFound("Tutor");
@@ -124,7 +128,7 @@ public class LoginView extends JFrame {
             }
         });
 
-        // Login as Support
+        // Login as Support - Updated to use Support Dashboard
         loginSupportBtn.addActionListener(e -> {
             String email = emailField.getText().trim();
             String password = new String(passwordField.getPassword());
@@ -136,9 +140,16 @@ public class LoginView extends JFrame {
 
             LoginCredentials creds = new LoginCredentials(email, password, "support");
             if (loginHandler.login(creds)) {
-                User supportUser = new skolard.objects.Support("Support", email);
+                Support supportUser = new Support("Support", email);
                 SupportHandler supportHandler = new SupportHandler(PersistenceRegistry.getSupportPersistence());
-                new SupportView(supportHandler, supportUser); // Pass supportUser
+                MessageHandler messageHandler = new MessageHandler(PersistenceRegistry.getMessagePersistence());
+
+                statusLabel.setText("Login successful! Welcome " + supportUser.getName());
+                JOptionPane.showMessageDialog(this, "Login successful as support: " + supportUser.getName(),
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                // Open Support Dashboard instead of direct SupportView
+                new SupportDashboard(supportUser, supportHandler, messageHandler, false);
                 dispose();
             } else {
                 showLoginFailed("support");

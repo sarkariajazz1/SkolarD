@@ -1,6 +1,10 @@
+
 package skolard.logic.message;
 
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.ArrayList;
 
 import skolard.objects.Message;
 import skolard.persistence.MessagePersistence;
@@ -42,6 +46,68 @@ public class MessageHandler {
             throw new IllegalArgumentException("Email address cannot be null.");
         }
         return messageDb.getStudentsMessaged(tutorEmail);
+    }
+
+    /**
+     * Gets all conversation partners for a user (both students and tutors they've messaged)
+     * @param userEmail the email of the current user
+     * @return list of email addresses of conversation partners
+     */
+    public List<String> getAllConversationPartners(String userEmail) {
+        if (userEmail == null) {
+            throw new IllegalArgumentException("Email address cannot be null.");
+        }
+
+        Set<String> partners = new HashSet<>();
+
+        // Try as student first
+        try {
+            List<String> tutors = getTutorsMessaged(userEmail);
+            partners.addAll(tutors);
+        } catch (Exception e) {
+            // User might not be a student, continue
+        }
+
+        // Try as tutor
+        try {
+            List<String> students = getStudentsMessaged(userEmail);
+            partners.addAll(students);
+        } catch (Exception e) {
+            // User might not be a tutor, continue
+        }
+
+        return new ArrayList<>(partners);
+    }
+
+    /**
+     * Gets the most recent message between two users
+     * @param userEmail1 first user's email
+     * @param userEmail2 second user's email
+     * @return the most recent message, or null if no messages exist
+     */
+    public Message getMostRecentMessage(String userEmail1, String userEmail2) {
+        if (userEmail1 == null || userEmail2 == null) {
+            throw new IllegalArgumentException("Email addresses cannot be null.");
+        }
+
+        // Determine which is student and which is tutor
+        List<Message> messages;
+        try {
+            messages = getMessageHistory(userEmail1, userEmail2);
+        } catch (Exception e) {
+            try {
+                messages = getMessageHistory(userEmail2, userEmail1);
+            } catch (Exception e2) {
+                return null;
+            }
+        }
+
+        if (messages.isEmpty()) {
+            return null;
+        }
+
+        // Return the most recent message (assuming messages are sorted by time)
+        return messages.get(messages.size() - 1);
     }
 
     public Message sendMessage(Message message) {

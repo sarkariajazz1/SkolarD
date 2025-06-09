@@ -52,6 +52,7 @@ public class SessionView extends JFrame {
 
     private final JButton infoBtn = new JButton("Show Info");
     private final JButton unbookBtn = new JButton("Unbook Session");
+    private final JButton backButton = new JButton("Back");
 
     private final JLabel statusLabel = new JLabel("Session Management");
     private final JTextArea instructionsArea = new JTextArea(4, 40);
@@ -85,6 +86,11 @@ public class SessionView extends JFrame {
 
         JPanel sessionsPanel = createSessionsPanel();
         mainPanel.add(sessionsPanel, BorderLayout.CENTER);
+
+        // Add back button at the bottom
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        bottomPanel.add(backButton);
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 
     private void setupStatusAndInstructions() {
@@ -98,7 +104,11 @@ public class SessionView extends JFrame {
         instructionsArea.setText("Date/Time format: yyyy-MM-dd HH:mm (e.g., 2025-12-25 14:30)\n");
         instructionsArea.setWrapStyleWord(true);
         instructionsArea.setLineWrap(true);
-        add(new JScrollPane(instructionsArea), BorderLayout.SOUTH);
+
+        // Move instructions to a separate panel to make room for back button
+        JPanel instructionsPanel = new JPanel(new BorderLayout());
+        instructionsPanel.add(new JScrollPane(instructionsArea), BorderLayout.CENTER);
+        add(instructionsPanel, BorderLayout.EAST);
     }
 
     private JPanel createSessionCreationPanel() {
@@ -133,7 +143,7 @@ public class SessionView extends JFrame {
     private JPanel createSessionsPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createTitledBorder("Sessions"));
-        
+
         upcomingModel = new DefaultTableModel(new String[]{"ID", "Course", "Start", "End"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) { return false; }
@@ -185,6 +195,9 @@ public class SessionView extends JFrame {
 
         infoBtn.addActionListener(e -> showSelectedSessionInfo());
         unbookBtn.addActionListener(e -> unbookSelectedSession());
+
+        // Back button handler
+        backButton.addActionListener(e -> dispose());
     }
 
     private void updateButtonsState() {
@@ -236,52 +249,52 @@ public class SessionView extends JFrame {
         endTimeField.setText("");
     }
 
-private void refreshSessionTables() {
-    upcomingModel.setRowCount(0);
-    pastModel.setRowCount(0);
-    List<Session> pastSessions = new ArrayList<>();
-    List<Session> upcomingSessions = new ArrayList<>();
+    private void refreshSessionTables() {
+        upcomingModel.setRowCount(0);
+        pastModel.setRowCount(0);
+        List<Session> pastSessions = new ArrayList<>();
+        List<Session> upcomingSessions = new ArrayList<>();
 
-    if (currentUser instanceof Student) {
-        sessionHandler.setStudentSessionLists((Student) currentUser);
-        pastSessions = ((Student) currentUser).getPastSessions();
-        upcomingSessions = ((Student) currentUser).getUpcomingSessions();
-    } else if (currentUser instanceof Tutor) {
-        sessionHandler.setTutorSessionLists((Tutor) currentUser);
-        pastSessions = ((Tutor) currentUser).getPastSessions();
-        upcomingSessions = ((Tutor) currentUser).getUpcomingSessions();
-    }
-
-    for (Session pastS : pastSessions) {
-        Object[] pastRow = {
-            pastS.getSessionId(),
-            pastS.getCourseName(),
-            pastS.getStartDateTime(),
-            pastS.getEndDateTime()
-        };
-        pastModel.addRow(pastRow);
-    }
-
-    for (Session upcomingS : upcomingSessions) {
-        // Skip unbooked sessions for Student
-        if (currentUser instanceof Student && upcomingS.getStudent() == null) {
-            continue;
+        if (currentUser instanceof Student) {
+            sessionHandler.setStudentSessionLists((Student) currentUser);
+            pastSessions = ((Student) currentUser).getPastSessions();
+            upcomingSessions = ((Student) currentUser).getUpcomingSessions();
+        } else if (currentUser instanceof Tutor) {
+            sessionHandler.setTutorSessionLists((Tutor) currentUser);
+            pastSessions = ((Tutor) currentUser).getPastSessions();
+            upcomingSessions = ((Tutor) currentUser).getUpcomingSessions();
         }
 
-        Object[] upcomingRow = {
-            upcomingS.getSessionId(),
-            upcomingS.getCourseName(),
-            upcomingS.getStartDateTime(),
-            upcomingS.getEndDateTime()
-        };
-        upcomingModel.addRow(upcomingRow);
-    }
+        for (Session pastS : pastSessions) {
+            Object[] pastRow = {
+                    pastS.getSessionId(),
+                    pastS.getCourseName(),
+                    pastS.getStartDateTime(),
+                    pastS.getEndDateTime()
+            };
+            pastModel.addRow(pastRow);
+        }
 
-    upcomingTable.clearSelection();
-    pastTable.clearSelection();
-    infoBtn.setEnabled(false);
-    unbookBtn.setEnabled(false);
-}
+        for (Session upcomingS : upcomingSessions) {
+            // Skip unbooked sessions for Student
+            if (currentUser instanceof Student && upcomingS.getStudent() == null) {
+                continue;
+            }
+
+            Object[] upcomingRow = {
+                    upcomingS.getSessionId(),
+                    upcomingS.getCourseName(),
+                    upcomingS.getStartDateTime(),
+                    upcomingS.getEndDateTime()
+            };
+            upcomingModel.addRow(upcomingRow);
+        }
+
+        upcomingTable.clearSelection();
+        pastTable.clearSelection();
+        infoBtn.setEnabled(false);
+        unbookBtn.setEnabled(false);
+    }
 
 
     private void showSelectedSessionInfo() {
