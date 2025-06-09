@@ -30,11 +30,11 @@ public class RatingHandler {
         Feedback feedback = request.toFeedback();
 
         ratingPersistence.saveRating(
-            feedback.getTutorName(),
-            String.valueOf(feedback.getSessionId()),
+            feedback.getTutorEmail(),
+            feedback.getSessionId(),
             feedback.getTutorRating(),
             feedback.getCourseRating(),
-            feedback.getStudentName()
+            feedback.getStudentEmail()
         );
     }
     
@@ -56,8 +56,8 @@ public class RatingHandler {
         return result;
     }
 
-    public List<Feedback> getTutorFeedback(String tutorId) {
-        return ratingPersistence.getAllFeedbackForTutor(tutorId);
+    public List<Feedback> getTutorFeedback(String tutorEmail) {
+        return ratingPersistence.getAllFeedbackForTutor(tutorEmail);
     }
 
     public List<Feedback> getCourseFeedback(String courseName) {

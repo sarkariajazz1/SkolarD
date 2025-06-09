@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,36 +15,18 @@ public class RatingDB implements RatingPersistence {
 
     public RatingDB(Connection conn) {
         this.conn = conn;
-        createTableIfNeeded();
-    }
-
-    private void createTableIfNeeded() {
-        try (Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate("""
-                CREATE TABLE IF NOT EXISTS ratings (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    tutorName TEXT NOT NULL,
-                    sessionId INTEGER NOT NULL,
-                    courseName TEXT NOT NULL,
-                    studentName TEXT NOT NULL,
-                    rating INTEGER NOT NULL
-                )
-            """);
-        } catch (SQLException e) {
-            System.err.println("Failed to create ratings table: " + e.getMessage());
-        }
     }
 
     @Override
-    public void saveRating(String tutorId, String sessionId, int tutorRating, int courseRating, String studentId) {
+    public void saveRating(String tutorEmail, int sessionId, int tutorRating, int courseRating, String studentEmail) {
         // Assume: tutorId = tutorName, sessionId = int sessionId, courseRating (or tutorRating) = rating
         // Choose which rating you want to store, here using courseRating
         try (PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO ratings (tutorName, sessionId, courseName, studentName, rating) VALUES (?, ?, ?, ?, ?)")) {
-            ps.setString(1, tutorId); // tutorName
-            ps.setInt(2, Integer.parseInt(sessionId)); // sessionId as int
+                "INSERT INTO ratings (tutorEmail, sessionId, courseName, studentEmail, rating) VALUES (?, ?, ?, ?, ?)")) {
+            ps.setString(1, tutorEmail); // tutorEmail
+            ps.setInt(2, sessionId); // sessionId as int
             ps.setString(3, ""); // courseName is required, adapt to real value if available
-            ps.setString(4, studentId); // studentName
+            ps.setString(4, studentEmail); // studentEmail
             ps.setInt(5, courseRating); // rating
             ps.executeUpdate();
         } catch (SQLException | NumberFormatException e) {
@@ -89,8 +70,8 @@ public class RatingDB implements RatingPersistence {
         return new Feedback(
                 rs.getInt("sessionId"),
                 rs.getString("courseName"),
-                rs.getString("tutorName"),
-                rs.getString("studentName"),
+                rs.getString("tutorEmail"),
+                rs.getString("studentEmail"),
                 rs.getInt("courseRating"),
                 rs.getInt("tutorRating") // Assuming rating is the courseRating
         );

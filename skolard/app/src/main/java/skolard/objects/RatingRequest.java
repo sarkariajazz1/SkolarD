@@ -70,8 +70,8 @@ public class RatingRequest {
         return new Feedback(
             session.getSessionId(),
             session.getCourseName(),
-            session.getTutor().getName(),
-            student.getName(),
+            session.getTutor().getEmail(),
+            student.getEmail(),
             courseRating,
             tutorRating
         );

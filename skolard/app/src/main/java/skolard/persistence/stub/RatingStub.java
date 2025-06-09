@@ -15,25 +15,20 @@ public class RatingStub implements RatingPersistence {
     private final Map<String, List<Feedback>> courseFeedbackMap = new HashMap<>();
 
     @Override
-    public void saveRating(String tutorId, String sessionId, int tutorRating, int courseRating, String studentId) {
-        int sessionIdInt;
-        try {
-            sessionIdInt = Integer.parseInt(sessionId);
-        } catch (NumberFormatException e) {
-            sessionIdInt = -1; // Fallback if sessionId string is not a number
-        }
+    public void saveRating(String tutorEmail, int sessionId, int tutorRating, int courseRating, String studentEmail) {
+    
         // Since courseName is unavailable here, store a placeholder empty string, or adapt if you can access it.
-    Feedback feedback = new Feedback(sessionIdInt, "[STUB-COURSE]", tutorId, studentId, courseRating, tutorRating);
+    Feedback feedback = new Feedback(sessionId, "[STUB-COURSE]", tutorEmail, studentEmail, courseRating, tutorRating);
 
 
-        tutorFeedbackMap.computeIfAbsent(tutorId, k -> new ArrayList<>()).add(feedback);
+        tutorFeedbackMap.computeIfAbsent(tutorEmail, k -> new ArrayList<>()).add(feedback);
         courseFeedbackMap.computeIfAbsent("[STUB-COURSE]", k -> new ArrayList<>()).add(feedback);
 
     }
 
     @Override
-    public List<Feedback> getAllFeedbackForTutor(String tutorId) {
-        return tutorFeedbackMap.getOrDefault(tutorId, Collections.emptyList());
+    public List<Feedback> getAllFeedbackForTutor(String tutorEmail) {
+        return tutorFeedbackMap.getOrDefault(tutorEmail, Collections.emptyList());
     }
 
     @Override
