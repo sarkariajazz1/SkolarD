@@ -10,6 +10,7 @@ public class PersistenceRegistry {
     private static SupportPersistence supportPersistence;
     private static RatingRequestPersistence ratingRequestPersistence;
     private static RatingPersistence ratingPersistence;
+    private static FAQPersistence faqPersistence; // ✅ NEW
 
     public static StudentPersistence getStudentPersistence() {
         return studentPersistence;
@@ -78,7 +79,16 @@ public class PersistenceRegistry {
     public static RatingPersistence getRatingPersistence() {
         return ratingPersistence;
     }
+
     public static void setRatingPersistence(RatingPersistence rp) {
         ratingPersistence = rp;
+    }
+
+    public static FAQPersistence getFAQPersistence() {
+        return faqPersistence;
+    }
+
+    public static void setFAQPersistence(FAQPersistence fp) {
+        faqPersistence = fp;
     }
 }

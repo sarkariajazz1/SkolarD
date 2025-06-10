@@ -3,6 +3,7 @@ package skolard.persistence;
 import java.sql.Connection;
 
 import skolard.persistence.sqlite.CardDB;
+import skolard.persistence.sqlite.FAQDB;
 import skolard.persistence.sqlite.LoginDB;
 import skolard.persistence.sqlite.MessageDB;
 import skolard.persistence.sqlite.RatingDB;

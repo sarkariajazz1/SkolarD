@@ -1,4 +1,7 @@
 package skolard.persistence.stub;
+import skolard.persistence.FAQPersistence;
+import skolard.persistence.stub.FAQStub;
+
 
 import skolard.persistence.*;
 

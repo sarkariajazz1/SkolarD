@@ -1,3 +1,4 @@
+
 package skolard.presentation;
 
 import java.awt.BorderLayout;
@@ -5,6 +6,11 @@ import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Window;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,8 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import skolard.logic.auth.LoginHandler;
 import skolard.logic.faq.FAQHandler;
+import skolard.logic.auth.LoginHandler;
 import skolard.logic.matching.MatchingHandler;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
@@ -28,14 +34,14 @@ import skolard.objects.User;
 import skolard.persistence.PersistenceRegistry;
 import skolard.presentation.auth.LoginView;
 import skolard.presentation.auth.SignUpView;
-import skolard.presentation.dashboard.StudentView;
-import skolard.presentation.dashboard.TutorView;
 import skolard.presentation.faq.FAQView;
+import skolard.presentation.dashboard.StudentView;
 import skolard.presentation.matching.MatchingView;
-import skolard.presentation.message.MessageView;
-import skolard.presentation.profile.ProfileView;
-import skolard.presentation.rating.RatingView;
 import skolard.presentation.session.SessionView;
+import skolard.presentation.message.MessageView;
+import skolard.presentation.support.SupportView;
+import skolard.presentation.rating.RatingView;
+import skolard.presentation.dashboard.TutorView;
 import skolard.presentation.support.SupportView;
 
 public class SkolardApp extends JFrame {
@@ -46,21 +52,25 @@ public class SkolardApp extends JFrame {
     private final MessageHandler messageHandler;
     private final FAQHandler faqHandler;
     private final LoginHandler loginHandler;
-    private final RatingHandler ratingHandler; // Uncomment if RatingHandler is implemented
+    private final RatingHandler ratingHandler;
 
     private User currentUser;
     private JPanel mainPanel;
     private CardLayout cardLayout;
     private JPanel dashboardPanel;
+    private boolean isFirstLogin = false;
 
-    public SkolardApp(ProfileHandler profileHandler, 
+    // Window state management
+    private final List<Window> openWindows = new ArrayList<>();
+
+    public SkolardApp(ProfileHandler profileHandler,
                       MatchingHandler matchingHandler,
-                      SessionHandler sessionHandler, 
+                      SessionHandler sessionHandler,
                       MessageHandler messageHandler,
-                      FAQHandler faqHandler, 
+                      FAQHandler faqHandler,
                       LoginHandler loginHandler,
                       RatingHandler ratingHandler
-                      ) {
+    ) {
         super("SkolarD - Welcome");
 
         this.profileHandler = profileHandler;
@@ -75,9 +85,17 @@ public class SkolardApp extends JFrame {
         showAuthenticationView();
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(600, 300);
+        setSize(800, 500);
         setLocationRelativeTo(null);
         setVisible(true);
+
+        // Add window listener to clean up open windows when main app closes
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                closeAllOpenWindows();
+            }
+        });
     }
 
     private void initializeUI() {
@@ -113,8 +131,8 @@ public class SkolardApp extends JFrame {
         JLabel instructionLabel = new JLabel("Please login or sign up to access all features", SwingConstants.CENTER);
         authPanel.add(instructionLabel, BorderLayout.SOUTH);
 
-        loginBtn.addActionListener(e -> new LoginView(profileHandler, loginHandler, this));
-        signUpBtn.addActionListener(e -> new SignUpView(profileHandler, loginHandler, this));
+        loginBtn.addActionListener(e -> openWindow(new LoginView(profileHandler, loginHandler, this)));
+        signUpBtn.addActionListener(e -> openWindow(new SignUpView(profileHandler, loginHandler, this)));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
         return authPanel;
@@ -134,9 +152,20 @@ public class SkolardApp extends JFrame {
         dashboardLabel.setFont(dashboardLabel.getFont().deriveFont(Font.BOLD, 16f));
         localDashboardPanel.add(dashboardLabel, BorderLayout.NORTH);
 
-        JPanel buttonPanel = createButtonPanelForUser();
-        localDashboardPanel.add(buttonPanel, BorderLayout.CENTER);
+        // Center panel to hold content
+        JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
 
+        // Left side - Button panel
+        JPanel buttonPanel = createButtonPanelForUser();
+        contentPanel.add(buttonPanel, BorderLayout.WEST);
+
+        // Right side - Welcome message
+        JPanel welcomePanel = createWelcomePanel();
+        contentPanel.add(welcomePanel, BorderLayout.CENTER);
+
+        localDashboardPanel.add(contentPanel, BorderLayout.CENTER);
+
+        // Bottom panel for logout
         JPanel bottomPanel = new JPanel(new FlowLayout());
         JButton logoutBtn = new JButton("Logout");
         bottomPanel.add(logoutBtn);
@@ -147,25 +176,38 @@ public class SkolardApp extends JFrame {
         return localDashboardPanel;
     }
 
+    private JPanel createWelcomePanel() {
+        JPanel welcomePanel = new JPanel(new BorderLayout(10, 10));
+
+        if (currentUser != null) {
+            String userType = currentUser instanceof Student ? "Student" :
+                    currentUser instanceof Tutor ? "Tutor" : "User";
+
+            String welcomeText = isFirstLogin ?
+                    "Welcome " + currentUser.getName() + "!" :
+                    "Welcome back " + currentUser.getName() + "!";
+
+            JLabel welcomeLabel = new JLabel("<html><div style='text-align: center;'>" +
+                    "<h2>" + welcomeText + "</h2>" +
+                    "<p>You are logged in as a " + userType + "</p>" +
+                    "<p>Use the buttons on the left to access different features</p>" +
+                    "</div></html>", SwingConstants.CENTER);
+
+            welcomePanel.add(welcomeLabel, BorderLayout.CENTER);
+        } else {
+            JLabel defaultLabel = new JLabel("<html><div style='text-align: center;'>" +
+                    "<h2>SkolarD Dashboard</h2>" +
+                    "<p>Please login to access features</p>" +
+                    "</div></html>", SwingConstants.CENTER);
+            welcomePanel.add(defaultLabel, BorderLayout.CENTER);
+        }
+
+        return welcomePanel;
+    }
+
     private JPanel createButtonPanelForUser() {
         if (currentUser == null) {
-            JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
-            JButton profileBtn = new JButton("Profile Management");
-            JButton sessionBtn = new JButton("Session Management");
-            JButton messageBtn = new JButton("Messages");
-            JButton faqBtn = new JButton("FAQs");
-
-            buttonPanel.add(profileBtn);
-            buttonPanel.add(sessionBtn);
-            buttonPanel.add(messageBtn);
-            buttonPanel.add(faqBtn);
-
-            profileBtn.addActionListener(e -> showLoginPrompt());
-            sessionBtn.addActionListener(e -> showLoginPrompt());
-            messageBtn.addActionListener(e -> showLoginPrompt());
-            faqBtn.addActionListener(e -> new FAQView(faqHandler));
-
-            return buttonPanel;
+            return createGenericButtonPanel();
         }
 
         if (currentUser instanceof Student) {
@@ -178,7 +220,7 @@ public class SkolardApp extends JFrame {
     }
 
     private JPanel createStudentButtonPanel() {
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(8, 1, 10, 10));
 
         JButton myDashboardBtn = new JButton("My Dashboard");
         JButton findTutorsBtn = new JButton("Find Tutor Sessions");
@@ -196,60 +238,121 @@ public class SkolardApp extends JFrame {
         buttonPanel.add(faqBtn);
         buttonPanel.add(rateBtn);
 
-        myDashboardBtn.addActionListener(e -> new StudentView(profileHandler, matchingHandler, messageHandler, sessionHandler, ratingHandler, (Student) currentUser));
-        findTutorsBtn.addActionListener(e -> new MatchingView(matchingHandler, sessionHandler, ratingHandler,(Student) currentUser));
-        sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
-        messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
-        supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
-        faqBtn.addActionListener(e -> new FAQView(faqHandler));
-        rateBtn.addActionListener(e-> new RatingView(ratingHandler));
+        // Setup event listeners
+        myDashboardBtn.addActionListener(e -> {
+            openWindow(new StudentView(profileHandler, matchingHandler, messageHandler,(Student) currentUser));
+        });
+
+        findTutorsBtn.addActionListener(e -> {
+            openWindow(new MatchingView(matchingHandler, sessionHandler, ratingHandler,(Student) currentUser));
+        });
+
+        sessionBtn.addActionListener(e -> {
+            openWindow(new SessionView(sessionHandler, currentUser));
+        });
+
+        messageBtn.addActionListener(e -> {
+            openWindow(new MessageView(messageHandler, currentUser));
+        });
+
+        supportBtn.addActionListener(e -> {
+            openWindow(new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
+        });
+
+        faqBtn.addActionListener(e -> {
+            new FAQView(faqHandler);
+        });
+
+        rateBtn.addActionListener(e -> {
+            openWindow(new RatingView(ratingHandler));
+        });
 
         return buttonPanel;
     }
 
     private JPanel createTutorButtonPanel() {
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(6, 1, 10, 10));
 
-        JButton myDashboardBtn = new JButton("My Dashboard");
-        JButton studentsBtn = new JButton("My Students");
+        JButton myStudentsBtn = new JButton("My Students");
+        JButton manageProfileBtn = new JButton("Manage Profile");
         JButton sessionBtn = new JButton("Session Management");
         JButton messageBtn = new JButton("Messages");
         JButton supportBtn = new JButton("Support");
         JButton faqBtn = new JButton("FAQs");
 
-        buttonPanel.add(myDashboardBtn);
-        buttonPanel.add(studentsBtn);
+        buttonPanel.add(myStudentsBtn);
+        buttonPanel.add(manageProfileBtn);
         buttonPanel.add(sessionBtn);
         buttonPanel.add(messageBtn);
         buttonPanel.add(supportBtn);
         buttonPanel.add(faqBtn);
 
-        myDashboardBtn.addActionListener(e -> new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
-        studentsBtn.addActionListener(e -> new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
-        sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
-        messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
-        supportBtn.addActionListener(e -> new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
-        faqBtn.addActionListener(e -> new FAQView(faqHandler));
+        // Setup event listeners
+        myStudentsBtn.addActionListener(e -> {
+            openWindow(new TutorView(profileHandler, sessionHandler, messageHandler, (Tutor) currentUser));
+        });
+
+        manageProfileBtn.addActionListener(e -> {
+            showManageProfileView();
+        });
+
+        sessionBtn.addActionListener(e -> {
+            openWindow(new SessionView(sessionHandler, currentUser));
+        });
+
+        messageBtn.addActionListener(e -> {
+            openWindow(new MessageView(messageHandler, currentUser));
+        });
+
+        supportBtn.addActionListener(e -> {
+            openWindow(new SupportView(new SupportHandler(PersistenceRegistry.getSupportPersistence()), currentUser));
+        });
+
+        faqBtn.addActionListener(e -> {
+            new FAQView(faqHandler);
+        });
 
         return buttonPanel;
     }
 
-    private JPanel createGenericButtonPanel() {
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+    private void showManageProfileView() {
+        JFrame profileFrame = new JFrame("Manage Profile - " + currentUser.getName());
+        profileFrame.setLayout(new BorderLayout(10, 10));
 
-        JButton profileBtn = new JButton("Profile Management");
-        JButton sessionBtn = new JButton("Session Management");
-        JButton messageBtn = new JButton("Messages");
+        // Simple profile management for now
+        JLabel profileLabel = new JLabel("<html><div style='text-align: center;'>" +
+                "<h3>Profile Management</h3>" +
+                "<p>Name: " + currentUser.getName() + "</p>" +
+                "<p>Email: " + currentUser.getEmail() + "</p>" +
+                "</div></html>", SwingConstants.CENTER);
+
+        profileFrame.add(profileLabel, BorderLayout.CENTER);
+
+        JButton closeBtn = new JButton("Close");
+        closeBtn.addActionListener(e -> profileFrame.dispose());
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(closeBtn);
+        profileFrame.add(buttonPanel, BorderLayout.SOUTH);
+
+        profileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        profileFrame.setSize(300, 200);
+        profileFrame.setLocationRelativeTo(this);
+        profileFrame.setVisible(true);
+    }
+
+    private JPanel createGenericButtonPanel() {
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 10, 10));
+
+        JButton loginBtn = new JButton("Login");
+        JButton signUpBtn = new JButton("Sign Up");
         JButton faqBtn = new JButton("FAQs");
 
-        buttonPanel.add(profileBtn);
-        buttonPanel.add(sessionBtn);
-        buttonPanel.add(messageBtn);
+        buttonPanel.add(loginBtn);
+        buttonPanel.add(signUpBtn);
         buttonPanel.add(faqBtn);
 
-        profileBtn.addActionListener(e -> new ProfileView(profileHandler));
-        sessionBtn.addActionListener(e -> new SessionView(sessionHandler, currentUser));
-        messageBtn.addActionListener(e -> new MessageView(messageHandler,currentUser));
+        loginBtn.addActionListener(e -> openWindow(new LoginView(profileHandler, loginHandler, this)));
+        signUpBtn.addActionListener(e -> openWindow(new SignUpView(profileHandler, loginHandler, this)));
         faqBtn.addActionListener(e -> new FAQView(faqHandler));
 
         return buttonPanel;
@@ -261,11 +364,16 @@ public class SkolardApp extends JFrame {
     }
 
     public void onAuthenticationSuccess(User user) {
+        onAuthenticationSuccess(user, false);
+    }
+
+    public void onAuthenticationSuccess(User user, boolean isFirstLogin) {
         this.currentUser = user;
+        this.isFirstLogin = isFirstLogin;
 
         if (user instanceof Support) {
             SupportHandler supportHandler = new SupportHandler(PersistenceRegistry.getSupportPersistence());
-            new SupportView(supportHandler, user);
+            openWindow(new SupportView(supportHandler, user));
             return;
         }
 
@@ -284,6 +392,10 @@ public class SkolardApp extends JFrame {
     public void showAuthenticationView() {
         setTitle("SkolarD - Welcome");
         this.currentUser = null;
+        this.isFirstLogin = false;
+
+        // Close all open windows when user logs out
+        closeAllOpenWindows();
 
         mainPanel.remove(dashboardPanel);
         dashboardPanel = createDashboardPanel();
@@ -301,6 +413,36 @@ public class SkolardApp extends JFrame {
         if (choice == JOptionPane.YES_OPTION) {
             showAuthenticationView();
         }
+    }
+
+    /**
+     * Registers and opens a new window, adding it to the tracked windows list
+     */
+    private void openWindow(Window window) {
+        openWindows.add(window);
+
+        // Add listener to remove from list when window is closed
+        window.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                openWindows.remove(window);
+            }
+        });
+
+        window.setVisible(true);
+    }
+
+    /**
+     * Closes all open windows (except the main app window)
+     */
+    private void closeAllOpenWindows() {
+        List<Window> windowsToClose = new ArrayList<>(openWindows);
+        for (Window window : windowsToClose) {
+            if (window != this && window.isDisplayable()) {
+                window.dispose();
+            }
+        }
+        openWindows.clear();
     }
 
     public User getCurrentUser() {

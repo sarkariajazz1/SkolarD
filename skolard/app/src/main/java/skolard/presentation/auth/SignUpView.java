@@ -99,7 +99,8 @@ public class SignUpView extends JFrame {
                             "Student account created for: " + name,
                             "Success", JOptionPane.INFORMATION_MESSAGE);
 
-                    parentApp.onAuthenticationSuccess(newStudent);
+                    // Call with true for signup (first time)
+                    parentApp.onAuthenticationSuccess(newStudent, true);
                     dispose();
 
                 } catch (IllegalArgumentException ex) {
@@ -135,7 +136,8 @@ public class SignUpView extends JFrame {
                             "Tutor account created for: " + name,
                             "Success", JOptionPane.INFORMATION_MESSAGE);
 
-                    parentApp.onAuthenticationSuccess(newTutor);
+                    // Call with true for signup (first time)
+                    parentApp.onAuthenticationSuccess(newTutor, true);
                     dispose();
 
                 } catch (IllegalArgumentException ex) {
@@ -157,7 +159,7 @@ public class SignUpView extends JFrame {
             dispose();
         });
 
-        faqBtn.addActionListener(e -> new FAQView(new FAQHandler()));
+        faqBtn.addActionListener(e -> new FAQView(new FAQHandler(PersistenceRegistry.getFAQPersistence())));
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pack();
