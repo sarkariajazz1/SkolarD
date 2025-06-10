@@ -219,6 +219,7 @@ public class RatingView extends JFrame {
             showError("Please select a rating request first");
             return;
         }
+        /* Add specific time when session ends */
         if (LocalDateTime.now().isBefore(selectedRequest.getSession().getEndDateTime())) {
             showError("You can only rate the session after it has ended.");
             return;

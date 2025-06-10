@@ -5,6 +5,7 @@ import skolard.objects.Tutor;
 import skolard.persistence.SessionPersistence;
 
 import java.time.LocalDateTime;
+import java.time.Duration;
 import java.util.List;
 
 
@@ -34,6 +35,12 @@ public class SessionManagement{
      * @param courseName the course name associated with the session
      */
     public void createSession(Tutor tutor, LocalDateTime start, LocalDateTime end, String courseName) {
+        long durationInHours = Duration.between(start,end).toHours();
+
+        if(durationInHours > 3 || durationInHours <= 0){
+            throw new IllegalArgumentException("Session must be between 1 and 3 hours long");
+        }
+
         List<Session> tutorSessions = sessionPersistence.getSessionsByTutorEmail(tutor.getEmail());
 
         boolean hasConflict = tutorSessions.stream().anyMatch(session -> {
@@ -57,7 +64,9 @@ public class SessionManagement{
      */
     public void deleteSession(Tutor tutor, Session session) {
         List<Session> tutorSessions = sessionPersistence.getSessionsByTutorEmail(tutor.getEmail());
-        if (tutorSessions.contains(session)) {
+        boolean found = tutorSessions.stream().anyMatch(s -> s.getSessionId() == session.getSessionId());
+        
+        if (found) {
             sessionPersistence.removeSession(session.getSessionId());
         } else {
             throw new IllegalArgumentException("Session not found in database, cannot remove");

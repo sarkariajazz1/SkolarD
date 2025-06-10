@@ -1,4 +1,4 @@
-package skolard.logic.matching;
+package skolard.logic.booking;
 
 import skolard.objects.Session;
 
