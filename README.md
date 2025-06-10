@@ -67,9 +67,11 @@ This project was designed as part of a final-year university capstone and reflec
    cd skolard
 
 2. **Compile the Source**
+    ```bash
     javac -d out src/skolard/*.java src/skolard/**/*.java
 
 3. **Run the Application**
+    ```bash
     java -cp out skolard.App
 
 ## Vision Statement
