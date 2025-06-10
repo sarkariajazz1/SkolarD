@@ -5,12 +5,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import skolard.Config.Config;
+
 import skolard.persistence.sqlite.SchemaInitializer;
 
 public class EnvironmentInitializer {
 
     public static Connection setupEnvironment(PersistenceType type, boolean seed) throws Exception {
-        String dbPath = type == PersistenceType.PROD ? "skolard.db" : "test.db";
+        String dbPath = type == PersistenceType.PROD ? Config.PROD_DB : Config.TEST_DB;
         ConnectionManager.initialize(dbPath);
         Connection conn = ConnectionManager.get();
 
@@ -39,8 +41,8 @@ public class EnvironmentInitializer {
     }
 
     public static void resetTestDB(Connection conn, String dbPath) {
-        if(dbPath.equals("test.db")) {
-            
+        if(dbPath.equals(Config.TEST_DB)) {
+
             String[] sqlStatements = {
                 "PRAGMA foreign_keys = OFF;",
                 "DELETE FROM ratings;",
