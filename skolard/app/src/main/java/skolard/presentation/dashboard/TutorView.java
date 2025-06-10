@@ -1,4 +1,3 @@
-
 package skolard.presentation.dashboard;
 
 import java.awt.BorderLayout;
@@ -38,7 +37,6 @@ public class TutorView extends JFrame {
     private final JButton updateBioBtn = new JButton("Update My Bio");
     private final JButton viewMyProfileBtn = new JButton("View My Profile");
     private final JButton viewMyStudentsBtn = new JButton("View My Students");
-    private final JButton backBtn = new JButton("Back");
 
     private final DefaultListModel<String> studentListModel = new DefaultListModel<>();
     private final JList<String> studentList = new JList<>(studentListModel);
@@ -95,12 +93,11 @@ public class TutorView extends JFrame {
                 """);
         add(new JScrollPane(displayArea), BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 5, 5));
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         buttonPanel.add(messageStudentBtn);
         buttonPanel.add(updateBioBtn);
         buttonPanel.add(viewMyProfileBtn);
         buttonPanel.add(viewMyStudentsBtn);
-        buttonPanel.add(backBtn);
         add(buttonPanel, BorderLayout.SOUTH);
 
         messageStudentBtn.setEnabled(false);
@@ -112,7 +109,6 @@ public class TutorView extends JFrame {
         updateBioBtn.addActionListener(e -> updateBio());
         viewMyProfileBtn.addActionListener(e -> viewMyProfile());
         viewMyStudentsBtn.addActionListener(e -> loadMyStudents());
-        backBtn.addActionListener(e -> dispose());
 
         studentList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -260,9 +256,9 @@ public class TutorView extends JFrame {
     }
 
     private String formatSession(Session session) {
-        return session.getCourseName() + " on " +
-                session.getStartDateTime().toLocalDate() + " from " +
-                session.getStartDateTime().toLocalTime() + " to " +
-                session.getEndDateTime().toLocalTime();
+    return session.getCourseName() + " on " +
+           session.getStartDateTime().toLocalDate() + " from " +
+           session.getStartDateTime().toLocalTime() + " to " +
+           session.getEndDateTime().toLocalTime();
     }
 }
