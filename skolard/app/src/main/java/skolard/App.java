@@ -34,6 +34,7 @@ public class App {
         LoginHandler loginHandler = new LoginHandler();
         RatingHandler ratingHandler = new RatingHandler(PersistenceRegistry.getRatingRequestPersistence(),
             PersistenceRegistry.getRatingPersistence());
+        PaymentHandler paymentHandler = new PaymentHandler(PersistenceRegistry.getCardPersistence());
 
         // Start UI
         SwingUtilities.invokeLater(() -> {

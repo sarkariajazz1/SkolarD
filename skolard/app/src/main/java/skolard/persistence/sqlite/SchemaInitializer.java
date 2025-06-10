@@ -102,7 +102,6 @@ public class SchemaInitializer {
                 "studentEmail TEXT NOT NULL," +
                 "completed INTEGER NOT NULL," +
                 "skipped INTEGER NOT NULL," +
-                "rating INTEGER," +
                 "createdAt TEXT NOT NULL," +
                 "FOREIGN KEY(sessionId) REFERENCES session(id)," +
                 "FOREIGN KEY(studentEmail) REFERENCES student(email)" +

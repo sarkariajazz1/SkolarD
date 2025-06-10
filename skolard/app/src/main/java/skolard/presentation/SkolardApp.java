@@ -57,7 +57,7 @@ public class SkolardApp extends JFrame {
     private final MessageHandler messageHandler;
     private final FAQHandler faqHandler;
     private final LoginHandler loginHandler;
-    private final RatingHandler ratingHandler; // Uncomment if RatingHandler is implemented
+    private final RatingHandler ratingHandler;
     private final PaymentHandler paymentHandler;
 
     private User currentUser;
@@ -70,7 +70,7 @@ public class SkolardApp extends JFrame {
     private final List<Window> openWindows = new ArrayList<>();
 
     public SkolardApp(ProfileHandler profileHandler,
-                      MatchingHandler matchingHandler,
+                      BookingHandler bookingHandler,
                       SessionHandler sessionHandler,
                       MessageHandler messageHandler,
                       FAQHandler faqHandler,
@@ -248,11 +248,11 @@ public class SkolardApp extends JFrame {
 
         // Setup event listeners
         myDashboardBtn.addActionListener(e -> {
-            openWindow(new StudentView(profileHandler, matchingHandler, messageHandler,(Student) currentUser));
+            openWindow(new StudentView(profileHandler, bookingHandler, messageHandler,(Student) currentUser));
         });
 
         findTutorsBtn.addActionListener(e -> {
-            openWindow(new MatchingView(matchingHandler, sessionHandler, ratingHandler,(Student) currentUser));
+            openWindow(new BookingView(bookingHandler, sessionHandler, ratingHandler, paymentHandler, (Student) currentUser));
         });
 
         sessionBtn.addActionListener(e -> {

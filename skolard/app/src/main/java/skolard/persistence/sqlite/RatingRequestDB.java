@@ -30,7 +30,7 @@ public class RatingRequestDB implements RatingRequestPersistence {
     @Override
     public RatingRequest addRequest(RatingRequest request) {
     String sql = "INSERT INTO ratingRequests (sessionId, studentEmail, completed, skipped, createdAt)" +
-        " VALUES (?, ?, ?, ?, ?, ?)";
+        " VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, request.getSession().getSessionId());
             stmt.setString(2, request.getStudent().getEmail());
@@ -89,7 +89,7 @@ public class RatingRequestDB implements RatingRequestPersistence {
     @Override
     public List<RatingRequest> getPendingRequestsForStudent(String studentEmail) {
         List<RatingRequest> ratingRequests = new ArrayList<>();
-        String sql = "SELECT * FROM ratingRequests WHERE studentEmail = ?";
+        String sql = "SELECT * FROM ratingRequests WHERE completed = 0 AND skipped = 0 AND studentEmail = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, studentEmail);

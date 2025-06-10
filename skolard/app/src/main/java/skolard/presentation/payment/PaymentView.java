@@ -71,7 +71,7 @@ public class PaymentView extends JDialog {
         // --- Buttons ---
         JButton closeButton = new JButton("Close");
         JButton paySelectedButton = new JButton("Pay Selected Card");
-        JButton payInputButton = new JButton("Pay With Input");
+        JButton payInputButton = new JButton("Pay With Card");
 
         paySelectedButton.setEnabled(false);
 
