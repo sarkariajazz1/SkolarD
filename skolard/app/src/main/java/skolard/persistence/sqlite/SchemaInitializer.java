@@ -121,6 +121,16 @@ public class SchemaInitializer {
                 "FOREIGN KEY(sessionId) REFERENCES session(id)" +
                 ");";
 
+        String createFAQTable = "CREATE TABLE IF NOT EXISTS faq (" +
+                "sessionId INTEGER NOT NULL," +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "studentEmail TEXT NOT NULL," +
+                "question TEXT NOT NULL UNIQUE," +
+                "completed INTEGER NOT NULL," +
+                "answer TEXT NOT NULL" +
+                "skipped INTEGER NOT NULL," +
+                ");";
+
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(createTutorTable);
             stmt.execute(createStudentTable);
@@ -132,6 +142,7 @@ public class SchemaInitializer {
             stmt.execute(createSupportUserTable);
             stmt.execute(createRatingRequestTable);
             stmt.execute(createRatingsTable);
+            stmt.execute(createFAQTable);
         } catch (SQLException e) {
             System.err.println("SQL Error: " + e.getMessage());
             throw new RuntimeException("Failed to initialize database schema", e);

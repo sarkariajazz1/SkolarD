@@ -32,6 +32,7 @@ public class PersistenceProvider {
         PersistenceRegistry.setSupportPersistence(supportPersistence);
         PersistenceRegistry.setRatingRequestPersistence(ratingRequestPersistence);
         PersistenceRegistry.setRatingPersistence(new RatingDB(conn));
+        PersistenceRegistry.setFAQPersistence(new FAQDB(conn));
     }
 
     public static void initializeStubs() {
@@ -48,5 +49,6 @@ public class PersistenceProvider {
         PersistenceRegistry.setSupportPersistence(StubFactory.createSupportPersistence()); 
         PersistenceRegistry.setRatingRequestPersistence(StubFactory.createRatingRequestStub());
         PersistenceRegistry.setRatingPersistence(StubFactory.createRatingStub());
+        PersistenceRegistry.setFAQPersistence(StubFactory.createFAQPersistence());
     }
 }
