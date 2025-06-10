@@ -29,7 +29,7 @@ public class App {
         MessageHandler messageHandler = new MessageHandler(PersistenceRegistry.getMessagePersistence());
         SessionHandler sessionHandler = new SessionHandler(PersistenceRegistry.getSessionPersistence());
         ProfileHandler profileHandler = new ProfileHandler(sessionHandler);
-        FAQHandler faqHandler = new FAQHandler(); 
+        FAQHandler faqHandler = new FAQHandler(PersistenceRegistry.getFAQPersistence()); 
         LoginHandler loginHandler = new LoginHandler();
         RatingHandler ratingHandler = new RatingHandler(PersistenceRegistry.getRatingPersistence());
 
