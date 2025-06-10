@@ -188,7 +188,6 @@ private final RatingHandler ratingHandler;
         buttonPanel.add(closeButton);
         buttonPanel.add(bookButton);
         buttonPanel.add(infoButton);
-        buttonPanel.add(backButton); // Add the back button to the panel
         add(buttonPanel, BorderLayout.SOUTH);
 
         bookButton.addActionListener(e -> {

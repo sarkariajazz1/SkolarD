@@ -108,18 +108,18 @@ public class StudentView extends JFrame {
 
     //     displayArea.setText("Searching for tutors...\n\n");
 
-        try {
-            var sessions = bookingHandler.getAvailableSessions(searchQuery, currentStudent.getEmail());
-            if (!sessions.isEmpty()) {
-                displayArea.append("Available tutoring sessions for '" + searchQuery + "':\n");
-                for (var session : sessions) {
-                    displayArea.append("- " + session.toString() + "\n");
-                }
-                displayArea.append("\nTo message a tutor, search for the specific tutor by name.\n\n");
-            }
-        } catch (Exception ex) {
-            // Continue to search by tutor name
-        }
+        // try {
+        //     var sessions = bookingHandler.getAvailableSessions(searchQuery, currentStudent.getEmail());
+        //     if (!sessions.isEmpty()) {
+        //         displayArea.append("Available tutoring sessions for '" + searchQuery + "':\n");
+        //         for (var session : sessions) {
+        //             displayArea.append("- " + session.toString() + "\n");
+        //         }
+        //         displayArea.append("\nTo message a tutor, search for the specific tutor by name.\n\n");
+        //     }
+        // } catch (Exception ex) {
+        //     // Continue to search by tutor name
+        // }
 
         /* TO REMOVE */
 
@@ -137,7 +137,7 @@ public class StudentView extends JFrame {
         //     selectedTutor = null;
         //     messageTutorBtn.setEnabled(false);
         // }
-    }
+    //}
 
     private void messageTutor() {
         if (messageHandler == null) {

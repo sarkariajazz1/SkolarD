@@ -57,7 +57,7 @@ public class SkolardApp extends JFrame {
     private final MessageHandler messageHandler;
     private final FAQHandler faqHandler;
     private final LoginHandler loginHandler;
-    private final RatingHandler ratingHandler; // Uncomment if RatingHandler is implemented
+    private final RatingHandler ratingHandler;
     private final PaymentHandler paymentHandler;
 
     private User currentUser;
@@ -252,7 +252,7 @@ public class SkolardApp extends JFrame {
         });
 
         findTutorsBtn.addActionListener(e -> {
-            openWindow(new BookingView(bookingHandler, sessionHandler, ratingHandler,(Student), paymentHandler,currentUser));
+            openWindow(new BookingView(bookingHandler, sessionHandler, ratingHandler, paymentHandler, (Student) currentUser));
         });
 
         sessionBtn.addActionListener(e -> {
