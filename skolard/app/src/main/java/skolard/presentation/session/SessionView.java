@@ -120,6 +120,20 @@ public class SessionView extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel.add(createSessionBtn, gbc);
 
+        gbc.gridx = 0; gbc.gridy = 1;
+        panel.add(new JLabel("Start Time:"), gbc);
+        gbc.gridx = 1;
+        panel.add(startTimeField, gbc);
+        gbc.gridx = 2;
+        panel.add(new JLabel("(e.g. 2025-06-10 14:30)"), gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2;
+        panel.add(new JLabel("End Time:"), gbc);
+        gbc.gridx = 1;
+        panel.add(endTimeField, gbc);
+        gbc.gridx = 2;
+        panel.add(new JLabel("(format: yyyy-MM-dd HH:mm)"), gbc);
+
         return panel;
     }
 
@@ -300,9 +314,18 @@ public class SessionView extends JFrame {
         info.append("Course: ").append(selectedSession.getCourseName()).append("\n");
         info.append("Start Time: ").append(selectedSession.getStartDateTime()).append("\n");
         info.append("End Time: ").append(selectedSession.getEndDateTime()).append("\n");
-        info.append("Tutor: ").append(selectedSession.getTutor().getName()).append("\n");
-        info.append("Email: ").append(selectedSession.getTutor().getEmail()).append("\n");
-        info.append("Bio: ").append(selectedSession.getTutor().getBio());
+        if (currentUser instanceof Student) {
+            info.append("Tutor: ").append(selectedSession.getTutor().getName()).append("\n");
+            info.append("Email: ").append(selectedSession.getTutor().getEmail()).append("\n");
+            info.append("Bio: ").append(selectedSession.getTutor().getBio());
+        } else if(currentUser instanceof Tutor && selectedSession.getStudent() != null){
+            info.append("Student: ").append(selectedSession.getStudent().getName()).append("\n");
+            info.append("Email: ").append(selectedSession.getStudent().getEmail());
+        } else{
+            info.append("Student: ").append("none").append("\n");
+            info.append("Email: ").append("none");
+        }
+
 
         // Show info in a popup dialog instead of instructions area
         JOptionPane.showMessageDialog(this, info.toString(), "Session Info", JOptionPane.INFORMATION_MESSAGE);
@@ -382,7 +405,7 @@ public class SessionView extends JFrame {
         Session session = sessionHandler.getSessionByID(sessionId);
 
         String warningMsg = session.getStudent() != null
-            ? "This session has a student. Deleting it will trigger a refund.\nContinue?"
+            ? "This session has a student. Refund process will begin once deleted.\nContinue?"
             : "Are you sure you want to delete this session?";
 
         int confirm = JOptionPane.showConfirmDialog(this, warningMsg, "Confirm Delete", JOptionPane.YES_NO_OPTION);

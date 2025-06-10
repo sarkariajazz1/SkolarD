@@ -64,7 +64,9 @@ public class SessionManagement{
      */
     public void deleteSession(Tutor tutor, Session session) {
         List<Session> tutorSessions = sessionPersistence.getSessionsByTutorEmail(tutor.getEmail());
-        if (tutorSessions.contains(session)) {
+        boolean found = tutorSessions.stream().anyMatch(s -> s.getSessionId() == session.getSessionId());
+        
+        if (found) {
             sessionPersistence.removeSession(session.getSessionId());
         } else {
             throw new IllegalArgumentException("Session not found in database, cannot remove");

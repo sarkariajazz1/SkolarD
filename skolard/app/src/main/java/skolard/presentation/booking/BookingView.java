@@ -55,7 +55,7 @@ public class BookingView extends JFrame {
 private final RatingHandler ratingHandler;
 
     public BookingView(BookingHandler bookingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler,PaymentHandler paymentHandler, Student student) {
-        super("SkolarD - Matching View");
+        super("SkolarD - Booking View");
         this.bookingHandler = bookingHandler;
         this.sessionHandler = sessionHandler;
         this.ratingHandler = ratingHandler;
@@ -215,7 +215,7 @@ private final RatingHandler ratingHandler;
                         infoButton.setEnabled(false);
 
                         JOptionPane.showMessageDialog(this,
-                            "Session booked successfully! Payment will be finalized and rating survey will open after session ends.",
+                            "Session booked successfully! Payment will be finalized and rating survey will open after session ends at " + session.getEndDateTime(),
                             "Booking Confirmed", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(this,
