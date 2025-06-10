@@ -27,7 +27,6 @@ public class BookingView extends JFrame {
     private final JButton bookButton = new JButton("Book");
     private final JButton infoButton = new JButton("View Info");
     private final JButton backButton = new JButton("Back");
-    private final JButton closeButton = new JButton("Close");
 
     private final JLabel statusLabel = new JLabel(" ");
     private final JLabel timeRangeLabel = new JLabel("Preferred time range:");
@@ -125,7 +124,6 @@ public class BookingView extends JFrame {
         buttonPanel.add(backButton);
         buttonPanel.add(bookButton);
         buttonPanel.add(infoButton);
-        buttonPanel.add(closeButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
         bookButton.addActionListener(e -> {
@@ -174,7 +172,6 @@ public class BookingView extends JFrame {
         });
 
         backButton.addActionListener(e -> dispose());
-        closeButton.addActionListener(e -> dispose());
     }
 
     private void setupListeners() {
