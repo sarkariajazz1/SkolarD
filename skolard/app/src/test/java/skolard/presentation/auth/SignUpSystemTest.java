@@ -154,4 +154,5 @@ public class SignUpSystemTest extends AssertJSwingJUnitTestCase {
         }
         PersistenceFactory.reset();
     }
+
 }
