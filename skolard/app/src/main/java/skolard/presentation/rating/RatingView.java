@@ -37,6 +37,7 @@ import skolard.objects.Student;
  */
 public class RatingView extends JFrame {
     private final RatingHandler ratingHandler;
+    private final Student currentStudent;
     
     // UI Components
     private final DefaultListModel<String> requestModel = new DefaultListModel<>();
@@ -51,9 +52,10 @@ public class RatingView extends JFrame {
     private final JLabel statusLabel = new JLabel("Select a rating request to proceed");
     private RatingRequest selectedRequest = null;
 
-    public RatingView(RatingHandler ratingHandler) {
+    public RatingView(RatingHandler ratingHandler, Student currentStudent) {
         super("SkolarD - Rating Management");
         this.ratingHandler = ratingHandler;
+        this.currentStudent = currentStudent;
 
         initializeUI();
         setupEventHandlers();
@@ -184,7 +186,7 @@ public class RatingView extends JFrame {
 
     private void loadRatingRequests() {
         requestModel.clear();
-        List<RatingRequest> requests = ratingHandler.getAllRequests();
+        List<RatingRequest> requests = ratingHandler.getPendingRequestsForStudent(currentStudent);
         int added = 0;
 
         for (RatingRequest request : requests) {

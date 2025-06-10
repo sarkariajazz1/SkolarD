@@ -58,9 +58,11 @@ public class RatingRequestDB implements RatingRequestPersistence {
     public void updateRequest(RatingRequest request) {
         String sql = "UPDATE ratingRequests SET completed = ?, skipped = ?" +
             "WHERE id = ?";
+
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, request.isCompleted() ? 1 : 0);
             stmt.setInt(2, request.isSkipped() ? 1 : 0);
+            stmt.setInt(3, request.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error updating rating request", e);
@@ -93,7 +95,7 @@ public class RatingRequestDB implements RatingRequestPersistence {
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, studentEmail);
-            ResultSet rs = stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 ratingRequests.add(fromResultSet(rs));
             }
@@ -115,7 +117,6 @@ public class RatingRequestDB implements RatingRequestPersistence {
 
         Session session = sessionPersistence.getSessionById(sessionId);
         Student student = studentPersistence.getStudentByEmail(studentEmail);
-
         return new RatingRequest(id,
             session,
             student,
