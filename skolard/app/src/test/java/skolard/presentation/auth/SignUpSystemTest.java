@@ -123,7 +123,7 @@ public class SignUpSystemTest extends AssertJSwingJUnitTestCase {
         window.button("signUpStudentBtn").click();
         window.optionPane().okButton().click();
 
-        // Clear form and try to create another with same email
+        //Clear form and try to create another with same email
         window.textBox("nameField").setText("");
         window.textBox("emailField").setText("");
         window.textBox("passwordField").setText("");
