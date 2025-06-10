@@ -8,6 +8,7 @@ INSERT OR IGNORE INTO tutor (email, name, bio, password) VALUES
 ('li@example.com', 'Li Wei', 'Friendly COMP101 tutor with a focus on practical coding examples.', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'),
 ('david@example.com', 'David Johnson', 'Physics tutor who simplifies complex concepts into real-world examples.', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'),
 ('alice@example.com', 'Alice Kim', 'Enthusiastic about helping students master data structures in COMP101.', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'),
-('bob@example.com', 'Bob Lee', 'Math expert with 10+ years tutoring experience in algebra and stats.', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');
+('bob@example.com', 'Bob Lee', 'Math expert with 10+ years tutoring experience in algebra and stats.', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'),
+('support@skolard.ca', 'Support Admin', 'Here to help!', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'); -- password: password
 
 COMMIT;
