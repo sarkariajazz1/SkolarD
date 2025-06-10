@@ -20,7 +20,6 @@ public class FAQStub implements FAQPersistence {
         faqs.add(new FAQ("How can I contact a tutor?", "Use the messaging view to send a direct message."));
     }
 
-    @Override
     public List<FAQ> getAllFAQs() {
         return new ArrayList<>(faqs);
     }

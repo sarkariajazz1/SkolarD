@@ -15,12 +15,12 @@ import skolard.persistence.PersistenceType;
 
 /**
  * Main entry point for the SkolarD application.
-<<<<<<< HEAD
- * Initializes the persistence layer and prints students from the database.
+ * Initializes the persistence layer and launches the authentication-based GUI.
  */
 public class App {
     public static void main(String[] args) {
-        // Initialize the persistence layer with PROD mode
+        // Initialize the persistence layer (PROD mode + seed)
+        PersistenceFactory.initialize(PersistenceType.PROD, true);
 
         // Get instances from the registry
         
@@ -29,7 +29,7 @@ public class App {
         MessageHandler messageHandler = new MessageHandler(PersistenceRegistry.getMessagePersistence());
         SessionHandler sessionHandler = new SessionHandler(PersistenceRegistry.getSessionPersistence());
         ProfileHandler profileHandler = new ProfileHandler(sessionHandler);
-        FAQHandler faqHandler = new FAQHandler(); 
+        FAQHandler faqHandler = new FAQHandler(PersistenceRegistry.getFAQPersistence()); 
         LoginHandler loginHandler = new LoginHandler();
         RatingHandler ratingHandler = new RatingHandler(PersistenceRegistry.getRatingPersistence());
 

@@ -161,7 +161,7 @@ public class LoginView extends JFrame {
             dispose();
         });
 
-        faqBtn.addActionListener(e -> new FAQView(new FAQHandler()));
+        faqBtn.addActionListener(e -> new FAQView(new FAQHandler(PersistenceRegistry.getFAQPersistence())));
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pack();

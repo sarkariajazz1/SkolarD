@@ -1,4 +1,3 @@
-
 package skolard.presentation.profile;
 
 import java.awt.BorderLayout;
@@ -163,7 +162,7 @@ public class TutorProfileView extends JFrame {
 
         // Button panel
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 10));
-        JButton updateBioBtn = new JButton("Edit Bio");
+        JButton updateBioBtn = new JButton("Update My Bio");
         JButton backBtn = new JButton("Back");
 
         updateBioBtn.addActionListener(e -> {
