@@ -35,7 +35,11 @@ public class StubFactory {
         return new SupportStub();
     }
 
-    public static FAQPersistence createFAQPersistence() {
-        return new FAQStub(); 
+    public static RatingRequestStub createRatingRequestStub() {
+        return new RatingRequestStub();
+    }
+
+    public static RatingStub createRatingStub() {
+        return new RatingStub();
     }
 }
