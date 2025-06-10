@@ -42,7 +42,6 @@ public class RatingView extends JFrame {
     private final DefaultListModel<String> requestModel = new DefaultListModel<>();
     private final JList<String> requestList = new JList<>(requestModel);
     private final JSlider tutorRatingSlider = new JSlider(1, 5, 3);
-    private final JSlider courseRatingSlider = new JSlider(1, 5, 3);
     private final JTextArea feedbackArea = new JTextArea(5, 30);
     private final JButton submitRatingBtn = new JButton("Submit Rating");
     private final JButton skipRatingBtn = new JButton("Skip Rating");
@@ -95,14 +94,8 @@ public class RatingView extends JFrame {
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
         setupRatingSlider(tutorRatingSlider);
         rightPanel.add(tutorRatingSlider, gbc);
-
-        // Course rating
-        gbc.gridx = 0; gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE;
-        rightPanel.add(new JLabel("Course Rating (1-5):"), gbc);
-        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
-        setupRatingSlider(courseRatingSlider);
-        rightPanel.add(courseRatingSlider, gbc);
-
+        
+                
         // Buttons
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(submitRatingBtn);
@@ -234,11 +227,10 @@ public class RatingView extends JFrame {
         
         try {
             int tutorRating = tutorRatingSlider.getValue();
-            int courseRating = courseRatingSlider.getValue();
-
-
-            ratingHandler.processRatingSubmission(selectedRequest, tutorRating, courseRating);
-
+            
+            
+            ratingHandler.processRatingSubmission(selectedRequest, tutorRating);
+            
             showSuccess("Rating submitted successfully!");
             clearForm();
             loadRatingRequests(); // Refresh the list
@@ -267,7 +259,6 @@ public class RatingView extends JFrame {
 
     private void clearForm() {
         tutorRatingSlider.setValue(3);
-        courseRatingSlider.setValue(3);
         feedbackArea.setText("");
         selectedRequest = null;
         enableRatingForm(false);
@@ -276,7 +267,6 @@ public class RatingView extends JFrame {
 
     private void enableRatingForm(boolean enabled) {
         tutorRatingSlider.setEnabled(enabled);
-        courseRatingSlider.setEnabled(enabled);
         feedbackArea.setEnabled(enabled);
         submitRatingBtn.setEnabled(enabled);
         skipRatingBtn.setEnabled(enabled);
