@@ -49,7 +49,7 @@ public class TutorDB implements TutorPersistence {
                 courses = tutorCoursesDB.getTutorCourses(email);
                 tutors.add(new Tutor(
                     rs.getString("name"),
-                    rs.getString(email),
+                    email,
                     null,
                     rs.getString("bio"),
                     courses
