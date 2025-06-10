@@ -13,7 +13,10 @@ import skolard.persistence.PersistenceFactory;
 import skolard.persistence.PersistenceRegistry;
 import skolard.persistence.PersistenceType;
 
-
+/**
+ * Main entry point for the SkolarD application.
+ * Initializes the persistence layer and launches the authentication-based GUI.
+ */
 public class App {
     public static void main(String[] args) {
         // Initialize the persistence layer (PROD mode + seed)
