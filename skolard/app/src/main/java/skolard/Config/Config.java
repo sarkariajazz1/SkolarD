@@ -11,6 +11,9 @@ public class Config {
     public static final int TIMEOUT_SECONDS = 30;
     public static final int MAX_RETRIES = 3;
 
+    public static final String PROD_DB = "skolard/app/src/main/skolard.db";
+    public static final String TEST_DB = "src/test/test.db";
+
     // Prevent instantiation
     private Config() {}
 }
