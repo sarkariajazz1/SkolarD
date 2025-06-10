@@ -2,8 +2,8 @@ package skolard.presentation.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.assertj.swing.core.ComponentMatcher;
-import org.assertj.swing.core.NameMatcher;
+// import org.assertj.swing.core.ComponentMatcher;
+// import org.assertj.swing.core.NameMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;

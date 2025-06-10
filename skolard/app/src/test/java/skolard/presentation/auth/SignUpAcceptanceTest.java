@@ -1,5 +1,7 @@
 package skolard.presentation.auth;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import org.assertj.swing.edt.GuiActionRunner;
@@ -37,55 +39,80 @@ public class SignUpAcceptanceTest extends AssertJSwingJUnitTestCase {
         window.show(); // This makes components available for testing without actually displaying
     }
 
-    @Test
-    public void testStudentSignUpSuccess() throws Exception {
-        // Fill in the form
-        window.textBox("nameField").setText("John Student");
-        window.textBox("emailField").setText("john@uofm.ca");
-        window.textBox("passwordField").setText("password123");
-        window.textBox("confirmPasswordField").setText("password123");
+// ------------------------------------------------------------------
+// 1)  Student‑sign‑up test
+// ------------------------------------------------------------------
+@Test
+public void testStudentSignUpSuccess() throws Exception {
 
-        // Mock successful student creation - addStudent returns void
-        Student mockStudent = new Student("John Student", "john@uofm.ca", "hashedPassword");
-        doNothing().when(mockProfileHandler).addStudent(anyString(), anyString(), anyString());
-        when(mockProfileHandler.getStudent("john@uofm.ca")).thenReturn(mockStudent);
+    // Fill in the form
+    window.textBox("nameField").setText("John Student");
+    window.textBox("emailField").setText("john@uofm.ca");
+    window.textBox("passwordField").setText("password123");
+    window.textBox("confirmPasswordField").setText("password123");
 
-        // Click sign up as student
-        window.button("signUpStudentBtn").click();
+    // Stub ‑ addStudent is void, so use doNothing
+    doNothing().when(mockProfileHandler)
+               .addStudent(anyString(), anyString(), anyString());
 
-        // Verify success message appears
-        window.optionPane()
-                .requireInformationMessage()
-                .requireMessage("Student account created successfully!")
-                .okButton().click();
+    Student mockStudent =
+            new Student("John Student", "john@uofm.ca", "hashedPassword");
+    when(mockProfileHandler.getStudent("john@uofm.ca"))
+            .thenReturn(mockStudent);
 
-        // Verify the handler methods were called with correct parameters
-        verify(mockProfileHandler).addStudent("John Student", "john@uofm.ca", anyString());
-        verify(mockProfileHandler).getStudent("john@uofm.ca");
-    }
+    // Click sign‑up
+    window.button("signUpStudentBtn").click();
 
-    @Test
-    public void testTutorSignUpSuccess() throws Exception {
-        window.textBox("nameField").setText("Jane Tutor");
-        window.textBox("emailField").setText("jane@uofm.ca");
-        window.textBox("passwordField").setText("password123");
-        window.textBox("confirmPasswordField").setText("password123");
+    // Expect success dialog
+    window.optionPane()
+          .requireInformationMessage()
+          .requireMessage("Student account created successfully!")
+          .okButton().click();
 
-        // Mock successful tutor creation - use the constructor that takes name, email, bio
-        Tutor mockTutor = new Tutor("Jane Tutor", "jane@uofm.ca", "Edit your bio...");
-        doNothing().when(mockProfileHandler).addTutor(anyString(), anyString(), anyString());
-        when(mockProfileHandler.getTutor("jane@uofm.ca")).thenReturn(mockTutor);
+    // Verification – **all arguments are matchers**
+    verify(mockProfileHandler)
+            .addStudent(eq("John Student"),
+                        eq("john@uofm.ca"),
+                        anyString());
+    verify(mockProfileHandler).getStudent("john@uofm.ca");
+}
 
-        window.button("signUpTutorBtn").click();
 
-        window.optionPane()
-                .requireInformationMessage()
-                .requireMessage("Tutor account created successfully!")
-                .okButton().click();
 
-        verify(mockProfileHandler).addTutor("Jane Tutor", "jane@uofm.ca", anyString());
-        verify(mockProfileHandler).getTutor("jane@uofm.ca");
-    }
+// ------------------------------------------------------------------
+// 2)  Tutor‑sign‑up test
+// ------------------------------------------------------------------
+@Test
+public void testTutorSignUpSuccess() throws Exception {
+
+    window.textBox("nameField").setText("Jane Tutor");
+    window.textBox("emailField").setText("jane@uofm.ca");
+    window.textBox("passwordField").setText("password123");
+    window.textBox("confirmPasswordField").setText("password123");
+
+    // Stub the void addTutor
+    doNothing().when(mockProfileHandler)
+               .addTutor(anyString(), anyString(), anyString());
+
+    Tutor mockTutor =
+            new Tutor("Jane Tutor", "jane@uofm.ca", "Edit your bio...");
+    when(mockProfileHandler.getTutor("jane@uofm.ca"))
+            .thenReturn(mockTutor);
+
+    window.button("signUpTutorBtn").click();
+
+    window.optionPane()
+          .requireInformationMessage()
+          .requireMessage("Tutor account created successfully!")
+          .okButton().click();
+
+    // ***Verify addTutor (not addStudent!)***
+    verify(mockProfileHandler)
+            .addTutor(eq("Jane Tutor"),
+                      eq("jane@uofm.ca"),
+                      anyString());
+    verify(mockProfileHandler).getTutor("jane@uofm.ca");
+}
 
     @Test
     public void testPasswordMismatchError() throws Exception {
