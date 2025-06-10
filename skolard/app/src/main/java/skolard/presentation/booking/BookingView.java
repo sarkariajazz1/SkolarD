@@ -1,3 +1,4 @@
+
 package skolard.presentation.booking;
 
 import java.awt.BorderLayout;
@@ -51,9 +52,9 @@ public class BookingView extends JFrame {
 
     private final JButton bookButton = new JButton("Book");
     private final JButton infoButton = new JButton("View Info");
-    private final JButton closeButton = new JButton("Close");
+    private final JButton backButton = new JButton("Back");
 
-private final RatingHandler ratingHandler;
+    private final RatingHandler ratingHandler;
 
     public BookingView(BookingHandler bookingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler,PaymentHandler paymentHandler, Student student) {
         super("SkolarD - Booking View");
@@ -86,7 +87,7 @@ private final RatingHandler ratingHandler;
         topRow.add(searchBtn);
 
         JComboBox<String> filterDropdown = new JComboBox<>(new String[] {
-            "", "Sort by Time", "Sort by Tutor Course Grade", "Sort by Overall Tutor Rating"
+                "", "Sort by Time", "Sort by Tutor Course Grade", "Sort by Overall Tutor Rating"
         });
         topRow.add(filterDropdown);
         inputPanel.add(topRow);
@@ -185,7 +186,7 @@ private final RatingHandler ratingHandler;
         bookButton.setEnabled(false);
         infoButton.setEnabled(false);
 
-        buttonPanel.add(closeButton);
+        buttonPanel.add(backButton);
         buttonPanel.add(bookButton);
         buttonPanel.add(infoButton);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -195,10 +196,10 @@ private final RatingHandler ratingHandler;
             if (selectedRow >= 0 && selectedRow < currentResults.size()) {
                 Session session = currentResults.get(selectedRow);
                 int confirm = JOptionPane.showConfirmDialog(
-                    this,
-                    "Do you want to book this session with " + session.getTutor().getName() + "? " + "Pre-payment is required.",
-                    "Confirm Booking",
-                    JOptionPane.YES_NO_OPTION
+                        this,
+                        "Do you want to book this session with " + session.getTutor().getName() + "? " + "Pre-payment is required.",
+                        "Confirm Booking",
+                        JOptionPane.YES_NO_OPTION
                 );
                 if (confirm == JOptionPane.YES_OPTION) {
                     // Show payment window
@@ -216,12 +217,12 @@ private final RatingHandler ratingHandler;
                         infoButton.setEnabled(false);
 
                         JOptionPane.showMessageDialog(this,
-                            "Session booked successfully! Payment will be finalized and rating survey will open after session ends at " + session.getEndDateTime(),
-                            "Booking Confirmed", JOptionPane.INFORMATION_MESSAGE);
+                                "Session booked successfully! Payment will be finalized and rating survey will open after session ends at " + session.getEndDateTime(),
+                                "Booking Confirmed", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(this,
-                            "Payment was not completed. Session not booked.",
-                            "Payment Cancelled", JOptionPane.WARNING_MESSAGE);
+                                "Payment was not completed. Session not booked.",
+                                "Payment Cancelled", JOptionPane.WARNING_MESSAGE);
                     }
                 }
             }
@@ -235,7 +236,7 @@ private final RatingHandler ratingHandler;
             }
         });
 
-        closeButton.addActionListener(e -> dispose());
+        backButton.addActionListener(e -> dispose());
     }
 
     private void setupTableClickListener() {
@@ -248,16 +249,16 @@ private final RatingHandler ratingHandler;
     }
 
     private void showSessionDetailsPopup(Session session) {
-    String message = String.format(
-        "<html><b>Tutor:</b> %s<br><b>Email:</b> %s<br><b>Start:</b> %s<br><b>End:</b> %s<br><b>Course:</b> %s<br><b>Bio:</b> %s<br><b>Tutor course grade:</b> %s</html>",
-        session.getTutor().getName(),
-        session.getTutor().getEmail(),
-        session.getStartDateTime().format(formatter),
-        session.getEndDateTime().format(formatter),
-        session.getCourseName(),
-        session.getTutor().getBio(),
-        session.getTutor().getGradeForCourse(session.getCourseName()) // Make sure this method exists
-    );
+        String message = String.format(
+                "<html><b>Tutor:</b> %s<br><b>Email:</b> %s<br><b>Start:</b> %s<br><b>End:</b> %s<br><b>Course:</b> %s<br><b>Bio:</b> %s<br><b>Tutor course grade:</b> %s</html>",
+                session.getTutor().getName(),
+                session.getTutor().getEmail(),
+                session.getStartDateTime().format(formatter),
+                session.getEndDateTime().format(formatter),
+                session.getCourseName(),
+                session.getTutor().getBio(),
+                session.getTutor().getGradeForCourse(session.getCourseName()) // Make sure this method exists
+        );
         JOptionPane.showMessageDialog(this, message, "Session Details", JOptionPane.INFORMATION_MESSAGE);
     }
 }
