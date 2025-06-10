@@ -85,11 +85,6 @@ public class SessionView extends JFrame {
 
         JPanel sessionsPanel = createSessionsPanel();
         mainPanel.add(sessionsPanel, BorderLayout.CENTER);
-
-        // Add back button at the bottom
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        bottomPanel.add(backButton);
-        add(bottomPanel, BorderLayout.SOUTH);
     }
 
     private void setupStatusAndInstructions() {
