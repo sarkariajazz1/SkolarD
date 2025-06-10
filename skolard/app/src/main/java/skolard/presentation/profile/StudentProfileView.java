@@ -103,7 +103,7 @@ public class StudentProfileView extends JFrame {
 
         // Setup event listeners
         myDashboardBtn.addActionListener(e -> {
-            new StudentView(profileHandler, bookingHandler, messageHandler, currentStudent);
+            new StudentView(profileHandler, messageHandler, currentStudent);
             dispose();
         });
         
@@ -133,7 +133,7 @@ public class StudentProfileView extends JFrame {
         });
         
         rateBtn.addActionListener(e -> {
-            new RatingView(ratingHandler);
+            new RatingView(ratingHandler, currentStudent);
             dispose();
         });
 
