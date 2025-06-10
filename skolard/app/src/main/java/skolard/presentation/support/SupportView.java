@@ -22,7 +22,6 @@ import javax.swing.ListSelectionModel;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.support.SupportHandler;
 import skolard.objects.Message;
-import skolard.objects.Student;
 import skolard.objects.SupportTicket;
 import skolard.objects.User;
 import skolard.persistence.PersistenceRegistry;
@@ -100,7 +99,7 @@ public class SupportView extends JFrame {
                     handler.submitTicket(ticket);
 
                     JOptionPane.showMessageDialog(this,
-                            "Support ticket submitted successfully!\nTicket ID: " + ticket.getTicketId(),
+                            "Support ticket submitted successfully!",
                             "Success",
                             JOptionPane.INFORMATION_MESSAGE);
 
