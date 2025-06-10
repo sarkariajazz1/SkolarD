@@ -1,4 +1,4 @@
-package skolard.presentation.matching;
+package skolard.presentation.booking;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -30,7 +30,7 @@ import skolard.utils.CourseUtil;
 /**
  * A simple GUI window to allow users to find available tutoring sessions for a specific course and book it.
  */
-public class MatchingView extends JFrame {
+public class BookingView extends JFrame {
     private final MatchingHandler matchingHandler; // Logic handler
     private final SessionHandler sessionHandler;
 
@@ -52,7 +52,7 @@ public class MatchingView extends JFrame {
 
 private final RatingHandler ratingHandler;
 
-    public MatchingView(MatchingHandler matchingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler, Student student) {
+    public BookingView(MatchingHandler matchingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler, Student student) {
         super("SkolarD - Matching View");
         this.matchingHandler = matchingHandler;
         this.sessionHandler = sessionHandler;
