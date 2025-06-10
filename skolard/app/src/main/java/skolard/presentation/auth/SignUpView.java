@@ -1,6 +1,7 @@
 package skolard.presentation.auth;
 
 import java.awt.BorderLayout;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -11,7 +12,6 @@ import javax.swing.*;
 import skolard.logic.auth.LoginHandler;
 import skolard.logic.faq.FAQHandler;
 import skolard.logic.profile.ProfileHandler;
-import skolard.objects.LoginCredentials;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.persistence.PersistenceRegistry;
@@ -41,6 +41,9 @@ public class SignUpView extends JFrame {
         this.handler = profileHandler;
         this.loginHandler = loginHandler;
         this.parentApp = parentApp;
+
+        // *** ADD COMPONENT NAMES FOR TESTING ***
+        setupComponentNames();
 
         setLayout(new BorderLayout(10, 10));
 
@@ -80,6 +83,56 @@ public class SignUpView extends JFrame {
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(statusLabel, BorderLayout.NORTH);
 
+        setupEventListeners();
+
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        pack();
+
+        // Safe location setting that handles headless environments
+        safeSetLocationRelativeTo(parentApp);
+        setVisible(true);
+    }
+
+    /**
+     * Safely sets the location relative to parent, handling headless environments.
+     */
+    private void safeSetLocationRelativeTo(SkolardApp parent) {
+        try {
+            if (!GraphicsEnvironment.isHeadless() && parent != null) {
+                setLocationRelativeTo(parent);
+            } else {
+                // In headless environment or null parent, just center on screen
+                if (!GraphicsEnvironment.isHeadless()) {
+                    setLocationRelativeTo(null);
+                }
+                // If headless, location doesn't matter anyway
+            }
+        } catch (Exception e) {
+            // If any graphics-related exception occurs, just ignore it
+            // The window location is not critical for functionality
+        }
+    }
+
+    /**
+     * Set component names for testing purposes.
+     * AssertJ Swing tests use these names to find GUI components.
+     */
+    private void setupComponentNames() {
+        nameField.setName("nameField");
+        emailField.setName("emailField");
+        passwordField.setName("passwordField");
+        confirmPasswordField.setName("confirmPasswordField");
+        signUpStudentBtn.setName("signUpStudentBtn");
+        signUpTutorBtn.setName("signUpTutorBtn");
+        loginBtn.setName("loginBtn");
+        faqBtn.setName("faqBtn");
+        statusLabel.setName("statusLabel");
+    }
+
+    /**
+     * Setup all event listeners for the buttons.
+     */
+    private void setupEventListeners() {
         // Sign Up as Student
         signUpStudentBtn.addActionListener(e -> {
             if (validateForm()) {
@@ -90,16 +143,14 @@ public class SignUpView extends JFrame {
                     String hashedPassword = PasswordUtil.hash(password);
 
                     handler.addStudent(name, email, hashedPassword);
-                    storeLoginCredentials(email, hashedPassword, "student");
 
                     Student newStudent = handler.getStudent(email);
 
                     statusLabel.setText("Student account created successfully!");
                     JOptionPane.showMessageDialog(this,
-                            "Student account created for: " + name,
+                            "Student account created successfully!",
                             "Success", JOptionPane.INFORMATION_MESSAGE);
 
-                    // Call with true for signup (first time)
                     parentApp.onAuthenticationSuccess(newStudent, true);
                     dispose();
 
@@ -127,16 +178,14 @@ public class SignUpView extends JFrame {
                     String hashedPassword = PasswordUtil.hash(password);
 
                     handler.addTutor(name, email, hashedPassword);
-                    storeLoginCredentials(email, hashedPassword, "tutor");
 
                     Tutor newTutor = handler.getTutor(email);
 
                     statusLabel.setText("Tutor account created successfully!");
                     JOptionPane.showMessageDialog(this,
-                            "Tutor account created for: " + name,
+                            "Tutor account created successfully!",
                             "Success", JOptionPane.INFORMATION_MESSAGE);
 
-                    // Call with true for signup (first time)
                     parentApp.onAuthenticationSuccess(newTutor, true);
                     dispose();
 
@@ -160,21 +209,6 @@ public class SignUpView extends JFrame {
         });
 
         faqBtn.addActionListener(e -> new FAQView(new FAQHandler(PersistenceRegistry.getFAQPersistence())));
-
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        pack();
-        setLocationRelativeTo(parentApp);
-        setVisible(true);
-    }
-
-    private void storeLoginCredentials(String email, String password, String role) {
-        try {
-            LoginCredentials creds = new LoginCredentials(email, password, role);
-            var loginPersistence = PersistenceRegistry.getLoginPersistence();
-            // loginPersistence.addLoginCredentials(creds); // Uncomment if implemented
-        } catch (Exception e) {
-            System.err.println("Warning: Could not store login credentials: " + e.getMessage());
-        }
     }
 
     private boolean validateForm() {
@@ -185,21 +219,33 @@ public class SignUpView extends JFrame {
 
         if (name.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             statusLabel.setText("Please fill in all fields");
+            JOptionPane.showMessageDialog(this,
+                    "Please fill in all fields",
+                    "Validation Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         if (!password.equals(confirmPassword)) {
             statusLabel.setText("Passwords do not match");
+            JOptionPane.showMessageDialog(this,
+                    "Passwords do not match!",
+                    "Validation Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         if (password.length() < 6) {
             statusLabel.setText("Password must be at least 6 characters");
+            JOptionPane.showMessageDialog(this,
+                    "Password must be at least 6 characters",
+                    "Validation Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         if (!email.contains("@") || !email.contains(".")) {
             statusLabel.setText("Please enter a valid email address");
+            JOptionPane.showMessageDialog(this,
+                    "Please enter a valid email address",
+                    "Validation Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 

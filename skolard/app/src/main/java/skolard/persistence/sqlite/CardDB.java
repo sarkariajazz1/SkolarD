@@ -43,7 +43,7 @@ public class CardDB implements CardPersistence{
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, accountEmail);
-            ResultSet rs = stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery();
             // Iterate over result set and build Card objects
             while (rs.next()) {
                 cards.add(new Card(

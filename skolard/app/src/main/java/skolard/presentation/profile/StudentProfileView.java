@@ -12,17 +12,18 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import skolard.logic.faq.FAQHandler;
-import skolard.logic.matching.MatchingHandler;
+import skolard.logic.booking.BookingHandler;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
 import skolard.logic.rating.RatingHandler;
 import skolard.logic.session.SessionHandler;
 import skolard.logic.support.SupportHandler;
+import skolard.logic.payment.PaymentHandler;
 import skolard.objects.Student;
 import skolard.persistence.PersistenceRegistry;
 import skolard.presentation.dashboard.StudentView;
 import skolard.presentation.faq.FAQView;
-import skolard.presentation.matching.MatchingView;
+import skolard.presentation.booking.BookingView;
 import skolard.presentation.message.MessageView;
 import skolard.presentation.rating.RatingView;
 import skolard.presentation.session.SessionView;
@@ -35,25 +36,27 @@ import skolard.presentation.support.SupportView;
 public class StudentProfileView extends JFrame {
     private final Student currentStudent;
     private final ProfileHandler profileHandler;
-    private final MatchingHandler matchingHandler;
+    private final BookingHandler bookingHandler;
     private final SessionHandler sessionHandler;
     private final MessageHandler messageHandler;
     private final FAQHandler faqHandler;
     private final RatingHandler ratingHandler;
+    private final PaymentHandler paymentHandler;
     private final boolean isFirstLogin;
 
     public StudentProfileView(Student student, ProfileHandler profileHandler, 
-                             MatchingHandler matchingHandler, SessionHandler sessionHandler,
+                             BookingHandler bookingHandler, SessionHandler sessionHandler,
                              MessageHandler messageHandler, FAQHandler faqHandler,
-                             RatingHandler ratingHandler, boolean isFirstLogin) {
+                             RatingHandler ratingHandler, PaymentHandler paymentHandler,boolean isFirstLogin) {
         super("SkolarD - Student Dashboard");
         this.currentStudent = student;
         this.profileHandler = profileHandler;
-        this.matchingHandler = matchingHandler;
+        this.bookingHandler = bookingHandler;
         this.sessionHandler = sessionHandler;
         this.messageHandler = messageHandler;
         this.faqHandler = faqHandler;
         this.ratingHandler = ratingHandler;
+        this.paymentHandler = paymentHandler;
         this.isFirstLogin = isFirstLogin;
 
         initializeUI();
@@ -100,12 +103,12 @@ public class StudentProfileView extends JFrame {
 
         // Setup event listeners
         myDashboardBtn.addActionListener(e -> {
-            new StudentView(profileHandler, matchingHandler, messageHandler, currentStudent);
+            new StudentView(profileHandler, bookingHandler, messageHandler, currentStudent);
             dispose();
         });
         
         findTutorsBtn.addActionListener(e -> {
-            new MatchingView(matchingHandler, sessionHandler, ratingHandler,currentStudent);
+            new BookingView(bookingHandler, sessionHandler, ratingHandler, paymentHandler,currentStudent);
             dispose();
         });
         

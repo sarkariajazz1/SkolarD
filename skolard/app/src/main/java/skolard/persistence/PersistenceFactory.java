@@ -19,17 +19,4 @@ public class PersistenceFactory {
             PersistenceProvider.initializeStubs();
         }
     }
-
-    public static void reset() {
-        ConnectionManager.close();
-        PersistenceRegistry.setStudentPersistence(null);
-        PersistenceRegistry.setTutorPersistence(null);
-        PersistenceRegistry.setSessionPersistence(null);
-        PersistenceRegistry.setMessagePersistence(null);
-        PersistenceRegistry.setLoginPersistence(null);
-        PersistenceRegistry.setCardPersistence(null);
-        PersistenceRegistry.setSupportPersistence(null);
-        PersistenceRegistry.setRatingPersistence(null);
-        PersistenceRegistry.setFAQPersistence(null);
-    }
 }

@@ -7,32 +7,18 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.crypto.SecretKey;
-
 import skolard.objects.Card;
 import skolard.objects.Student;
 import skolard.persistence.CardPersistence;
-import skolard.persistence.PersistenceRegistry;
-import skolard.utils.CardUtil;
 
 public class PaymentHandler {
     private final CardPersistence cardDB;
-    private final SecretKey key;
-
-    /**
-     * Default constructor using real persistence layer.
-     */
-    public PaymentHandler() {
-        this(PersistenceRegistry.getCardPersistence());
-    }
 
     /**
      * Constructor for injecting a custom CardPersistence (mockable).
      */
     public PaymentHandler(CardPersistence cardPersistence) {
         this.cardDB = cardPersistence;
-        // No need for try/catch since generateKey() generates a constant key
-        this.key = CardUtil.generateKey();
 
     }
 
@@ -52,13 +38,12 @@ public class PaymentHandler {
             List<Card> decryptedCards = new ArrayList<>();
 
             for (Card currentCard : encryptedCards) {
-                String decryptedData = CardUtil.decrypt(currentCard.getCardNumber(), key);
-                decryptedCards.add(new Card(decryptedData, currentCard.getExpiry(), currentCard.getName()));
+                decryptedCards.add(new Card(currentCard.getCardNumber(), currentCard.getExpiry(), currentCard.getName()));
             }
 
             return decryptedCards;
-        } catch ( Exception e) {
-            throw new IllegalArgumentException( "Card information could not be decrypted or database is null.", e);
+        } catch (Exception e) {
+            throw new IllegalArgumentException( "Card information could not be found or was corrupted", e);
         }
     }
 
@@ -68,11 +53,10 @@ public class PaymentHandler {
 
     public void saveCard(String name, String number, String expiry, Student student) {
         try {
-            String encryptedData = CardUtil.encrypt(number, key);
-            Card savedCard = new Card(encryptedData, expiry, name);
+            Card savedCard = new Card(number, expiry, name);
             cardDB.addAccountCard(student.getEmail(), savedCard);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Card information could not be encrypted or database is null.", e);
+            throw new IllegalArgumentException("Card information could not be saved into database", e);
         }
     }
 

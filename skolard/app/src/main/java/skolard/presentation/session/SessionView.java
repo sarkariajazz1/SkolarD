@@ -22,7 +22,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -44,6 +43,7 @@ public class SessionView extends JFrame {
     private final JTextField startTimeField = new JTextField(20);
     private final JTextField endTimeField = new JTextField(20);
     private final JButton createSessionBtn = new JButton("Create Session");
+    private final JButton deleteBtn = new JButton("Delete Session");
 
     private DefaultTableModel upcomingModel;
     private DefaultTableModel pastModel;
@@ -52,10 +52,9 @@ public class SessionView extends JFrame {
 
     private final JButton infoBtn = new JButton("Show Info");
     private final JButton unbookBtn = new JButton("Unbook Session");
-    private final JButton backButton = new JButton("Back");
+    private final JButton closeBtn = new JButton("Close");
 
     private final JLabel statusLabel = new JLabel("Session Management");
-    private final JTextArea instructionsArea = new JTextArea(4, 40);
 
     public SessionView(SessionHandler sessionHandler, User currentUser) {
         super("SkolarD - Session Management");
@@ -86,11 +85,6 @@ public class SessionView extends JFrame {
 
         JPanel sessionsPanel = createSessionsPanel();
         mainPanel.add(sessionsPanel, BorderLayout.CENTER);
-
-        // Add back button at the bottom
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        bottomPanel.add(backButton);
-        add(bottomPanel, BorderLayout.SOUTH);
     }
 
     private void setupStatusAndInstructions() {
@@ -98,22 +92,11 @@ public class SessionView extends JFrame {
         statusLabel.setFont(statusLabel.getFont().deriveFont(Font.BOLD, 16f));
         statusLabel.setForeground(Color.BLACK);
         add(statusLabel, BorderLayout.NORTH);
-
-        instructionsArea.setEditable(false);
-        instructionsArea.setBackground(getBackground());
-        instructionsArea.setText("Date/Time format: yyyy-MM-dd HH:mm (e.g., 2025-12-25 14:30)\n");
-        instructionsArea.setWrapStyleWord(true);
-        instructionsArea.setLineWrap(true);
-
-        // Move instructions to a separate panel to make room for back button
-        JPanel instructionsPanel = new JPanel(new BorderLayout());
-        instructionsPanel.add(new JScrollPane(instructionsArea), BorderLayout.CENTER);
-        add(instructionsPanel, BorderLayout.EAST);
     }
 
     private JPanel createSessionCreationPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Create Session (Tutor Only)"));
+        panel.setBorder(BorderFactory.createTitledBorder("Create Session"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
@@ -137,6 +120,20 @@ public class SessionView extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel.add(createSessionBtn, gbc);
 
+        gbc.gridx = 0; gbc.gridy = 1;
+        panel.add(new JLabel("Start Time:"), gbc);
+        gbc.gridx = 1;
+        panel.add(startTimeField, gbc);
+        gbc.gridx = 2;
+        panel.add(new JLabel("(e.g. 2025-06-10 14:30)"), gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2;
+        panel.add(new JLabel("End Time:"), gbc);
+        gbc.gridx = 1;
+        panel.add(endTimeField, gbc);
+        gbc.gridx = 2;
+        panel.add(new JLabel("(format: yyyy-MM-dd HH:mm)"), gbc);
+
         return panel;
     }
 
@@ -153,8 +150,8 @@ public class SessionView extends JFrame {
             public boolean isCellEditable(int row, int column) { return false; }
         };
 
-        upcomingTable = new JTable(upcomingModel);
-        pastTable = new JTable(pastModel);
+        upcomingTable = new DeselectableTable(upcomingModel);
+        pastTable = new DeselectableTable(pastModel);
 
         upcomingTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         pastTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -182,6 +179,12 @@ public class SessionView extends JFrame {
             buttonsPanel.add(unbookBtn);
         }
 
+        if (currentUser instanceof Tutor) {
+            deleteBtn.setEnabled(false);
+            buttonsPanel.add(deleteBtn);
+        }
+        buttonsPanel.add(closeBtn);
+
         panel.add(buttonsPanel, BorderLayout.SOUTH);
         return panel;
     }
@@ -195,9 +198,8 @@ public class SessionView extends JFrame {
 
         infoBtn.addActionListener(e -> showSelectedSessionInfo());
         unbookBtn.addActionListener(e -> unbookSelectedSession());
-
-        // Back button handler
-        backButton.addActionListener(e -> dispose());
+        deleteBtn.addActionListener(e -> deleteSelectedSession());
+        closeBtn.addActionListener(e -> dispose());
     }
 
     private void updateButtonsState() {
@@ -207,6 +209,10 @@ public class SessionView extends JFrame {
 
         if (currentUser instanceof Student) {
             unbookBtn.setEnabled(upcomingSelected);
+        }
+
+        if (currentUser instanceof Tutor) {
+            deleteBtn.setEnabled(upcomingSelected);
         }
     }
 
@@ -267,10 +273,10 @@ public class SessionView extends JFrame {
 
         for (Session pastS : pastSessions) {
             Object[] pastRow = {
-                    pastS.getSessionId(),
-                    pastS.getCourseName(),
-                    pastS.getStartDateTime(),
-                    pastS.getEndDateTime()
+                pastS.getSessionId(),
+                pastS.getCourseName(),
+                pastS.getStartDateTime(),
+                pastS.getEndDateTime()
             };
             pastModel.addRow(pastRow);
         }
@@ -282,10 +288,10 @@ public class SessionView extends JFrame {
             }
 
             Object[] upcomingRow = {
-                    upcomingS.getSessionId(),
-                    upcomingS.getCourseName(),
-                    upcomingS.getStartDateTime(),
-                    upcomingS.getEndDateTime()
+                upcomingS.getSessionId(),
+                upcomingS.getCourseName(),
+                upcomingS.getStartDateTime(),
+                upcomingS.getEndDateTime()
             };
             upcomingModel.addRow(upcomingRow);
         }
@@ -295,7 +301,6 @@ public class SessionView extends JFrame {
         infoBtn.setEnabled(false);
         unbookBtn.setEnabled(false);
     }
-
 
     private void showSelectedSessionInfo() {
         Session selectedSession = getSelectedSession();
@@ -309,12 +314,21 @@ public class SessionView extends JFrame {
         info.append("Course: ").append(selectedSession.getCourseName()).append("\n");
         info.append("Start Time: ").append(selectedSession.getStartDateTime()).append("\n");
         info.append("End Time: ").append(selectedSession.getEndDateTime()).append("\n");
-        info.append("Tutor: ").append(selectedSession.getTutor().getEmail()).append("\n");
-        info.append("Student: ").append(
-                selectedSession.getStudent() != null ? selectedSession.getStudent().getEmail() : "[unbooked]"
-        ).append("\n");
+        if (currentUser instanceof Student) {
+            info.append("Tutor: ").append(selectedSession.getTutor().getName()).append("\n");
+            info.append("Email: ").append(selectedSession.getTutor().getEmail()).append("\n");
+            info.append("Bio: ").append(selectedSession.getTutor().getBio());
+        } else if(currentUser instanceof Tutor && selectedSession.getStudent() != null){
+            info.append("Student: ").append(selectedSession.getStudent().getName()).append("\n");
+            info.append("Email: ").append(selectedSession.getStudent().getEmail());
+        } else{
+            info.append("Student: ").append("none").append("\n");
+            info.append("Email: ").append("none");
+        }
 
-        instructionsArea.setText(info.toString());
+
+        // Show info in a popup dialog instead of instructions area
+        JOptionPane.showMessageDialog(this, info.toString(), "Session Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private Session getSelectedSession() {
@@ -344,7 +358,7 @@ public class SessionView extends JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             try {
                 sessionHandler.unbookASession((Student) currentUser, sessionId);
-                showSuccess("Session unbooked successfully!");
+                showSuccess("Session unbooked and refunded successfully! \n Refund will take a few days to process.");
                 refreshSessionTables();
             } catch (IllegalArgumentException e) {
                 showError("Error unbooking session: " + e.getMessage());
@@ -362,5 +376,52 @@ public class SessionView extends JFrame {
     private void showSuccess(String msg) {
         statusLabel.setText("\u2705 " + msg);
         statusLabel.setForeground(new Color(0, 128, 0));
+    }
+
+    // Custom JTable that supports deselecting by clicking the selected row again
+    private static class DeselectableTable extends JTable {
+        public DeselectableTable(DefaultTableModel model) {
+            super(model);
+        }
+
+        @Override
+        public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend) {
+            if (rowIndex == getSelectedRow()) {
+                clearSelection();
+            } else {
+                super.changeSelection(rowIndex, columnIndex, toggle, extend);
+            }
+        }
+    }
+
+    private void deleteSelectedSession() {
+        int row = upcomingTable.getSelectedRow();
+        if (row == -1) {
+            showError("Please select an upcoming session to delete.");
+            return;
+        }
+
+        int sessionId = (int) upcomingModel.getValueAt(row, 0);
+        Session session = sessionHandler.getSessionByID(sessionId);
+
+        String warningMsg = session.getStudent() != null
+            ? "This session has a student. Refund process will begin once deleted.\nContinue?"
+            : "Are you sure you want to delete this session?";
+
+        int confirm = JOptionPane.showConfirmDialog(this, warningMsg, "Confirm Delete", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                sessionHandler.deleteSession( (Tutor) currentUser , session);
+                if (session.getStudent() != null) {
+                    showSuccess("Session deleted. A refund will be processed for the student.");
+                } else {
+                    showSuccess("Session deleted successfully.");
+                }
+                refreshSessionTables();
+            } catch (Exception e) {
+                showError("Failed to delete session: " + e.getMessage());
+            }
+        }
     }
 }

@@ -6,6 +6,8 @@ import skolard.persistence.sqlite.CardDB;
 import skolard.persistence.sqlite.FAQDB;
 import skolard.persistence.sqlite.LoginDB;
 import skolard.persistence.sqlite.MessageDB;
+import skolard.persistence.sqlite.RatingDB;
+import skolard.persistence.sqlite.RatingRequestDB;
 import skolard.persistence.sqlite.SessionDB;
 import skolard.persistence.sqlite.StudentDB;
 import skolard.persistence.sqlite.SupportDB;
@@ -19,6 +21,7 @@ public class PersistenceProvider {
         TutorPersistence tutorPersistence = new TutorDB(conn);
         SessionPersistence sessionPersistence = new SessionDB(conn, studentPersistence, tutorPersistence);
         SupportPersistence supportPersistence = new SupportDB(conn, studentPersistence, tutorPersistence);
+        RatingRequestPersistence ratingRequestPersistence = new RatingRequestDB(conn, studentPersistence, sessionPersistence);
 
         PersistenceRegistry.setStudentPersistence(studentPersistence);
         PersistenceRegistry.setTutorPersistence(tutorPersistence);
@@ -27,7 +30,9 @@ public class PersistenceProvider {
         PersistenceRegistry.setLoginPersistence(new LoginDB(conn));
         PersistenceRegistry.setCardPersistence(new CardDB(conn));
         PersistenceRegistry.setSupportPersistence(supportPersistence);
-        PersistenceRegistry.setFAQPersistence(new FAQDB(conn)); // ✅ NEW
+        PersistenceRegistry.setRatingRequestPersistence(ratingRequestPersistence);
+        PersistenceRegistry.setRatingPersistence(new RatingDB(conn));
+        PersistenceRegistry.setFAQPersistence(new FAQDB(conn));
     }
 
     public static void initializeStubs() {
@@ -41,7 +46,9 @@ public class PersistenceProvider {
         PersistenceRegistry.setSessionPersistence(StubFactory.createSessionPersistence());
         PersistenceRegistry.setMessagePersistence(StubFactory.createMessagePersistence());
         PersistenceRegistry.setCardPersistence(StubFactory.createCardPersistence());
-        PersistenceRegistry.setSupportPersistence(StubFactory.createSupportPersistence());
-        PersistenceRegistry.setFAQPersistence(StubFactory.createFAQPersistence()); // ✅ NEW
+        PersistenceRegistry.setSupportPersistence(StubFactory.createSupportPersistence()); 
+        PersistenceRegistry.setRatingRequestPersistence(StubFactory.createRatingRequestStub());
+        PersistenceRegistry.setRatingPersistence(StubFactory.createRatingStub());
+        PersistenceRegistry.setFAQPersistence(StubFactory.createFAQPersistence());
     }
 }
