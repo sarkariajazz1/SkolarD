@@ -24,10 +24,19 @@ public interface SessionPersistence {
 
     void removeSession(int sessionId);
 
+<<<<<<< HEAD
+    /**
+     * Update the information of an existing session.
+     *
+     * @param updatedSession updated session object
+     */
+    void updateSession(Session updatedSession);
+=======
     void updateSession(Session updatedSession);
 
     void hydrateTutorSessions(Tutor tutor);
     
     void hydrateStudentSessions(Student student);
 
+>>>>>>> dev
 }

@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
+<<<<<<< HEAD
+    <title>Faqs on SkolarD FAQ</title>
+    <link>/faq/faq/</link>
+    <description>Recent content in Faqs on SkolarD FAQ</description>
+    <generator>Hugo -- 0.147.5</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 25 May 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="/faq/faq/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Getting Started</title>
+      <link>/faq/faq/getting-started/</link>
+      <pubDate>Sun, 25 May 2025 00:00:00 +0000</pubDate>
+      <guid>/faq/faq/getting-started/</guid>
+      <description>&lt;h3 id=&#34;how-do-i-sign-up&#34;&gt;How do I sign up?&lt;/h3&gt;
+&lt;p&gt;Click &lt;strong&gt;Sign Up&lt;/strong&gt; on the homepage and choose either Student or Tutor.&lt;/p&gt;</description>
+=======
     <title>Frequently Asked Questions on SkolarD FAQ</title>
     <link>/faq/faq/</link>
     <description>Recent content in Frequently Asked Questions on SkolarD FAQ</description>
@@ -83,6 +99,7 @@
 &lt;p&gt;Review incoming requests and confirm.&lt;/p&gt;
 &lt;h2 id=&#34;update-profile&#34;&gt;Update Profile&lt;/h2&gt;
 &lt;p&gt;Add courses you tutor and write a short bio.&lt;/p&gt;</description>
+>>>>>>> dev
     </item>
   </channel>
 </rss>

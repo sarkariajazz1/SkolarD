@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import skolard.utils.PasswordUtil;
 import skolard.objects.Student;
 import skolard.persistence.StudentPersistence;
+import skolard.utils.PasswordUtil;
 
 /**
  * In-memory stub implementation of StudentPersistence.
