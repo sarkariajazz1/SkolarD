@@ -7,6 +7,7 @@ import skolard.logic.booking.BookingHandler;
 import skolard.logic.payment.PaymentHandler;
 import skolard.objects.Session;
 import skolard.objects.Student;
+import skolard.presentation.payment.PaymentView;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -26,6 +27,7 @@ public class BookingView extends JFrame {
     private final JButton bookButton = new JButton("Book");
     private final JButton infoButton = new JButton("View Info");
     private final JButton backButton = new JButton("Back");
+    private final JButton closeButton = new JButton("Close");
 
     private final JLabel statusLabel = new JLabel(" ");
     private final JLabel timeRangeLabel = new JLabel("Preferred time range:");
@@ -38,11 +40,19 @@ public class BookingView extends JFrame {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private final BookingController controller;
+    private final PaymentHandler paymentHandler;
+    private final SessionHandler sessionHandler;
+    private final RatingHandler ratingHandler;
+    private final Student student;
 
     public BookingView(BookingHandler bookingHandler, SessionHandler sessionHandler,
                        RatingHandler ratingHandler, PaymentHandler paymentHandler, Student student) {
 
         super("SkolarD - Booking View");
+        this.paymentHandler = paymentHandler;
+        this.sessionHandler = sessionHandler;
+        this.ratingHandler = ratingHandler;
+        this.student = student;
         this.controller = new BookingController(this, bookingHandler, sessionHandler, ratingHandler, paymentHandler, student);
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -115,6 +125,7 @@ public class BookingView extends JFrame {
         buttonPanel.add(backButton);
         buttonPanel.add(bookButton);
         buttonPanel.add(infoButton);
+        buttonPanel.add(closeButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
         bookButton.addActionListener(e -> {
@@ -163,6 +174,7 @@ public class BookingView extends JFrame {
         });
 
         backButton.addActionListener(e -> dispose());
+        closeButton.addActionListener(e -> dispose());
     }
 
     private void setupListeners() {
@@ -179,8 +191,6 @@ public class BookingView extends JFrame {
         bookButton.addActionListener(e -> controller.onBook(sessionTable.getSelectedRow()));
 
         infoButton.addActionListener(e -> controller.onViewInfo(sessionTable.getSelectedRow()));
-
-        closeButton.addActionListener(e -> dispose());
 
         sessionTable.getSelectionModel().addListSelectionListener(e -> {
             boolean valid = !e.getValueIsAdjusting() && sessionTable.getSelectedRow() >= 0;
@@ -201,6 +211,30 @@ public class BookingView extends JFrame {
                 session.getTutor().getGradeForCourse(session.getCourseName()) // Make sure this method exists
         );
         JOptionPane.showMessageDialog(this, message, "Session Details", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void updateSessionTable(List<Session> sessions) {
+        tableModel.setRowCount(0); // Clear existing rows
+        currentResults = sessions;
+
+        for (Session session : sessions) {
+            Object[] row = {
+                    session.getTutor().getName(),
+                    session.getStartDateTime().format(formatter),
+                    session.getEndDateTime().format(formatter)
+            };
+            tableModel.addRow(row);
+        }
+
+        sessionTable.clearSelection();
+        bookButton.setEnabled(false);
+        infoButton.setEnabled(false);
+
+        if (sessions.isEmpty()) {
+            showStatus("No sessions found for the specified criteria.");
+        } else {
+            showStatus("Found " + sessions.size() + " available session(s).");
+        }
     }
 
     public void removeSessionFromTable(int rowIndex) {
