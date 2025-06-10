@@ -272,7 +272,7 @@ public class SkolardApp extends JFrame {
         });
 
         rateBtn.addActionListener(e -> {
-            openWindow(new RatingView(ratingHandler));
+            openWindow(new RatingView(ratingHandler, (Student) currentUser));
         });
 
         return buttonPanel;
