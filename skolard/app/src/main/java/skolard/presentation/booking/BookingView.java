@@ -1,3 +1,4 @@
+
 package skolard.presentation.booking;
 
 import skolard.logic.rating.RatingHandler;
@@ -6,6 +7,7 @@ import skolard.logic.booking.BookingHandler;
 import skolard.logic.payment.PaymentHandler;
 import skolard.objects.Session;
 import skolard.objects.Student;
+import skolard.presentation.payment.PaymentView;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -24,6 +26,7 @@ public class BookingView extends JFrame {
     private final JButton searchBtn = new JButton("Find Sessions");
     private final JButton bookButton = new JButton("Book");
     private final JButton infoButton = new JButton("View Info");
+    private final JButton backButton = new JButton("Back");
     private final JButton closeButton = new JButton("Close");
 
     private final JLabel statusLabel = new JLabel(" ");
@@ -37,11 +40,19 @@ public class BookingView extends JFrame {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private final BookingController controller;
+    private final PaymentHandler paymentHandler;
+    private final SessionHandler sessionHandler;
+    private final RatingHandler ratingHandler;
+    private final Student student;
 
     public BookingView(BookingHandler bookingHandler, SessionHandler sessionHandler,
                        RatingHandler ratingHandler, PaymentHandler paymentHandler, Student student) {
 
         super("SkolarD - Booking View");
+        this.paymentHandler = paymentHandler;
+        this.sessionHandler = sessionHandler;
+        this.ratingHandler = ratingHandler;
+        this.student = student;
         this.controller = new BookingController(this, bookingHandler, sessionHandler, ratingHandler, paymentHandler, student);
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -70,6 +81,10 @@ public class BookingView extends JFrame {
         topRow.add(new JLabel("Course:"));
         topRow.add(courseField);
         topRow.add(searchBtn);
+
+        JComboBox<String> filterDropdown = new JComboBox<>(new String[] {
+                "", "Sort by Time", "Sort by Tutor Course Grade", "Sort by Overall Tutor Rating"
+        });
         topRow.add(filterDropdown);
 
         inputPanel.add(topRow);
@@ -106,10 +121,60 @@ public class BookingView extends JFrame {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bookButton.setEnabled(false);
         infoButton.setEnabled(false);
-        buttonPanel.add(closeButton);
+
+        buttonPanel.add(backButton);
         buttonPanel.add(bookButton);
         buttonPanel.add(infoButton);
+        buttonPanel.add(closeButton);
         add(buttonPanel, BorderLayout.SOUTH);
+
+        bookButton.addActionListener(e -> {
+            int selectedRow = sessionTable.getSelectedRow();
+            if (selectedRow >= 0 && selectedRow < currentResults.size()) {
+                Session session = currentResults.get(selectedRow);
+                int confirm = JOptionPane.showConfirmDialog(
+                        this,
+                        "Do you want to book this session with " + session.getTutor().getName() + "? " + "Pre-payment is required.",
+                        "Confirm Booking",
+                        JOptionPane.YES_NO_OPTION
+                );
+                if (confirm == JOptionPane.YES_OPTION) {
+                    // Show payment window
+                    PaymentView paymentDialog = new PaymentView(SwingUtilities.getWindowAncestor(this), paymentHandler, student);
+                    paymentDialog.setVisible(true); // this blocks until dialog is closed
+
+                    if (paymentDialog.wasPaid()) {
+                        sessionHandler.bookASession(student, session.getSessionId());
+                        ratingHandler.createRatingRequest(session, student); // enqueue for future rating
+
+                        currentResults.remove(selectedRow);
+                        tableModel.removeRow(selectedRow);
+                        sessionTable.clearSelection();
+                        bookButton.setEnabled(false);
+                        infoButton.setEnabled(false);
+
+                        JOptionPane.showMessageDialog(this,
+                                "Session booked successfully! Payment will be finalized and rating survey will open after session ends at " + session.getEndDateTime(),
+                                "Booking Confirmed", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                                "Payment was not completed. Session not booked.",
+                                "Payment Cancelled", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            }
+        });
+
+        infoButton.addActionListener(e -> {
+            int selectedRow = sessionTable.getSelectedRow();
+            if (selectedRow >= 0 && selectedRow < currentResults.size()) {
+                Session session = currentResults.get(selectedRow);
+                showSessionDetailsPopup(session);
+            }
+        });
+
+        backButton.addActionListener(e -> dispose());
+        closeButton.addActionListener(e -> dispose());
     }
 
     private void setupListeners() {
@@ -127,8 +192,6 @@ public class BookingView extends JFrame {
 
         infoButton.addActionListener(e -> controller.onViewInfo(sessionTable.getSelectedRow()));
 
-        closeButton.addActionListener(e -> dispose());
-
         sessionTable.getSelectionModel().addListSelectionListener(e -> {
             boolean valid = !e.getValueIsAdjusting() && sessionTable.getSelectedRow() >= 0;
             bookButton.setEnabled(valid);
@@ -136,26 +199,42 @@ public class BookingView extends JFrame {
         });
     }
 
+    private void showSessionDetailsPopup(Session session) {
+        String message = String.format(
+                "<html><b>Tutor:</b> %s<br><b>Email:</b> %s<br><b>Start:</b> %s<br><b>End:</b> %s<br><b>Course:</b> %s<br><b>Bio:</b> %s<br><b>Tutor course grade:</b> %s</html>",
+                session.getTutor().getName(),
+                session.getTutor().getEmail(),
+                session.getStartDateTime().format(formatter),
+                session.getEndDateTime().format(formatter),
+                session.getCourseName(),
+                session.getTutor().getBio(),
+                session.getTutor().getGradeForCourse(session.getCourseName()) // Make sure this method exists
+        );
+        JOptionPane.showMessageDialog(this, message, "Session Details", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     public void updateSessionTable(List<Session> sessions) {
-        tableModel.setRowCount(0);
-        this.currentResults = sessions;
+        tableModel.setRowCount(0); // Clear existing rows
+        currentResults = sessions;
 
-        if (sessions == null || sessions.isEmpty()) {
-            showStatus("No sessions found.");
-            bookButton.setEnabled(false);
-            infoButton.setEnabled(false);
-            return;
+        for (Session session : sessions) {
+            Object[] row = {
+                    session.getTutor().getName(),
+                    session.getStartDateTime().format(formatter),
+                    session.getEndDateTime().format(formatter)
+            };
+            tableModel.addRow(row);
         }
 
-        for (Session s : sessions) {
-            tableModel.addRow(new Object[]{
-                    s.getTutor().getName(),
-                    s.getStartDateTime().format(formatter),
-                    s.getEndDateTime().format(formatter)
-            });
-        }
+        sessionTable.clearSelection();
+        bookButton.setEnabled(false);
+        infoButton.setEnabled(false);
 
-        showStatus("Results:");
+        if (sessions.isEmpty()) {
+            showStatus("No sessions found for the specified criteria.");
+        } else {
+            showStatus("Found " + sessions.size() + " available session(s).");
+        }
     }
 
     public void removeSessionFromTable(int rowIndex) {
