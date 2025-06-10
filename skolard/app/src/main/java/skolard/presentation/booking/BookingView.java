@@ -1,4 +1,4 @@
-package skolard.presentation.matching;
+package skolard.presentation.booking;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -18,20 +18,23 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 
-import skolard.logic.matching.MatchingHandler;
-import skolard.logic.matching.MatchingHandler.SessionFilter;
 import skolard.logic.rating.RatingHandler;
 import skolard.logic.session.SessionHandler;
+import skolard.logic.booking.BookingHandler;
+import skolard.logic.booking.BookingHandler.SessionFilter;
+import skolard.logic.payment.PaymentHandler;
 import skolard.objects.Session;
 import skolard.objects.Student;
+import skolard.presentation.payment.PaymentView;
 import skolard.utils.CourseUtil;
 
 /**
  * A simple GUI window to allow users to find available tutoring sessions for a specific course and book it.
  */
-public class MatchingView extends JFrame {
-    private final MatchingHandler matchingHandler; // Logic handler
+public class BookingView extends JFrame {
+    private final BookingHandler bookingHandler; // Logic handler
     private final SessionHandler sessionHandler;
 
     private final JTextField courseField = new JTextField(15);
@@ -44,17 +47,17 @@ public class MatchingView extends JFrame {
     private final JLabel statusLabel = new JLabel(" ");
     private List<Session> currentResults;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final JLabel timeRangeLabel = new JLabel("Preferred time range:");
 
-    // Buttons
     private final JButton bookButton = new JButton("Book");
     private final JButton infoButton = new JButton("View Info");
-    private final JButton backButton = new JButton("Back");
+    private final JButton closeButton = new JButton("Close");
 
 private final RatingHandler ratingHandler;
 
-    public MatchingView(MatchingHandler matchingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler, Student student) {
-        super("SkolarD - Matching View");
-        this.matchingHandler = matchingHandler;
+    public BookingView(BookingHandler bookingHandler, SessionHandler sessionHandler, RatingHandler ratingHandler,PaymentHandler paymentHandler, Student student) {
+        super("SkolarD - Booking View");
+        this.bookingHandler = bookingHandler;
         this.sessionHandler = sessionHandler;
         this.ratingHandler = ratingHandler;
 
@@ -63,7 +66,7 @@ private final RatingHandler ratingHandler;
 
         setupInputPanel(student);
         setupTablePanel();
-        setupButtonPanel(student);
+        setupButtonPanel(paymentHandler, student);
         setupTableClickListener();
 
         pack();
@@ -79,14 +82,18 @@ private final RatingHandler ratingHandler;
         topRow.add(new JLabel("Course:"));
         topRow.add(courseField);
 
-        JButton searchBtn = new JButton("Find Tutors");
+        JButton searchBtn = new JButton("Find Sessions");
         topRow.add(searchBtn);
 
         JComboBox<String> filterDropdown = new JComboBox<>(new String[] {
-                "", "Sort by Time", "Sort by Course Rating", "Sort by Overall Tutor Rating"
+            "", "Sort by Time", "Sort by Tutor Course Grade", "Sort by Overall Tutor Rating"
         });
         topRow.add(filterDropdown);
         inputPanel.add(topRow);
+
+        timePanel.setLayout(new BoxLayout(timePanel, BoxLayout.Y_AXIS));
+        timeRangeLabel.setAlignmentX(LEFT_ALIGNMENT);
+        timePanel.add(timeRangeLabel);
 
         timePanel.setLayout(new BoxLayout(timePanel, BoxLayout.Y_AXIS));
         JPanel timeFieldsRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -95,10 +102,11 @@ private final RatingHandler ratingHandler;
         timeFieldsRow.add(new JLabel("End:"));
         timeFieldsRow.add(endTimeField);
 
-        JLabel timeExampleLabel = new JLabel("Example: 2025-06-01 09:00");
+        JLabel timeExampleLabel = new JLabel("Format Example: 2025-06-01 09:00");
         timePanel.add(timeFieldsRow);
         timePanel.add(timeExampleLabel);
         timePanel.setVisible(false);
+        timeRangeLabel.setVisible(false);
 
         inputPanel.add(timePanel);
         add(inputPanel, BorderLayout.NORTH);
@@ -107,6 +115,7 @@ private final RatingHandler ratingHandler;
             String selected = (String) filterDropdown.getSelectedItem();
             boolean showTime = "Sort by Time".equals(selected);
             timePanel.setVisible(showTime);
+            timeRangeLabel.setVisible(showTime);
             startTimeField.setText("");
             endTimeField.setText("");
         });
@@ -128,13 +137,13 @@ private final RatingHandler ratingHandler;
                 if ("Sort by Time".equals(filter)) {
                     start = LocalDateTime.parse(startTimeField.getText().trim(), formatter);
                     end = LocalDateTime.parse(endTimeField.getText().trim(), formatter);
-                    results = matchingHandler.getAvailableSessions(SessionFilter.TIME, course, start, end, student.getEmail());
+                    results = bookingHandler.getAvailableSessions(SessionFilter.TIME, course, start, end, student.getEmail());
                 } else if ("Sort by Course Rating".equals(filter)) {
-                    results = matchingHandler.getAvailableSessions(SessionFilter.RATE, course, null, null, student.getEmail());
+                    results = bookingHandler.getAvailableSessions(SessionFilter.RATE, course, null, null, student.getEmail());
                 } else if ("Sort by Overall Tutor Rating".equals(filter)) {
-                    results = matchingHandler.getAvailableSessions(SessionFilter.TUTOR, course, null, null, student.getEmail());
+                    results = bookingHandler.getAvailableSessions(SessionFilter.TUTOR, course, null, null, student.getEmail());
                 } else {
-                    results = matchingHandler.getAvailableSessions(course, student.getEmail());
+                    results = bookingHandler.getAvailableSessions(course, student.getEmail());
                 }
             } catch (DateTimeParseException ex) {
                 statusLabel.setText("Invalid date-time format. Use yyyy-MM-dd HH:mm");
@@ -171,11 +180,12 @@ private final RatingHandler ratingHandler;
         add(tablePanel, BorderLayout.CENTER);
     }
 
-    private void setupButtonPanel(Student student) {
+    private void setupButtonPanel(PaymentHandler paymentHandler, Student student) {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bookButton.setEnabled(false);
         infoButton.setEnabled(false);
 
+        buttonPanel.add(closeButton);
         buttonPanel.add(bookButton);
         buttonPanel.add(infoButton);
         buttonPanel.add(backButton); // Add the back button to the panel
@@ -186,24 +196,34 @@ private final RatingHandler ratingHandler;
             if (selectedRow >= 0 && selectedRow < currentResults.size()) {
                 Session session = currentResults.get(selectedRow);
                 int confirm = JOptionPane.showConfirmDialog(
-                        this,
-                        "Do you want to book this session with " + session.getTutor().getName() + "?",
-                        "Confirm Booking",
-                        JOptionPane.YES_NO_OPTION
+                    this,
+                    "Do you want to book this session with " + session.getTutor().getName() + "? " + "Pre-payment is required.",
+                    "Confirm Booking",
+                    JOptionPane.YES_NO_OPTION
                 );
                 if (confirm == JOptionPane.YES_OPTION) {
-                    sessionHandler.bookASession(student, session.getSessionId());
-                    ratingHandler.createRatingRequest(session, student); // enqueue for future rating
+                    // Show payment window
+                    PaymentView paymentDialog = new PaymentView(SwingUtilities.getWindowAncestor(this), paymentHandler, student);
+                    paymentDialog.setVisible(true); // this blocks until dialog is closed
 
-                    currentResults.remove(selectedRow);
-                    tableModel.removeRow(selectedRow);
-                    sessionTable.clearSelection();
-                    bookButton.setEnabled(false);
-                    infoButton.setEnabled(false);
+                    if (paymentDialog.wasPaid()) {
+                        sessionHandler.bookASession(student, session.getSessionId());
+                        ratingHandler.createRatingRequest(session, student); // enqueue for future rating
 
-                    JOptionPane.showMessageDialog(this,
-                        "Session booked successfully! You can rate it after it ends.",
-                        "Booking Confirmed", JOptionPane.INFORMATION_MESSAGE);
+                        currentResults.remove(selectedRow);
+                        tableModel.removeRow(selectedRow);
+                        sessionTable.clearSelection();
+                        bookButton.setEnabled(false);
+                        infoButton.setEnabled(false);
+
+                        JOptionPane.showMessageDialog(this,
+                            "Session booked successfully! Payment will be finalized and rating survey will open after session ends at " + session.getEndDateTime(),
+                            "Booking Confirmed", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                            "Payment was not completed. Session not booked.",
+                            "Payment Cancelled", JOptionPane.WARNING_MESSAGE);
+                    }
                 }
             }
         });
@@ -216,8 +236,7 @@ private final RatingHandler ratingHandler;
             }
         });
 
-        // Add action listener for the back button
-        backButton.addActionListener(e -> dispose());
+        closeButton.addActionListener(e -> dispose());
     }
 
     private void setupTableClickListener() {
@@ -230,15 +249,16 @@ private final RatingHandler ratingHandler;
     }
 
     private void showSessionDetailsPopup(Session session) {
-        String message = String.format(
-                "<html><b>Tutor:</b> %s<br><b>Email:</b> %s<br><b>Start:</b> %s<br><b>End:</b> %s<br><b>Course:</b> %s<br><b>Bio:</b> %s</html>",
-                session.getTutor().getName(),
-                session.getTutor().getEmail(),
-                session.getStartDateTime().format(formatter),
-                session.getEndDateTime().format(formatter),
-                session.getCourseName(),
-                session.getTutor().getBio()
-        );
+    String message = String.format(
+        "<html><b>Tutor:</b> %s<br><b>Email:</b> %s<br><b>Start:</b> %s<br><b>End:</b> %s<br><b>Course:</b> %s<br><b>Bio:</b> %s<br><b>Tutor course grade:</b> %s</html>",
+        session.getTutor().getName(),
+        session.getTutor().getEmail(),
+        session.getStartDateTime().format(formatter),
+        session.getEndDateTime().format(formatter),
+        session.getCourseName(),
+        session.getTutor().getBio(),
+        session.getTutor().getGradeForCourse(session.getCourseName()) // Make sure this method exists
+    );
         JOptionPane.showMessageDialog(this, message, "Session Details", JOptionPane.INFORMATION_MESSAGE);
     }
 }

@@ -3,9 +3,10 @@ package skolard;
 import javax.swing.SwingUtilities;
 
 import skolard.logic.auth.LoginHandler;
+import skolard.logic.booking.BookingHandler;
 import skolard.logic.faq.FAQHandler;
-import skolard.logic.matching.MatchingHandler;
 import skolard.logic.message.MessageHandler;
+import skolard.logic.payment.PaymentHandler;
 import skolard.logic.profile.ProfileHandler;
 import skolard.logic.rating.RatingHandler;
 import skolard.logic.session.SessionHandler;
@@ -25,7 +26,7 @@ public class App {
         // Get instances from the registry
         
 
-        MatchingHandler matchingHandler = new MatchingHandler(PersistenceRegistry.getSessionPersistence());
+        BookingHandler bookingHandler = new BookingHandler(PersistenceRegistry.getSessionPersistence());
         MessageHandler messageHandler = new MessageHandler(PersistenceRegistry.getMessagePersistence());
         SessionHandler sessionHandler = new SessionHandler(PersistenceRegistry.getSessionPersistence());
         ProfileHandler profileHandler = new ProfileHandler(sessionHandler);
@@ -38,12 +39,13 @@ public class App {
         SwingUtilities.invokeLater(() -> {
             new skolard.presentation.SkolardApp(
                 profileHandler, 
-                matchingHandler, 
+                bookingHandler, 
                 sessionHandler, 
                 messageHandler, 
                 faqHandler, 
                 loginHandler,
-                ratingHandler
+                ratingHandler,
+                paymentHandler
             );
         });
     }
