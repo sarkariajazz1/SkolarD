@@ -70,7 +70,7 @@ public class SkolardApp extends JFrame {
     private final List<Window> openWindows = new ArrayList<>();
 
     public SkolardApp(ProfileHandler profileHandler,
-                      MatchingHandler matchingHandler,
+                      BookingHandler bookingHandler,
                       SessionHandler sessionHandler,
                       MessageHandler messageHandler,
                       FAQHandler faqHandler,
@@ -248,11 +248,11 @@ public class SkolardApp extends JFrame {
 
         // Setup event listeners
         myDashboardBtn.addActionListener(e -> {
-            openWindow(new StudentView(profileHandler, matchingHandler, messageHandler,(Student) currentUser));
+            openWindow(new StudentView(profileHandler, bookingHandler, messageHandler,(Student) currentUser));
         });
 
         findTutorsBtn.addActionListener(e -> {
-            openWindow(new MatchingView(matchingHandler, sessionHandler, ratingHandler,(Student) currentUser));
+            openWindow(new BookingView(bookingHandler, sessionHandler, ratingHandler,(Student), paymentHandler,currentUser));
         });
 
         sessionBtn.addActionListener(e -> {
