@@ -133,7 +133,7 @@ public class StudentProfileView extends JFrame {
         });
         
         rateBtn.addActionListener(e -> {
-            new RatingView(ratingHandler);
+            new RatingView(ratingHandler, currentStudent);
             dispose();
         });
 
