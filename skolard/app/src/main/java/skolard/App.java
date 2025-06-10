@@ -13,14 +13,11 @@ import skolard.persistence.PersistenceFactory;
 import skolard.persistence.PersistenceRegistry;
 import skolard.persistence.PersistenceType;
 
-/**
- * Main entry point for the SkolarD application.
-<<<<<<< HEAD
- * Initializes the persistence layer and prints students from the database.
- */
+
 public class App {
     public static void main(String[] args) {
-        // Initialize the persistence layer with PROD mode
+        // Initialize the persistence layer (PROD mode + seed)
+        PersistenceFactory.initialize(PersistenceType.PROD, true);
 
         // Get instances from the registry
         

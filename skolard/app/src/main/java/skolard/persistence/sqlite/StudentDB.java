@@ -1,14 +1,5 @@
 package skolard.persistence.sqlite;
 
-<<<<<<< HEAD
-import skolard.objects.Student;
-import skolard.persistence.StudentPersistence;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
-=======
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +11,6 @@ import java.util.List;
 import skolard.objects.Student;
 import skolard.persistence.StudentPersistence;
 
->>>>>>> dev
 /**
  * SQLite implementation of the StudentPersistence interface.
  * Manages CRUD operations for students stored in the 'student' table.
@@ -104,19 +94,12 @@ public class StudentDB implements StudentPersistence {
      */
     @Override
     public Student addStudent(Student newStudent) {
-<<<<<<< HEAD
-        String sql = "INSERT INTO student (name, email) VALUES (?, ?)";
-=======
         String sql = "INSERT INTO student (name, email, password) VALUES (?, ?, ?)";
->>>>>>> dev
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, newStudent.getName());
             stmt.setString(2, newStudent.getEmail());
-<<<<<<< HEAD
-=======
             stmt.setString(3, newStudent.getHashedPassword()); // Assuming hashed password is also stored
->>>>>>> dev
             stmt.executeUpdate();
             return newStudent;
 
@@ -161,8 +144,6 @@ public class StudentDB implements StudentPersistence {
             throw new RuntimeException("Error updating student", e);
         }
     }
-<<<<<<< HEAD
-=======
 
     @Override
     public Student authenticate(String email, String hashedPassword) {
@@ -185,5 +166,4 @@ public class StudentDB implements StudentPersistence {
         return null;
     }
 
->>>>>>> dev
 }
