@@ -31,4 +31,16 @@ public class StubFactory {
     public static SupportPersistence createSupportPersistence() {
         return new SupportStub();
     }
+
+    public static RatingRequestStub createRatingRequestStub() {
+        return new RatingRequestStub();
+    }
+
+    public static RatingStub createRatingStub() {
+        return new RatingStub();
+    }
+
+    public static FAQPersistence createFAQPersistence() {
+        return new FAQStub();
+    }
 }

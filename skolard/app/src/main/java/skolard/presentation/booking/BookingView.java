@@ -29,6 +29,7 @@ import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.presentation.payment.PaymentView;
 import skolard.utils.CourseUtil;
+
 /**
  * A simple GUI window to allow users to find available tutoring sessions for a specific course and book it.
  */
@@ -161,9 +162,9 @@ private final RatingHandler ratingHandler;
                 statusLabel.setText("Results:");
                 for (Session s : results) {
                     tableModel.addRow(new Object[] {
-                        s.getTutor().getName(),
-                        s.getStartDateTime().format(formatter),
-                        s.getEndDateTime().format(formatter)
+                            s.getTutor().getName(),
+                            s.getStartDateTime().format(formatter),
+                            s.getEndDateTime().format(formatter)
                     });
                 }
             }
@@ -187,6 +188,7 @@ private final RatingHandler ratingHandler;
         buttonPanel.add(closeButton);
         buttonPanel.add(bookButton);
         buttonPanel.add(infoButton);
+        buttonPanel.add(backButton); // Add the back button to the panel
         add(buttonPanel, BorderLayout.SOUTH);
 
         bookButton.addActionListener(e -> {

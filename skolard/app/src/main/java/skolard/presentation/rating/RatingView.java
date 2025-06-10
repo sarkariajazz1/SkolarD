@@ -16,7 +16,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import java.awt.event.ActionListener;
 import javax.swing.JPanel;
+import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
@@ -40,52 +42,52 @@ public class RatingView extends JFrame {
     private final DefaultListModel<String> requestModel = new DefaultListModel<>();
     private final JList<String> requestList = new JList<>(requestModel);
     private final JSlider tutorRatingSlider = new JSlider(1, 5, 3);
-    private final JSlider courseRatingSlider = new JSlider(1, 5, 3);
     private final JTextArea feedbackArea = new JTextArea(5, 30);
     private final JButton submitRatingBtn = new JButton("Submit Rating");
     private final JButton skipRatingBtn = new JButton("Skip Rating");
     private final JButton refreshBtn = new JButton("Refresh Requests");
-    
+    private final JButton backButton = new JButton("Back");
+
     private final JLabel statusLabel = new JLabel("Select a rating request to proceed");
     private RatingRequest selectedRequest = null;
-    
+
     public RatingView(RatingHandler ratingHandler) {
         super("SkolarD - Rating Management");
         this.ratingHandler = ratingHandler;
-        
+
         initializeUI();
         setupEventHandlers();
         loadRatingRequests();
-        
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
     }
-    
+
     private void initializeUI() {
         setLayout(new BorderLayout(10, 10));
-        
+
         // Status label at top
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         statusLabel.setFont(statusLabel.getFont().deriveFont(Font.BOLD, 14f));
         add(statusLabel, BorderLayout.NORTH);
-        
+
         // Left panel - Rating requests list
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.setBorder(BorderFactory.createTitledBorder("Pending Rating Requests"));
-        
+
         requestList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         leftPanel.add(new JScrollPane(requestList), BorderLayout.CENTER);
         leftPanel.add(refreshBtn, BorderLayout.SOUTH);
-        
+
         // Right panel - Rating form
         JPanel rightPanel = new JPanel(new GridBagLayout());
         rightPanel.setBorder(BorderFactory.createTitledBorder("Submit Rating"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
-        
+
         // Tutor rating
         gbc.gridx = 0; gbc.gridy = 0;
         rightPanel.add(new JLabel("Tutor Rating (1-5):"), gbc);
@@ -93,12 +95,6 @@ public class RatingView extends JFrame {
         setupRatingSlider(tutorRatingSlider);
         rightPanel.add(tutorRatingSlider, gbc);
         
-        // Course rating
-        gbc.gridx = 0; gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE;
-        rightPanel.add(new JLabel("Course Rating (1-5):"), gbc);
-        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
-        setupRatingSlider(courseRatingSlider);
-        rightPanel.add(courseRatingSlider, gbc);
                 
         // Buttons
         JPanel buttonPanel = new JPanel(new FlowLayout());
@@ -107,23 +103,28 @@ public class RatingView extends JFrame {
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         rightPanel.add(buttonPanel, gbc);
-        
+
         // Split pane to divide left and right panels
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
         splitPane.setDividerLocation(300);
         add(splitPane, BorderLayout.CENTER);
-        
+
+        // Back button panel at bottom
+        JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        backPanel.add(backButton);
+        add(backPanel, BorderLayout.SOUTH);
+
         // Initially disable rating form until a request is selected
         enableRatingForm(false);
     }
-    
+
     private void setupRatingSlider(JSlider slider) {
         slider.setMajorTickSpacing(1);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
         slider.setSnapToTicks(true);
     }
-    
+
     private void setupEventHandlers() {
         // List selection handler
         requestList.addListSelectionListener(e -> {
@@ -152,17 +153,35 @@ public class RatingView extends JFrame {
                 }
             }
         });
-        
+
         // Submit rating handler
-        submitRatingBtn.addActionListener(e -> submitRating());
-        
+        submitRatingBtn.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                submitRating();
+            }
+        });
+
         // Skip rating handler
-        skipRatingBtn.addActionListener(e -> skipRating());
-        
+        skipRatingBtn.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                skipRating();
+            }
+        });
+
         // Refresh handler
-        refreshBtn.addActionListener(e -> loadRatingRequests());
+        refreshBtn.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                loadRatingRequests();
+            }
+        });
+
+        // Back button handler
+        backButton.addActionListener(e -> dispose());
     }
-    
+
     private void loadRatingRequests() {
         requestModel.clear();
         List<RatingRequest> requests = ratingHandler.getAllRequests();
@@ -209,66 +228,63 @@ public class RatingView extends JFrame {
         
         try {
             int tutorRating = tutorRatingSlider.getValue();
-            int courseRating = courseRatingSlider.getValue();
             
             
-            ratingHandler.processRatingSubmission(selectedRequest, tutorRating, courseRating);
+            ratingHandler.processRatingSubmission(selectedRequest, tutorRating);
             
             showSuccess("Rating submitted successfully!");
             clearForm();
             loadRatingRequests(); // Refresh the list
-            
+
         } catch (Exception e) {
             showError("Error submitting rating: " + e.getMessage());
         }
     }
-    
+
     private void skipRating() {
         if (selectedRequest == null) {
             showError("Please select a rating request first");
             return;
         }
-        
+
         try {
             ratingHandler.processRatingSkip(selectedRequest);
             showSuccess("Rating request skipped");
             clearForm();
             loadRatingRequests(); // Refresh the list
-            
+
         } catch (Exception e) {
             showError("Error skipping rating: " + e.getMessage());
         }
     }
-    
+
     private void clearForm() {
         tutorRatingSlider.setValue(3);
-        courseRatingSlider.setValue(3);
         feedbackArea.setText("");
         selectedRequest = null;
         enableRatingForm(false);
         statusLabel.setText("Select a rating request to proceed");
     }
-    
+
     private void enableRatingForm(boolean enabled) {
         tutorRatingSlider.setEnabled(enabled);
-        courseRatingSlider.setEnabled(enabled);
         feedbackArea.setEnabled(enabled);
         submitRatingBtn.setEnabled(enabled);
         skipRatingBtn.setEnabled(enabled);
     }
-    
+
     private void updateStatusForSelectedRequest() {
         if (selectedRequest != null) {
             Session session = selectedRequest.getSession();
-            statusLabel.setText("Rating session: " + session.getCourseName() + 
-                              " with " + session.getTutor().getName());
+            statusLabel.setText("Rating session: " + session.getCourseName() +
+                    " with " + session.getTutor().getName());
         }
     }
-    
+
     private void showError(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
+
     private void showSuccess(String message) {
         JOptionPane.showMessageDialog(this, message, "Success", JOptionPane.INFORMATION_MESSAGE);
     }

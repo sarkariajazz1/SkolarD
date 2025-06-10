@@ -16,8 +16,6 @@ import javax.swing.JTextField;
 import skolard.logic.booking.BookingHandler;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
-import skolard.logic.rating.RatingHandler;
-import skolard.logic.session.SessionHandler;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.presentation.datetime.DateTimeLabel;
@@ -28,8 +26,6 @@ public class StudentView extends JFrame {
     private final BookingHandler bookingHandler;
     private final MessageHandler messageHandler;
     private final Student currentStudent;
-    private final RatingHandler ratingHandler;
-    private final SessionHandler sessionHandler;
 
     // UI Components
     private final JTextField searchField = new JTextField(20);
@@ -43,8 +39,6 @@ public class StudentView extends JFrame {
     public StudentView(ProfileHandler profileHandler,
                        BookingHandler bookingHandler,
                        MessageHandler messageHandler,
-                       SessionHandler sessionHandler,
-                       RatingHandler ratingHandler,
                        Student student) {
         super("SkolarD - Student Dashboard");
 
@@ -52,8 +46,6 @@ public class StudentView extends JFrame {
         this.bookingHandler = bookingHandler;
         this.messageHandler = messageHandler;
         this.currentStudent = student;
-        this.ratingHandler = ratingHandler;
-        this.sessionHandler = sessionHandler;
 
         initializeUI();
         setupEventListeners();
@@ -102,19 +94,19 @@ public class StudentView extends JFrame {
     }
 
     private void setupEventListeners() {
-        searchTutorsBtn.addActionListener(e -> searchTutors());
+        //searchTutorsBtn.addActionListener(e -> searchTutors());
         messageTutorBtn.addActionListener(e -> messageTutor());
         viewMyProfileBtn.addActionListener(e -> viewMyProfile());
     }
 
-    private void searchTutors() {
-        String searchQuery = searchField.getText().trim();
-        if (searchQuery.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a search term.");
-            return;
-        }
+    // private void searchTutors() {
+    //     String searchQuery = searchField.getText().trim();
+    //     if (searchQuery.isEmpty()) {
+    //         JOptionPane.showMessageDialog(this, "Please enter a search term.");
+    //         return;
+    //     }
 
-        displayArea.setText("Searching for tutors...\n\n");
+    //     displayArea.setText("Searching for tutors...\n\n");
 
         try {
             var sessions = bookingHandler.getAvailableSessions(searchQuery, currentStudent.getEmail());

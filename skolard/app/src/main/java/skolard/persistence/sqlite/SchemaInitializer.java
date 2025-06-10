@@ -16,11 +16,6 @@ public class SchemaInitializer {
      * @param connection active database connection to execute schema creation
      */
     public static void initializeSchema(Connection connection) {
-        // Table for storing course identifiers and names
-        //String createCourseTable = "CREATE TABLE IF NOT EXISTS courses (" +
-        //        "id TEXT PRIMARY KEY NOT NULL," +
-        //        "name TEXT NOT NULL" +
-        //        ");";
 
         // Table for storing tutor profiles
         String createTutorTable = "CREATE TABLE IF NOT EXISTS tutor (" +
@@ -101,8 +96,40 @@ public class SchemaInitializer {
                 "password TEXT NOT NULL" +
                 ");";
 
+        String createRatingRequestTable = "CREATE TABLE IF NOT EXISTS ratingRequests (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "sessionId INTEGER NOT NULL," +
+                "studentEmail TEXT NOT NULL," +
+                "completed INTEGER NOT NULL," +
+                "skipped INTEGER NOT NULL," +
+                "rating INTEGER," +
+                "createdAt TEXT NOT NULL," +
+                "FOREIGN KEY(sessionId) REFERENCES session(id)," +
+                "FOREIGN KEY(studentEmail) REFERENCES student(email)" +
+                ");";
+
+        // Table for session ratings
+        String createRatingsTable = "CREATE TABLE IF NOT EXISTS ratings (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "tutorEmail TEXT NOT NULL," +
+                "sessionId INTEGER NOT NULL," +
+                "studentEmail TEXT NOT NULL," +
+                "courseName TEXT NOT NULL," +
+                "rating INTEGER NOT NULL," +
+                "FOREIGN KEY(tutorEmail) REFERENCES tutor(email)," +
+                "FOREIGN KEY(studentEmail) REFERENCES student(email)," +
+                "FOREIGN KEY(sessionId) REFERENCES session(id)" +
+                ");";
+
+        // Table for FAQ
+        String createFAQTable = "CREATE TABLE IF NOT EXISTS faq (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "question TEXT NOT NULL UNIQUE," +
+                "answer TEXT NOT NULL" +
+                ");";
+
+
         try (Statement stmt = connection.createStatement()) {
-            //stmt.execute(createCourseTable);
             stmt.execute(createTutorTable);
             stmt.execute(createStudentTable);
             stmt.execute(createSessionTable);
@@ -110,7 +137,10 @@ public class SchemaInitializer {
             stmt.execute(createMessageTable);
             stmt.execute(createCardTable);
             stmt.execute(createSupportTicketTable);
-            stmt.execute(createSupportUserTable); // ✅ Added support user table
+            stmt.execute(createSupportUserTable);
+            stmt.execute(createRatingRequestTable);
+            stmt.execute(createRatingsTable);
+            stmt.execute(createFAQTable);
         } catch (SQLException e) {
             System.err.println("SQL Error: " + e.getMessage());
             throw new RuntimeException("Failed to initialize database schema", e);
