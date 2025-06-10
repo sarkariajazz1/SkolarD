@@ -69,7 +69,7 @@ public class MessageAcceptanceTest extends AssertJSwingJUnitTestCase {
         when(mockHandler.getMessageHistory("alice@uofm.ca", "bob@uofm.ca"))
                 .thenReturn(Arrays.asList(existingMessage));
 
-        // Mock successful send
+        //Mock successful send
         Message newMessage = new Message(2, LocalDateTime.now(),
                 "alice@uofm.ca", "bob@uofm.ca", "alice@uofm.ca", "Hi Bob!");
         when(mockHandler.sendMessage(any(Message.class))).thenReturn(newMessage);
