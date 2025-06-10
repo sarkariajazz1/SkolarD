@@ -1,6 +1,6 @@
 package skolard.logic.rating;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import skolard.objects.Feedback;
@@ -8,25 +8,27 @@ import skolard.objects.RatingRequest;
 import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.persistence.RatingPersistence;
+import skolard.persistence.RatingRequestPersistence;
 
 
 public class RatingHandler {
-    private final List<RatingRequest> ratingRequests;
+    private final RatingRequestPersistence requestPersistence;
     private final RatingPersistence ratingPersistence;
 
-    public RatingHandler(RatingPersistence ratingPersistence) {
-        this.ratingRequests = new ArrayList<>();
+    public RatingHandler(RatingRequestPersistence requestPersistence, RatingPersistence ratingPersistence) {
+        this.requestPersistence = requestPersistence;
         this.ratingPersistence = ratingPersistence;
     }
 
     public void createRatingRequest(Session session, Student student) {
-        RatingRequest request = new RatingRequest(session, student);
-        ratingRequests.add(request);
+        RatingRequest request = new RatingRequest(-1, session, student, LocalDateTime.now(), false, false);
+        requestPersistence.addRequest(request);
     }
 
     
     public void processRatingSubmission(RatingRequest request, int rating) {
         request.submit(rating);
+        requestPersistence.updateRequest(request);
         Feedback feedback = request.toFeedback();
 
         ratingPersistence.saveRating(
@@ -40,20 +42,15 @@ public class RatingHandler {
     
     public void processRatingSkip(RatingRequest request) {
         request.skip();
+        requestPersistence.updateRequest(request);
     }
 
     public List<RatingRequest> getAllRequests() {
-        return new ArrayList<>(ratingRequests);
+        return requestPersistence.getAllRequests();
     }
 
     public List<RatingRequest> getPendingRequestsForStudent(Student student) {
-        List<RatingRequest> result = new ArrayList<>();
-        for (RatingRequest r : ratingRequests) {
-            if (r.getStudent().equals(student) && !r.isCompleted()) {
-                result.add(r);
-            }
-        }
-        return result;
+        return requestPersistence.getPendingRequestsForStudent(student.getEmail());
     }
 
     public List<Feedback> getTutorFeedback(String tutorEmail) {

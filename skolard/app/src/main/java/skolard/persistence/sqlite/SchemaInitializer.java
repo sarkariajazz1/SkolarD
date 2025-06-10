@@ -100,10 +100,10 @@ public class SchemaInitializer {
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "sessionId INTEGER NOT NULL," +
                 "studentEmail TEXT NOT NULL," +
-                "skipped INTEGER NOT NULL," +
                 "completed INTEGER NOT NULL," +
+                "skipped INTEGER NOT NULL," +
                 "rating INTEGER," +
-                "createdAt TEXT NOT NULL" +
+                "createdAt TEXT NOT NULL," +
                 "FOREIGN KEY(sessionId) REFERENCES session(id)," +
                 "FOREIGN KEY(studentEmail) REFERENCES student(email)" +
                 ");";

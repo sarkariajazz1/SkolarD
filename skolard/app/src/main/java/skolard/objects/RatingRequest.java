@@ -7,19 +7,26 @@ import java.time.LocalDateTime;
  * Tracks completion and numeric ratings (1–5) only.
  */
 public class RatingRequest {
+    private final int id;
     private final Session session;
     private final Student student;
-    private boolean skipped;
     private boolean completed;
+    private boolean skipped;
     private int rating;
     private final LocalDateTime createdAt;
 
-    public RatingRequest(Session session, Student student) {
+    public RatingRequest(int id, Session session, Student student, 
+        LocalDateTime time, boolean completed, boolean skipped) {
+        this.id = id;
         this.session = session;
         this.student = student;
         this.createdAt = LocalDateTime.now();
-        this.completed = false;
-        this.skipped = false;
+        this.completed = completed;
+        this.skipped = skipped;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Session getSession() {

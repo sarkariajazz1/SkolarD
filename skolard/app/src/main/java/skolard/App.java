@@ -31,7 +31,8 @@ public class App {
         ProfileHandler profileHandler = new ProfileHandler(sessionHandler);
         FAQHandler faqHandler = new FAQHandler(); 
         LoginHandler loginHandler = new LoginHandler();
-        RatingHandler ratingHandler = new RatingHandler(PersistenceRegistry.getRatingPersistence());
+        RatingHandler ratingHandler = new RatingHandler(PersistenceRegistry.getRatingRequestPersistence(),
+            PersistenceRegistry.getRatingPersistence());
 
         // Start UI
         SwingUtilities.invokeLater(() -> {
