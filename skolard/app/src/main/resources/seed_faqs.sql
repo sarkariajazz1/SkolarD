@@ -1,6 +1,6 @@
 BEGIN TRANSACTION;
 
-INSERT INTO faq (question, answer) VALUES 
+INSERT OR IGNORE INTO faq (question, answer) VALUES 
 ("How do I book a tutoring session?",
  "After logging in as a student, navigate to the 'Sessions' tab, choose an available time slot from a tutor's schedule, and click 'Book'."),
  
