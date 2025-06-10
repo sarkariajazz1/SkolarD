@@ -7,20 +7,26 @@ import java.time.LocalDateTime;
  * Tracks completion and numeric ratings (1–5) only.
  */
 public class RatingRequest {
+    private final int id;
     private final Session session;
     private final Student student;
-    private boolean skipped;
     private boolean completed;
-    private int tutorRating;
-    private int courseRating;
+    private boolean skipped;
+    private int rating;
     private final LocalDateTime createdAt;
 
-    public RatingRequest(Session session, Student student) {
+    public RatingRequest(int id, Session session, Student student, 
+        LocalDateTime time, boolean completed, boolean skipped) {
+        this.id = id;
         this.session = session;
         this.student = student;
         this.createdAt = LocalDateTime.now();
-        this.completed = false;
-        this.skipped = false;
+        this.completed = completed;
+        this.skipped = skipped;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Session getSession() {
@@ -39,21 +45,16 @@ public class RatingRequest {
         return skipped;
     }
 
-    public int getTutorRating() {
-        return tutorRating;
-    }
-
-    public int getCourseRating() {
-        return courseRating;
+    public int getRating() {
+        return rating;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void submit(int tutorRating, int courseRating) {
-        this.tutorRating = tutorRating;
-        this.courseRating = courseRating;
+    public void submit(int rating) {
+        this.rating = rating;
         this.completed = true;
         this.skipped = false;
     }
@@ -70,10 +71,9 @@ public class RatingRequest {
         return new Feedback(
             session.getSessionId(),
             session.getCourseName(),
-            session.getTutor().getName(),
-            student.getName(),
-            courseRating,
-            tutorRating
+            session.getTutor().getEmail(),
+            student.getEmail(),
+            rating
         );
     }
 

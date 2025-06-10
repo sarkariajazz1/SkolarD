@@ -16,16 +16,10 @@ public class MessageStub implements MessagePersistence{
     private static int uniqueID = 0;
 
     public MessageStub() {
-        confirmCreation();
+        messages = new HashMap<>();
 
         // Sample Messages for testing
         addSampleMessages();
-    }
-
-    private void confirmCreation() {
-        if(messages == null) {
-            messages = new HashMap<>();
-        }
     }
 
     private void addSampleMessages() {
@@ -42,7 +36,6 @@ public class MessageStub implements MessagePersistence{
     }
     @Override
     public Message addMessage(Message message) {
-        confirmCreation();
         if(messages.containsKey(message.getMessageId())) {
             throw new RuntimeException("Updated Existing Message, that was an update, not an add");
         }
@@ -55,7 +48,6 @@ public class MessageStub implements MessagePersistence{
 
     @Override
     public List<Message> getMessageHistory(String studentEmail, String tutorEmail) {
-        confirmCreation();
         List<Message> messageList = new ArrayList<>();
         for(Message message : messages.values()) {
             if(messageHistory(message, studentEmail, tutorEmail)) {
@@ -67,7 +59,6 @@ public class MessageStub implements MessagePersistence{
 
     @Override
     public List<String> getTutorsMessaged(String studentEmail) {
-        confirmCreation();
         List<String> tutors = new ArrayList<>();
         Set<String> uniqueTutors = new HashSet<>(tutors);
 
@@ -83,7 +74,6 @@ public class MessageStub implements MessagePersistence{
 
     @Override
     public List<String> getStudentsMessaged(String tutorEmail) {
-        confirmCreation();
         List<String> students = new ArrayList<>();
         Set<String> uniqueStudents = new HashSet<>(students);
 
@@ -99,7 +89,6 @@ public class MessageStub implements MessagePersistence{
 
     @Override
     public void deleteMessageById(int id) {
-        confirmCreation();
         if(messages.containsKey(id)) {
             messages.remove(id);
         } else {
@@ -109,7 +98,6 @@ public class MessageStub implements MessagePersistence{
 
     @Override
     public void updateMessage(Message updatedMessage) {
-        confirmCreation();
         if(!messages.containsKey(updatedMessage.getMessageId())) {
             throw new RuntimeException("Cannot update a Message that does not exist.");
         } 
@@ -119,7 +107,6 @@ public class MessageStub implements MessagePersistence{
     
     @Override
     public void deleteMessageHistory(String studentEmail, String tutorEmail) {
-        confirmCreation();
         List<Integer> idsToDelete = new ArrayList<>();
         for (Message message : messages.values()) {
             if (messageHistory(message, studentEmail, tutorEmail)) {
