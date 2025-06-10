@@ -248,7 +248,7 @@ public class SkolardApp extends JFrame {
 
         // Setup event listeners
         myDashboardBtn.addActionListener(e -> {
-            openWindow(new StudentView(profileHandler, bookingHandler, messageHandler,(Student) currentUser));
+            openWindow(new StudentView(profileHandler, messageHandler,(Student) currentUser));
         });
 
         findTutorsBtn.addActionListener(e -> {
