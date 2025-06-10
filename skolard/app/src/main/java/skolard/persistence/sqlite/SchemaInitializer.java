@@ -121,15 +121,13 @@ public class SchemaInitializer {
                 "FOREIGN KEY(sessionId) REFERENCES session(id)" +
                 ");";
 
+        // Table for FAQ
         String createFAQTable = "CREATE TABLE IF NOT EXISTS faq (" +
-                "sessionId INTEGER NOT NULL," +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "studentEmail TEXT NOT NULL," +
                 "question TEXT NOT NULL UNIQUE," +
-                "completed INTEGER NOT NULL," +
                 "answer TEXT NOT NULL" +
-                "skipped INTEGER NOT NULL," +
                 ");";
+
 
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(createTutorTable);
