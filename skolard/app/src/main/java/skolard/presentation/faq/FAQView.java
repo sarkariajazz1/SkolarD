@@ -1,58 +1,59 @@
-
 package skolard.presentation.faq;
 
-import java.io.IOException;
-
-import javax.swing.JOptionPane;
-
 import skolard.logic.faq.FAQHandler;
+import skolard.objects.FAQ;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
 
 /**
- * View class for displaying the FAQ documentation.
- * Handles opening the FAQ in the default browser with proper styling.
+ * In-app FAQ view panel.
+ * Displays a scrollable list of questions and answers.
  */
-public class FAQView {
+public class FAQView extends JFrame {
+
     private final FAQHandler faqHandler;
 
-    public FAQView() {
-        this(new FAQHandler());
-    }
-
     public FAQView(FAQHandler faqHandler) {
+        super("Frequently Asked Questions");
         this.faqHandler = faqHandler;
-        openFAQ();
+
+        setSize(500, 400);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        JLabel header = new JLabel("Frequently Asked Questions", SwingConstants.CENTER);
+        header.setFont(header.getFont().deriveFont(Font.BOLD, 18f));
+        add(header, BorderLayout.NORTH);
+
+        add(createFAQScrollPane(), BorderLayout.CENTER);
+
+        setVisible(true);
     }
 
-    private void openFAQ() {
-        try {
-            // Check if CSS is available for better styling
-            if (!faqHandler.isCSSAvailable()) {
-                // Show warning but continue
-                JOptionPane.showMessageDialog(null,
-                        "Note: CSS stylesheet not found. FAQ will display with basic styling.\n" +
-                                "Expected location: " + faqHandler.getCSSPath(),
-                        "Styling Warning",
-                        JOptionPane.WARNING_MESSAGE);
-            }
+    private JScrollPane createFAQScrollPane() {
+        List<FAQ> faqs = faqHandler.getAllFAQs();
 
-            boolean success = faqHandler.openFAQ();
+        JPanel faqPanel = new JPanel();
+        faqPanel.setLayout(new BoxLayout(faqPanel, BoxLayout.Y_AXIS));
+        faqPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-            if (!success) {
-                JOptionPane.showMessageDialog(null,
-                        "FAQ file not found: " + faqHandler.getFAQPath() + "\n\n" +
-                                "Please ensure the FAQ documentation has been generated.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,
-                    "Error opening FAQ: " + e.getMessage() + "\n\n" +
-                            "This might be due to:\n" +
-                            "• File access permissions\n" +
-                            "• Missing browser configuration\n" +
-                            "• Corrupted FAQ files",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+        for (FAQ faq : faqs) {
+            JLabel qLabel = new JLabel("<html><b>Q: " + faq.getQuestion() + "</b></html>");
+            JLabel aLabel = new JLabel("<html><i>A: " + faq.getAnswer() + "</i></html>");
+            qLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            aLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            faqPanel.add(qLabel);
+            faqPanel.add(Box.createVerticalStrut(4));
+            faqPanel.add(aLabel);
+            faqPanel.add(Box.createVerticalStrut(12));
         }
+
+        JScrollPane scrollPane = new JScrollPane(faqPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        return scrollPane;
     }
 }
