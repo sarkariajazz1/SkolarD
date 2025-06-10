@@ -1,4 +1,4 @@
-package skolard.logic.matching;
+package skolard.logic.booking;
 
 import java.util.ArrayList;
 import java.util.Collections;

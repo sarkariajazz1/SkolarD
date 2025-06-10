@@ -19,14 +19,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import skolard.logic.faq.FAQHandler;
 import skolard.logic.auth.LoginHandler;
-import skolard.logic.matching.MatchingHandler;
+import skolard.logic.booking.BookingHandler;
+import skolard.logic.faq.FAQHandler;
 import skolard.logic.message.MessageHandler;
 import skolard.logic.profile.ProfileHandler;
 import skolard.logic.rating.RatingHandler;
 import skolard.logic.session.SessionHandler;
 import skolard.logic.support.SupportHandler;
+import skolard.logic.payment.PaymentHandler;
 import skolard.objects.Student;
 import skolard.objects.Support;
 import skolard.objects.Tutor;
@@ -34,9 +35,13 @@ import skolard.objects.User;
 import skolard.persistence.PersistenceRegistry;
 import skolard.presentation.auth.LoginView;
 import skolard.presentation.auth.SignUpView;
-import skolard.presentation.faq.FAQView;
+import skolard.presentation.booking.BookingView;
 import skolard.presentation.dashboard.StudentView;
-import skolard.presentation.matching.MatchingView;
+import skolard.presentation.dashboard.TutorView;
+import skolard.presentation.faq.FAQView;
+import skolard.presentation.message.MessageView;
+import skolard.presentation.profile.ProfileView;
+import skolard.presentation.rating.RatingView;
 import skolard.presentation.session.SessionView;
 import skolard.presentation.message.MessageView;
 import skolard.presentation.support.SupportView;
@@ -47,12 +52,13 @@ import skolard.presentation.support.SupportView;
 public class SkolardApp extends JFrame {
 
     private final ProfileHandler profileHandler;
-    private final MatchingHandler matchingHandler;
+    private final BookingHandler bookingHandler;
     private final SessionHandler sessionHandler;
     private final MessageHandler messageHandler;
     private final FAQHandler faqHandler;
     private final LoginHandler loginHandler;
-    private final RatingHandler ratingHandler;
+    private final RatingHandler ratingHandler; // Uncomment if RatingHandler is implemented
+    private final PaymentHandler paymentHandler;
 
     private User currentUser;
     private JPanel mainPanel;
@@ -69,17 +75,19 @@ public class SkolardApp extends JFrame {
                       MessageHandler messageHandler,
                       FAQHandler faqHandler,
                       LoginHandler loginHandler,
-                      RatingHandler ratingHandler
-    ) {
+                      RatingHandler ratingHandler,
+                      PaymentHandler paymentHandler
+                      ) {
         super("SkolarD - Welcome");
 
         this.profileHandler = profileHandler;
-        this.matchingHandler = matchingHandler;
+        this.bookingHandler = bookingHandler;
         this.sessionHandler = sessionHandler;
         this.messageHandler = messageHandler;
         this.faqHandler = faqHandler;
         this.loginHandler = loginHandler;
         this.ratingHandler = ratingHandler;
+        this.paymentHandler = paymentHandler;
 
         initializeUI();
         showAuthenticationView();

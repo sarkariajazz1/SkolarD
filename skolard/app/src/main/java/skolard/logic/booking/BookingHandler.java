@@ -1,4 +1,4 @@
-package skolard.logic.matching;
+package skolard.logic.booking;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,13 +12,13 @@ import skolard.persistence.SessionPersistence;
  * Handles matching students with available tutoring sessions.
  * Responsible for loading sessions and applying filters like rating, time, or tutor.
  */
-public class MatchingHandler {
+public class BookingHandler {
     private final SessionPersistence sessionDB;
 
     /**
      * Constructor for injecting a custom session database (mock/stub).
      */
-    public MatchingHandler(SessionPersistence sessionPersistence) {
+    public BookingHandler(SessionPersistence sessionPersistence) {
         this.sessionDB = sessionPersistence;
     }
 
@@ -34,7 +34,7 @@ public class MatchingHandler {
          * Sorts sessions by best course rating
          */
         RATE((sessions, course, start, end) ->
-            new RatingComparator(sessions).sortByBestCourseRating(course)),
+            new GradeComparator(sessions).sortByBestCourseRating(course)),
 
         /**
          * Filters and sorts sessions based on student time range
