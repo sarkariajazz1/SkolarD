@@ -6,27 +6,25 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import skolard.objects.Tutor;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TutorDBTest {
 
-    private static Connection connection;
+    private Connection connection;
     private TutorDB tutorDB;
 
     @BeforeAll
-    static void initDB() throws Exception {
+    void initDB() throws Exception {
         connection = DriverManager.getConnection("jdbc:sqlite::memory:");
-        SchemaInitializer.initializeSchema(connection); // Use real schema with password column
+        SchemaInitializer.initializeSchema(connection);
     }
 
     @BeforeEach
@@ -37,10 +35,10 @@ public class TutorDBTest {
         tutorDB = new TutorDB(connection);
     }
 
-    // Helper to insert a tutor with password manually (bypassing LoginHandler)
+    // Helper to insert a tutor with password manually
     private void insertTutorWithPassword(String name, String email, String bio, String password) throws Exception {
         try (PreparedStatement stmt = connection.prepareStatement(
-                "INSERT INTO tutor (name, email, bio, password) VALUES (?, ?, ?, ?)")) {
+                "INSERT INTO tutor (name, email, bio, password) VALUES (?, ?, ?, ?)");) {
             stmt.setString(1, name);
             stmt.setString(2, email);
             stmt.setString(3, bio);
@@ -48,13 +46,6 @@ public class TutorDBTest {
             stmt.executeUpdate();
         }
     }
-
-    // @Test
-    // void testAddAndGetTutor() {
-    //     Tutor tutor = new Tutor("Amrit Singh", "amrit@skolard.ca", "Math Tutor");
-    //     assertThrows(RuntimeException.class, () -> tutorDB.addTutor(tutor));
-    //     // TutorDB.addTutor fails unless LoginHandler sets password; expected
-    // }
 
     @Test
     void testGetTutorByEmail_NotFound() {
@@ -65,7 +56,6 @@ public class TutorDBTest {
     @Test
     void testDeleteTutorByEmail() throws Exception {
         insertTutorWithPassword("Simran Dhillon", "simran@skolard.ca", "Physics Tutor", "pass123");
-
         tutorDB.deleteTutorByEmail("simran@skolard.ca");
         assertNull(tutorDB.getTutorByEmail("simran@skolard.ca"));
     }
@@ -95,8 +85,6 @@ public class TutorDBTest {
     @Test
     void testAddTutor_SQLException() {
         Tutor t1 = new Tutor("Amrit", "duplicate@skolard.ca", "Bio1");
-
-        // Pre-insert to trigger duplicate constraint
         assertDoesNotThrow(() -> insertTutorWithPassword("Amrit", "duplicate@skolard.ca", "Bio1", "testpass"));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> tutorDB.addTutor(t1));
@@ -128,6 +116,8 @@ public class TutorDBTest {
 
     @Test
     void testGetAllTutors() throws Exception {
+
+ 
         insertTutorWithPassword("Tutor A", "a@skolard.ca", "Bio A", "p1");
         insertTutorWithPassword("Tutor B", "b@skolard.ca", "Bio B", "p2");
 

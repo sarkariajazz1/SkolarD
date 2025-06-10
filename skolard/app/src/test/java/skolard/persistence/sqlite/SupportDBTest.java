@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SupportDBTest {
 
-    private static Connection connection;
+    private Connection connection;
     private SupportDB supportDB;
     private StudentPersistence mockStudentDB;
     private TutorPersistence mockTutorDB;
@@ -29,7 +29,7 @@ public class SupportDBTest {
     private final User mockTutor = new Tutor("Tutor", "tutor@skolard.ca", "bio", "pass", null);
 
     @BeforeAll
-    static void initDb() throws Exception {
+    void initDb() throws Exception {
         connection = DriverManager.getConnection("jdbc:sqlite::memory:");
         SchemaInitializer.initializeSchema(connection);
     }
