@@ -73,7 +73,7 @@ This project was designed as part of a final-year university capstone and reflec
     java -cp out skolard.App
 
 ## Vision Statement
-
+https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/dev/docs/VISION.md?ref_type=heads
 
 ## Architecture: 
 https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/dev/docs/architecture/ARCHITECTURE.md?ref_type=heads
