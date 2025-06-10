@@ -96,18 +96,30 @@ public class SchemaInitializer {
                 "password TEXT NOT NULL" +
                 ");";
 
+        String createRatingRequestTable = "CREATE TABLE IF NOT EXISTS ratingRequests (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "sessionId INTEGER NOT NULL," +
+                "studentEmail TEXT NOT NULL," +
+                "skipped INTEGER NOT NULL," +
+                "completed INTEGER NOT NULL," +
+                "rating INTEGER," +
+                "createdAt TEXT NOT NULL" +
+                "FOREIGN KEY(sessionId) REFERENCES session(id)," +
+                "FOREIGN KEY(studentEmail) REFERENCES student(email)" +
+                ");";
+
         // Table for session ratings
         String createRatingsTable = "CREATE TABLE IF NOT EXISTS ratings (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "tutorEmail TEXT NOT NULL," +
-                    "sessionId INTEGER NOT NULL," +
-                    "studentEmail TEXT NOT NULL," +
-                    "courseName TEXT NOT NULL," +
-                    "rating INTEGER NOT NULL," +
-                    "FOREIGN KEY(tutorEmail) REFERENCES tutor(email)," +
-                    "FOREIGN KEY(studentEmail) REFERENCES student(email)," +
-                    "FOREIGN KEY(sessionId) REFERENCES session(id)" +
-                    ");";
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "tutorEmail TEXT NOT NULL," +
+                "sessionId INTEGER NOT NULL," +
+                "studentEmail TEXT NOT NULL," +
+                "courseName TEXT NOT NULL," +
+                "rating INTEGER NOT NULL," +
+                "FOREIGN KEY(tutorEmail) REFERENCES tutor(email)," +
+                "FOREIGN KEY(studentEmail) REFERENCES student(email)," +
+                "FOREIGN KEY(sessionId) REFERENCES session(id)" +
+                ");";
 
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(createTutorTable);
@@ -118,6 +130,7 @@ public class SchemaInitializer {
             stmt.execute(createCardTable);
             stmt.execute(createSupportTicketTable);
             stmt.execute(createSupportUserTable);
+            stmt.execute(createRatingRequestTable);
             stmt.execute(createRatingsTable);
         } catch (SQLException e) {
             System.err.println("SQL Error: " + e.getMessage());

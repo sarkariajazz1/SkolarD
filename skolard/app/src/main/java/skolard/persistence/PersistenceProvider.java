@@ -5,6 +5,7 @@ import java.sql.Connection;
 import skolard.persistence.sqlite.CardDB;
 import skolard.persistence.sqlite.LoginDB;
 import skolard.persistence.sqlite.MessageDB;
+import skolard.persistence.sqlite.RatingDB;
 import skolard.persistence.sqlite.SessionDB;
 import skolard.persistence.sqlite.StudentDB;
 import skolard.persistence.sqlite.SupportDB;
@@ -25,7 +26,9 @@ public class PersistenceProvider {
         PersistenceRegistry.setMessagePersistence(new MessageDB(conn));
         PersistenceRegistry.setLoginPersistence(new LoginDB(conn));
         PersistenceRegistry.setCardPersistence(new CardDB(conn));
-        PersistenceRegistry.setSupportPersistence(supportPersistence); // NEW
+        PersistenceRegistry.setSupportPersistence(supportPersistence);
+        PersistenceRegistry.setRatingRequestPersistence(null);
+        PersistenceRegistry.setRatingPersistence(new RatingDB(conn));
     }
 
     public static void initializeStubs() {
@@ -40,5 +43,7 @@ public class PersistenceProvider {
         PersistenceRegistry.setMessagePersistence(StubFactory.createMessagePersistence());
         PersistenceRegistry.setCardPersistence(StubFactory.createCardPersistence());
         PersistenceRegistry.setSupportPersistence(StubFactory.createSupportPersistence()); 
+        PersistenceRegistry.setRatingRequestPersistence(StubFactory.createRatingRequestStub());
+        PersistenceRegistry.setRatingPersistence(StubFactory.createRatingStub());
     }
 }
