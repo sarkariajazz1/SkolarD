@@ -1,14 +1,12 @@
 package skolard.logic.rating;
 
 import org.junit.jupiter.api.*;
-import skolard.objects.Feedback;
-import skolard.objects.RatingRequest;
-import skolard.objects.Session;
-import skolard.objects.Student;
+import skolard.objects.*;
 import skolard.persistence.*;
 
 import java.sql.Connection;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,14 +18,16 @@ public class RatingHandlerIntegrationTest {
     private RatingRequestPersistence ratingRequestPersistence;
     private RatingPersistence ratingPersistence;
     private StudentPersistence studentPersistence;
+    private TutorPersistence tutorPersistence;
     private SessionPersistence sessionPersistence;
 
     @BeforeAll
     void setup() throws Exception {
-        conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, true);
+        conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, false);
         PersistenceProvider.initializeSqlite(conn);
 
         studentPersistence = PersistenceRegistry.getStudentPersistence();
+        tutorPersistence = PersistenceRegistry.getTutorPersistence();
         sessionPersistence = PersistenceRegistry.getSessionPersistence();
         ratingRequestPersistence = PersistenceRegistry.getRatingRequestPersistence();
         ratingPersistence = PersistenceRegistry.getRatingPersistence();
@@ -35,10 +35,42 @@ public class RatingHandlerIntegrationTest {
         ratingHandler = new RatingHandler(ratingRequestPersistence, ratingPersistence);
     }
 
+    private Student createTestStudent() {
+        String email = "student_" + UUID.randomUUID() + "@example.com";
+        Student student = new Student("Test Student", email, "hashedPassword");
+        studentPersistence.addStudent(student);
+        return student;
+    }
+
+    private Tutor createTestTutor() {
+        String email = "tutor_" + UUID.randomUUID() + "@example.com";
+        Map<String, Double> courses = new HashMap<>();
+        courses.put("Math", 4.0);
+        Tutor tutor = new Tutor("Test Tutor", email, "hashedPassword", "Bio", courses);
+        tutorPersistence.addTutor(tutor);
+        return tutor;
+    }
+
+    private Session createAndBookSession(Student student, Tutor tutor) {
+        LocalDateTime start = LocalDateTime.now().plusDays(1);
+        LocalDateTime end = start.plusHours(1);
+        Session session = new Session(0, tutor, null, start, end, "Math");
+        sessionPersistence.addSession(session);
+        Session saved = sessionPersistence.getSessionsByTutorEmail(tutor.getEmail()).stream()
+                .filter(s -> s.getStartDateTime().equals(start))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Session not found after insert"));
+
+        saved.bookSession(student);
+        sessionPersistence.updateSession(saved);
+        return saved;
+    }
+
     @Test
     void testCreateRatingRequest() {
-        Student student = studentPersistence.getStudentByEmail("alice@example.com");
-        Session session = sessionPersistence.getSessionById(6); // Assume booked session
+        Student student = createTestStudent();
+        Tutor tutor = createTestTutor();
+        Session session = createAndBookSession(student, tutor);
 
         ratingHandler.createRatingRequest(session, student);
 
@@ -50,10 +82,9 @@ public class RatingHandlerIntegrationTest {
 
     @Test
     void testProcessRatingSubmission() {
-        Student student = studentPersistence.getStudentByEmail("alice@example.com");
-        Session session = sessionPersistence.getSessionById(15); // Booked session
-
-        assertNotNull(session.getStudent(), "Session should be booked.");
+        Student student = createTestStudent();
+        Tutor tutor = createTestTutor();
+        Session session = createAndBookSession(student, tutor);
 
         ratingHandler.createRatingRequest(session, student);
         RatingRequest request = ratingRequestPersistence.getPendingRequestsForStudent(student.getEmail())
@@ -63,7 +94,7 @@ public class RatingHandlerIntegrationTest {
 
         ratingHandler.processRatingSubmission(request, 4);
 
-        List<Feedback> feedbackList = ratingPersistence.getAllFeedbackForTutor(session.getTutor().getEmail());
+        List<Feedback> feedbackList = ratingPersistence.getAllFeedbackForTutor(tutor.getEmail());
 
         boolean match = feedbackList.stream().anyMatch(f ->
             f.getSessionId() == session.getSessionId() &&
@@ -74,13 +105,11 @@ public class RatingHandlerIntegrationTest {
         assertTrue(match, "Feedback should be saved after rating submission.");
     }
 
-
-
-
     @Test
     void testProcessRatingSkip() {
-        Student student = studentPersistence.getStudentByEmail("alice@example.com");
-        Session session = sessionPersistence.getSessionById(8); // Assume booked session
+        Student student = createTestStudent();
+        Tutor tutor = createTestTutor();
+        Session session = createAndBookSession(student, tutor);
 
         ratingHandler.createRatingRequest(session, student);
         RatingRequest request = ratingRequestPersistence.getPendingRequestsForStudent(student.getEmail())
@@ -105,8 +134,8 @@ public class RatingHandlerIntegrationTest {
 
     @Test
     void testGetTutorFeedback() {
-        String tutorEmail = "bob@skolard.ca";
-        List<Feedback> feedback = ratingHandler.getTutorFeedback(tutorEmail);
+        Tutor tutor = createTestTutor();
+        List<Feedback> feedback = ratingHandler.getTutorFeedback(tutor.getEmail());
         assertNotNull(feedback);
     }
 
