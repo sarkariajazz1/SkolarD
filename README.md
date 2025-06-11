@@ -1,88 +1,151 @@
-## README
 
 # SkolarD
 
-SkolarD is an all-in-one tutoring management system designed to streamline academic support for both students and tutors. Built as a desktop Java Swing application, it combines session booking, messaging, payment tracking, and post-session rating in a unified interface.
+**Team Name:** Decoders
+
+SkolarD is a tutoring management system designed to streamline academic support for both students and tutors. Built as a modular Java Swing desktop application, SkolarD provides a unified interface for scheduling, messaging, rating, and managing tutoring sessions. It adheres to a 3-tier architecture separating the presentation, business logic, and persistence layers to support long-term maintainability, testability, and extensibility.
 
 ---
 
-## 💡 Project Purpose
+## Project Purpose
 
-The goal of SkolarD is to provide a professional and seamless tutoring experience. It enables:
+SkolarD was created as a final-year capstone project to simulate real-world software engineering practices in designing, implementing, and maintaining a complete desktop application. It aims to:
 
-- **Students** to discover tutors by course, view tutor qualifications, book and unbook sessions, communicate with tutors, and rate sessions after completion.
-- **Tutors** to create and manage available sessions, respond to messages, and monitor feedback.
-- **Administrators** to later integrate analytics and oversee platform engagement (future scope).
-
-This project was designed as part of a final-year university capstone and reflects real-world system design, usability principles, and code organization practices.
+- Allow **students** to search for tutors, book/unbook sessions, communicate with tutors, and rate them after each session.
+- Enable **tutors** to post availability, manage sessions, respond to messages, and receive feedback.
+- Support future **administrator features** such as analytics, reports, and user moderation.
 
 ---
 
-## 💎 Why SkolarD Is Valuable
+## Key Features
 
-- **Efficient Scheduling**: Students can easily search and book sessions by course, tutor rating, or availability.
-- **Two-Way Communication**: Built-in messaging allows asynchronous coordination between tutors and students.
-- **Feedback Loop**: Rating requests are automatically generated and tracked, ensuring quality and transparency.
-- **Session Integrity**: Booked sessions can be managed with refund logic, and unbooked sessions automatically skip feedback collection.
-- **User-Centric Design**: Simple GUI layouts tailored to the user's role (student or tutor).
-- **Scalable Architecture**: Modular persistence and logic layers make future expansion (e.g., admin panel or reporting tools) possible.
-
----
-
-## ✨ Features
-
-- ✅ Session booking, unbooking, and creation
-- ✅ Time and rating-based session filtering
-- ✅ Per-course tutor ratings
-- ✅ Tutor bios and qualifications
-- ✅ Rating system with optional feedback
-- ✅ Built-in messaging system between tutors and students
-- ✅ Role-based access and GUI views
-- ✅ SQLite database with seeding support
+- Session booking and unbooking with time and rating-based filtering
+- Tutor profiles including bios, qualifications, and course expertise
+- Post-session rating system with support for per-course tutor ratings
+- Messaging system between students and tutors
+- SQLite database integration with test and production environments
+- Stub support for logic and persistence testing using Java collections
+- Clean role-based GUI layouts for students and tutors
 
 ---
 
-## 🧪 Technologies Used
+## Dependencies and Versions
 
-- **Java 17**
-- **Java Swing** for the GUI
-- **SQLite** for persistence
-- **JUnit & Mockito** for testing
-- **Maven (optional)** for dependency management
-- **Layered architecture** (Presentation, Logic, Persistence, Objects)
+- Java 17  
+- Java Swing (GUI)  
+- SQLite JDBC: `org.xerial:sqlite-jdbc:3.36.0.3`  
+- JUnit 4 for unit and integration testing  
+- Gradle (optional, supported for builds and testing)  
+- GitLab for version control and documentation  
 
 ---
 
-## 🚀 Getting Started
+## Setting Up and Running
 
-### ✅ Prerequisites
-- Java 17+ installed
-- SQLite CLI (optional for DB inspection)
+### Prerequisites
 
-### 🔧 Running the App
+- Java 17+ installed on your machine
+- SQLite CLI (optional, for direct database access)
 
-1. **Clone the repository**
+### Compiling and Running
+
+#### Using CLI
+
+1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/skolard.git
-   cd skolard
+   git clone https://gitlab.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders.git
+   cd a01-g06-decoders
+   ```
 
-2. **Compile the Source**
-    ```bash
-    javac -d out src/skolard/*.java src/skolard/**/*.java
+2. Compile the source files:
+   ```bash
+   javac -d out src/skolard/*.java src/skolard/**/*.java
+   ```
 
-3. **Run the Application**
-    ```bash
-    java -cp out skolard.App
+3. Run the application:
+   ```bash
+   java -cp out skolard.App
+   ```
 
-## Vision Statement
-https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/dev/docs/VISION.md?ref_type=heads
+#### Using Gradle (optional)
 
-## Architecture: 
-https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/dev/docs/architecture/ARCHITECTURE.md?ref_type=heads
+To run the application using Gradle:
 
-## Coding Standards
-https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/main/docs/JavaCodingStandards.md?ref_type=heads
+```bash
+./gradlew run
+```
 
-## Retrospectives
-https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/tree/main/docs/retros?ref_type=heads
+---
 
+## Database Management
+
+SkolarD uses a dual-mode persistence design:
+
+- `skolard.db`: the main production SQLite database
+- `test.db`: used exclusively for integration testing
+- **Stub mode**: simulated database using in-memory Java HashMaps (enabled via `StubFactory`)
+
+The schema is auto-generated on application start. SQL seed files are provided in the `resources/` directory.
+
+### Resetting the Database
+
+#### Delete the database file
+
+On macOS/Linux:
+```bash
+rm path/to/skolard.db
+```
+
+On Windows:
+```cmd
+del path	o\skolard.db
+```
+
+#### Reset test database
+
+```bash
+rm path/to/test.db
+```
+
+Both databases will be re-initialized on the next application run.
+
+---
+
+## Architecture
+
+SkolarD is designed using a strict 3-tier architecture:
+
+1. **Presentation Layer**: Java Swing GUI components organized by features (e.g., `rating/`, `booking/`, `profile/`)
+2. **Logic Layer**: Handles business logic, validation, and coordination between UI and persistence
+3. **Persistence Layer**: Abstract interfaces with multiple implementations (SQLite and stub)
+
+This structure ensures modularity, low coupling, and high cohesion across components.
+
+---
+
+## Design Patterns Used
+
+The following design patterns were implemented throughout the SkolarD codebase, following principles from *Design Patterns: Elements of Reusable Object-Oriented Software* (Gang of Four):
+
+- **Factory**: Used in `PersistenceFactory` and `HandlerFactory` to encapsulate creation logic of stub vs. SQLite-backed classes
+- **Builder**: Used to create complex objects like `Profile`, `Session`, and `SupportTicket` with optional fields
+- **Strategy**: Comparators like `GradeComparator`, `TimeComparator`, and `TutorComparator` apply different sorting strategies in the booking logic
+- **Observer**: Rating submission indirectly triggers state updates reflected in both student and tutor profiles
+- **Singleton**: `ConnectionManager` ensures only one database connection is open at a time
+- **Template Method**: Shared workflows across handlers and views (e.g., `ProfileHandler` and `RatingHandler`) with specific steps implemented by subclasses
+- **Adapter** (implicit): Stubs mimic the interface of real persistence implementations for seamless interchangeability during testing
+
+---
+
+## Additional Documentation
+
+- [Vision Statement](https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/dev/docs/VISION.md?ref_type=heads)
+- [Architecture Overview](https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/dev/docs/architecture/ARCHITECTURE.md?ref_type=heads)
+- [Java Coding Standards](https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/main/docs/JavaCodingStandards.md?ref_type=heads)
+- [Team Retrospectives](https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/tree/main/docs/retros?ref_type=heads)
+
+---
+
+## Summary
+
+SkolarD provides a robust and extensible foundation for tutoring services, emphasizing modular design, user experience, and architectural best practices. Designed and developed by the **Decoders** team, it demonstrates real-world engineering principles including testable code, design patterns, and maintainable layering across functional domains.
