@@ -1,163 +1,234 @@
 ```mermaid
 flowchart TD
 
-%% Layer: Presentation
+%% ROOT ENTRY
+App[App.java]
+
+%% PRESENTATION (now fully modular)
 subgraph Presentation
-    SkolardApp
-    LoginView
-    SignUpView
-    BookingView
-    SupportDashboard
-    TutorView
-    DateTimeLabel
-    FAQView
-    MessageView
-    PaymentView
-    StudentProfileView
-    TutorProfileView
-    RatingView
-    SessionView
-    SupportView
+    SkolardApp[SkolardApp.java]
+
+    subgraph AuthViews
+        LoginView
+        SignUpView
+    end
+
+    subgraph BookingViews
+        BookingController
+        BookingInputHandler
+        BookingView
+    end
+
+    subgraph DashboardViews
+        SupportDashboard
+        TutorView
+    end
+
+    subgraph DateTime
+        DateTimeLabel
+    end
+
+    subgraph FAQViews
+        FAQView
+    end
+
+    subgraph MessageViews
+        MessageView
+    end
+
+    subgraph PaymentViews
+        PaymentView
+    end
+
+    subgraph ProfileViews
+        StudentProfileView
+        TutorProfileView
+    end
+
+    subgraph RatingViews
+        RatingView
+    end
+
+    subgraph SessionViews
+        SessionView
+    end
+
+    subgraph SupportViews
+        SupportView
+    end
 end
 
-%% Layer: Logic
+%% LOGIC (same as before)
 subgraph Logic
-    LoginHandler
-    BookingHandler
-    FAQHandler
-    MessageHandler
-    PaymentHandler
-    ProfileHandler
-    ProfileCreator
-    ProfileUpdater
-    ProfileViewer
-    DefaultProfileFormatter
-    RatingHandler
-    SessionHandler
-    SessionAccess
-    SessionBooking
-    SessionManagement
-    SupportHandler
-    PriorityList
-    GradeComparator
-    TimeComparator
-    TutorComparator
+    subgraph AuthLogic
+        LoginHandler
+    end
+
+    subgraph BookingLogic
+        BookingHandler
+        GradeComparator
+        PriorityList
+        TimeComparator
+        TutorComparator
+    end
+
+    subgraph FAQLogic
+        FAQHandler
+    end
+
+    subgraph MessageLogic
+        MessageHandler
+    end
+
+    subgraph PaymentLogic
+        PaymentHandler
+    end
+
+    subgraph ProfileLogic
+        ProfileHandler
+        ProfileCreator
+        ProfileUpdater
+        ProfileViewer
+        DefaultProfileFormatter
+        ProfileFormatter
+    end
+
+    subgraph RatingLogic
+        RatingHandler
+    end
+
+    subgraph SessionLogic
+        SessionHandler
+        SessionAccess
+        SessionBooking
+        SessionManagement
+    end
+
+    subgraph SupportLogic
+        SupportHandler
+    end
 end
 
-%% Layer: Persistence
-subgraph Persistence
-    CardPersistence
-    FAQPersistence
-    LoginPersistence
-    MessagePersistence
-    RatingPersistence
-    RatingRequestPersistence
-    SessionPersistence
-    StudentPersistence
-    SupportPersistence
-    TutorPersistence
+%% PERSISTENCE FACTORY
+subgraph PersistenceFactoryLayer
     PersistenceFactory
     PersistenceProvider
-    ConnectionManager
 end
 
-%% Layer: DB Implementations
-subgraph SQLite
-    CardDB
-    FAQDB
-    LoginDB
-    MessageDB
+%% STUBS
+subgraph StubPersistence
+    StubFactory
+    StudentStub
+    TutorStub
+    SessionStub
+    RatingStub
+    RatingRequestStub
+    SupportStub
+    LoginStub
+    MessageStub
+    FAQStub
+    CardStub
+end
+
+%% SQLITE
+subgraph SQLitePersistence
+    ConnectionManager
+    StudentDB
+    TutorDB
+    SessionDB
     RatingDB
     RatingRequestDB
-    SessionDB
-    StudentDB
     SupportDB
-    TutorDB
-    TutorCoursesDB
+    LoginDB
+    MessageDB
+    FAQDB
+    CardDB
 end
 
-%% Layer: Objects
-subgraph Objects
-    User
-    Student
-    Tutor
-    Session
-    RatingRequest
-    Support
-    SupportTicket
-    Card
-    FAQ
-    Feedback
-    Message
-    LoginCredentials
+%% CONFIG
+subgraph Config
+    ConfigFile[Config.java]
+    EnvironmentInitializer
+    DatabaseSeeder
 end
 
-%% Utils Layer
+%% UTILS
 subgraph Utils
     CourseUtil
-    EmailUtil
     GradeUtil
-    MessageUtil
     PasswordUtil
+    EmailUtil
+    MessageUtil
     ValidationUtil
 end
 
-%% Inheritance
-Student -->|extends| User
-Tutor -->|extends| User
-Session --> Student
-Session --> Tutor
+%% DEPENDENCY FLOW
 
-%% Presentation → Logic
+App --> SkolardApp
+
 SkolardApp --> LoginHandler
 SkolardApp --> BookingHandler
+SkolardApp --> FAQHandler
+SkolardApp --> MessageHandler
+SkolardApp --> PaymentHandler
 SkolardApp --> ProfileHandler
 SkolardApp --> RatingHandler
+SkolardApp --> SessionHandler
 SkolardApp --> SupportHandler
+
+LoginView --> LoginHandler
+SignUpView --> LoginHandler
+
+BookingView --> BookingHandler
+BookingController --> BookingHandler
+BookingInputHandler --> BookingHandler
+
 FAQView --> FAQHandler
 MessageView --> MessageHandler
+PaymentView --> PaymentHandler
+
+StudentProfileView --> ProfileHandler
+TutorProfileView --> ProfileHandler
+
 RatingView --> RatingHandler
 SessionView --> SessionHandler
-StudentProfileView --> ProfileViewer
-TutorProfileView --> ProfileViewer
+SupportView --> SupportHandler
 
-%% Logic → Persistence
-LoginHandler --> LoginPersistence
-BookingHandler --> SessionPersistence
-ProfileHandler --> StudentPersistence
-ProfileHandler --> TutorPersistence
-RatingHandler --> RatingRequestPersistence
-RatingHandler --> RatingPersistence
-SessionHandler --> SessionPersistence
-SupportHandler --> SupportPersistence
-FAQHandler --> FAQPersistence
+%% Handler to Persistence
+LoginHandler --> PersistenceFactory
+BookingHandler --> PersistenceFactory
+FAQHandler --> PersistenceFactory
+MessageHandler --> PersistenceFactory
+PaymentHandler --> PersistenceFactory
+ProfileHandler --> PersistenceFactory
+RatingHandler --> PersistenceFactory
+SessionHandler --> PersistenceFactory
+SupportHandler --> PersistenceFactory
 
-%% Persistence → DB
-LoginPersistence --> LoginDB
-SessionPersistence --> SessionDB
-StudentPersistence --> StudentDB
-TutorPersistence --> TutorDB
-RatingPersistence --> RatingDB
-RatingRequestPersistence --> RatingRequestDB
-FAQPersistence --> FAQDB
-MessagePersistence --> MessageDB
-SupportPersistence --> SupportDB
-
-%% Persistence Core
+%% Factory Mode
 PersistenceFactory --> PersistenceProvider
+PersistenceProvider --> StubFactory
 PersistenceProvider --> ConnectionManager
 
-%% Logic internal links
-BookingHandler --> PriorityList
-RatingHandler --> SessionHandler
-ProfileHandler --> DefaultProfileFormatter
+StubFactory --> StudentStub & TutorStub & SessionStub & RatingStub & RatingRequestStub
+StubFactory --> SupportStub & LoginStub & MessageStub & FAQStub & CardStub
 
-%% DB → Objects
-SessionDB --> Session
-StudentDB --> Student
-TutorDB --> Tutor
-RatingRequestDB --> RatingRequest
-FAQDB --> FAQ
-MessageDB --> Message
-SupportDB --> Support
+ConnectionManager --> StudentDB & TutorDB & SessionDB & RatingDB & RatingRequestDB
+ConnectionManager --> SupportDB & LoginDB & MessageDB & FAQDB & CardDB
 
+%% Internal Logic Wiring
+ProfileHandler --> ProfileCreator & ProfileUpdater & ProfileViewer & DefaultProfileFormatter & ProfileFormatter
+BookingHandler --> GradeComparator & PriorityList & TimeComparator & TutorComparator
+SessionHandler --> SessionAccess & SessionBooking & SessionManagement
+
+%% Util use
+ProfileHandler --> ValidationUtil
+RatingHandler --> CourseUtil
+LoginHandler --> PasswordUtil
+MessageHandler --> MessageUtil
+FAQHandler --> ValidationUtil
+
+%% App config/init
+App --> EnvironmentInitializer
+App --> ConfigFile
+EnvironmentInitializer --> DatabaseSeeder
