@@ -185,6 +185,7 @@ public class BookingView extends JFrame {
                 controller.onSearch(courseField.getText(), (String) filterDropdown.getSelectedItem(),
                         startTimeField.getText(), endTimeField.getText()));
 
+        bookButton.addActionListener(e -> controller.onBook(sessionTable.getSelectedRow()));
 
         infoButton.addActionListener(e -> controller.onViewInfo(sessionTable.getSelectedRow()));
 

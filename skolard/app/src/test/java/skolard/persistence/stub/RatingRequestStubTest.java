@@ -32,6 +32,8 @@ class RatingRequestStubTest {
         session = new Session(1, tutor, student, start, end, "Math");
     }
 
+
+
     @Test
     void testAddRequestSuccessfully() {
         RatingRequest request = new RatingRequest(-1, session, student, LocalDateTime.now(), false, false);
@@ -90,14 +92,4 @@ class RatingRequestStubTest {
         assertFalse(pending.get(0).isCompleted());
     }
 
-    @Test
-    void testGetPendingSessionRequest() {
-        stub.addRequest(new RatingRequest(-1, session, student, LocalDateTime.now(), false, false));
-        stub.addRequest(new RatingRequest(-1, session, student, LocalDateTime.now(), true, false));
-
-        List<RatingRequest> pending = stub.getPendingSessionRequest(session.getSessionId());
-        assertEquals(1, pending.size());
-        assertFalse(pending.get(0).isCompleted());
-    }
 }
-

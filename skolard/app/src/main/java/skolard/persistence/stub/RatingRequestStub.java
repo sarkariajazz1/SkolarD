@@ -7,7 +7,6 @@ import java.util.Map;
 
 
 import skolard.objects.RatingRequest;
-import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.persistence.RatingRequestPersistence;
 
@@ -49,19 +48,6 @@ public class RatingRequestStub implements RatingRequestPersistence{
         for (RatingRequest r : ratingRequests.values()) {
             student = r.getStudent();
             if (student != null && student.getEmail().equals(studentEmail) && !r.isCompleted()) {
-                result.add(r);
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public List<RatingRequest> getPendingSessionRequest(int sessionId) {
-        List<RatingRequest> result = new ArrayList<>();
-        Session session;
-        for (RatingRequest r : ratingRequests.values()) {
-            session = r.getSession();
-            if (session != null && session.getSessionId() == sessionId && !r.isCompleted()) {
                 result.add(r);
             }
         }
