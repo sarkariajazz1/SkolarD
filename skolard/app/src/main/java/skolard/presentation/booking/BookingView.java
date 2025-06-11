@@ -1,4 +1,3 @@
-
 package skolard.presentation.booking;
 
 import skolard.logic.rating.RatingHandler;
@@ -19,9 +18,7 @@ public class BookingView extends JFrame {
     private final JTextField courseField = new JTextField(15);
     private final JTextField startTimeField = new JTextField(16);
     private final JTextField endTimeField = new JTextField(16);
-    private final JComboBox<String> filterDropdown = new JComboBox<>(new String[]{
-            "", "Sort by Time", "Sort by Tutor Course Grade", "Sort by Overall Tutor Rating"
-    });
+    private final JComboBox<String> filterDropdown = new JComboBox<>();
 
     private final JButton searchBtn = new JButton("Find Sessions");
     private final JButton bookButton = new JButton("Book");
@@ -81,9 +78,12 @@ public class BookingView extends JFrame {
         topRow.add(courseField);
         topRow.add(searchBtn);
 
-        JComboBox<String> filterDropdown = new JComboBox<>(new String[] {
-                "", "Sort by Time", "Sort by Tutor Course Grade", "Sort by Overall Tutor Rating"
-        });
+        // Populate the class-level dropdown correctly
+        filterDropdown.removeAllItems();
+        filterDropdown.addItem("");
+        filterDropdown.addItem("Sort by Time");
+        filterDropdown.addItem("Sort by Tutor Course Grade");
+        filterDropdown.addItem("Sort by Overall Tutor Rating");
         topRow.add(filterDropdown);
 
         inputPanel.add(topRow);
@@ -179,12 +179,13 @@ public class BookingView extends JFrame {
             boolean show = "Sort by Time".equals(filterDropdown.getSelectedItem());
             timePanel.setVisible(show);
             timeRangeLabel.setVisible(show);
+            startTimeField.setText("");
+            endTimeField.setText("");
         });
 
         searchBtn.addActionListener(e ->
                 controller.onSearch(courseField.getText(), (String) filterDropdown.getSelectedItem(),
                         startTimeField.getText(), endTimeField.getText()));
-
 
         infoButton.addActionListener(e -> controller.onViewInfo(sessionTable.getSelectedRow()));
 
@@ -204,7 +205,7 @@ public class BookingView extends JFrame {
                 session.getEndDateTime().format(formatter),
                 session.getCourseName(),
                 session.getTutor().getBio(),
-                session.getTutor().getGradeForCourse(session.getCourseName()) // Make sure this method exists
+                session.getTutor().getGradeForCourse(session.getCourseName())
         );
         JOptionPane.showMessageDialog(this, message, "Session Details", JOptionPane.INFORMATION_MESSAGE);
     }
