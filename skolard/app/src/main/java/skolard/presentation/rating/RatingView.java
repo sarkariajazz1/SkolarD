@@ -36,9 +36,11 @@ import skolard.objects.Student;
  * Allows students to submit ratings for completed sessions.
  */
 public class RatingView extends JFrame {
+    // Handler for rating-related business logic.
     private final RatingHandler ratingHandler;
+    // The Student object representing the currently logged-in student.
     private final Student currentStudent;
-    
+
     // UI Components
     private final DefaultListModel<String> requestModel = new DefaultListModel<>();
     private final JList<String> requestList = new JList<>(requestModel);
@@ -50,32 +52,51 @@ public class RatingView extends JFrame {
     private final JButton backButton = new JButton("Back");
 
     private final JLabel statusLabel = new JLabel("Select a rating request to proceed");
+    // Currently selected rating request.
     private RatingRequest selectedRequest = null;
 
+    /**
+     * Constructs a new RatingView window.
+     *
+     * @param ratingHandler The {@link RatingHandler} instance for managing ratings.
+     * @param currentStudent The {@link Student} object for the logged-in student.
+     */
     public RatingView(RatingHandler ratingHandler, Student currentStudent) {
         super("SkolarD - Rating Management");
         this.ratingHandler = ratingHandler;
         this.currentStudent = currentStudent;
 
+        // Initialize the graphical user interface components.
         initializeUI();
+        // Setup event handlers for user interactions.
         setupEventHandlers();
+        // Load pending rating requests for the current student.
         loadRatingRequests();
 
+        // Set default close operation, pack components, and center the window.
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
+        // Make the window visible to the user.
         setVisible(true);
     }
 
+    /**
+     * Initializes and arranges all UI components within the rating management frame.
+     * This includes the list of rating requests, rating form, and action buttons.
+     *
+     * @return void
+     */
     private void initializeUI() {
+        // Set the layout manager for the main frame.
         setLayout(new BorderLayout(10, 10));
 
-        // Status label at top
+        // Status label at the top.
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         statusLabel.setFont(statusLabel.getFont().deriveFont(Font.BOLD, 14f));
         add(statusLabel, BorderLayout.NORTH);
 
-        // Left panel - Rating requests list
+        // Left panel - Rating requests list.
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.setBorder(BorderFactory.createTitledBorder("Pending Rating Requests"));
 
@@ -83,43 +104,52 @@ public class RatingView extends JFrame {
         leftPanel.add(new JScrollPane(requestList), BorderLayout.CENTER);
         leftPanel.add(refreshBtn, BorderLayout.SOUTH);
 
-        // Right panel - Rating form
+        // Right panel - Rating form.
         JPanel rightPanel = new JPanel(new GridBagLayout());
         rightPanel.setBorder(BorderFactory.createTitledBorder("Submit Rating"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Tutor rating
-        gbc.gridx = 0; gbc.gridy = 0;
+        // Tutor rating.
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         rightPanel.add(new JLabel("Tutor Rating (1-5):"), gbc);
-        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         setupRatingSlider(tutorRatingSlider);
         rightPanel.add(tutorRatingSlider, gbc);
-        
-                
-        // Buttons
+
+        // Buttons.
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(submitRatingBtn);
         buttonPanel.add(skipRatingBtn);
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         rightPanel.add(buttonPanel, gbc);
 
-        // Split pane to divide left and right panels
+        // Split pane to divide left and right panels.
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
         splitPane.setDividerLocation(300);
         add(splitPane, BorderLayout.CENTER);
 
-        // Back button panel at bottom
+        // Back button panel at bottom.
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         backPanel.add(backButton);
         add(backPanel, BorderLayout.SOUTH);
 
-        // Initially disable rating form until a request is selected
+        // Initially disable rating form until a request is selected.
         enableRatingForm(false);
     }
 
+    /**
+     * Configures the appearance and behavior of the rating slider.
+     *
+     * @param slider The {@link JSlider} to be configured.
+     * @return void
+     */
     private void setupRatingSlider(JSlider slider) {
         slider.setMajorTickSpacing(1);
         slider.setPaintTicks(true);
@@ -127,8 +157,14 @@ public class RatingView extends JFrame {
         slider.setSnapToTicks(true);
     }
 
+    /**
+     * Sets up event handlers for user interactions such as list selection,
+     * button clicks, and refreshing the list of rating requests.
+     *
+     * @return void
+     */
     private void setupEventHandlers() {
-        // List selection handler
+        // List selection handler.
         requestList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int selectedIndex = requestList.getSelectedIndex();
@@ -156,7 +192,7 @@ public class RatingView extends JFrame {
             }
         });
 
-        // Submit rating handler
+        // Submit rating handler.
         submitRatingBtn.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -164,7 +200,7 @@ public class RatingView extends JFrame {
             }
         });
 
-        // Skip rating handler
+        // Skip rating handler.
         skipRatingBtn.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -172,7 +208,7 @@ public class RatingView extends JFrame {
             }
         });
 
-        // Refresh handler
+        // Refresh handler.
         refreshBtn.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -180,10 +216,16 @@ public class RatingView extends JFrame {
             }
         });
 
-        // Back button handler
+        // Back button handler.
         backButton.addActionListener(e -> dispose());
     }
 
+    /**
+     * Loads the pending rating requests for the current student and displays them in the list.
+     * If no requests are found, it displays a message indicating that.
+     *
+     * @return void
+     */
     private void loadRatingRequests() {
         requestModel.clear();
         List<RatingRequest> requests = ratingHandler.getPendingRequestsForStudent(currentStudent);
@@ -216,6 +258,12 @@ public class RatingView extends JFrame {
         enableRatingForm(false);
     }
 
+    /**
+     * Submits the rating for the selected rating request.
+     * It checks if a request is selected and if the session has ended before submitting.
+     *
+     * @return void
+     */
     private void submitRating() {
         if (selectedRequest == null) {
             showError("Please select a rating request first");
@@ -227,13 +275,11 @@ public class RatingView extends JFrame {
             return;
         }
 
-        
         try {
             int tutorRating = tutorRatingSlider.getValue();
-            
-            
+
             ratingHandler.processRatingSubmission(selectedRequest, tutorRating);
-            
+
             showSuccess("Rating submitted successfully!");
             clearForm();
             loadRatingRequests(); // Refresh the list
@@ -243,6 +289,12 @@ public class RatingView extends JFrame {
         }
     }
 
+    /**
+     * Skips the rating for the selected rating request.
+     * It checks if a request is selected before skipping.
+     *
+     * @return void
+     */
     private void skipRating() {
         if (selectedRequest == null) {
             showError("Please select a rating request first");
@@ -260,6 +312,11 @@ public class RatingView extends JFrame {
         }
     }
 
+    /**
+     * Clears the rating form and resets the UI components to their initial state.
+     *
+     * @return void
+     */
     private void clearForm() {
         tutorRatingSlider.setValue(3);
         feedbackArea.setText("");
@@ -268,6 +325,12 @@ public class RatingView extends JFrame {
         statusLabel.setText("Select a rating request to proceed");
     }
 
+    /**
+     * Enables or disables the rating form components based on whether a rating request is selected.
+     *
+     * @param enabled A boolean indicating whether to enable or disable the form.
+     * @return void
+     */
     private void enableRatingForm(boolean enabled) {
         tutorRatingSlider.setEnabled(enabled);
         feedbackArea.setEnabled(enabled);
@@ -275,6 +338,11 @@ public class RatingView extends JFrame {
         skipRatingBtn.setEnabled(enabled);
     }
 
+    /**
+     * Updates the status label to display information about the selected rating request.
+     *
+     * @return void
+     */
     private void updateStatusForSelectedRequest() {
         if (selectedRequest != null) {
             Session session = selectedRequest.getSession();
@@ -283,10 +351,22 @@ public class RatingView extends JFrame {
         }
     }
 
+    /**
+     * Displays an error message dialog.
+     *
+     * @param message The error message to be displayed.
+     * @return void
+     */
     private void showError(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Displays a success message dialog.
+     *
+     * @param message The success message to be displayed.
+     * @return void
+     */
     private void showSuccess(String message) {
         JOptionPane.showMessageDialog(this, message, "Success", JOptionPane.INFORMATION_MESSAGE);
     }
