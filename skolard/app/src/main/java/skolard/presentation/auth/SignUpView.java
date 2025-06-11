@@ -142,73 +142,91 @@ public class SignUpView extends JFrame {
     private void setupEventListeners() {
         // Sign Up as Student
         signUpStudentBtn.addActionListener(e -> {
-            if (validateForm()) {
-                try {
-                    String name = nameField.getText().trim();
-                    String email = emailField.getText().trim();
-                    String password = new String(passwordField.getPassword());
-                    String hashedPassword = PasswordUtil.hash(password);
+        if (validateForm()) {
+            try {
+                String name = nameField.getText().trim();
+                String email = emailField.getText().trim();
+                String password = new String(passwordField.getPassword());
+                String hashedPassword = PasswordUtil.hash(password);
 
-                    handler.addStudent(name, email, hashedPassword);
+                handler.addStudent(name, email, hashedPassword);
+                Student newStudent = handler.getStudent(email);
 
-                    Student newStudent = handler.getStudent(email);
+                statusLabel.setText("Student account created successfully!");
+                JOptionPane.showMessageDialog(this,
+                        "Student account created successfully!",
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
 
-                    statusLabel.setText("Student account created successfully!");
+                parentApp.onAuthenticationSuccess(newStudent, true);
+                dispose();
+
+            } catch (RuntimeException ex) {
+                String msg = ex.getMessage() != null ? ex.getMessage().toLowerCase() : "";
+                if (msg.contains("unique") || msg.contains("already")) {
+                    statusLabel.setText("Email already registered");
                     JOptionPane.showMessageDialog(this,
-                            "Student account created successfully!",
-                            "Success", JOptionPane.INFORMATION_MESSAGE);
-
-                    parentApp.onAuthenticationSuccess(newStudent, true);
-                    dispose();
-
-                } catch (IllegalArgumentException ex) {
+                            "An account with this email already exists. Please use another email.",
+                            "Duplicate Email", JOptionPane.WARNING_MESSAGE);
+                } else {
                     statusLabel.setText("Error: " + ex.getMessage());
                     JOptionPane.showMessageDialog(this,
                             "Error creating account: " + ex.getMessage(),
                             "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (Exception ex) {
-                    statusLabel.setText("Unexpected error occurred");
-                    JOptionPane.showMessageDialog(this,
-                            "Student with same email is on database. Please use another email.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
                 }
+            } catch (Exception ex) {
+                // Log the exception using a logger
+                java.util.logging.Logger.getLogger(SignUpView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                statusLabel.setText("Unexpected error occurred");
+                JOptionPane.showMessageDialog(this,
+                        "An unexpected error occurred. Please try again.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
-        });
+        }
+    });
+
 
         // Sign Up as Tutor
         signUpTutorBtn.addActionListener(e -> {
-            if (validateForm()) {
-                try {
-                    String name = nameField.getText().trim();
-                    String email = emailField.getText().trim();
-                    String password = new String(passwordField.getPassword());
-                    String hashedPassword = PasswordUtil.hash(password);
+        if (validateForm()) {
+            try {
+                String name = nameField.getText().trim();
+                String email = emailField.getText().trim();
+                String password = new String(passwordField.getPassword());
+                String hashedPassword = PasswordUtil.hash(password);
 
-                    handler.addTutor(name, email, hashedPassword);
+                handler.addTutor(name, email, hashedPassword);
+                Tutor newTutor = handler.getTutor(email);
 
-                    Tutor newTutor = handler.getTutor(email);
+                statusLabel.setText("Tutor account created successfully!");
+                JOptionPane.showMessageDialog(this,
+                        "Tutor account created successfully!",
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
 
-                    statusLabel.setText("Tutor account created successfully!");
+                parentApp.onAuthenticationSuccess(newTutor, true);
+                dispose();
+
+            } catch (RuntimeException ex) {
+                String msg = ex.getMessage() != null ? ex.getMessage().toLowerCase() : "";
+                if (msg.contains("unique") || msg.contains("already")) {
+                    statusLabel.setText("Email already registered");
                     JOptionPane.showMessageDialog(this,
-                            "Tutor account created successfully!",
-                            "Success", JOptionPane.INFORMATION_MESSAGE);
-
-                    parentApp.onAuthenticationSuccess(newTutor, true);
-                    dispose();
-
-                } catch (IllegalArgumentException ex) {
+                            "An account with this email already exists. Please use another email.",
+                            "Duplicate Email", JOptionPane.WARNING_MESSAGE);
+                } else {
                     statusLabel.setText("Error: " + ex.getMessage());
                     JOptionPane.showMessageDialog(this,
                             "Error creating account: " + ex.getMessage(),
                             "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (Exception ex) {
-                    statusLabel.setText("Unexpected error occurred");
-                    JOptionPane.showMessageDialog(this,
-                            "Tutor with same email is on database. Please use another email.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
                 }
+            } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(SignUpView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                statusLabel.setText("Unexpected error occurred");
+                JOptionPane.showMessageDialog(this,
+                        "An unexpected error occurred. Please try again.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
-        });
+        }
+    });
 
         loginBtn.addActionListener(e -> {
             new LoginView(handler, loginHandler, parentApp);
