@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 class RatingRequestDBTest {
@@ -116,4 +118,26 @@ class RatingRequestDBTest {
         assertEquals(1, result.size());
         assertEquals(student.getEmail(), result.get(0).getStudent().getEmail());
     }
+
+    @Test
+    void testGetPendingSessionRequest_success() throws Exception {
+        when(mockConn.prepareStatement(any())).thenReturn(mockStmt);
+        when(mockStmt.executeQuery()).thenReturn(mockRs);
+        when(mockRs.next()).thenReturn(true, false);
+
+        when(mockRs.getInt("id")).thenReturn(1);
+        when(mockRs.getInt("sessionId")).thenReturn(1);
+        when(mockRs.getString("studentEmail")).thenReturn(student.getEmail());
+        when(mockRs.getString("createdAt")).thenReturn(LocalDateTime.now().toString());
+        when(mockRs.getInt("completed")).thenReturn(0);
+        when(mockRs.getInt("skipped")).thenReturn(0);
+
+        when(mockStudentPersistence.getStudentByEmail(any())).thenReturn(student);
+        when(mockSessionPersistence.getSessionById(anyInt())).thenReturn(session);
+
+        List<RatingRequest> result = ratingRequestDB.getPendingSessionRequest(1);
+        assertEquals(1, result.size());
+        assertEquals(1, result.get(0).getSession().getSessionId());
+    }
+
 }

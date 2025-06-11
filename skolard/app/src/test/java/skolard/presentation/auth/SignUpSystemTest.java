@@ -29,16 +29,11 @@ public class SignUpSystemTest extends AssertJSwingJUnitTestCase {
     protected void onSetUp() throws Exception {
         PersistenceFactory.initialize(PersistenceType.TEST, false);
 
-<<<<<<< HEAD
-        // Create real handlers with actual persistence - need SessionHandler for ProfileHandler
-        SessionHandler sessionHandler = new SessionHandler(PersistenceRegistry.getSessionPersistence());
-=======
         SessionHandler sessionHandler = new SessionHandler(
             PersistenceRegistry.getSessionPersistence(),
             PersistenceRegistry.getRatingRequestPersistence()
         );
 
->>>>>>> dev
         realProfileHandler = new ProfileHandler(
             PersistenceRegistry.getStudentPersistence(),
             PersistenceRegistry.getTutorPersistence(),
