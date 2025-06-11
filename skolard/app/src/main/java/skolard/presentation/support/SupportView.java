@@ -57,6 +57,17 @@ public class SupportView extends JFrame {
         this.messageHandler = new MessageHandler(PersistenceRegistry.getMessagePersistence());
         boolean isSupportUser = user instanceof skolard.objects.Support;
 
+        // Set component names for testing
+        titleField.setName("titleField");
+        descriptionArea.setName("descriptionArea");
+        submitTicketBtn.setName("submitTicketBtn");
+        viewActiveBtn.setName("viewActiveBtn");
+        viewHandledBtn.setName("viewHandledBtn");
+        closeTicketBtn.setName("closeTicketBtn");
+        messageUserBtn.setName("messageUserBtn");
+        backButton.setName("backButton");
+        ticketList.setName("ticketList");
+
         setLayout(new BorderLayout(10, 10));
 
         // Submit Panel (only for students/tutors)
