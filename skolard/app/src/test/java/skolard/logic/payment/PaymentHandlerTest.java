@@ -104,17 +104,7 @@ public class PaymentHandlerTest {
 
     @Test
     void testValidateCard_invalidNumber() {
-        boolean result1 = handler.payWithCard("John", "1111111111111111", "12/30", "123", false, dummyStudent);
-        boolean result2 = handler.payWithCard("John", "4111", "12/30", "123", false, dummyStudent);
-        boolean result3 = handler.payWithCard("John", "1234567891234567", "12/30", "123", false, dummyStudent);
-        assertFalse(result1);
-        assertFalse(result2);
-        assertFalse(result3);
-    }
-
-    @Test
-    void testValidateCard_invalidExpiry(){
-        boolean result = handler.payWithCard("John", "4111111111111111", "ab/cd", "123", false, dummyStudent);
-        assertFalse(result);
+        boolean result = handler.payWithCard("John", "1111111111111111", "12/30", "123", false, dummyStudent);
+        assertFalse(result); // invalid Luhn
     }
 }

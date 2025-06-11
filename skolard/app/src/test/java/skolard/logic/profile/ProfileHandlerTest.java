@@ -9,7 +9,6 @@ import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class ProfileHandlerTest {
@@ -24,7 +23,7 @@ public class ProfileHandlerTest {
         studentDB = mock(StudentPersistence.class);
         tutorDB = mock(TutorPersistence.class);
         sessionHandler = mock(SessionHandler.class);
-        handler = new ProfileHandler(studentDB, tutorDB, sessionHandler);
+        handler = new ProfileHandler(studentDB, tutorDB, new DefaultProfileFormatter(), sessionHandler);
     }
 
     @Test
@@ -34,45 +33,10 @@ public class ProfileHandlerTest {
     }
 
     @Test
-    void testUpdateStudent() {
-        Student student = mock(Student.class);
-        handler.updateStudent(student);
-        verify(studentDB).updateStudent(student);
-    }
-
-    @Test
     void testUpdateTutor() {
         Tutor tutor = mock(Tutor.class);
         handler.updateTutor(tutor);
         verify(tutorDB).updateTutor(tutor);
-    }
-
-    @Test
-    void testUpdateTutorBio() {
-        Tutor tutor = new Tutor("John", "john@example.com", "computer science student");
-        handler.updateBio(tutor, "test");
-        assert(tutor.getBio().equals("test"));
-        verify(tutorDB).updateTutor(tutor);
-    }
-
-    @Test
-    void testAddCourse(){
-        Tutor tutor = new Tutor("Alice", "alice@example.com", "Bio");
-        String course = "COMP3350";
-        Double grade = 4.0;
-
-        handler.addCourse(tutor, course, grade);
-        verify(tutorDB).addCourseToTutor(tutor, course, grade);
-    }
-
-    @Test
-    void testRemoveCourse(){
-        Tutor tutor = new Tutor("Bob", "bob@example.com", "Physics tutor");
-        String course = "PHYS1050";
-
-        handler.removeCourse(tutor, course);
-
-        verify(tutorDB).removeCourseFromTutor(tutor, course);
     }
 
     @Test

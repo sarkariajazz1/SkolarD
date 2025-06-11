@@ -29,6 +29,10 @@ public class TimeComparator{
      * @return sorted, unmodifiable list of matching sessions
      */
     public List<Session> filterByStudentTimeRange(LocalDateTime start, LocalDateTime end, String courseName) {
+        if (start == null || end == null) {
+            return Collections.emptyList();
+        }
+
         return sessions.stream()
             .filter(session -> {
                 LocalDateTime sessionStart = session.getStartDateTime();

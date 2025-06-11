@@ -9,5 +9,4 @@ public interface RatingRequestPersistence {
     void updateRequest(RatingRequest request);
     List<RatingRequest> getAllRequests();
     List<RatingRequest> getPendingRequestsForStudent(String studentEmail);
-    List<RatingRequest> getPendingSessionRequest(int sessionId);
 } 

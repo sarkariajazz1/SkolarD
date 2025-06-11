@@ -6,7 +6,6 @@ import java.util.List;
 import skolard.objects.Session;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
-import skolard.persistence.RatingRequestPersistence;
 import skolard.persistence.SessionPersistence;
 
 /**
@@ -22,9 +21,9 @@ public class SessionHandler {
      *
      * @param sessionPersistence the persistence interface used across all handlers
      */
-    public SessionHandler(SessionPersistence sessionPersistence, RatingRequestPersistence requestPersistence) {
+    public SessionHandler(SessionPersistence sessionPersistence) {
         this.managementHandler = new SessionManagement(sessionPersistence);
-        this.bookingHandler = new SessionBooking(sessionPersistence, requestPersistence);
+        this.bookingHandler = new SessionBooking(sessionPersistence);
         this.accessHandler = new SessionAccess(sessionPersistence);
     }
 

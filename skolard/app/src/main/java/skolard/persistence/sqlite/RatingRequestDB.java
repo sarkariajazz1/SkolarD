@@ -107,24 +107,6 @@ public class RatingRequestDB implements RatingRequestPersistence {
         return ratingRequests;
     }
 
-    public List<RatingRequest> getPendingSessionRequest(int sessionId) {
-        List<RatingRequest> ratingRequests = new ArrayList<>();
-        String sql = "SELECT * FROM ratingRequests WHERE completed = 0 AND skipped = 0 AND sessionId = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, sessionId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                ratingRequests.add(fromResultSet(rs));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error retrieving rating requests", e);
-        }
-
-        return ratingRequests;
-    }
-
     private RatingRequest fromResultSet(ResultSet rs) throws SQLException{
         int id = rs.getInt("id");
         int sessionId = rs.getInt("sessionId");
