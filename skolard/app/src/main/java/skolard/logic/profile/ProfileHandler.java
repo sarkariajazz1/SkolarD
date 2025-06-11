@@ -4,7 +4,6 @@ import skolard.logic.session.SessionHandler;
 import skolard.objects.Student;
 import skolard.objects.Tutor;
 import skolard.objects.User;
-import skolard.persistence.PersistenceRegistry;
 import skolard.persistence.StudentPersistence;
 import skolard.persistence.TutorPersistence;
 
