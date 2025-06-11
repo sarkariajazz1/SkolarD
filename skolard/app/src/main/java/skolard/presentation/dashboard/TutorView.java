@@ -33,8 +33,7 @@ public class TutorView extends JFrame {
 
     private final JTextField emailField = new JTextField(20);
     private final JTextArea displayArea = new JTextArea(15, 50);
-    private final JButton viewStudentBtn = new JButton("View Student Profile");
-    private final JButton messageStudentBtn = new JButton("Message Student");
+    private final JButton viewSessionsBtn = new JButton("View Sessions");
     private final JButton updateBioBtn = new JButton("Update My Bio");
     private final JButton viewMyProfileBtn = new JButton("View My Profile");
     private final JButton viewMyStudentsBtn = new JButton("View My Students");
@@ -47,8 +46,7 @@ public class TutorView extends JFrame {
 
     public TutorView(ProfileHandler profileHandler, SessionHandler sessionHandler,
                      MessageHandler messageHandler, Tutor tutor) {
-        super("SkolarD - Tutor Dashboard");
-
+        super("My Students");
         this.profileHandler = profileHandler;
         this.sessionHandler = sessionHandler;
         this.messageHandler = messageHandler;
@@ -58,91 +56,74 @@ public class TutorView extends JFrame {
         setupEventListeners();
         loadMyStudents();
 
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        pack();
+        setSize(800, 600);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
     }
 
     private void initializeUI() {
-        setLayout(new BorderLayout(10, 10));
+        setLayout(new BorderLayout());
 
-        JPanel welcomePanel = new JPanel(new FlowLayout());
-        welcomePanel.add(new JLabel("Welcome, " + currentTutor.getName() + " (Tutor)"));
-        add(welcomePanel, BorderLayout.NORTH);
-
-        JPanel leftPanel = new JPanel(new BorderLayout());
-        leftPanel.add(new JLabel("My Students:"), BorderLayout.NORTH);
-
-        studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        leftPanel.add(new JScrollPane(studentList), BorderLayout.CENTER);
-
-        JPanel searchPanel = new JPanel(new FlowLayout());
-        searchPanel.add(new JLabel("Student Email:"));
-        searchPanel.add(emailField);
-        searchPanel.add(viewStudentBtn);
-        leftPanel.add(searchPanel, BorderLayout.SOUTH);
-
-        add(leftPanel, BorderLayout.WEST);
-
-        displayArea.setEditable(false);
-        displayArea.setText("""
-                Welcome to your tutor dashboard!
-
-                • Select a student from the list to view their profile
-                • Enter a student email to search for specific students
-                • Manage your profile and bio using the buttons below
-                """);
-        add(new JScrollPane(displayArea), BorderLayout.CENTER);
-
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 5, 5));
-        buttonPanel.add(messageStudentBtn);
-        buttonPanel.add(updateBioBtn);
+        // Create the main button panel (5 buttons instead of 6)
+        JPanel buttonPanel = new JPanel(new GridLayout(5, 1, 10, 10));
+        buttonPanel.add(viewSessionsBtn);
         buttonPanel.add(viewMyProfileBtn);
+        buttonPanel.add(updateBioBtn);
         buttonPanel.add(viewMyStudentsBtn);
         buttonPanel.add(backBtn);
-        add(buttonPanel, BorderLayout.SOUTH);
 
-        messageStudentBtn.setEnabled(false);
+        // Input panel for student email
+        JPanel inputPanel = new JPanel(new FlowLayout());
+        inputPanel.add(new JLabel("Student Email:"));
+        inputPanel.add(emailField);
+
+        // Student list
+        studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane studentScrollPane = new JScrollPane(studentList);
+
+        // Display area
+        displayArea.setEditable(false);
+        JScrollPane displayScrollPane = new JScrollPane(displayArea);
+
+        // Layout
+        add(buttonPanel, BorderLayout.WEST);
+        add(inputPanel, BorderLayout.NORTH);
+        add(studentScrollPane, BorderLayout.EAST);
+        add(displayScrollPane, BorderLayout.CENTER);
     }
 
     private void setupEventListeners() {
-        viewStudentBtn.addActionListener(e -> viewStudentProfile());
-        messageStudentBtn.addActionListener(e -> messageStudent());
+        viewSessionsBtn.addActionListener(e -> viewSessions());
         updateBioBtn.addActionListener(e -> updateBio());
         viewMyProfileBtn.addActionListener(e -> viewMyProfile());
         viewMyStudentsBtn.addActionListener(e -> loadMyStudents());
         backBtn.addActionListener(e -> dispose());
 
+        // Student list selection listener
         studentList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                String selectedEmail = studentList.getSelectedValue();
-                if (selectedEmail != null) {
-                    int startIndex = selectedEmail.lastIndexOf('(') + 1;
-                    int endIndex = selectedEmail.lastIndexOf(')');
-                    if (startIndex > 0 && endIndex > startIndex) {
-                        String email = selectedEmail.substring(startIndex, endIndex);
-                        emailField.setText(email);
-                        viewStudentProfile();
-                    }
+                int selectedIndex = studentList.getSelectedIndex();
+                if (selectedIndex >= 0) {
+                    String selectedEmail = studentListModel.getElementAt(selectedIndex);
+                    emailField.setText(selectedEmail);
                 }
             }
         });
     }
 
-    private void viewStudentProfile() {
+    private void viewSessions() {
         String email = emailField.getText().trim();
         if (email.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a student email.");
+            JOptionPane.showMessageDialog(this, "Please enter a student email or select from the list.");
             return;
         }
 
         selectedStudent = profileHandler.getStudent(email);
         if (selectedStudent != null) {
-            displayArea.setText("Student Profile:\n\n");
-            displayArea.append(profileHandler.viewFullProfile(selectedStudent));
+            displayArea.setText("Sessions with " + selectedStudent.getName() + " (" + email + "):\n\n");
 
-            // Fetch all sessions for this tutor
+            // Fetch all sessions for this tutor with the selected student
             var allSessions = sessionHandler.getSessionsByTutor(currentTutor);
             var pastSessions = allSessions.stream()
                     .filter(s -> s.getStudent() != null && s.getStudent().getEmail().equals(email))
@@ -155,114 +136,87 @@ public class TutorView extends JFrame {
                     .toList();
 
             // Show session summary
-            displayArea.append("\n\nSessions with this student:\n");
+            displayArea.append("Total sessions: " + (pastSessions.size() + upcomingSessions.size()) + "\n");
             displayArea.append("Upcoming sessions: " + upcomingSessions.size() + "\n");
             displayArea.append("Past sessions: " + pastSessions.size() + "\n\n");
 
-            if (!pastSessions.isEmpty()) {
-                displayArea.append("Past sessions:\n");
-                for (var session : pastSessions) {
-                    displayArea.append("- " + formatSession(session) + "\n");
+            if (!upcomingSessions.isEmpty()) {
+                displayArea.append("=== UPCOMING SESSIONS ===\n");
+                for (var session : upcomingSessions) {
+                    displayArea.append("• " + formatSession(session) + "\n");
                 }
+                displayArea.append("\n");
             }
 
-            if (!upcomingSessions.isEmpty()) {
-                displayArea.append("Upcoming sessions:\n");
-                for (var session : upcomingSessions) {
-                    displayArea.append("- " + formatSession(session) + "\n");
+            if (!pastSessions.isEmpty()) {
+                displayArea.append("=== PAST SESSIONS ===\n");
+                for (var session : pastSessions) {
+                    displayArea.append("• " + formatSession(session) + "\n");
                 }
             }
 
             if (pastSessions.isEmpty() && upcomingSessions.isEmpty()) {
                 displayArea.append("No sessions found with this student.\n");
             }
-
-            messageStudentBtn.setEnabled(true);
         } else {
             displayArea.setText("No student found with email: " + email);
             selectedStudent = null;
-            messageStudentBtn.setEnabled(false);
-        }
-    }
-
-    private void messageStudent() {
-        if(messageHandler == null) {
-            JOptionPane.showMessageDialog(this, "Message handler is not initialized.");
-            return;
-        }
-        if (selectedStudent == null) {
-            JOptionPane.showMessageDialog(this, "Please select a student first.");
-            return;
-        }
-
-        String message = JOptionPane.showInputDialog(this,
-                "Enter your message to " + selectedStudent.getName() + ":");
-
-        if (message != null && !message.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Message sent to " + selectedStudent.getName() + "!");
-            displayArea.append("\n\nMessage sent to " + selectedStudent.getName());
         }
     }
 
     private void updateBio() {
         String currentBio = currentTutor.getBio();
-        String newBio = JOptionPane.showInputDialog(this, "Enter your new bio:", currentBio);
+        String newBio = JOptionPane.showInputDialog(this, "Update your bio:", currentBio);
 
         if (newBio != null && !newBio.trim().isEmpty()) {
-            profileHandler.updateBio(currentTutor, newBio.trim());
+            currentTutor.setBio(newBio.trim());
+            profileHandler.updateTutor(currentTutor);
             JOptionPane.showMessageDialog(this, "Bio updated successfully!");
-            displayArea.append("\n\nBio updated.");
         }
     }
 
     private void viewMyProfile() {
         displayArea.setText("My Profile:\n\n");
         displayArea.append(profileHandler.viewFullProfile(currentTutor));
-        selectedStudent = null;
-        messageStudentBtn.setEnabled(false);
     }
 
     private void loadMyStudents() {
         studentListModel.clear();
-        displayArea.setText("Loading students you have tutored...\n\n");
 
-        // Ensure session lists are up to date
-        sessionHandler.setTutorSessionLists(currentTutor);
-
-        var allSessions = new java.util.ArrayList<>(currentTutor.getPastSessions());
-        allSessions.addAll(currentTutor.getUpcomingSessions());
-
-        var studentEmails = allSessions.stream()
-                .filter(session -> session.getStudent() != null)
-                .map(session -> session.getStudent().getEmail())
+        // Get all sessions for this tutor and extract unique student emails
+        var sessions = sessionHandler.getSessionsByTutor(currentTutor);
+        var studentEmails = sessions.stream()
+                .filter(s -> s.getStudent() != null)
+                .map(s -> s.getStudent().getEmail())
                 .distinct()
+                .sorted()
                 .toList();
 
-        if (studentEmails.isEmpty()) {
-            displayArea.append("You haven't tutored any students yet.\n");
-            displayArea.append("Students will appear here once you have scheduled sessions.");
-            return;
+        for (String email : studentEmails) {
+            studentListModel.addElement(email);
         }
 
-        displayArea.append("Students you have tutored or will tutor:\n\n");
-
-        for (String email : studentEmails) {
-            Student student = profileHandler.getStudent(email);
-            if (student != null) {
-                String listItem = student.getName() + " (" + email + ")";
-                studentListModel.addElement(listItem);
-                displayArea.append("- " + student.getName() + " (" + email + ")\n");
+        displayArea.setText("My Students (" + studentEmails.size() + " total):\n\n");
+        if (studentEmails.isEmpty()) {
+            displayArea.append("No students found. You haven't had any sessions yet.\n");
+        } else {
+            displayArea.append("Click on a student email from the list on the right to select them,\n");
+            displayArea.append("then click 'View Sessions' to see your session history.\n\n");
+            displayArea.append("Students you've worked with:\n");
+            for (String email : studentEmails) {
+                Student student = profileHandler.getStudent(email);
+                if (student != null) {
+                    displayArea.append("• " + student.getName() + " (" + email + ")\n");
+                }
             }
         }
-
-        displayArea.append("\nClick on a student from the list to view their profile.");
     }
 
     private String formatSession(Session session) {
-        return session.getCourseName() + " on " +
-                session.getStartDateTime().toLocalDate() + " from " +
-                session.getStartDateTime().toLocalTime() + " to " +
-                session.getEndDateTime().toLocalTime();
+        return String.format("%s | %s | %s - %s",
+                session.getCourseName(),
+                session.getStartDateTime().toLocalDate(),
+                session.getStartDateTime().toLocalTime(),
+                session.getEndDateTime().toLocalTime());
     }
 }
