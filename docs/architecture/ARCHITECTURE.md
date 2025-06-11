@@ -142,7 +142,7 @@ SkolardApp --> DashboardUI
 - DatabaseSeeder  
 - EnvironmentInitializer  
 - PersistenceFactory  
-- PersistenceProvider: calls all DB classes  
+- PersistenceProvider: calls all DB and Stub classes  
 - PersistenceRegistry: accesses all the Persistence interfaces  
 - PersistenceType(Enum): no calls to other classes 
 - CardDB: calls Card object  
@@ -150,36 +150,35 @@ SkolardApp --> DashboardUI
 - LoginDB:  accesses PasswordUtil  
 - MessageDB: accesses  
 - RatingDB: accesses Feedback object  
-- RatingRequestDB: accesses RatingRequest, RatingRequestDB, Session, SessionDB, Student, and StudentDB classes.  
+- RatingRequestDB: accesses RatingRequest, RatingRequestDB(and its stub), Session, SessionDB(and its stub), Student, and StudentDB(and its stub) classes.  
 - SchemaInitializer: no calls to other classes  
-- SessionDB: accesses Session, Student, StudentDB, Tutor, and TutorDB classes
+- SessionDB: accesses Session, Student, StudentDB(and its stub), Tutor, and TutorDB(and its stub) classes
 - StudentDB: accesses Student object
-- SupportDB: accesses Student, StudentDB, Tutor, TutorDB, and Support classes  
+- SupportDB: accesses Student, StudentDB(and its stub), Tutor, TutorDB(and its stub), and Support classes  
 - TutorCoursesDB: no calls to object classes  
 - TutorDB: accesses Tutor object  
 
 ### Logic Layer Classes
-- LoginHandler  
-- BookingHandler  
-- GradeComparator  
-- PriorityList  
-- TimeComparator  
-- TutorComparator  
-- FAQHandler  
-- MessageHandler  
-- PaymentHandler  
-- DefaultProfileFormatter  
-- ProfileCreator  
-- ProfileFormatter  
-- ProfileHandler  
-- ProfileUpdater  
-- ProfileViewer  
-- RatingHandler  
-- SessionAccess  
-- SessionBooking  
-- SessionHandler  
-- SessionManagement  
-- SupportHandler  
+- LoginHandler: accesses LoginCredentials, LoginDB(and its stub), PersistenceRegistry  
+- BookingHandler: accesses Session, SessionDB(and its stub).  
+- GradeComparator: accesses Session object  
+- PriorityList:  
+- TimeComparator: accesses Session object  
+- TutorComparator: accesses Session object  
+- FAQHandler: accesses FAQ and FAQDB(and its stub) classes  
+- MessageHandler: accesses Message, MessageUtil, MessageDB(and its stub) classes
+- PaymentHandler: accesses Card, Student, and CardDB(and its stub) classes
+- DefaultProfileFormatter: accesses User, Student, Tutor objects.
+- ProfileCreator: Student, Tutor, StudentDB(and its stub), TutorDB(and its stub) classes   
+- ProfileHandler: accesses SessionHandler, Student, Tutor, User, StudentDB(and its stub), and TutorDB(and its stub) classes  
+- ProfileUpdater: accesses Student, Tutor, StudentDB(and its stub), and TutorDB(and its stub) classes
+- ProfileViewer:  accesses SessionHandler, Student, Tutor, User classes
+- RatingHandler: accesses Feedback, RatingRequest, Session, Student, Rating,and  RatingRequestDB(and its stub) classes
+- SessionAccess: accesses Session, Student, Tutor, and SessionDB(and its stub) 
+- SessionBooking: accesses Session, RatingRequestDB(and its stub), and SessionDB(and its stub) classes  
+- SessionHandler: accesses Session, Student, Tutor, RatingRequestDB(and its stub), and SessionDB(and its stub) classes
+- SessionManagement: Session, Tutor, Object, and SessionDB(and its stub) classes  
+- SupportHandler: accesses SupportTicket, and SupportDB(and its stub) classes
 
 ### Presentation Layer Classes
 - LoginView  
