@@ -6,11 +6,15 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
-import skolard.presentation.SkolardApp;
-import skolard.presentation.dashboard.SupportDashboard;
-import skolard.presentation.faq.FAQView;
 import skolard.logic.auth.LoginHandler;
 import skolard.logic.faq.FAQHandler;
 import skolard.logic.message.MessageHandler;
@@ -20,6 +24,9 @@ import skolard.objects.LoginCredentials;
 import skolard.objects.Support;
 import skolard.objects.User;
 import skolard.persistence.PersistenceRegistry;
+import skolard.presentation.SkolardApp;
+import skolard.presentation.dashboard.SupportDashboard;
+import skolard.presentation.faq.FAQView;
 
 public class LoginView extends JFrame {
 
