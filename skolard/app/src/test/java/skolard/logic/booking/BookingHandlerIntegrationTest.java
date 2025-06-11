@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -122,5 +123,10 @@ public class BookingHandlerIntegrationTest {
     void testGetAvailableSessions_excludesTutorSessionsForSelfBooking() {
         List<Session> result = bookingHandler.getAvailableSessions("COMP1010", "david@example.com");
         assertTrue(result.isEmpty());
+    }
+
+    @AfterEach
+    void cleanup() throws Exception {
+        if (conn != null && !conn.isClosed()) conn.close();
     }
 }

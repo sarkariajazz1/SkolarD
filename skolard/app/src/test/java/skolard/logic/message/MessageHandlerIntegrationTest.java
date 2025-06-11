@@ -10,7 +10,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MessageHandlerIntegrationTest {
 
     private Connection conn;
@@ -20,7 +19,7 @@ public class MessageHandlerIntegrationTest {
     private final String studentEmail = "alice@example.com";
     private final String tutorEmail = "bob@example.com";
 
-    @BeforeAll
+    @BeforeEach
     void setup() throws Exception {
         conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, false);
         PersistenceProvider.initializeSqlite(conn);
@@ -125,7 +124,7 @@ public class MessageHandlerIntegrationTest {
         assertTrue(history.isEmpty());
     }
 
-    @AfterAll
+    @AfterEach
     void cleanup() throws Exception {
         if (conn != null && !conn.isClosed()) conn.close();
     }

@@ -11,13 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Integration tests for LoginHandler using a real SQLite database.
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LoginHandlerIntegrationTest {
 
     private Connection conn;
     private LoginHandler loginHandler;
 
-    @BeforeAll
+    @BeforeEach
     void initDatabase() throws Exception {
         // Set up the TEST database and seed it with sample users
         conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, false);
@@ -27,7 +26,7 @@ public class LoginHandlerIntegrationTest {
         loginHandler = new LoginHandler();
     }
 
-    @AfterAll
+    @AfterEach
     void closeDatabase() throws Exception {
         if (conn != null && !conn.isClosed()) {
             conn.close();

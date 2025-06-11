@@ -10,7 +10,6 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RatingHandlerIntegrationTest {
 
     private Connection conn;
@@ -21,7 +20,7 @@ public class RatingHandlerIntegrationTest {
     private TutorPersistence tutorPersistence;
     private SessionPersistence sessionPersistence;
 
-    @BeforeAll
+    @BeforeEach
     void setup() throws Exception {
         conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, false);
         PersistenceProvider.initializeSqlite(conn);
@@ -139,7 +138,7 @@ public class RatingHandlerIntegrationTest {
         assertNotNull(feedback);
     }
 
-    @AfterAll
+    @AfterEach
     void cleanup() throws Exception {
         if (conn != null && !conn.isClosed()) conn.close();
     }
