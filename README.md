@@ -6,7 +6,7 @@
 ## Group Members
 
 - **Joshua Chuwang-Kwa**  
-  Email: `chuwangi@myumanitoba.ca`
+  Email: `chuwangj@myumanitoba.ca`
 
 - **Matthew Yablonski**  
   Email: `yablonsm@myumanitoba.ca`
