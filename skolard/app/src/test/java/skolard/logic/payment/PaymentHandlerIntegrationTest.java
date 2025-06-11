@@ -27,7 +27,7 @@ public class PaymentHandlerIntegrationTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, true);
+        conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, false);
         PersistenceProvider.initializeSqlite(conn);
 
         cardPersistence = PersistenceRegistry.getCardPersistence();
