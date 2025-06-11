@@ -31,7 +31,7 @@ SkolarD was created as a final-year capstone project to simulate real-world soft
 
 ## Dependencies and Versions
 
-- Java 17  
+- Java 21  
 - Java Swing (GUI)  
 - SQLite JDBC: `org.xerial:sqlite-jdbc:3.36.0.3`  
 - JUnit 4 for unit and integration testing  
