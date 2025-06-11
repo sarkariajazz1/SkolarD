@@ -37,7 +37,7 @@ public class RatingDB implements RatingPersistence {
     public List<Feedback> getAllFeedbackForTutor(String tutorId) {
         List<Feedback> feedbacks = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM ratings WHERE tutorName = ?")) {
+                "SELECT * FROM ratings WHERE tutorEmail = ?")) {
             ps.setString(1, tutorId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

@@ -3,11 +3,11 @@ package skolard.objects;
 import java.time.LocalDateTime;
 
 public class Message {
-    private int messageId;
-    private LocalDateTime timeSent;
-    private String studentEmail;
-    private String tutorEmail;
-    private String senderEmail;
+    private final int messageId;
+    private final LocalDateTime timeSent;
+    private final String studentEmail;
+    private final String tutorEmail;
+    private final String senderEmail;
     private String message;
 
     public Message(int messageId, LocalDateTime timeSent, String studentEmail, String tutorEmail, 

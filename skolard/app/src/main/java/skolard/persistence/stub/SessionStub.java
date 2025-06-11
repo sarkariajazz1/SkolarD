@@ -18,7 +18,7 @@ import skolard.utils.PasswordUtil;
  */
 public class SessionStub implements SessionPersistence {
 
-    private Map<Integer, Session> sessions;       // Stores sessions by their unique ID
+    private final Map<Integer, Session> sessions;       // Stores sessions by their unique ID
     private static int id = 0;        // Used to generate unique session IDs
 
     public SessionStub() {

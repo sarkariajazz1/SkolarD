@@ -9,7 +9,7 @@ import skolard.objects.Card;
 import skolard.persistence.CardPersistence;
 
 public class CardStub implements CardPersistence{
-    private Map<String, Card> cards;
+    private final Map<String, Card> cards;
 
     public CardStub() {
         cards = new HashMap<>();

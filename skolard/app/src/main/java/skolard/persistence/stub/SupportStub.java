@@ -1,15 +1,15 @@
 package skolard.persistence.stub;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import skolard.objects.SupportTicket;
 import skolard.persistence.SupportPersistence;
 
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 public class SupportStub implements SupportPersistence {
-    private Map<Integer, SupportTicket> ticketMap;
+    private final Map<Integer, SupportTicket> ticketMap;
     private int uniqueID = 0;
 
     public SupportStub() {

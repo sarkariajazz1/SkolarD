@@ -40,9 +40,8 @@ public class SchemaInitializer {
                 "startTime TEXT NOT NULL," +
                 "endTime TEXT NOT NULL," +
                 "courseID TEXT NOT NULL," +
-                "FOREIGN KEY(tutorEmail) REFERENCES tutor(email)," +
-                "FOREIGN KEY(studentEmail) REFERENCES student(email)," +
-                "FOREIGN KEY(courseID) REFERENCES courses(id)" +
+                "FOREIGN KEY(tutorEmail) REFERENCES tutor(email) ON DELETE CASCADE," +
+                "FOREIGN KEY(studentEmail) REFERENCES student(email) ON DELETE SET NULL" +
                 ");";
 
         // Table for tutors' course history
@@ -51,7 +50,7 @@ public class SchemaInitializer {
                 "courseID TEXT NOT NULL," +
                 "grade REAL NOT NULL," +
                 "PRIMARY KEY(tutorEmail, courseID)," +
-                "FOREIGN KEY(tutorEmail) REFERENCES tutor(email)" +
+                "FOREIGN KEY(tutorEmail) REFERENCES tutor(email) ON DELETE CASCADE" +
                 ");";
 
         // Table for chat messages
@@ -73,7 +72,7 @@ public class SchemaInitializer {
                 "cardNumber TEXT NOT NULL," +
                 "expiry TEXT NOT NULL," +
                 "PRIMARY KEY(accountEmail, cardNumber, expiry)," +
-                "FOREIGN KEY(accountEmail) REFERENCES student(email)" +
+                "FOREIGN KEY(accountEmail) REFERENCES student(email) ON DELETE CASCADE" +
                 ");";
 
         // Table for support tickets
@@ -103,8 +102,8 @@ public class SchemaInitializer {
                 "completed INTEGER NOT NULL," +
                 "skipped INTEGER NOT NULL," +
                 "createdAt TEXT NOT NULL," +
-                "FOREIGN KEY(sessionId) REFERENCES session(id)," +
-                "FOREIGN KEY(studentEmail) REFERENCES student(email)" +
+                "FOREIGN KEY(sessionId) REFERENCES session(id) ON DELETE CASCADE," +
+                "FOREIGN KEY(studentEmail) REFERENCES student(email) ON DELETE CASCADE" +
                 ");";
 
         // Table for session ratings

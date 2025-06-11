@@ -1,7 +1,6 @@
 package skolard.logic.booking;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -118,7 +117,7 @@ public class BookingHandler {
      * @return a list of sessions not booked and not filtered
      */
     public List<Session> getAvailableSessions(String courseName, String studentEmail){
-        List<Session> sessions = new ArrayList<>();
+        List<Session> sessions;
 
         if (courseName == null || courseName.isEmpty()) {
             throw new IllegalArgumentException("Course name cannot be null or empty.");
