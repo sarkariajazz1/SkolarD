@@ -54,6 +54,16 @@ public class BookingHandlerTest {
                 "COMP1010"
         ));
 
+        // Null times (should be filtered)
+        mockSessions.add(new Session(
+                2,
+                tutor,
+                null,
+                null,
+                null,
+                "COMP1010"
+        ));
+
         // Booked session (should be filtered)
         Session bookedSession = new Session(
                 3,

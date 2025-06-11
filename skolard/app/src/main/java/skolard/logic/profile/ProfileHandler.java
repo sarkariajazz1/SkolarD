@@ -13,7 +13,7 @@ public class ProfileHandler {
     private final ProfileViewer viewer;
 
     /**
-     * Default constructor using the real database from PersistenceRegistry.
+     * Default constructor using the default profile handler
      */
     public ProfileHandler(StudentPersistence sp, TutorPersistence tp, SessionHandler sessionHandler) {
         this(sp,
