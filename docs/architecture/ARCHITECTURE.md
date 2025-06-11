@@ -1,8 +1,6 @@
 ```mermaid
 flowchart TD
 
-flowchart TD
-
 %% === Layers ===
 subgraph Objects Layer
     Card
