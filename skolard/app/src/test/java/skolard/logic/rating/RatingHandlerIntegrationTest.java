@@ -140,6 +140,6 @@ public class RatingHandlerIntegrationTest {
 
     @AfterEach
     void cleanup() throws Exception {
-        if (conn != null && !conn.isClosed()) conn.close();
+        PersistenceFactory.reset();
     }
 }

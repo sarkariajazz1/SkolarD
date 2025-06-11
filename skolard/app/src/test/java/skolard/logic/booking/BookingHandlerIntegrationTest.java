@@ -15,6 +15,7 @@ import skolard.logic.booking.BookingHandler.SessionFilter;
 import skolard.objects.Session;
 import skolard.objects.Tutor;
 import skolard.persistence.EnvironmentInitializer;
+import skolard.persistence.PersistenceFactory;
 import skolard.persistence.PersistenceProvider;
 import skolard.persistence.PersistenceRegistry;
 import skolard.persistence.PersistenceType;
@@ -127,6 +128,6 @@ public class BookingHandlerIntegrationTest {
 
     @AfterEach
     void cleanup() throws Exception {
-        if (conn != null && !conn.isClosed()) conn.close();
+        PersistenceFactory.reset();
     }
 }
