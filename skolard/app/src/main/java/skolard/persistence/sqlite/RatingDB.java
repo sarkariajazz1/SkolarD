@@ -13,13 +13,26 @@ import skolard.persistence.RatingPersistence;
 public class RatingDB implements RatingPersistence {
     private final Connection conn;
 
+    /**
+     * Constructor accepting a database connection.
+     *
+     * @param conn an open SQLite connection
+     */
     public RatingDB(Connection conn) {
         this.conn = conn;
     }
 
+    /**
+     * Saves a rating submitted by a student for a tutor's session.
+     *
+     * @param tutorEmail   the email of the tutor being rated
+     * @param sessionId    the ID of the session being rated
+     * @param studentEmail the email of the student providing the rating
+     * @param courseName   the course name associated with the session
+     * @param rating       the numeric rating value
+     */
     @Override
     public void saveRating(String tutorEmail, int sessionId, String studentEmail, String courseName, int rating) {
-
         try (PreparedStatement ps = conn.prepareStatement(
                 "INSERT INTO ratings (tutorEmail, sessionId, studentEmail, courseName, rating) VALUES (?, ?, ?, ?, ?)")) {
             ps.setString(1, tutorEmail); // tutorEmail
@@ -33,6 +46,12 @@ public class RatingDB implements RatingPersistence {
         }
     }
 
+    /**
+     * Retrieves all feedback (ratings) for a given tutor.
+     *
+     * @param tutorId the tutor's email identifier
+     * @return list of Feedback objects for the tutor
+     */
     @Override
     public List<Feedback> getAllFeedbackForTutor(String tutorId) {
         List<Feedback> feedbacks = new ArrayList<>();
@@ -49,6 +68,13 @@ public class RatingDB implements RatingPersistence {
         return feedbacks;
     }
 
+    /**
+     * Extracts a Feedback object from the current row in a ResultSet.
+     *
+     * @param rs the ResultSet positioned at a valid row
+     * @return Feedback object populated with values from the ResultSet
+     * @throws SQLException if database access error occurs
+     */
     private Feedback extractFeedback(ResultSet rs) throws SQLException {
         return new Feedback(
                 rs.getInt("sessionId"),

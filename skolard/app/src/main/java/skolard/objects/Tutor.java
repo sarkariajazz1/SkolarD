@@ -46,22 +46,27 @@ public class Tutor extends User {
     // Getters
     // ===========================
 
+    /** Returns the tutor's biography */
     public String getBio() {
         return bio;
     }
 
+    /** Returns a list of courses taught by the tutor (copy) */
     public List<String> getCourses() {
         return new ArrayList<>(courses.keySet()); // return copy for safety
     }
 
+    /** Returns a map of courses and corresponding grades (copy) */
     public Map<String, Double> getCoursesWithGrades() {
         return new HashMap<>(courses); // return copy for safety
     }
 
+    /** Returns a list of past sessions (copy) */
     public List<Session> getPastSessions() {
         return new ArrayList<>(pastSessions); // return copy for safety
     }
 
+    /** Returns a list of upcoming sessions (copy) */
     public List<Session> getUpcomingSessions() {
         return new ArrayList<>(upcomingSessions); // return copy for safety
     }
@@ -70,18 +75,22 @@ public class Tutor extends User {
     // Setters
     // ===========================
 
+    /** Sets or updates the biography */
     public void setBio(String bio) {
         this.bio = bio;
     }
 
+    /** Sets the courses and grades map (copy) */
     public void setCourses(Map<String, Double> grades) {
         this.courses = grades != null ? new HashMap<>(grades) : new HashMap<>();
     }
 
+    /** Sets the list of past sessions (copy) */
     public void setPastSessions(List<Session> sessions) {
         this.pastSessions = sessions != null ? new ArrayList<>(sessions) : new ArrayList<>();
     }
 
+    /** Sets the list of upcoming sessions (copy) */
     public void setUpcomingSessions(List<Session> sessions) {
         this.upcomingSessions = sessions != null ? new ArrayList<>(sessions) : new ArrayList<>();
     }
@@ -109,6 +118,7 @@ public class Tutor extends User {
 
     /**
      * Calculates the average rating across all graded courses.
+     * Returns 0.0 if no courses are graded.
      */
     public double getAverageRating() {
         if (courses.isEmpty()) return 0.0;
@@ -121,7 +131,7 @@ public class Tutor extends User {
     }
 
     /**
-     * Adds a session to the list of upcoming sessions (no duplicates).
+     * Adds a session to the list of upcoming sessions if not already present.
      */
     public void addUpcomingSession(Session session) {
         if (session != null && !upcomingSessions.contains(session)) {
@@ -130,7 +140,7 @@ public class Tutor extends User {
     }
 
     /**
-     * Adds a session to the list of past sessions (no duplicates).
+     * Adds a session to the list of past sessions if not already present.
      */
     public void addPastSession(Session session) {
         if (session != null && !pastSessions.contains(session)) {

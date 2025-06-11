@@ -19,6 +19,14 @@ public class CardDB implements CardPersistence{
         this.connection = connection;
     }
 
+    /**
+     * Adds a new card record for a given account email.
+     * 
+     * @param accountEmail the email associated with the account
+     * @param card the Card object to add
+     * @return the same Card object after insertion
+     * @throws RuntimeException if any SQL error occurs
+     */
     @Override
     public Card addAccountCard(String accountEmail, Card card) {
         String sql = "INSERT INTO card (accountEmail, name, cardNumber, expiry) VALUES (?, ?, ?, ?)";
@@ -36,6 +44,13 @@ public class CardDB implements CardPersistence{
         }
     }
 
+    /**
+     * Retrieves all cards associated with a given account email.
+     * 
+     * @param accountEmail the email associated with the account
+     * @return a list of Card objects belonging to the account
+     * @throws RuntimeException if any SQL error occurs
+     */
     @Override
     public List<Card> getCardsByAccount(String accountEmail) {
         List<Card> cards = new ArrayList<>();
@@ -60,6 +75,13 @@ public class CardDB implements CardPersistence{
         return cards;
     }
 
+    /**
+     * Deletes a specific card associated with an account email.
+     * 
+     * @param accountEmail the email associated with the account
+     * @param card the Card object to delete
+     * @throws RuntimeException if any SQL error occurs
+     */
     @Override
     public void deleteCard(String accountEmail, Card card) {
         String sql = "DELETE FROM card WHERE accountEmail = ? AND name = ? AND cardNumber = ? AND expiry = ?";

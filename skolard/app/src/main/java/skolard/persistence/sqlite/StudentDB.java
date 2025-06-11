@@ -145,6 +145,13 @@ public class StudentDB implements StudentPersistence {
         }
     }
 
+    /**
+     * Authenticates a student by email and hashed password.
+     *
+     * @param email          the student's email
+     * @param hashedPassword the hashed password
+     * @return authenticated Student or null if authentication fails
+     */
     @Override
     public Student authenticate(String email, String hashedPassword) {
         String sql = "SELECT name, email, password FROM student WHERE email = ?";
