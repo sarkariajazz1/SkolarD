@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 # SkolarD
 
 **Group Name:** Decoders
@@ -358,10 +356,10 @@ The following design patterns were implemented throughout the SkolarD codebase, 
 - [Architecture Overview](https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/dev/docs/architecture/ARCHITECTURE.md?ref_type=heads)
 - [Java Coding Standards](https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/main/docs/JavaCodingStandards.md?ref_type=heads)
 - [Team Retrospectives](https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/dev/docs/retros/RETROSPECTIVE.md?ref_type=heads)
+- [Known Issues](https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders/-/blob/Release/docs/KnownIssues.md?ref_type=heads)
 
 ---
 
 ## Summary
 
 SkolarD provides a robust and extensible foundation for tutoring services, emphasizing modular design, user experience, and architectural best practices. Designed and developed by the **Decoders** team, it demonstrates real-world engineering principles including testable code, design patterns, and maintainable layering across functional domains.
->>>>>>> dev
