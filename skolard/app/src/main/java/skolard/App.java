@@ -29,7 +29,8 @@ public class App {
         BookingHandler bookingHandler = new BookingHandler(PersistenceRegistry.getSessionPersistence());
         MessageHandler messageHandler = new MessageHandler(PersistenceRegistry.getMessagePersistence());
         SessionHandler sessionHandler = new SessionHandler(PersistenceRegistry.getSessionPersistence());
-        ProfileHandler profileHandler = new ProfileHandler(sessionHandler);
+        ProfileHandler profileHandler = new ProfileHandler(PersistenceRegistry.getStudentPersistence(),
+            PersistenceRegistry.getTutorPersistence(), sessionHandler);
         FAQHandler faqHandler = new FAQHandler(PersistenceRegistry.getFAQPersistence()); 
         LoginHandler loginHandler = new LoginHandler();
         RatingHandler ratingHandler = new RatingHandler(PersistenceRegistry.getRatingRequestPersistence(),
