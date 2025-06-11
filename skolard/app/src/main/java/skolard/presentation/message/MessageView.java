@@ -1,3 +1,4 @@
+
 package skolard.presentation.message;
 
 import java.awt.BorderLayout;
@@ -51,18 +52,32 @@ public class MessageView extends JFrame {
         this.currentUser = currentUser;
 
         initializeUI();
+        setupComponentNames(); // Add this line
         loadConversations();
 
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(800, 600);
+        setSize(700, 500);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
     }
 
-    private void initializeUI() {
-        setLayout(new BorderLayout(10, 10));
+    /**
+     * Set component names for testing purposes.
+     */
+    private void setupComponentNames() {
+        conversationList.setName("conversationList");
+        chatArea.setName("chatArea");
+        messageField.setName("messageField");
+        sendButton.setName("sendButton");
+        newConversationBtn.setName("newConversationBtn");
+        refreshButton.setName("refreshButton");
+        backButton.setName("backButton");
+    }
 
-        // Left panel - Conversation list
+    private void initializeUI() {
+        setLayout(new BorderLayout());
+
+        // Left panel - conversations
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.add(new JLabel("Conversations"), BorderLayout.NORTH);
 
@@ -73,105 +88,84 @@ public class MessageView extends JFrame {
             }
         });
 
-        JScrollPane conversationScrollPane = new JScrollPane(conversationList);
-        leftPanel.add(conversationScrollPane, BorderLayout.CENTER);
+        leftPanel.add(new JScrollPane(conversationList), BorderLayout.CENTER);
 
-        JPanel leftButtonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
-        leftButtonPanel.add(newConversationBtn);
-        leftButtonPanel.add(refreshButton);
-        leftPanel.add(leftButtonPanel, BorderLayout.SOUTH);
+        // Conversation control buttons
+        JPanel convButtonPanel = new JPanel(new FlowLayout());
+        convButtonPanel.add(newConversationBtn);
+        convButtonPanel.add(refreshButton);
+        leftPanel.add(convButtonPanel, BorderLayout.SOUTH);
 
-        add(leftPanel, BorderLayout.WEST);
-
-        // Right panel - Chat area
+        // Right panel - chat area
         JPanel rightPanel = new JPanel(new BorderLayout());
 
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);
         chatArea.setWrapStyleWord(true);
-        JScrollPane chatScrollPane = new JScrollPane(chatArea);
-        rightPanel.add(chatScrollPane, BorderLayout.CENTER);
+        rightPanel.add(new JScrollPane(chatArea), BorderLayout.CENTER);
 
         // Message input panel
-        JPanel inputPanel = new JPanel(new BorderLayout());
-        inputPanel.add(messageField, BorderLayout.CENTER);
-        inputPanel.add(sendButton, BorderLayout.EAST);
+        JPanel inputPanel = new JPanel(new FlowLayout());
+        inputPanel.add(messageField);
+        inputPanel.add(sendButton);
         rightPanel.add(inputPanel, BorderLayout.SOUTH);
 
+        // Main layout
+        add(leftPanel, BorderLayout.WEST);
         add(rightPanel, BorderLayout.CENTER);
 
-        // Bottom panel with back button
-        JPanel bottomPanel = new JPanel(new FlowLayout());
-        bottomPanel.add(backButton);
-        add(bottomPanel, BorderLayout.SOUTH);
+        // Back button at bottom
+        JPanel backPanel = new JPanel(new FlowLayout());
+        backPanel.add(backButton);
+        add(backPanel, BorderLayout.SOUTH);
 
         // Event listeners
         sendButton.addActionListener(e -> sendMessage());
-        messageField.addActionListener(e -> sendMessage());
         newConversationBtn.addActionListener(e -> startNewConversation());
-        refreshButton.addActionListener(e -> {
-            loadConversations();
-            if (selectedConversationEmail != null) {
-                loadMessagesForConversation(selectedConversationEmail);
-            }
-        });
+        refreshButton.addActionListener(e -> loadConversations());
         backButton.addActionListener(e -> dispose());
+
+        messageField.addActionListener(e -> sendMessage()); // Send on Enter
     }
 
     private void loadConversations() {
         conversationListModel.clear();
 
-        // Load conversations based on user type
+        List<String> conversations;
         if (currentUser instanceof Student) {
-            List<String> tutorsMessaged = handler.getTutorsMessaged(currentUser.getEmail());
-            for (String tutorEmail : tutorsMessaged) {
-                conversationListModel.addElement(tutorEmail);
-            }
-        } else if (currentUser instanceof Tutor) {
-            List<String> studentsMessaged = handler.getStudentsMessaged(currentUser.getEmail());
-            for (String studentEmail : studentsMessaged) {
-                conversationListModel.addElement(studentEmail);
-            }
+            conversations = handler.getTutorsMessaged(currentUser.getEmail());
+        } else {
+            conversations = handler.getStudentsMessaged(currentUser.getEmail());
         }
 
-        if (conversationListModel.isEmpty()) {
+        if (conversations.isEmpty()) {
             conversationListModel.addElement("Click 'New Conversation' to start messaging");
+        } else {
+            for (String email : conversations) {
+                conversationListModel.addElement(email);
+            }
         }
     }
 
     private void loadSelectedConversation() {
         int selectedIndex = conversationList.getSelectedIndex();
         if (selectedIndex >= 0) {
-            String selectedValue = conversationListModel.getElementAt(selectedIndex);
-            if (!selectedValue.startsWith("Click")) {
-                selectedConversationEmail = selectedValue;
-                loadMessagesForConversation(selectedConversationEmail);
+            String selected = conversationListModel.getElementAt(selectedIndex);
+            if (!selected.startsWith("Click")) { // Not the placeholder text
+                selectedConversationEmail = selected;
+                loadMessagesForConversation(selected);
             }
         }
     }
 
     private void loadMessagesForConversation(String otherUserEmail) {
+        List<Message> messages = handler.getMessageHistory(currentUser.getEmail(), otherUserEmail);
+
         chatArea.setText("");
-
-        // Determine which email is student and which is tutor for the getMessageHistory call
-        String studentEmail;
-        String tutorEmail;
-
-        if (currentUser instanceof Student) {
-            studentEmail = currentUser.getEmail();
-            tutorEmail = otherUserEmail;
-        } else {
-            studentEmail = otherUserEmail;
-            tutorEmail = currentUser.getEmail();
-        }
-
-        List<Message> messages = handler.getMessageHistory(studentEmail, tutorEmail);
-
-        for (Message message : messages) {
-            String sender = message.getSenderEmail().equals(currentUser.getEmail()) ? "You" : otherUserEmail;
-            String formattedTime = message.getTimeSent().format(MESSAGE_TIME_FORMATTER);
-            chatArea.append(String.format("[%s] %s: %s\n", formattedTime, sender, message.getMessage()));
-
+        for (Message msg : messages) {
+            String timestamp = msg.getTimeSent().format(MESSAGE_TIME_FORMATTER);
+            String sender = msg.getSenderEmail().equals(currentUser.getEmail()) ? "You" : msg.getSenderEmail();
+            chatArea.append(String.format("[%s] %s: %s\n", timestamp, sender, msg.getMessage()));
         }
 
         // Scroll to bottom
@@ -179,16 +173,18 @@ public class MessageView extends JFrame {
     }
 
     private void startNewConversation() {
-        String targetEmail = JOptionPane.showInputDialog(this,
-                "Enter the email of the person you want to message:");
+        String otherUserType = (currentUser instanceof Student) ? "tutor" : "student";
+        String email = JOptionPane.showInputDialog(this,
+                "Enter " + otherUserType + " email to start conversation:");
 
-        if (targetEmail != null && !targetEmail.trim().isEmpty()) {
-            selectedConversationEmail = targetEmail.trim();
+        if (email != null && !email.trim().isEmpty()) {
+            selectedConversationEmail = email.trim();
+            loadMessagesForConversation(selectedConversationEmail);
 
-            // Add to conversation list if not already there
+            // Add to conversation list if not already present
             boolean found = false;
-            for (int i = 0; i < conversationListModel.getSize(); i++) {
-                if (conversationListModel.getElementAt(i).equals(targetEmail)) {
+            for (int i = 0; i < conversationListModel.size(); i++) {
+                if (conversationListModel.getElementAt(i).equals(email.trim())) {
                     found = true;
                     conversationList.setSelectedIndex(i);
                     break;
@@ -196,63 +192,37 @@ public class MessageView extends JFrame {
             }
 
             if (!found) {
-                // Remove placeholder message if it exists
-                if (conversationListModel.getSize() == 1 &&
+                // Remove placeholder text if present
+                if (conversationListModel.size() == 1 &&
                         conversationListModel.getElementAt(0).startsWith("Click")) {
                     conversationListModel.clear();
                 }
-                conversationListModel.addElement(targetEmail);
-                conversationList.setSelectedValue(targetEmail, true);
+                conversationListModel.addElement(email.trim());
+                conversationList.setSelectedIndex(conversationListModel.size() - 1);
             }
-
-            loadMessagesForConversation(selectedConversationEmail);
         }
     }
 
     private void sendMessage() {
-        if (selectedConversationEmail == null) {
-            JOptionPane.showMessageDialog(this, "Please select a conversation first.");
-            return;
-        }
-
         String messageText = messageField.getText().trim();
+
         if (messageText.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter a message.");
             return;
         }
 
-        // Determine which email is student and which is tutor
-        String studentEmail;
-        String tutorEmail;
-
-        if (currentUser instanceof Student) {
-            studentEmail = currentUser.getEmail();
-            tutorEmail = selectedConversationEmail;
-        } else {
-            studentEmail = selectedConversationEmail;
-            tutorEmail = currentUser.getEmail();
+        if (selectedConversationEmail == null) {
+            JOptionPane.showMessageDialog(this, "Please select a conversation first.");
+            return;
         }
 
-        // Create Message object with proper parameters
-        Message newMessage = new Message(
-                0, // messageId will be set by persistence layer
-                LocalDateTime.now(),
-                studentEmail,
-                tutorEmail,
-                currentUser.getEmail(),
-                messageText
-        );
+        Message message = new Message(0, LocalDateTime.now(),
+                currentUser.getEmail(), selectedConversationEmail,
+                currentUser.getEmail(), messageText);
 
-        try {
-            Message sentMessage = handler.sendMessage(newMessage);
-            if (sentMessage != null) {
-                messageField.setText("");
-                loadMessagesForConversation(selectedConversationEmail);
-            } else {
-                JOptionPane.showMessageDialog(this, "Failed to send message. Please try again.");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error sending message: " + e.getMessage());
-        }
+        handler.sendMessage(message);
+        messageField.setText("");
+        loadMessagesForConversation(selectedConversationEmail);
+        loadConversations(); // Refresh conversation list
     }
 }
