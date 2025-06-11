@@ -21,10 +21,10 @@ These updates aim to improve the overall usability and simulate real-time commun
 
 We will consider this improvement successful if the following measurable outcomes are met by the end of the iteration:
 
-- ✅ Logged-in users can send messages without entering their own email.
-- ✅ Recipient selection is available via a dynamic contact list.
-- ✅ Messages appear correctly for both users when running parallel windows.
-- ✅ Refresh/polling works as intended to simulate a chat experience.
+- Logged-in users can send messages without entering their own email.
+- Recipient selection is available via a dynamic contact list.
+- Messages appear correctly for both users when running parallel windows.
+- Refresh/polling works as intended to simulate a chat experience.
 
 This will be verified through a live test with two running user interfaces and will be documented in our next demo session.
 
