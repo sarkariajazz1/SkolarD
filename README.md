@@ -6,7 +6,7 @@
 ## Group Members
 
 - **Joshua Chuwang-Kwa**  
-  Email: `chuwangj@myumanitoba.ca`
+  Email: `chuwangi@myumanitoba.ca`
 
 - **Matthew Yablonski**  
   Email: `yablonsm@myumanitoba.ca`
@@ -75,7 +75,7 @@ SkolarD was created as a final-year capstone project to simulate real-world soft
 
 ### Prerequisites
 
-- Java 21 installed on your machine
+- Java 17+ installed on your machine
 - SQLite CLI (optional, for direct database access)
 
 ### Compiling and Running
@@ -129,7 +129,7 @@ rm path/to/skolard.db
 
 On Windows:
 ```cmd
-del path .\skolard.db
+del path	o\skolard.db
 ```
 
 #### Reset test database

@@ -1,12 +1,7 @@
 package skolard.logic.session;
 
 import skolard.objects.Student;
-import skolard.objects.RatingRequest;
-
-import java.util.List;
-
 import skolard.objects.Session;
-import skolard.persistence.RatingRequestPersistence;
 import skolard.persistence.SessionPersistence;
 
 
@@ -16,16 +11,14 @@ import skolard.persistence.SessionPersistence;
  */
 public class SessionBooking {
     private final SessionPersistence sessionPersistence;
-    private final RatingRequestPersistence requestPersistence;
 
     /**
      * Constructor that initializes the session persistence layer.
      *
      * @param sessionPersistence the persistence layer to handle session data
      */
-    public SessionBooking(SessionPersistence sessionPersistence, RatingRequestPersistence requestPersistence) {
+    public SessionBooking(SessionPersistence sessionPersistence) {
         this.sessionPersistence = sessionPersistence;
-        this.requestPersistence = requestPersistence;
     }
 
     /**
@@ -59,17 +52,8 @@ public class SessionBooking {
         if (session.isBooked()) {
             session.unbookSession(student);
             sessionPersistence.updateSession(session);
-            skipRequests(sessionID);
         } else {
             throw new IllegalArgumentException("Session has not been booked");
-        }
-    }
-
-    private void skipRequests(int sessionID) {
-        List<RatingRequest> requests = requestPersistence.getPendingSessionRequest(sessionID);
-        for (RatingRequest r : requests) {
-            r.skip();
-            requestPersistence.updateRequest(r);
         }
     }
 }
