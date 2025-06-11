@@ -28,9 +28,7 @@ public class LoginHandlerIntegrationTest {
 
     @AfterEach
     void closeDatabase() throws Exception {
-        if (conn != null && !conn.isClosed()) {
-            conn.close();
-        }
+        PersistenceFactory.reset();
     }
 
     @Test

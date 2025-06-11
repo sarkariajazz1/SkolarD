@@ -126,6 +126,6 @@ public class MessageHandlerIntegrationTest {
 
     @AfterEach
     void cleanup() throws Exception {
-        if (conn != null && !conn.isClosed()) conn.close();
+        PersistenceFactory.reset();
     }
 }
