@@ -92,6 +92,7 @@ public class BookingHandler {
      * @param courseName  the name of the course to search sessions for (required)
      * @param start       the optional start time (used for time-based filtering)
      * @param end         the optional end time (used for time-based filtering)
+     * @param studentEmail the email of a student to help check if sessions of a tutor has same email
      * @return a list of sessions that match the course and optional filter criteria
      */
     public List<Session> getAvailableSessions(SessionFilter filter, String courseName, LocalDateTime start, LocalDateTime end, String studentEmail){
@@ -114,6 +115,7 @@ public class BookingHandler {
      * 
      *
      * @param courseName  the name of the course to search sessions for (required)
+     * @param studentEmail the email of a student to help check if sessions of a tutor has same email
      * @return a list of sessions not booked and not filtered
      */
     public List<Session> getAvailableSessions(String courseName, String studentEmail){
