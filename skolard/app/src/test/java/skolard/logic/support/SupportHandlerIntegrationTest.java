@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SupportHandlerIntegrationTest {
 
     private Connection conn;
@@ -18,7 +19,7 @@ public class SupportHandlerIntegrationTest {
     private SupportPersistence supportPersistence;
     private StudentPersistence studentPersistence;
 
-    @BeforeEach
+    @BeforeAll
     void setup() throws Exception {
         conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, false);
         PersistenceProvider.initializeSqlite(conn);
@@ -113,9 +114,9 @@ public class SupportHandlerIntegrationTest {
         assertThrows(IllegalArgumentException.class, () -> supportHandler.closeTicket(ticket));
     }
 
-    @AfterEach
+    @AfterAll
     void cleanup() throws Exception {
-        PersistenceFactory.reset();
+        if (conn != null && !conn.isClosed()) conn.close();
     }
 }
 

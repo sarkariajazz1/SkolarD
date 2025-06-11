@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 
 import skolard.objects.FAQ;
 import skolard.persistence.FAQPersistence;
-import skolard.persistence.PersistenceFactory;
 import skolard.persistence.sqlite.FAQDB;
 
 public class FAQHandlerIntegrationTest {
@@ -82,6 +81,6 @@ public class FAQHandlerIntegrationTest {
 
     @AfterEach
     public void closeDatabase() throws Exception {
-        PersistenceFactory.reset();
+        connection.close();
     }
 }
