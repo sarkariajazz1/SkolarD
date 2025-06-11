@@ -136,9 +136,6 @@ public class RatingRequestDB implements RatingRequestPersistence {
         return ratingRequests;
     }
 
-<<<<<<< HEAD
-    private RatingRequest fromResultSet(ResultSet rs) throws SQLException{
-=======
     /**
      * Retrieves pending rating requests for a specific session.
      * 
@@ -172,7 +169,6 @@ public class RatingRequestDB implements RatingRequestPersistence {
      * @throws SQLException on SQL access errors
      */
     private RatingRequest fromResultSet(ResultSet rs) throws SQLException {
->>>>>>> dev
         int id = rs.getInt("id");
         int sessionId = rs.getInt("sessionId");
         String studentEmail = rs.getString("studentEmail");

@@ -24,16 +24,12 @@ public class ProfileHandler {
     private final ProfileViewer viewer;
 
     /**
-<<<<<<< HEAD
-     * Default constructor using the real database from PersistenceRegistry.
-=======
      * Default constructor that uses the default profile formatter.
      * Useful for application-level initialization.
      *
      * @param sp Student persistence implementation
      * @param tp Tutor persistence implementation
      * @param sessionHandler handler to assist in session-related context (e.g., rating logic)
->>>>>>> dev
      */
     public ProfileHandler(StudentPersistence sp, TutorPersistence tp, SessionHandler sessionHandler) {
         this(sp,
