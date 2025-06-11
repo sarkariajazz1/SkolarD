@@ -1,4 +1,3 @@
-
 package skolard.presentation;
 
 import java.awt.BorderLayout;
@@ -17,17 +16,19 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
+import skolard.logic.faq.FAQHandler;
 import skolard.logic.auth.LoginHandler;
 import skolard.logic.booking.BookingHandler;
-import skolard.logic.faq.FAQHandler;
 import skolard.logic.message.MessageHandler;
+import skolard.logic.payment.PaymentHandler;
 import skolard.logic.profile.ProfileHandler;
 import skolard.logic.rating.RatingHandler;
 import skolard.logic.session.SessionHandler;
 import skolard.logic.support.SupportHandler;
-import skolard.logic.payment.PaymentHandler;
 import skolard.objects.Student;
 import skolard.objects.Support;
 import skolard.objects.Tutor;
@@ -35,19 +36,13 @@ import skolard.objects.User;
 import skolard.persistence.PersistenceRegistry;
 import skolard.presentation.auth.LoginView;
 import skolard.presentation.auth.SignUpView;
-import skolard.presentation.booking.BookingView;
-import skolard.presentation.dashboard.StudentView;
-import skolard.presentation.dashboard.TutorView;
 import skolard.presentation.faq.FAQView;
-import skolard.presentation.message.MessageView;
-import skolard.presentation.profile.ProfileView;
-import skolard.presentation.rating.RatingView;
+import skolard.presentation.booking.BookingView;
 import skolard.presentation.session.SessionView;
 import skolard.presentation.message.MessageView;
 import skolard.presentation.support.SupportView;
 import skolard.presentation.rating.RatingView;
 import skolard.presentation.dashboard.TutorView;
-import skolard.presentation.support.SupportView;
 
 public class SkolardApp extends JFrame {
 
@@ -77,7 +72,7 @@ public class SkolardApp extends JFrame {
                       LoginHandler loginHandler,
                       RatingHandler ratingHandler,
                       PaymentHandler paymentHandler
-                      ) {
+    ) {
         super("SkolarD - Welcome");
 
         this.profileHandler = profileHandler;
@@ -152,7 +147,7 @@ public class SkolardApp extends JFrame {
         String titleText = "SkolarD Dashboard";
         if (currentUser != null) {
             String userType = currentUser instanceof Student ? "Student" :
-                              currentUser instanceof Tutor ? "Tutor" : "User";
+                    currentUser instanceof Tutor ? "Tutor" : "User";
             titleText += " - " + userType + ": " + currentUser.getName();
         }
 
@@ -230,7 +225,7 @@ public class SkolardApp extends JFrame {
     private JPanel createStudentButtonPanel() {
         JPanel buttonPanel = new JPanel(new GridLayout(8, 1, 10, 10));
 
-        JButton myDashboardBtn = new JButton("My Dashboard");
+        JButton viewMyProfileBtn = new JButton("View My Profile");
         JButton findTutorsBtn = new JButton("Find Tutor Sessions");
         JButton sessionBtn = new JButton("Session Management");
         JButton messageBtn = new JButton("Messages");
@@ -238,7 +233,7 @@ public class SkolardApp extends JFrame {
         JButton faqBtn = new JButton("FAQs");
         JButton rateBtn = new JButton("Rate Tutor/Session");
 
-        buttonPanel.add(myDashboardBtn);
+        buttonPanel.add(viewMyProfileBtn);
         buttonPanel.add(findTutorsBtn);
         buttonPanel.add(sessionBtn);
         buttonPanel.add(messageBtn);
@@ -247,8 +242,8 @@ public class SkolardApp extends JFrame {
         buttonPanel.add(rateBtn);
 
         // Setup event listeners
-        myDashboardBtn.addActionListener(e -> {
-            openWindow(new StudentView(profileHandler, messageHandler,(Student) currentUser));
+        viewMyProfileBtn.addActionListener(e -> {
+            showStudentProfileView();
         });
 
         findTutorsBtn.addActionListener(e -> {
@@ -323,27 +318,73 @@ public class SkolardApp extends JFrame {
         return buttonPanel;
     }
 
+    private void showStudentProfileView() {
+        JFrame profileFrame = new JFrame("My Profile - " + currentUser.getName());
+        profileFrame.setLayout(new BorderLayout(10, 10));
+
+        // Display current profile
+        JTextArea profileArea = new JTextArea(15, 40);
+        profileArea.setEditable(false);
+        profileArea.setText(profileHandler.viewFullProfile(currentUser));
+
+        JScrollPane scrollPane = new JScrollPane(profileArea);
+        profileFrame.add(scrollPane, BorderLayout.CENTER);
+
+        // Button panel - only Back button for students
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton backBtn = new JButton("Back");
+
+        backBtn.addActionListener(e -> profileFrame.dispose());
+
+        buttonPanel.add(backBtn);
+        profileFrame.add(buttonPanel, BorderLayout.SOUTH);
+
+        profileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        profileFrame.setSize(500, 400);
+        profileFrame.setLocationRelativeTo(this);
+        profileFrame.setVisible(true);
+    }
+
     private void showManageProfileView() {
         JFrame profileFrame = new JFrame("Manage Profile - " + currentUser.getName());
         profileFrame.setLayout(new BorderLayout(10, 10));
 
-        // Simple profile management for now
-        JLabel profileLabel = new JLabel("<html><div style='text-align: center;'>" +
-                "<h3>Profile Management</h3>" +
-                "<p>Name: " + currentUser.getName() + "</p>" +
-                "<p>Email: " + currentUser.getEmail() + "</p>" +
-                "</div></html>", SwingConstants.CENTER);
+        // Display current profile
+        JTextArea profileArea = new JTextArea(15, 40);
+        profileArea.setEditable(false);
+        profileArea.setText(profileHandler.viewFullProfile(currentUser));
 
-        profileFrame.add(profileLabel, BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(profileArea);
+        profileFrame.add(scrollPane, BorderLayout.CENTER);
 
-        JButton closeBtn = new JButton("Close");
-        closeBtn.addActionListener(e -> profileFrame.dispose());
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.add(closeBtn);
+        // Button panel
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 10));
+        JButton updateBioBtn = new JButton("Edit Bio");
+        JButton backBtn = new JButton("Back");
+
+        updateBioBtn.addActionListener(e -> {
+            if (currentUser instanceof Tutor) {
+                Tutor currentTutor = (Tutor) currentUser;
+                String currentBio = currentTutor.getBio();
+                String newBio = JOptionPane.showInputDialog(profileFrame,
+                        "Enter your new bio:", currentBio);
+
+                if (newBio != null && !newBio.trim().isEmpty()) {
+                    profileHandler.updateBio(currentTutor, newBio.trim());
+                    profileArea.setText(profileHandler.viewFullProfile(currentTutor));
+                    JOptionPane.showMessageDialog(profileFrame, "Bio updated successfully!");
+                }
+            }
+        });
+
+        backBtn.addActionListener(e -> profileFrame.dispose());
+
+        buttonPanel.add(updateBioBtn);
+        buttonPanel.add(backBtn);
         profileFrame.add(buttonPanel, BorderLayout.SOUTH);
 
         profileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        profileFrame.setSize(300, 200);
+        profileFrame.setSize(500, 400);
         profileFrame.setLocationRelativeTo(this);
         profileFrame.setVisible(true);
     }
