@@ -15,7 +15,7 @@ import skolard.utils.PasswordUtil;
  */
 public class StudentStub implements StudentPersistence {
 
-    private Map<String, Student> students; // Map of students keyed by email
+    private final Map<String, Student> students; // Map of students keyed by email
 
     /**
      * Constructor initializes student storage and adds demo data.
