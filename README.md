@@ -1,9 +1,40 @@
 
 # SkolarD
 
-**Team Name:** Decoders
+**Group Name:** Decoders
 
-SkolarD is a tutoring management system designed to streamline academic support for both students and tutors. Built as a modular Java Swing desktop application, SkolarD provides a unified interface for scheduling, messaging, rating, and managing tutoring sessions. It adheres to a 3-tier architecture separating the presentation, business logic, and persistence layers to support long-term maintainability, testability, and extensibility.
+## Group Members
+
+- **Joshua Chuwang-Kwa**  
+  Email: `chuwangi@myumanitoba.ca`
+
+- **Matthew Yablonski**  
+  Email: `yablonsm@myumanitoba.ca`
+
+- **John Aguinaldo**  
+  Email: `aguinal1@myumanitoba.ca`
+
+- **Jaskaran Sarkaria**  
+  Email: `sarkari2@myumanitoba.ca`
+
+- **Caibaitong(Anton) Wang**  
+  Email: `antonwcbt@gmail.com`  
+  Alternate Email: `wangc16@myumanitoba.ca`
+
+---
+
+## Project Overview
+
+**SkolarD** is a tutoring management system designed to streamline academic support for both students and tutors. Built as a modular Java Swing desktop application, SkolarD provides a unified interface for scheduling, messaging, rating, and managing tutoring sessions.
+
+The system follows a **three-tier architecture**, cleanly separating:
+
+- **Presentation Layer** – GUI views built with Java Swing
+- **Logic Layer** – Handlers and utilities responsible for core behavior
+- **Persistence Layer** – SQLite-backed or in-memory stub data storage
+
+This architectural choice supports long-term **maintainability**, **testability**, and **extensibility**.
+
 
 ---
 
