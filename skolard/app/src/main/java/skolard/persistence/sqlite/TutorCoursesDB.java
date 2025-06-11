@@ -7,14 +7,32 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Handles database operations related to tutors' courses and their grades.
+ * Supports adding, retrieving, and deleting course-grade records for tutors.
+ */
 public class TutorCoursesDB {
 
     private final Connection connection;
 
+    /**
+     * Constructs the TutorCoursesDB with a database connection.
+     * 
+     * @param connection the SQLite database connection
+     */
     public TutorCoursesDB(Connection connection) {
         this.connection = connection;
     }
 
+    /**
+     * Adds a course with a grade for the tutor identified by email.
+     * After adding, returns the updated map of all courses and grades for the tutor.
+     * 
+     * @param email the tutor's email
+     * @param course the course identifier
+     * @param grade the grade for the course
+     * @return a map of course IDs to grades for the tutor
+     */
     public Map<String, Double> addCourse(String email, String course, Double grade) {
         String sql = "INSERT INTO tutorCourse (tutorEmail, courseID, grade) VALUES (?, ?, ?)";
 
@@ -30,6 +48,12 @@ public class TutorCoursesDB {
         }
     }
 
+    /**
+     * Retrieves all courses and their corresponding grades for a tutor.
+     * 
+     * @param email the tutor's email
+     * @return a map from course IDs to grades
+     */
     public Map<String, Double> getTutorCourses(String email) {
         Map<String, Double> courses = new HashMap<>();
         String sql = "SELECT courseID, grade FROM tutorCourse WHERE tutorEmail = ?";
@@ -50,7 +74,12 @@ public class TutorCoursesDB {
         return courses;
     }
 
-    
+    /**
+     * Deletes a specific course from the tutor's courses.
+     * 
+     * @param email the tutor's email
+     * @param course the course ID to delete
+     */
     public void deleteTutorCourse(String email, String course) {
         String sql = "DELETE FROM tutorCourse WHERE tutorEmail = ? AND courseID = ?";
 
@@ -64,6 +93,11 @@ public class TutorCoursesDB {
         }
     }
 
+    /**
+     * Deletes all courses associated with a tutor.
+     * 
+     * @param email the tutor's email
+     */
     public void deleteAllTutorCourses(String email) {
         String sql = "DELETE FROM tutorCourse WHERE tutorEmail = ?";
 
@@ -76,3 +110,4 @@ public class TutorCoursesDB {
         }
     }
 }
+
