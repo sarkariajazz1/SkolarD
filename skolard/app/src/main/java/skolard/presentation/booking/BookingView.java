@@ -14,65 +14,45 @@ import java.awt.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * GUI class for displaying and interacting with bookable sessions.
+ * Allows students to search, view, and book available sessions.
+ */
 public class BookingView extends JFrame {
-    // Text field for course name input.
-    private final JTextField courseField = new JTextField(15);
-    // Text field for preferred session start time.
-    private final JTextField startTimeField = new JTextField(16);
-    // Text field for preferred session end time.
-    private final JTextField endTimeField = new JTextField(16);
-    // Dropdown for filtering/sorting session results.
-    private final JComboBox<String> filterDropdown = new JComboBox<>(new String[]{
-            "", "Sort by Time", "Sort by Tutor Course Grade", "Sort by Overall Tutor Rating"
-    });
+    // UI components for user input
+    private final JTextField courseField = new JTextField(15);         // Course input field
+    private final JTextField startTimeField = new JTextField(16);      // Optional start time field
+    private final JTextField endTimeField = new JTextField(16);        // Optional end time field
+    private final JComboBox<String> filterDropdown = new JComboBox<>(); // Dropdown to select sorting/filtering options
 
-    // Button to initiate session search.
+    // Buttons for user actions
     private final JButton searchBtn = new JButton("Find Sessions");
-    // Button to book a selected session.
     private final JButton bookButton = new JButton("Book");
-    // Button to view detailed information about a selected session.
     private final JButton infoButton = new JButton("View Info");
-    // Button to navigate back or close the view.
     private final JButton backButton = new JButton("Back");
 
-    // Label to display status messages to the user.
-    private final JLabel statusLabel = new JLabel(" ");
-    // Label for the preferred time range input section.
+    // UI labels and panels
+    private final JLabel statusLabel = new JLabel(" ");                // Label for status messages
     private final JLabel timeRangeLabel = new JLabel("Preferred time range:");
-    // Panel containing the time input fields.
-    private final JPanel timePanel = new JPanel();
+    private final JPanel timePanel = new JPanel();                     // Panel containing start/end time fields
 
-    // Table to display available sessions.
+    // Table for displaying session results
     private final JTable sessionTable;
-    // Model for managing data displayed in the sessionTable.
     private final DefaultTableModel tableModel;
 
-    // List to hold the currently displayed session results.
-    private List<Session> currentResults;
-    // Formatter for consistent date and time string representation.
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    // Data state
+    private List<Session> currentResults;                              // Current sessions loaded into the table
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); // Date/time format
 
-    // Controller handling the business logic for this view.
+    // Logic/handler references
     private final BookingController controller;
-    // Handler for processing payments.
     private final PaymentHandler paymentHandler;
-    // Handler for managing session data and operations.
     private final SessionHandler sessionHandler;
-    // Handler for managing tutor ratings.
     private final RatingHandler ratingHandler;
-    // The currently logged-in student.
     private final Student student;
 
     /**
-     * Constructs a new BookingView window for students to find and book sessions.
-     * Initializes the UI components and sets up necessary handlers for business logic.
-     *
-     * @param bookingHandler The handler for booking-related operations.
-     * @param sessionHandler The handler for session-related operations.
-     * @param ratingHandler The handler for managing ratings.
-     * @param paymentHandler The handler for processing payments.
-     * @param student The current student user.
-     * @throws NullPointerException if any of the handler or student parameters are null.
+     * Constructs the booking view with handlers and student context.
      */
     public BookingView(BookingHandler bookingHandler, SessionHandler sessionHandler,
                        RatingHandler ratingHandler, PaymentHandler paymentHandler, Student student) {
@@ -84,55 +64,49 @@ public class BookingView extends JFrame {
         this.student = student;
         this.controller = new BookingController(this, bookingHandler, sessionHandler, ratingHandler, paymentHandler, student);
 
-        // Configure JFrame properties.
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
 
-        // Define column headers for the session table.
+        // Table initialization
         String[] columnNames = {"Tutor", "Start Time", "End Time"};
-        // Initialize the table model with column names and no data.
         tableModel = new DefaultTableModel(columnNames, 0);
-        // Initialize the table with the created model.
         sessionTable = new JTable(tableModel);
-        // Allow only one row to be selected at a time.
         sessionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        // Setup various UI panels.
         setupInputPanel();
         setupTablePanel();
         setupButtonPanel();
         setupListeners();
 
-        // Adjust window size to fit components.
         pack();
-        // Center the window on the screen.
         setLocationRelativeTo(null);
-        // Make the window visible.
         setVisible(true);
     }
 
     /**
-     * Sets up the input panel containing course search, time range filters, and the search button.
-     * This panel is placed at the top (NORTH) of the JFrame's BorderLayout.
-     *
-     * @return void
+     * Sets up the user input section including course search and filters.
      */
     private void setupInputPanel() {
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
 
+        // First row: course input and filter dropdown
         JPanel topRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topRow.add(new JLabel("Course:"));
         topRow.add(courseField);
         topRow.add(searchBtn);
 
-        JComboBox<String> filterDropdown = new JComboBox<>(new String[] {
-                "", "Sort by Time", "Sort by Tutor Course Grade", "Sort by Overall Tutor Rating"
-        });
+        // Populate dropdown options
+        filterDropdown.removeAllItems();
+        filterDropdown.addItem("");
+        filterDropdown.addItem("Sort by Time");
+        filterDropdown.addItem("Sort by Tutor Course Grade");
+        filterDropdown.addItem("Sort by Overall Tutor Rating");
         topRow.add(filterDropdown);
 
         inputPanel.add(topRow);
 
+        // Time range sub-panel (initially hidden)
         timePanel.setLayout(new BoxLayout(timePanel, BoxLayout.Y_AXIS));
         JPanel timeFieldsRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         timeFieldsRow.add(new JLabel("Start:"));
@@ -145,7 +119,6 @@ public class BookingView extends JFrame {
         timePanel.add(timeRangeLabel);
         timePanel.add(timeFieldsRow);
         timePanel.add(timeExample);
-
         timePanel.setVisible(false);
         timeRangeLabel.setVisible(false);
 
@@ -154,10 +127,7 @@ public class BookingView extends JFrame {
     }
 
     /**
-     * Sets up the panel containing the JTable for displaying session results.
-     * This panel is placed in the center (CENTER) of the JFrame's BorderLayout.
-     *
-     * @return void
+     * Sets up the panel containing the session results table.
      */
     private void setupTablePanel() {
         JPanel tablePanel = new JPanel();
@@ -168,11 +138,7 @@ public class BookingView extends JFrame {
     }
 
     /**
-     * Sets up the button panel at the bottom (SOUTH) of the JFrame,
-     * including 'Back', 'Book', and 'View Info' buttons, and
-     * configures their action listeners.
-     *
-     * @return void
+     * Sets up the panel with Book, Info, and Back buttons.
      */
     private void setupButtonPanel() {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -184,27 +150,25 @@ public class BookingView extends JFrame {
         buttonPanel.add(infoButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
+        // Booking button action: confirm + payment + update
         bookButton.addActionListener(e -> {
             int selectedRow = sessionTable.getSelectedRow();
             if (selectedRow >= 0 && selectedRow < currentResults.size()) {
                 Session session = currentResults.get(selectedRow);
                 int confirm = JOptionPane.showConfirmDialog(
                         this,
-                        "Do you want to book this session with " + session.getTutor().getName() + "? Pre-payment is required.",
+                        "Do you want to book this session with " + session.getTutor().getName() + "? " + "Pre-payment is required.",
                         "Confirm Booking",
                         JOptionPane.YES_NO_OPTION
                 );
                 if (confirm == JOptionPane.YES_OPTION) {
-                    // Show payment window.
                     PaymentView paymentDialog = new PaymentView(SwingUtilities.getWindowAncestor(this), paymentHandler, student);
-                    paymentDialog.setVisible(true);
+                    paymentDialog.setVisible(true); // blocks until closed
 
                     if (paymentDialog.wasPaid()) {
-                        // Book the session and create a rating request.
                         sessionHandler.bookASession(student, session.getSessionId());
                         ratingHandler.createRatingRequest(session, student);
 
-                        // Update table and buttons after booking.
                         currentResults.remove(selectedRow);
                         tableModel.removeRow(selectedRow);
                         sessionTable.clearSelection();
@@ -223,6 +187,7 @@ public class BookingView extends JFrame {
             }
         });
 
+        // Info button shows session details
         infoButton.addActionListener(e -> {
             int selectedRow = sessionTable.getSelectedRow();
             if (selectedRow >= 0 && selectedRow < currentResults.size()) {
@@ -231,33 +196,33 @@ public class BookingView extends JFrame {
             }
         });
 
+        // Back button closes the window
         backButton.addActionListener(e -> dispose());
     }
 
     /**
-     * Sets up event listeners for interactive UI components, such as the filter dropdown,
-     * search button, and session table selection.
-     *
-     * @return void
+     * Attaches listeners to components (filters, buttons, etc).
      */
     private void setupListeners() {
+        // Toggle time range inputs based on filter
         filterDropdown.addActionListener(e -> {
-            // Toggle visibility of time input fields based on filter selection.
             boolean show = "Sort by Time".equals(filterDropdown.getSelectedItem());
             timePanel.setVisible(show);
             timeRangeLabel.setVisible(show);
+            startTimeField.setText("");
+            endTimeField.setText("");
         });
 
+        // Trigger search through controller
         searchBtn.addActionListener(e ->
-                // Trigger the search in the controller.
                 controller.onSearch(courseField.getText(), (String) filterDropdown.getSelectedItem(),
                         startTimeField.getText(), endTimeField.getText()));
 
-
+        // View info button triggers session detail display
         infoButton.addActionListener(e -> controller.onViewInfo(sessionTable.getSelectedRow()));
 
+        // Table selection enables buttons
         sessionTable.getSelectionModel().addListSelectionListener(e -> {
-            // Enable/disable buttons based on table row selection.
             boolean valid = !e.getValueIsAdjusting() && sessionTable.getSelectedRow() >= 0;
             bookButton.setEnabled(valid);
             infoButton.setEnabled(valid);
@@ -265,13 +230,9 @@ public class BookingView extends JFrame {
     }
 
     /**
-     * Displays a detailed popup message for a given session, showing tutor, time, course, and bio information.
-     *
-     * @param session The {@link Session} object whose details are to be displayed.
-     * @return void
+     * Displays a popup with detailed information about a session.
      */
     private void showSessionDetailsPopup(Session session) {
-        // Format message for display.
         String message = String.format(
                 "<html><b>Tutor:</b> %s<br><b>Email:</b> %s<br><b>Start:</b> %s<br><b>End:</b> %s<br><b>Course:</b> %s<br><b>Bio:</b> %s<br><b>Tutor course grade:</b> %s</html>",
                 session.getTutor().getName(),
@@ -286,18 +247,12 @@ public class BookingView extends JFrame {
     }
 
     /**
-     * Updates the session table with a new list of sessions. Clears any existing rows
-     * and populates the table with data from the provided list. It also resets button states
-     * and updates the status label.
-     *
-     * @param sessions A {@link List} of {@link Session} objects to display in the table.
-     * @return void
+     * Updates the session table with new data.
      */
     public void updateSessionTable(List<Session> sessions) {
-        tableModel.setRowCount(0);
+        tableModel.setRowCount(0); // Clear current table rows
         currentResults = sessions;
 
-        // Add each session to the table.
         for (Session session : sessions) {
             Object[] row = {
                     session.getTutor().getName(),
@@ -311,7 +266,6 @@ public class BookingView extends JFrame {
         bookButton.setEnabled(false);
         infoButton.setEnabled(false);
 
-        // Update status message.
         if (sessions.isEmpty()) {
             showStatus("No sessions found for the specified criteria.");
         } else {
@@ -320,25 +274,17 @@ public class BookingView extends JFrame {
     }
 
     /**
-     * Removes a session row from the displayed table and its corresponding entry
-     * from the internal {@code currentResults} list.
-     *
-     * @param rowIndex The index of the row to be removed from the table.
-     * @return void
+     * Removes a session row from the table after booking.
      */
     public void removeSessionFromTable(int rowIndex) {
         if (currentResults != null && rowIndex >= 0 && rowIndex < currentResults.size()) {
-            // Remove from list and table model.
             currentResults.remove(rowIndex);
             tableModel.removeRow(rowIndex);
         }
     }
 
     /**
-     * Retrieves the {@link Session} object corresponding to a given row index in the displayed table.
-     *
-     * @param rowIndex The index of the row in the table.
-     * @return The {@link Session} object at the specified row index, or {@code null} if the index is out of bounds or results are not loaded.
+     * Returns the session corresponding to a selected table row.
      */
     public Session getSelectedSession(int rowIndex) {
         if (currentResults != null && rowIndex >= 0 && rowIndex < currentResults.size()) {
@@ -348,24 +294,16 @@ public class BookingView extends JFrame {
     }
 
     /**
-     * Displays a status message in the dedicated status label on the UI.
-     *
-     * @param message The string message to be displayed.
-     * @return void
+     * Displays a status message to the user.
      */
     public void showStatus(String message) {
         statusLabel.setText(message);
     }
 
     /**
-     * Displays detailed information about a session in a message dialog.
-     * This method is functionally very similar to {@link #showSessionDetailsPopup(Session)}.
-     *
-     * @param session The {@link Session} object whose details are to be displayed.
-     * @return void
+     * Displays session details in a popup window.
      */
     public void showSessionDetails(Session session) {
-        // Format message for display.
         String msg = String.format(
                 "<html><b>Tutor:</b> %s<br><b>Email:</b> %s<br><b>Start:</b> %s<br><b>End:</b> %s<br><b>Course:</b> %s<br><b>Bio:</b> %s<br><b>Grade:</b> %s</html>",
                 session.getTutor().getName(),
