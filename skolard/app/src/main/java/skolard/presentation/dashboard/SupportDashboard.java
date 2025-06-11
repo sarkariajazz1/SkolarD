@@ -89,12 +89,12 @@ public class SupportDashboard extends JFrame {
         // Setup event listeners
         ticketHandlingBtn.addActionListener(e -> {
             new SupportView(supportHandler, currentSupport);
-            dispose();
+            // Removed dispose() - keep dashboard open
         });
 
         messagesBtn.addActionListener(e -> {
             new MessageView(messageHandler, currentSupport);
-            dispose();
+            // Removed dispose() - keep dashboard open
         });
 
         logoutBtn.addActionListener(e -> {
@@ -104,7 +104,7 @@ public class SupportDashboard extends JFrame {
                     JOptionPane.YES_NO_OPTION);
 
             if (choice == JOptionPane.YES_OPTION) {
-                dispose();
+                dispose(); // Keep dispose() only for logout
             }
         });
     }

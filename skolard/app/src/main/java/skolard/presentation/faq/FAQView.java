@@ -30,6 +30,13 @@ public class FAQView extends JFrame {
 
         add(createFAQScrollPane(), BorderLayout.CENTER);
 
+        // Add back button panel at bottom
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> dispose());
+        buttonPanel.add(backButton);
+        add(buttonPanel, BorderLayout.SOUTH);
+
         setVisible(true);
     }
 
