@@ -7,7 +7,14 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import skolard.logic.auth.LoginHandler;
 import skolard.logic.faq.FAQHandler;
@@ -162,7 +169,7 @@ public class SignUpView extends JFrame {
                 } catch (Exception ex) {
                     statusLabel.setText("Unexpected error occurred");
                     JOptionPane.showMessageDialog(this,
-                            "An unexpected error occurred. Please try again.",
+                            "Student with same email is on database. Please use another email.",
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -197,7 +204,7 @@ public class SignUpView extends JFrame {
                 } catch (Exception ex) {
                     statusLabel.setText("Unexpected error occurred");
                     JOptionPane.showMessageDialog(this,
-                            "An unexpected error occurred. Please try again.",
+                            "Tutor with same email is on database. Please use another email.",
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }

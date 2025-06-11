@@ -1,11 +1,11 @@
 package skolard.persistence.stub;
 
-import skolard.objects.FAQ;
-import skolard.persistence.FAQPersistence;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import skolard.objects.FAQ;
+import skolard.persistence.FAQPersistence;
 
 public class FAQStub implements FAQPersistence {
     private final List<FAQ> faqs;
@@ -19,7 +19,7 @@ public class FAQStub implements FAQPersistence {
         faqs.add(new FAQ("How do I book a session?", "Go to the session view and choose an available time slot."));
         faqs.add(new FAQ("How can I contact a tutor?", "Use the messaging view to send a direct message."));
     }
-
+    @Override
     public List<FAQ> getAllFAQs() {
         return new ArrayList<>(faqs);
     }
