@@ -82,14 +82,6 @@ public class StudentDBTest {
         assertNull(studentDB.getStudentByEmail("ghost@student.ca"));
     }
 
-    // @Test
-    // void testAuthenticate_Success() throws Exception {
-    //     insert("auth@student.ca", "Auth Student", "mypassword");
-    //     Student result = studentDB.authenticate("auth@student.ca", "mypassword");
-    //     assertNotNull(result);
-    //     assertEquals("Auth Student", result.getName());
-    // }
-
     @Test
     void testAuthenticate_WrongPassword() throws Exception {
         insert("wrongpass@student.ca", "Wrong Pass", "realpass");

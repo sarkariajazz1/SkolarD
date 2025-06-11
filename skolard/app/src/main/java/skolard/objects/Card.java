@@ -1,9 +1,9 @@
 package skolard.objects;
 
 public class Card {
-    private String name;
-    private String cardNumber;
-    private String expiry;
+    private final String name;
+    private final String cardNumber;
+    private final String expiry;
 
     public Card(String cardNumber, String expiry, String name){
         this.cardNumber = cardNumber;

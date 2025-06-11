@@ -25,7 +25,6 @@ public class App {
 
         // Get instances from the registry
         
-
         BookingHandler bookingHandler = new BookingHandler(PersistenceRegistry.getSessionPersistence());
         MessageHandler messageHandler = new MessageHandler(PersistenceRegistry.getMessagePersistence());
         SessionHandler sessionHandler = new SessionHandler(PersistenceRegistry.getSessionPersistence());
