@@ -124,39 +124,39 @@ SkolardApp --> DashboardUI
 ## Class Listings
 
 ### Object Classes
-1. Card  
-2. FAQ  
-3. Feedback  
-4. LoginCredentials  
-5. Message  
-6. RatingRequest  
-7. Session  
-8. Student  
-9. Support  
-10. SupportTicket  
-11. Tutor  
-12. User  
+1. Card: no calls to other classes  
+2. FAQ: no calls to other classes
+3. Feedback: no calls to other classes  
+4. LoginCredentials: no calls to other classes  
+5. Message: no calls to other classes  
+6. RatingRequest: no calls to other classes  
+7. Session: no calls to other classes  
+8. Student: no calls to other classes  
+9. Support: no calls to other classes  
+10. SupportTicket: no calls to other classes  
+11. Tutor: no calls to other classes  
+12. User: no calls to other classes  
 
 ### Persistence Layer Classes
-- ConnectionManager  
+- ConnectionManager: calls SchemaInitializer
 - DatabaseSeeder  
 - EnvironmentInitializer  
 - PersistenceFactory  
-- PersistenceProvider  
-- PersistenceRegistry  
-- PersistenceType  
-- CardDB  
-- FAQDB  
-- LoginDB  
-- MessageDB  
-- RatingDB  
-- RatingRequestDB  
-- SchemaInitializer  
-- SessionDB  
-- StudentDB  
-- SupportDB  
-- TutorCoursesDB  
-- TutorDB  
+- PersistenceProvider: calls all DB classes  
+- PersistenceRegistry: accesses all the Persistence interfaces  
+- PersistenceType(Enum): no calls to other classes 
+- CardDB: calls Card object  
+- FAQDB:  calls FAQ object 
+- LoginDB:  accesses PasswordUtil  
+- MessageDB: accesses  
+- RatingDB: accesses Feedback object  
+- RatingRequestDB: accesses RatingRequest, RatingRequestDB, Session, SessionDB, Student, and StudentDB classes.  
+- SchemaInitializer: no calls to other classes  
+- SessionDB: accesses Session, Student, StudentDB, Tutor, and TutorDB classes
+- StudentDB: accesses Student object
+- SupportDB: accesses Student, StudentDB, Tutor, TutorDB, and Support classes  
+- TutorCoursesDB: no calls to object classes  
+- TutorDB: accesses Tutor object  
 
 ### Logic Layer Classes
 - LoginHandler  
