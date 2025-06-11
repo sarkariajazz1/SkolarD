@@ -2,35 +2,39 @@
 
 ## Area of Concern: Messaging System Design
 
-One feature that did not meet expectations during the previous iteration was the messaging system. At present, the messaging interface requires users to manually input both the tutor’s and student’s email addresses in order to display messages. This workflow is unintuitive and does not reflect a realistic user experience for direct communication. Additionally, our current setup does not simulate a real conversation between two users, as both message sender and recipient have to be entered manually.
+During the previous iteration, our messaging system did not meet the team's expectations. Currently, the messaging interface requires users to manually input both the tutor's and student's email addresses each time they wish to view or send messages. This approach is unintuitive and diverges significantly from typical user experiences involving direct messaging systems. Additionally, our existing implementation fails to effectively simulate realistic conversations between users, as both the sender and recipient fields must be manually populated every time a message is sent or viewed.
 
-This design flaw limits usability and makes testing the feature cumbersome. We realized that the messaging interface does not align with our goal of making communication feel seamless and natural, particularly in a student-tutor environment where pairing should already be known based on session history or matching.
+This limitation severely restricts usability and complicates thorough testing. It became apparent that our current messaging system does not align with our overarching objective of providing seamless, intuitive communication between students and tutors—especially given that the platform inherently involves predetermined pairings established through session bookings or matching mechanisms.
+
+## Prioritization of Messaging System
+
+During our retrospective discussions, the team unanimously agreed to prioritize enhancing the messaging system in this iteration. We acknowledged messaging as a foundational component of our platform, essential to its primary function of effectively connecting students and tutors. Without a smooth and intuitive messaging interface, the user experience is significantly diminished, potentially hindering session coordination, feedback, and overall user satisfaction.
+
+From a development standpoint, refining the messaging system will also facilitate improvements in interconnected features, such as session management, rating, and support interactions. Our team resolved to tackle this issue proactively and collaboratively at the start of the current iteration, allocating dedicated resources for both backend improvements and frontend refinements to achieve optimal functionality and user experience.
 
 ## Planned Improvements
 
-To address these issues, we will redesign the messaging interface with the following concrete changes:
+To rectify these concerns, we have identified specific and concrete improvements:
 
-1. **User Context Detection**: Automatically detect the logged-in user (either student or tutor) using casting or instance checking.
-2. **Recipient Selection**: Provide a dynamic list of relevant users (e.g., students matched with a tutor or tutors from past sessions of a student).
-3. **Simplified UI**: Replace manual email input with a clickable list of contacts that loads the corresponding message thread.
-4. **Message Simulation**: Implement a refresh or polling mechanism that allows simultaneous chat simulation (e.g., by running two user windows).
+1. **User Context Detection**: Automatically determine the logged-in user's role (student or tutor) through instance checking and casting, eliminating the need to manually input one's own details.
+2. **Recipient Selection**: Present a dynamic list of relevant contacts based on existing matches or historical session interactions, enabling users to quickly select recipients without manual input.
+3. **Enhanced User Interface (UI)**: Replace the manual entry of email addresses with a clickable list of contacts that directly opens the corresponding message threads, significantly streamlining the user experience.
+4. **Real-time Messaging Simulation**: Implement an effective polling or refresh mechanism to simulate real-time messaging, facilitating parallel message views in separate user sessions during testing.
 
-These updates aim to improve the overall usability and simulate real-time communication more effectively during testing.
+These targeted enhancements aim to significantly boost usability and enable more realistic, effective testing scenarios.
 
 ## Evaluation Criteria
 
-We will consider this improvement successful if the following measurable outcomes are met by the end of the iteration:
+The success of these improvements will be objectively evaluated based on the following measurable outcomes at the conclusion of this iteration:
 
-- Logged-in users can send messages without entering their own email.
-- Recipient selection is available via a dynamic contact list.
-- Messages appear correctly for both users when running parallel windows.
-- Refresh/polling works as intended to simulate a chat experience.
-
-This will be verified through a live test with two running user interfaces and will be documented in our next demo session.
+- Users no longer need to manually input their own email addresses when sending messages.
+- A dynamically populated list of relevant recipients is readily available and functional.
+- Message threads load correctly and intuitively upon contact selection.
+- The messaging system accurately simulates real-time conversations in parallel user sessions, with functional message refresh or polling.
 
 ## Velocity Chart
 
-Below is the chart showing our team’s velocity over the last two iterations:
+Below is the updated velocity chart illustrating our team's performance across the last two iteration
 
 ![Project Velocity Chart](velocity_chart.png)
 
