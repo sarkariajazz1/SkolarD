@@ -204,38 +204,38 @@ public class SessionDB implements SessionPersistence {
     }
     @Override
     public void hydrateTutorSessions(Tutor tutor) {
-    List<Session> sessions = getSessionsByTutorEmail(tutor.getEmail());
+        List<Session> sessions = getSessionsByTutorEmail(tutor.getEmail());
 
-    List<Session> upcoming = new ArrayList<>();
-    List<Session> past = new ArrayList<>();
+        List<Session> upcoming = new ArrayList<>();
+        List<Session> past = new ArrayList<>();
 
-    for (Session session : sessions) {
-        if (session.getEndDateTime().isBefore(LocalDateTime.now())) {
-            past.add(session);
-        } else {
-            upcoming.add(session);
+        for (Session session : sessions) {
+            if (session.getEndDateTime().isBefore(LocalDateTime.now())) {
+                past.add(session);
+            } else {
+                upcoming.add(session);
+            }
         }
-    }
 
-    tutor.setPastSessions(past);
-    tutor.setUpcomingSessions(upcoming);
+        tutor.setPastSessions(past);
+        tutor.setUpcomingSessions(upcoming);
     }
     @Override
     public void hydrateStudentSessions(Student student) {
-    List<Session> all = getSessionsByStudentEmail(student.getEmail());
-    List<Session> past = new ArrayList<>();
-    List<Session> upcoming = new ArrayList<>();
+        List<Session> all = getSessionsByStudentEmail(student.getEmail());
+        List<Session> past = new ArrayList<>();
+        List<Session> upcoming = new ArrayList<>();
 
-    for (Session s : all) {
-        if (s.getEndDateTime().isBefore(LocalDateTime.now())) {
-            past.add(s);
-        } else {
-            upcoming.add(s);
+        for (Session s : all) {
+            if (s.getEndDateTime().isBefore(LocalDateTime.now())) {
+                past.add(s);
+            } else {
+                upcoming.add(s);
+            }
         }
-    }
 
-    student.setPastSessions(past);
-    student.setUpcomingSessions(upcoming);
+        student.setPastSessions(past);
+        student.setUpcomingSessions(upcoming);
     }
 
     /**
@@ -265,5 +265,4 @@ public class SessionDB implements SessionPersistence {
             courseId
         );
     }
-
 }

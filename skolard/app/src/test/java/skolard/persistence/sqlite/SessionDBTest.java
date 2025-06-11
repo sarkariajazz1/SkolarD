@@ -51,6 +51,16 @@ public class SessionDBTest {
     }
 
     @Test
+    void testAddUnbookedSession() {
+        Session session = new Session(-1, tutor, null, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "COMP3010");
+        Session added = sessionDB.addSession(session);
+
+        assertNotNull(added);
+        assertNull(added.getStudent());
+        assertEquals("COMP3010", added.getCourseName());
+    }
+
+    @Test
     void testUpdateSession() {
         Session original = new Session(-1, tutor, student, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "COMP1010");
         original = sessionDB.addSession(original);
@@ -60,6 +70,18 @@ public class SessionDBTest {
 
         Session fetched = sessionDB.getSessionById(updated.getSessionId());
         assertEquals("MATH2020", fetched.getCourseName());
+    }
+
+    @Test
+    void testUnbookSession() {
+        Session session = new Session(-1, tutor, student, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "COMP3010");
+        session = sessionDB.addSession(session);
+
+        session = new Session(session.getSessionId(), tutor, null, session.getStartDateTime(), session.getEndDateTime(), session.getCourseName());
+        sessionDB.updateSession(session);
+
+        Session updated = sessionDB.getSessionById(session.getSessionId());
+        assertNull(updated.getStudent());
     }
 
     @Test
@@ -117,5 +139,48 @@ public class SessionDBTest {
     void testGetSessionsByStudentEmailNoneFound() {
         List<Session> sessions = sessionDB.getSessionsByStudentEmail("missing@student.ca");
         assertTrue(sessions.isEmpty());
+    }
+
+    @Test
+    void testHydrateTutorSessions() {
+        Session past = new Session(-1, tutor, student, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1), "HIST1000");
+        Session future = new Session(-1, tutor, student, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), "HIST2000");
+        sessionDB.addSession(past);
+        sessionDB.addSession(future);
+
+        sessionDB.hydrateTutorSessions(tutor);
+
+        assertEquals(1, tutor.getPastSessions().size());
+        assertEquals(1, tutor.getUpcomingSessions().size());
+    }
+
+    @Test
+    void testHydrateStudentSessions() {
+        LocalDateTime now = LocalDateTime.now();
+
+        Session past = new Session(-1, tutor, null, now.minusDays(2), now.minusDays(1), "ENG1000");
+        Session future = new Session(-1, tutor, null, now.plusDays(1), now.plusDays(2), "ENG2000");
+
+        past = sessionDB.addSession(past);
+        future = sessionDB.addSession(future);
+
+        // Book the sessions for the student
+        past.bookSession(student);
+        future.bookSession(student);
+        sessionDB.updateSession(past);
+        sessionDB.updateSession(future);
+
+        sessionDB.hydrateStudentSessions(student);
+
+        assertEquals(1, student.getPastSessions().size());
+        assertEquals(1, student.getUpcomingSessions().size());
+    }
+
+
+
+    @Test
+    void testAddSessionWithNullTutorThrows() {
+        Session session = new Session(-1, null, student, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "COMP4040");
+        assertThrows(RuntimeException.class, () -> sessionDB.addSession(session));
     }
 }
