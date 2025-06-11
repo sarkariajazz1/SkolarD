@@ -52,7 +52,7 @@ public class SessionView extends JFrame {
 
     private final JButton infoBtn = new JButton("Show Info");
     private final JButton unbookBtn = new JButton("Unbook Session");
-    private final JButton closeBtn = new JButton("Close");
+    private final JButton backBtn = new JButton("Back");
 
     private final JLabel statusLabel = new JLabel("Session Management");
 
@@ -183,7 +183,7 @@ public class SessionView extends JFrame {
             deleteBtn.setEnabled(false);
             buttonsPanel.add(deleteBtn);
         }
-        buttonsPanel.add(closeBtn);
+        buttonsPanel.add(backBtn);
 
         panel.add(buttonsPanel, BorderLayout.SOUTH);
         return panel;
@@ -199,7 +199,7 @@ public class SessionView extends JFrame {
         infoBtn.addActionListener(e -> showSelectedSessionInfo());
         unbookBtn.addActionListener(e -> unbookSelectedSession());
         deleteBtn.addActionListener(e -> deleteSelectedSession());
-        closeBtn.addActionListener(e -> dispose());
+        backBtn.addActionListener(e -> dispose());
     }
 
     private void updateButtonsState() {

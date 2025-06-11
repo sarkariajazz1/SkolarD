@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -41,6 +42,8 @@ public class MessageView extends JFrame {
     private final JButton backButton = new JButton("Back");
 
     private String selectedConversationEmail = null;
+
+    private static final DateTimeFormatter MESSAGE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
     public MessageView(MessageHandler handler, User currentUser) {
         super("Messages - " + currentUser.getName());
@@ -166,8 +169,9 @@ public class MessageView extends JFrame {
 
         for (Message message : messages) {
             String sender = message.getSenderEmail().equals(currentUser.getEmail()) ? "You" : otherUserEmail;
-            chatArea.append(String.format("[%s] %s: %s\n",
-                    message.getTimeSent().toString(), sender, message.getMessage()));
+            String formattedTime = message.getTimeSent().format(MESSAGE_TIME_FORMATTER);
+            chatArea.append(String.format("[%s] %s: %s\n", formattedTime, sender, message.getMessage()));
+
         }
 
         // Scroll to bottom
