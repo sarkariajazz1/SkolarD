@@ -38,23 +38,30 @@ public class SessionDB implements SessionPersistence {
 
     /**
      * Inserts a new session into the database.
+     * Note: Sets studentEmail as null initially (unbooked session).
+     * Returns a Session object with the generated session ID.
      */
     @Override
     public Session addSession(Session session) {
         String sql = "INSERT INTO session (tutorEmail, studentEmail, startTime, endTime, courseID) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            // Set tutor's email
             stmt.setString(1, session.getTutor().getEmail());
-            stmt.setString(2, null); // unbooked session
+            // Set studentEmail to null for unbooked session
+            stmt.setString(2, null);
+            // Store start and end time as strings
             stmt.setString(3, session.getStartDateTime().toString());
             stmt.setString(4, session.getEndDateTime().toString());
+            // Set course ID/name
             stmt.setString(5, session.getCourseName());
             stmt.executeUpdate();
 
-            // Retrieve the auto-generated message ID from the database
+            // Retrieve the auto-generated session ID
             try (ResultSet keys = stmt.getGeneratedKeys()) {
                 if (keys.next()) {
                     int id = keys.getInt(1);
+                    // Return new Session object with generated ID and original data
                     return new Session(id, session.getTutor(), session.getStudent(),
                         session.getStartDateTime(), session.getEndDateTime(), session.getCourseName());
                 } else {
@@ -62,14 +69,13 @@ public class SessionDB implements SessionPersistence {
                 }
             }
         } catch (SQLException e) {
-            //e.printStackTrace();
             throw new RuntimeException("Error adding session", e);
         }
     }
 
-
     /**
-     * Retrieves a specific session by its ID.
+     * Retrieves a session by its unique ID.
+     * Returns the Session object if found, else returns null.
      */
     @Override
     public Session getSessionById(int sessionId) {
@@ -80,18 +86,19 @@ public class SessionDB implements SessionPersistence {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return fromResultSet(rs); // Convert row to Session object
+                return fromResultSet(rs); // Convert database row into Session object
             }
 
         } catch (SQLException e) {
             throw new RuntimeException("Error retrieving session", e);
         }
 
-        return null; // Not found
+        return null; // Session not found
     }
 
     /**
-     * Retrieves all sessions from the database.
+     * Retrieves all sessions in the database.
+     * Returns a list of Session objects.
      */
     @Override
     public List<Session> getAllSessions() {
@@ -101,6 +108,7 @@ public class SessionDB implements SessionPersistence {
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
+            // Iterate over each row and convert to Session
             while (rs.next()) {
                 sessions.add(fromResultSet(rs));
             }
@@ -113,7 +121,8 @@ public class SessionDB implements SessionPersistence {
     }
 
     /**
-     * Retrieves all sessions for a specific tutor based on their email.
+     * Retrieves all sessions associated with a specific tutor by their email.
+     * Returns a list of sessions hosted by the tutor.
      */
     @Override
     public List<Session> getSessionsByTutorEmail(String tutorEmail) {
@@ -136,7 +145,8 @@ public class SessionDB implements SessionPersistence {
     }
 
     /**
-     * Retrieves all sessions for a specific student based on their email.
+     * Retrieves all sessions booked by a specific student by their email.
+     * Returns a list of sessions booked by the student.
      */
     @Override
     public List<Session> getSessionsByStudentEmail(String studentEmail) {
@@ -159,7 +169,7 @@ public class SessionDB implements SessionPersistence {
     }
 
     /**
-     * Deletes a session from the database based on its ID.
+     * Deletes a session from the database by its ID.
      */
     @Override
     public void removeSession(int sessionId) {
@@ -175,9 +185,8 @@ public class SessionDB implements SessionPersistence {
     }
 
     /**
-     * Update the information of an existing session.
-     *
-     * @param updatedSession updated session object
+     * Updates an existing session in the database.
+     * Supports updating tutor, student, start/end times, and course ID.
      */
     @Override
     public void updateSession(Session updatedSession) {
@@ -185,23 +194,35 @@ public class SessionDB implements SessionPersistence {
             "startTime = ?, endTime = ?, courseID = ? WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            // Set tutor's email
             stmt.setString(1, updatedSession.getTutor().getEmail());
 
+            // Set student email if present, otherwise set NULL
             if (updatedSession.getStudent() != null) {
                 stmt.setString(2, updatedSession.getStudent().getEmail());
             } else {
                 stmt.setNull(2, java.sql.Types.VARCHAR);
             }
 
+            // Set start and end time as strings
             stmt.setString(3, updatedSession.getStartDateTime().toString());
             stmt.setString(4, updatedSession.getEndDateTime().toString());
+
+            // Set course ID/name
             stmt.setString(5, updatedSession.getCourseName());
+
+            // Set session ID to locate record
             stmt.setInt(6, updatedSession.getSessionId());
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error updating session", e);
         }
     }
+
+    /**
+     * Loads (hydrates) all sessions associated with a tutor into their upcoming and past session lists.
+     */
     @Override
     public void hydrateTutorSessions(Tutor tutor) {
         List<Session> sessions = getSessionsByTutorEmail(tutor.getEmail());
@@ -209,6 +230,7 @@ public class SessionDB implements SessionPersistence {
         List<Session> upcoming = new ArrayList<>();
         List<Session> past = new ArrayList<>();
 
+        // Categorize sessions based on whether they have ended already
         for (Session session : sessions) {
             if (session.getEndDateTime().isBefore(LocalDateTime.now())) {
                 past.add(session);
@@ -217,15 +239,22 @@ public class SessionDB implements SessionPersistence {
             }
         }
 
+        // Set the tutor's past and upcoming session lists
         tutor.setPastSessions(past);
         tutor.setUpcomingSessions(upcoming);
     }
+
+    /**
+     * Loads (hydrates) all sessions associated with a student into their upcoming and past session lists.
+     */
     @Override
     public void hydrateStudentSessions(Student student) {
         List<Session> all = getSessionsByStudentEmail(student.getEmail());
+
         List<Session> past = new ArrayList<>();
         List<Session> upcoming = new ArrayList<>();
 
+        // Categorize sessions as past or upcoming based on current time
         for (Session s : all) {
             if (s.getEndDateTime().isBefore(LocalDateTime.now())) {
                 past.add(s);
@@ -234,13 +263,14 @@ public class SessionDB implements SessionPersistence {
             }
         }
 
+        // Set the student's past and upcoming session lists
         student.setPastSessions(past);
         student.setUpcomingSessions(upcoming);
     }
 
     /**
-     * Helper method that converts a ResultSet row into a Session object.
-     * Resolves tutor and student using their respective persistence layers.
+     * Converts a ResultSet row into a Session object.
+     * Uses tutorPersistence and studentPersistence to resolve tutor and student objects by email.
      */
     private Session fromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
@@ -250,12 +280,16 @@ public class SessionDB implements SessionPersistence {
         String endTime = rs.getString("endTime");
         String courseId = rs.getString("courseID");
 
+        // Retrieve tutor object using tutor persistence
         Tutor tutor = tutorPersistence.getTutorByEmail(tutorEmail);
+
+        // Retrieve student object if studentEmail is not null
         Student student = null;
         if (studentEmail != null) {
             student = studentPersistence.getStudentByEmail(studentEmail);
         }
 
+        // Create and return a new Session object populated with the retrieved data
         return new Session(
             id,
             tutor,

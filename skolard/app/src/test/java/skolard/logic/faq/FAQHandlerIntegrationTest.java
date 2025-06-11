@@ -5,26 +5,24 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
 import skolard.objects.FAQ;
 import skolard.persistence.FAQPersistence;
 import skolard.persistence.sqlite.FAQDB;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class FAQHandlerIntegrationTest {
 
     private Connection connection;
     private FAQPersistence faqPersistence;
     private FAQHandler faqHandler;
 
-    @BeforeAll
+    @BeforeEach
     public void setupDatabase() throws Exception {
         connection = DriverManager.getConnection("jdbc:sqlite::memory:");
         try (Statement stmt = connection.createStatement()) {
@@ -81,7 +79,7 @@ public class FAQHandlerIntegrationTest {
         assertTrue(results.isEmpty());
     }
 
-    @AfterAll
+    @AfterEach
     public void closeDatabase() throws Exception {
         connection.close();
     }

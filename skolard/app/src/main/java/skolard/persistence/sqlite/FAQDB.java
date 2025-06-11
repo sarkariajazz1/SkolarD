@@ -11,10 +11,21 @@ public class FAQDB implements FAQPersistence {
 
     private final Connection connection;
 
+    /**
+     * Constructor that accepts a database connection.
+     * 
+     * @param connection an open SQLite connection
+     */
     public FAQDB(Connection connection) {
         this.connection = connection;
     }
 
+    /**
+     * Retrieves all FAQs from the database, ordered by their ID.
+     * 
+     * @return a List of FAQ objects
+     * @throws RuntimeException if a database access error occurs
+     */
     @Override
     public List<FAQ> getAllFAQs() {
         List<FAQ> faqs = new ArrayList<>();
@@ -32,6 +43,13 @@ public class FAQDB implements FAQPersistence {
         return faqs;
     }
 
+    /**
+     * Adds a new FAQ entry to the database.
+     * Uses INSERT OR IGNORE to avoid duplicates.
+     * 
+     * @param faq the FAQ object to add
+     * @throws RuntimeException if a database access error occurs
+     */
     @Override
     public void addFAQ(FAQ faq) {
         String query = "INSERT OR IGNORE INTO faq (question, answer) VALUES (?, ?)";
@@ -45,6 +63,12 @@ public class FAQDB implements FAQPersistence {
         }
     }
 
+    /**
+     * Deletes an FAQ from the database based on its question text.
+     * 
+     * @param question the question string to identify the FAQ to delete
+     * @throws RuntimeException if a database access error occurs
+     */
     @Override
     public void deleteFAQByQuestion(String question) {
         String query = "DELETE FROM faq WHERE question = ?";
@@ -57,6 +81,13 @@ public class FAQDB implements FAQPersistence {
         }
     }
 
+    /**
+     * Searches FAQs by matching the keyword in either question or answer fields.
+     * 
+     * @param keyword the search keyword to look for
+     * @return a list of FAQs matching the keyword
+     * @throws RuntimeException if a database access error occurs
+     */
     @Override
     public List<FAQ> searchFAQs(String keyword) {
         List<FAQ> faqs = new ArrayList<>();

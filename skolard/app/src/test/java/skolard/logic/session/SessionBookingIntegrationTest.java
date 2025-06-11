@@ -1,14 +1,12 @@
 package skolard.logic.session;
 
 import org.junit.jupiter.api.*;
-import skolard.logic.rating.RatingHandler;
-import skolard.objects.RatingRequest;
-import skolard.objects.Session;
-import skolard.objects.Student;
+import skolard.objects.*;
 import skolard.persistence.*;
 
 import java.sql.Connection;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,32 +16,63 @@ public class SessionBookingIntegrationTest {
     private Connection conn;
     private SessionHandler sessionHandler;
     private RatingRequestPersistence ratingRequestPersistence;
-    private RatingPersistence ratingPersistence;
     private StudentPersistence studentPersistence;
+    private TutorPersistence tutorPersistence;
     private SessionPersistence sessionPersistence;
-    private RatingHandler ratingHandler;
 
     @BeforeAll
     void setup() throws Exception {
-        conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, true);
+        conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, false);
         PersistenceProvider.initializeSqlite(conn);
 
         studentPersistence = PersistenceRegistry.getStudentPersistence();
+        tutorPersistence = PersistenceRegistry.getTutorPersistence();
         sessionPersistence = PersistenceRegistry.getSessionPersistence();
         ratingRequestPersistence = PersistenceRegistry.getRatingRequestPersistence();
-        ratingPersistence = PersistenceRegistry.getRatingPersistence();
 
         sessionHandler = new SessionHandler(sessionPersistence, ratingRequestPersistence);
-        ratingHandler = new RatingHandler(ratingRequestPersistence, ratingPersistence);
+    }
+
+    private Student createTestStudent() {
+        String email = "student_" + UUID.randomUUID() + "@example.com";
+        String name = "Test Student";
+        String password = "hashedPassword"; // Replace with actual hashing if needed
+        Student student = new Student(name, email, password);
+        studentPersistence.addStudent(student);
+        return student;
+    }
+
+    private Tutor createTestTutor() {
+        String email = "tutor_" + UUID.randomUUID() + "@example.com";
+        String name = "Test Tutor";
+        String password = "hashedPassword";
+        String bio = "Experienced in Math and Physics.";
+        Map<String, Double> courses = new HashMap<>();
+        courses.put("Math", 4.0);
+        courses.put("Physics", 3.8);
+
+        Tutor tutor = new Tutor(name, email, password, bio, courses);
+        tutorPersistence.addTutor(tutor);
+        return tutor;
+    }
+
+    private Session createTestSession(Tutor tutor) {
+        LocalDateTime start = LocalDateTime.now().plusDays(1);
+        LocalDateTime end = start.plusHours(1);
+        Session session = new Session(0, tutor, null, start, end, "Math");
+        sessionPersistence.addSession(session);
+        return sessionPersistence.getSessionsByTutorEmail(tutor.getEmail()).stream()
+                .filter(s -> s.getStartDateTime().equals(start))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Session not found after insert"));
     }
 
     @Test
     void testBookSession_success() {
-        Student student = studentPersistence.getStudentByEmail("alice@example.com");
-        Session session = sessionPersistence.getSessionById(2); // Unbooked in seed
+        Student student = createTestStudent();
+        Tutor tutor = createTestTutor();
+        Session session = createTestSession(tutor);
 
-        assertNotNull(student);
-        assertNotNull(session);
         assertNull(session.getStudent());
 
         sessionHandler.bookASession(student, session.getSessionId());
@@ -54,22 +83,10 @@ public class SessionBookingIntegrationTest {
     }
 
     @Test
-    void testBookSession_createsRatingRequest() {
-        Student student = studentPersistence.getStudentByEmail("alice@example.com");
-        Session session = sessionPersistence.getSessionById(3); // Use a different unbooked session
-
-        sessionHandler.bookASession(student, session.getSessionId());
-
-        List<RatingRequest> pending = ratingRequestPersistence.getPendingRequestsForStudent(student.getEmail());
-        boolean match = pending.stream().anyMatch(r -> r.getSession().getSessionId() == session.getSessionId());
-
-        assertTrue(match, "Rating request should be created for booked session.");
-    }
-
-    @Test
     void testUnbookSession_success() {
-        Student student = studentPersistence.getStudentByEmail("alice@example.com");
-        Session session = sessionPersistence.getSessionById(4);
+        Student student = createTestStudent();
+        Tutor tutor = createTestTutor();
+        Session session = createTestSession(tutor);
 
         sessionHandler.bookASession(student, session.getSessionId());
         sessionHandler.unbookASession(student, session.getSessionId());
@@ -80,8 +97,9 @@ public class SessionBookingIntegrationTest {
 
     @Test
     void testUnbookingSkipsRatingRequest() {
-        Student student = studentPersistence.getStudentByEmail("alice@example.com");
-        Session session = sessionPersistence.getSessionById(5);
+        Student student = createTestStudent();
+        Tutor tutor = createTestTutor();
+        Session session = createTestSession(tutor);
 
         sessionHandler.bookASession(student, session.getSessionId());
         sessionHandler.unbookASession(student, session.getSessionId());

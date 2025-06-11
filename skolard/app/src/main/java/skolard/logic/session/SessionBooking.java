@@ -56,4 +56,23 @@ public class SessionBooking {
             throw new IllegalArgumentException("Session has not been booked");
         }
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * Marks all pending rating requests for the given session as skipped.
+     *
+     * @param sessionID the ID of the session
+     */
+    private void skipRequests(int sessionID) {
+        // Get all pending requests for the session
+        List<RatingRequest> requests = requestPersistence.getPendingSessionRequest(sessionID);
+
+        // Skip each request and update it in storage
+        for (RatingRequest r : requests) {
+            r.skip();
+            requestPersistence.updateRequest(r);
+        }
+    }
+>>>>>>> dev
 }

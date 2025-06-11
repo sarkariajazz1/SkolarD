@@ -1,13 +1,11 @@
 package skolard.presentation.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-// import org.assertj.swing.core.ComponentMatcher;
-// import org.assertj.swing.core.NameMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import skolard.logic.auth.LoginHandler;
 import skolard.logic.profile.DefaultProfileFormatter;
@@ -29,122 +27,186 @@ public class SignUpSystemTest extends AssertJSwingJUnitTestCase {
 
     @Override
     protected void onSetUp() throws Exception {
-        // Initialize with real database for testing (meets instructor requirements)
         PersistenceFactory.initialize(PersistenceType.TEST, false);
 
+<<<<<<< HEAD
         // Create real handlers with actual persistence - need SessionHandler for ProfileHandler
         SessionHandler sessionHandler = new SessionHandler(PersistenceRegistry.getSessionPersistence());
+=======
+        SessionHandler sessionHandler = new SessionHandler(
+            PersistenceRegistry.getSessionPersistence(),
+            PersistenceRegistry.getRatingRequestPersistence()
+        );
+
+>>>>>>> dev
         realProfileHandler = new ProfileHandler(
-                PersistenceRegistry.getStudentPersistence(),
-                PersistenceRegistry.getTutorPersistence(),
-                new DefaultProfileFormatter(),
-                sessionHandler
-        );
-        realLoginHandler = new LoginHandler(
-                PersistenceRegistry.getLoginPersistence()
+            PersistenceRegistry.getStudentPersistence(),
+            PersistenceRegistry.getTutorPersistence(),
+            new DefaultProfileFormatter(),
+            sessionHandler
         );
 
-        SkolardApp mockParentApp = org.mockito.Mockito.mock(SkolardApp.class);
+        realLoginHandler = new LoginHandler(PersistenceRegistry.getLoginPersistence());
+        relaunchSignupView();
+    }
 
-        SignUpView signUpView = GuiActionRunner.execute(() -> {
-            SignUpView view = new SignUpView(realProfileHandler, realLoginHandler, mockParentApp);
-            view.setVisible(false); // Don't show the window
-            return view;
-        });
-
-        window = new FrameFixture(robot(), signUpView);
-        window.show(); // This makes components available for testing without actually displaying
+    private void relaunchSignupView() {
+        if (window != null) {
+            window.cleanUp();
+        }
+        SkolardApp mockParentApp = Mockito.mock(SkolardApp.class);
+        SignUpView view = GuiActionRunner.execute(() -> new SignUpView(realProfileHandler, realLoginHandler, mockParentApp));
+        window = new FrameFixture(robot(), view);
+        window.show();
     }
 
     @Test
-    public void testStudentSignUpActuallyPersistsToDatabase() throws Exception {
-        // Fill registration form
+    public void testStudentSignUpActuallyPersistsToDatabase() {
         window.textBox("nameField").setText("Alice Johnson");
         window.textBox("emailField").setText("alice@uofm.ca");
         window.textBox("passwordField").setText("securepass123");
         window.textBox("confirmPasswordField").setText("securepass123");
 
-        // Submit registration
         window.button("signUpStudentBtn").click();
-
-        // Handle success dialog
-        window.optionPane()
-                .requireInformationMessage()
-                .okButton().click();
-
+        window.optionPane().requireInformationMessage().okButton().click();
         robot().waitForIdle();
 
-        // Verify student was actually saved to database
         Student savedStudent = realProfileHandler.getStudent("alice@uofm.ca");
         assertThat(savedStudent).isNotNull();
         assertThat(savedStudent.getName()).isEqualTo("Alice Johnson");
-        assertThat(savedStudent.getEmail()).isEqualTo("alice@uofm.ca");
 
-        // Verify login credentials using the login method that exists
         LoginCredentials creds = new LoginCredentials("alice@uofm.ca", "securepass123", "student");
-        boolean canLogin = realLoginHandler.login(creds);
-        assertThat(canLogin).isTrue();
+        assertThat(realLoginHandler.login(creds)).isTrue();
     }
 
     @Test
-    public void testTutorSignUpActuallyPersistsToDatabase() throws Exception {
+    public void testTutorSignUpActuallyPersistsToDatabase() {
         window.textBox("nameField").setText("Dr. Bob Smith");
         window.textBox("emailField").setText("bob@uofm.ca");
         window.textBox("passwordField").setText("tutorpass456");
         window.textBox("confirmPasswordField").setText("tutorpass456");
 
         window.button("signUpTutorBtn").click();
-
-        window.optionPane()
-                .requireInformationMessage()
-                .okButton().click();
-
+        window.optionPane().requireInformationMessage().okButton().click();
         robot().waitForIdle();
 
-        // Verify tutor was actually saved
         Tutor savedTutor = realProfileHandler.getTutor("bob@uofm.ca");
         assertThat(savedTutor).isNotNull();
         assertThat(savedTutor.getName()).isEqualTo("Dr. Bob Smith");
-        assertThat(savedTutor.getEmail()).isEqualTo("bob@uofm.ca");
 
-        // Verify login credentials using the login method that exists
         LoginCredentials creds = new LoginCredentials("bob@uofm.ca", "tutorpass456", "tutor");
-        boolean canLogin = realLoginHandler.login(creds);
-        assertThat(canLogin).isTrue();
+        assertThat(realLoginHandler.login(creds)).isTrue();
+    }
+
+@Test
+public void testDuplicateEmailPrevention() {
+    window.textBox("nameField").setText("First Student");
+    window.textBox("emailField").setText("duplicate@uofm.ca");
+    window.textBox("passwordField").setText("password1");
+    window.textBox("confirmPasswordField").setText("password1");
+    window.button("signUpStudentBtn").click();
+    window.optionPane().requireInformationMessage().okButton().click();
+
+    window.cleanUp();
+    relaunchSignupView();
+
+    window.textBox("nameField").setText("Second Student");
+    window.textBox("emailField").setText("duplicate@uofm.ca");
+    window.textBox("passwordField").setText("password2");
+    window.textBox("confirmPasswordField").setText("password2");
+    window.button("signUpStudentBtn").click();
+
+    // Changed from requireWarningMessage() to requireErrorMessage()
+    window.optionPane().requireErrorMessage().okButton().click();
+    robot().waitForIdle();
+
+    Student student = realProfileHandler.getStudent("duplicate@uofm.ca");
+    assertThat(student.getName()).isEqualTo("First Student");
+}
+
+
+    @Test
+    public void testPasswordMismatchShowsValidationError() {
+        window.textBox("nameField").setText("Charlie");
+        window.textBox("emailField").setText("charlie@uofm.ca");
+        window.textBox("passwordField").setText("pass1234");
+        window.textBox("confirmPasswordField").setText("pass4321");
+
+        window.button("signUpStudentBtn").click();
+        window.optionPane()
+                .requireErrorMessage()
+                .requireMessage("Passwords do not match!")
+                .okButton().click();
     }
 
     @Test
-    public void testDuplicateEmailPrevention() throws Exception {
-        // Create first student
-        window.textBox("nameField").setText("First Student");
-        window.textBox("emailField").setText("duplicate@uofm.ca");
-        window.textBox("passwordField").setText("password1");
-        window.textBox("confirmPasswordField").setText("password1");
-        window.button("signUpStudentBtn").click();
-        window.optionPane().okButton().click();
+    public void testInvalidEmailFormatShowsError() {
+        window.textBox("nameField").setText("Dana");
+        window.textBox("emailField").setText("bad-email");
+        window.textBox("passwordField").setText("password");
+        window.textBox("confirmPasswordField").setText("password");
 
-        //Clear form and try to create another with same email
+        window.button("signUpStudentBtn").click();
+        window.optionPane()
+                .requireErrorMessage()
+                .requireMessage("Please enter a valid email address")
+                .okButton().click();
+    }
+
+    @Test
+    public void testEmptyFieldsBlockSubmission() {
         window.textBox("nameField").setText("");
         window.textBox("emailField").setText("");
         window.textBox("passwordField").setText("");
         window.textBox("confirmPasswordField").setText("");
 
-        window.textBox("nameField").setText("Second Student");
-        window.textBox("emailField").setText("duplicate@uofm.ca");
-        window.textBox("passwordField").setText("password2");
-        window.textBox("confirmPasswordField").setText("password2");
         window.button("signUpStudentBtn").click();
-
-        // Should show error for duplicate email
         window.optionPane()
                 .requireErrorMessage()
+                .requireMessage("Please fill in all fields")
                 .okButton().click();
+    }
 
-        robot().waitForIdle();
+    @Test
+    public void testPasswordTooShortBlocksSignUp() {
+        window.textBox("nameField").setText("Eva");
+        window.textBox("emailField").setText("eva@uofm.ca");
+        window.textBox("passwordField").setText("123");
+        window.textBox("confirmPasswordField").setText("123");
 
-        // Verify only first student exists
-        Student student = realProfileHandler.getStudent("duplicate@uofm.ca");
-        assertThat(student.getName()).isEqualTo("First Student");
+        window.button("signUpStudentBtn").click();
+        window.optionPane()
+                .requireErrorMessage()
+                .requireMessage("Password must be at least 6 characters")
+                .okButton().click();
+    }
+
+    @Test
+    public void testUnexpectedExceptionDuringStudentSignup() {
+        ProfileHandler mockHandler = Mockito.mock(ProfileHandler.class);
+        SkolardApp mockApp = Mockito.mock(SkolardApp.class);
+        LoginHandler mockLogin = Mockito.mock(LoginHandler.class);
+
+        SignUpView view = GuiActionRunner.execute(() ->
+            new SignUpView(mockHandler, mockLogin, mockApp)
+        );
+        window = new FrameFixture(robot(), view);
+        window.show();
+
+        window.textBox("nameField").setText("Failsafe User");
+        window.textBox("emailField").setText("fail@uofm.ca");
+        window.textBox("passwordField").setText("secret123");
+        window.textBox("confirmPasswordField").setText("secret123");
+
+        Mockito.doThrow(new RuntimeException("Unexpected failure"))
+            .when(mockHandler).addStudent(Mockito.any(), Mockito.any(), Mockito.any());
+
+        window.button("signUpStudentBtn").click();
+
+        window.optionPane()
+                .requireErrorMessage()
+                .requireMessage("Error creating account: Unexpected failure")
+                .okButton().click();
     }
 
     @Override
@@ -152,6 +214,5 @@ public class SignUpSystemTest extends AssertJSwingJUnitTestCase {
         if (window != null) {
             window.cleanUp();
         }
-        // Note: reset() method doesn't exist, and TEST database cleans up automatically
     }
 }

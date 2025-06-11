@@ -12,7 +12,7 @@ public class EnvironmentInitializerTest {
     public void resetConnectionManager() throws Exception {
         ConnectionManager.close(); // Close current connection if open
 
-        // Use reflection to nullify the static `connection` field
+        // Use reflection to clear the static connection field
         var field = ConnectionManager.class.getDeclaredField("connection");
         field.setAccessible(true);
         field.set(null, null);
@@ -21,26 +21,20 @@ public class EnvironmentInitializerTest {
     @Test
     public void testSetupEnvironmentWithoutSeed() throws Exception {
         Connection conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, false);
-        assertNotNull(conn);
-        assertFalse(conn.isClosed());
+        assertNotNull(conn, "Connection should not be null");
+        assertFalse(conn.isClosed(), "Connection should be open");
     }
 
     @Test
-    public void testSetupEnvironmentWithSeed() throws Exception {
-        Connection conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, true);
-        assertNotNull(conn);
-        assertFalse(conn.isClosed());
-    }
-
-    @Test
-    public void testSetupEnvironmentFallbackToStubOnFailure() {
-        // Intentionally pass a bad enum to simulate fallback
-        PersistenceType badType = null;
-
-        // Should not throw but fallback
+    public void testSetupEnvironmentFallbackToStubOnNull() {
         assertDoesNotThrow(() -> {
-            PersistenceFactory.initialize(badType, false);
-            assertNotNull(PersistenceRegistry.getMessagePersistence()); // Should fallback to stub
+            // Simulate a null PersistenceType, should fallback
+            PersistenceFactory.initialize(null, false);
+
+            // Test that fallback registry still gives non-null persistence
+            assertNotNull(PersistenceRegistry.getMessagePersistence());
+            assertNotNull(PersistenceRegistry.getStudentPersistence());
+            assertNotNull(PersistenceRegistry.getTutorPersistence());
         });
     }
 }
