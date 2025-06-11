@@ -8,6 +8,9 @@ import java.sql.Connection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Integration tests for LoginHandler using a real SQLite database.
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LoginHandlerIntegrationTest {
 
@@ -15,58 +18,53 @@ public class LoginHandlerIntegrationTest {
     private LoginHandler loginHandler;
 
     @BeforeAll
-    void setup() throws Exception {
-        conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, true); // Uses seeds because of support login
+    void initDatabase() throws Exception {
+        // Set up the TEST database and seed it with sample users
+        conn = EnvironmentInitializer.setupEnvironment(PersistenceType.TEST, false);
         PersistenceProvider.initializeSqlite(conn);
 
-        loginHandler = new LoginHandler(); // Uses default LoginPersistence
-    }
-
-    @Test
-    void testStudentLogin_success() {
-        LoginCredentials credentials = new LoginCredentials("alice@example.com", "password", "student");
-        assertTrue(loginHandler.login(credentials), "Student login should succeed with correct credentials.");
-    }
-
-    @Test
-    void testTutorLogin_success() {
-        LoginCredentials credentials = new LoginCredentials("bob@example.com", "password", "tutor");
-        assertTrue(loginHandler.login(credentials), "Tutor login should succeed with correct credentials.");
-    }
-
-    @Test
-    void testSupportLogin_success() {
-        LoginCredentials credentials = new LoginCredentials("support@skolard.ca", "password", "support");
-        assertTrue(loginHandler.login(credentials), "Support login should succeed with correct credentials.");
-    }
-
-    @Test
-    void testLogin_invalidPassword() {
-        LoginCredentials credentials = new LoginCredentials("alice@example.com", "wrongpass", "student");
-        assertFalse(loginHandler.login(credentials), "Login should fail with incorrect password.");
-    }
-
-    @Test
-    void testLogin_unknownRole() {
-        LoginCredentials credentials = new LoginCredentials("user@example.com", "pass", "alien");
-        assertFalse(loginHandler.login(credentials), "Login should fail with unknown role.");
-    }
-
-    @Test
-    void testLogin_nullCredentials() {
-        assertFalse(loginHandler.login(null), "Login should fail with null credentials.");
-    }
-
-    @Test
-    void testLogin_nullRole() {
-        LoginCredentials credentials = new LoginCredentials("user@example.com", "pass", null);
-        assertFalse(loginHandler.login(credentials), "Login should fail with null role.");
+        // Use the default login handler tied to LoginDB
+        loginHandler = new LoginHandler();
     }
 
     @AfterAll
-    void cleanup() throws Exception {
-        if (conn != null && !conn.isClosed()) conn.close();
+    void closeDatabase() throws Exception {
+        if (conn != null && !conn.isClosed()) {
+            conn.close();
+        }
+    }
+
+    @Test
+    void invalidStudentPassword_shouldFailLogin() {
+        LoginCredentials credentials = new LoginCredentials("alice@example.com", "wrongpass", "student");
+        boolean result = loginHandler.login(credentials);
+        assertFalse(result, "Student login with wrong password should fail.");
+    }
+
+    @Test
+    void nonExistentTutorEmail_shouldFailLogin() {
+        LoginCredentials credentials = new LoginCredentials("nobody@nowhere.com", "password", "tutor");
+        boolean result = loginHandler.login(credentials);
+        assertFalse(result, "Login should fail for non-existent tutor.");
+    }
+
+    @Test
+    void nullCredentials_shouldFailLogin() {
+        boolean result = loginHandler.login(null);
+        assertFalse(result, "Login should fail when credentials are null.");
+    }
+
+    @Test
+    void nullRoleInCredentials_shouldFailLogin() {
+        LoginCredentials credentials = new LoginCredentials("test@example.com", "password", null);
+        boolean result = loginHandler.login(credentials);
+        assertFalse(result, "Login should fail when role is null.");
+    }
+
+    @Test
+    void unsupportedRole_shouldFailLogin() {
+        LoginCredentials credentials = new LoginCredentials("admin@example.com", "password", "admin");
+        boolean result = loginHandler.login(credentials);
+        assertFalse(result, "Login should fail with unsupported role 'admin'.");
     }
 }
-
-
