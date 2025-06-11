@@ -12,7 +12,7 @@ import skolard.objects.Message;
 import skolard.persistence.MessagePersistence;
 
 public class MessageStub implements MessagePersistence{
-    private Map<Integer, Message> messages;
+    private final Map<Integer, Message> messages;
     private static int uniqueID = 0;
 
     public MessageStub() {

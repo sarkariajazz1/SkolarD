@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import skolard.objects.RatingRequest;
 import skolard.objects.Session;
 import skolard.objects.Student;
@@ -18,7 +17,10 @@ public class RatingRequestStub implements RatingRequestPersistence{
     public RatingRequestStub() {
         this.ratingRequests = new HashMap<>(); 
     }
-
+    /**
+     * Adds a sample rating request for testing purposes.
+     */
+    @Override
     public RatingRequest addRequest(RatingRequest request) {
         if(ratingRequests.containsKey(request.getId())) {
             throw new RuntimeException("Updated Existing Request, that was an update, not an add");
