@@ -12,31 +12,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SupportDB implements SupportPersistence {
-    private final Connection conn;
-    private final StudentPersistence studentDB;
-    private final TutorPersistence tutorDB;
+    private final Connection conn;                 // Database connection object
+    private final StudentPersistence studentDB;    // Persistence for student data
+    private final TutorPersistence tutorDB;        // Persistence for tutor data
 
+    /**
+     * Constructor to initialize SupportDB with connection and persistence dependencies.
+     */
     public SupportDB(Connection conn, StudentPersistence studentDB, TutorPersistence tutorDB) {
         this.conn = conn;
         this.studentDB = studentDB;
         this.tutorDB = tutorDB;
     }
 
+    /**
+     * Retrieves all support tickets from the database.
+     */
     @Override
     public List<SupportTicket> getAllTickets() {
         return getTicketsByQuery("SELECT * FROM support_ticket");
     }
 
+    /**
+     * Retrieves all support tickets that are not yet handled.
+     */
     @Override
     public List<SupportTicket> getActiveTickets() {
         return getTicketsByQuery("SELECT * FROM support_ticket WHERE is_handled = 0");
     }
 
+    /**
+     * Retrieves all support tickets that have been handled.
+     */
     @Override
     public List<SupportTicket> getHandledTickets() {
         return getTicketsByQuery("SELECT * FROM support_ticket WHERE is_handled = 1");
     }
 
+    /**
+     * Inserts a new support ticket into the database.
+     */
     @Override
     public SupportTicket addTicket(SupportTicket ticket) {
         try (PreparedStatement stmt = conn.prepareStatement("""
@@ -44,7 +59,8 @@ public class SupportDB implements SupportPersistence {
             VALUES (?, ?, ?, ?, ?, ?, ?)
         """)) {
             stmt.setString(1, ticket.getRequester().getEmail());
-            stmt.setString(2, ticket.getRequester().getClass().getSimpleName().toLowerCase()); // "student" or "tutor"
+            // Determine role by class name (student or tutor)
+            stmt.setString(2, ticket.getRequester().getClass().getSimpleName().toLowerCase());
             stmt.setString(3, ticket.getTitle());
             stmt.setString(4, ticket.getDescription());
             stmt.setString(5, ticket.getCreatedAt().toString());
@@ -57,6 +73,9 @@ public class SupportDB implements SupportPersistence {
         return ticket;
     }
 
+    /**
+     * Updates the closed_at timestamp and handled status of an existing ticket.
+     */
     @Override
     public void updateTicket(SupportTicket ticket) {
         try (PreparedStatement stmt = conn.prepareStatement("""
@@ -73,6 +92,9 @@ public class SupportDB implements SupportPersistence {
         }
     }
 
+    /**
+     * Deletes a support ticket from the database by its ID.
+     */
     @Override
     public void deleteTicketById(int ticketId) {
         try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM support_ticket WHERE ticket_id = ?")) {
@@ -83,12 +105,19 @@ public class SupportDB implements SupportPersistence {
         }
     }
 
+    /**
+     * Retrieves a single support ticket by its ID.
+     */
     @Override
     public SupportTicket getTicketById(int ticketId) {
         List<SupportTicket> result = getTicketsByQuery("SELECT * FROM support_ticket WHERE ticket_id = '" + ticketId + "'");
         return result.isEmpty() ? null : result.get(0);
     }
 
+    /**
+     * Helper method to run a query and convert ResultSet rows into SupportTicket objects.
+     * Resolves requester to Student or Tutor based on stored role.
+     */
     private List<SupportTicket> getTicketsByQuery(String sql) {
         List<SupportTicket> tickets = new ArrayList<>();
         try (Statement stmt = conn.createStatement();
@@ -104,6 +133,7 @@ public class SupportDB implements SupportPersistence {
                 LocalDateTime closedAt = rs.getString("closed_at") != null ? LocalDateTime.parse(rs.getString("closed_at")) : null;
                 boolean isHandled = rs.getInt("is_handled") == 1;
 
+                // Determine requester User object based on role
                 User requester = switch (role) {
                     case "student" -> studentDB.getStudentByEmail(email);
                     case "tutor" -> tutorDB.getTutorByEmail(email);

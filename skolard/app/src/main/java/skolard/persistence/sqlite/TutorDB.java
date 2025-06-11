@@ -24,6 +24,8 @@ public class TutorDB implements TutorPersistence {
 
     /**
      * Constructor that accepts a SQLite connection.
+     * 
+     * @param connection the active SQLite connection
      */
     public TutorDB(Connection connection) {
         this.connection = connection;
@@ -32,7 +34,9 @@ public class TutorDB implements TutorPersistence {
 
     /**
      * Retrieves all tutors for public viewing.
-     * Does not include password hash.
+     * Does not include password hash for security reasons.
+     * 
+     * @return list of tutors with basic info and courses
      */
     @Override
     public List<Tutor> getAllTutors() {
@@ -50,7 +54,7 @@ public class TutorDB implements TutorPersistence {
                 tutors.add(new Tutor(
                     rs.getString("name"),
                     email,
-                    null,
+                    null,                // password excluded here
                     rs.getString("bio"),
                     courses
                 ));
@@ -65,6 +69,10 @@ public class TutorDB implements TutorPersistence {
 
     /**
      * Retrieves a tutor by email (for profile display only).
+     * Password hash is excluded.
+     * 
+     * @param email tutor's email
+     * @return Tutor object or null if not found
      */
     @Override
     public Tutor getTutorByEmail(String email) {
@@ -81,7 +89,7 @@ public class TutorDB implements TutorPersistence {
                 return new Tutor(
                     rs.getString("name"),
                     rs.getString("email"),
-                    null,
+                    null,               // password excluded here
                     rs.getString("bio"),
                     courses
                 );
@@ -95,7 +103,10 @@ public class TutorDB implements TutorPersistence {
     }
 
     /**
-     * Adds a new tutor to the database (includes hashed password).
+     * Adds a new tutor to the database including hashed password.
+     * 
+     * @param newTutor the tutor to add
+     * @return the added tutor object
      */
     @Override
     public Tutor addTutor(Tutor newTutor) {
@@ -115,14 +126,16 @@ public class TutorDB implements TutorPersistence {
     }
 
     /**
-     * Deletes a tutor by email.
+     * Deletes a tutor and all their courses by email.
+     * 
+     * @param email the tutor's email to delete
      */
     @Override
     public void deleteTutorByEmail(String email) {
-        String sql = "DELETE FROM tutor WHERE email = ?";
-
+        // Delete all courses associated with this tutor first
         tutorCoursesDB.deleteAllTutorCourses(email);
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        // Then delete the tutor record itself
+        try (PreparedStatement stmt = connection.prepareStatement("DELETE FROM tutor WHERE email = ?")) {
             stmt.setString(1, email);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -132,7 +145,9 @@ public class TutorDB implements TutorPersistence {
 
     /**
      * Updates an existing tutor's name and bio.
-     * Password is not updated here.
+     * Does not update password here.
+     * 
+     * @param updatedTutor the tutor object with updated info
      */
     @Override
     public void updateTutor(Tutor updatedTutor) {
@@ -148,11 +163,24 @@ public class TutorDB implements TutorPersistence {
         }
     }
 
+    /**
+     * Adds a course with grade to the specified tutor.
+     * 
+     * @param tutor the tutor to add the course to
+     * @param course the course ID
+     * @param grade the grade for the course
+     */
     @Override
     public void addCourseToTutor(Tutor tutor, String course, Double grade) {
         tutorCoursesDB.addCourse(tutor.getEmail(), course, grade);
     }
 
+    /**
+     * Removes a course from the specified tutor.
+     * 
+     * @param tutor the tutor to remove the course from
+     * @param course the course ID to remove
+     */
     @Override
     public void removeCourseFromTutor(Tutor tutor, String course) {
         tutorCoursesDB.deleteTutorCourse(tutor.getEmail(), course);
@@ -160,7 +188,12 @@ public class TutorDB implements TutorPersistence {
 
     /**
      * Authenticates a tutor using email and hashed password.
-     * Returns a full Tutor object (for login session).
+     * Returns a full Tutor object if authentication succeeds,
+     * including bio but not courses.
+     * 
+     * @param email tutor's email
+     * @param hashedPassword hashed password to match
+     * @return Tutor object if authenticated, else null
      */
     @Override
     public Tutor authenticate(String email, String hashedPassword) {
@@ -176,9 +209,9 @@ public class TutorDB implements TutorPersistence {
                     return new Tutor(
                         rs.getString("name"),
                         rs.getString("email"),
-                        hashedPassword,                        // known match
+                        hashedPassword,    // known match
                         rs.getString("bio"),
-                        null                            // courses and grades null for now
+                        null               // courses not loaded here
                     );
                 }
             }
@@ -189,3 +222,4 @@ public class TutorDB implements TutorPersistence {
         return null;
     }
 }
+
