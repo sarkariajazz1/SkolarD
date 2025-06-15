@@ -5,27 +5,23 @@
   <title>SkolarD – COMP 3350 Presentation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Docsify Dark Theme -->
+  <!-- Docsify (no sidebar) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/dark.css" />
-
-  <!-- Custom Styles -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Custom Hero -->
-  <header>
-    <div class="nav-container">
-      <div class="logo">SkolarD</div>
-      <nav>
-        <a href="#/">Overview</a>
-        <a href="#/vision">Vision</a>
-        <a href="#/users">Users</a>
-        <a href="#/features">Features</a>
-        <a href="#/team">Team</a>
-        <a href="#/postmortem">Postmortem</a>
-      </nav>
+  <!-- Top Navigation Bar -->
+  <nav class="top-nav">
+    <div class="nav-title">SkolarD</div>
+    <div class="nav-links">
+      <a href="#/">Overview</a>
+      <a href="#/vision">Vision</a>
+      <a href="#/users">Users</a>
+      <a href="#/features">Features</a>
+      <a href="#/team">Team</a>
+      <a href="#/postmortem">Postmortem</a>
     </div>
-  </header>
+  </nav>
 
   <!-- Hero Banner -->
   <section class="hero">
@@ -39,23 +35,14 @@
     </div>
   </section>
 
-  <!-- Demo Video -->
-  <section class="demo-video">
-    <h2>Demo Video</h2>
-    <p>Watch a walkthrough of our final SkolarD application below:</p>
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe>
-    </div>
-  </section>
-
-  <!-- Docsify App -->
+  <!-- Docsify Content -->
   <div id="app">Loading content...</div>
 
-  <!-- Docsify Configuration -->
+  <!-- Docsify Config -->
   <script>
     window.$docsify = {
       name: 'SkolarD',
-      loadSidebar: true,
+      loadSidebar: false, // disables side menu
       subMaxLevel: 2,
       homepage: 'README.md'
     };
