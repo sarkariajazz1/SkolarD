@@ -1,36 +1,8 @@
-/* General Reset */
+/* Global Reset */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, sans-serif;
   background: linear-gradient(135deg, #0b234a, #0abfbc);
-  color: white;
-}
-
-/* Top Nav Bar */
-.top-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #0b234a;
-  padding: 1rem 2rem;
-  border-bottom: 2px solid #00e59b;
-}
-
-.nav-title {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: white;
-}
-
-.nav-links a {
-  color: #00e59b;
-  margin-left: 1.5rem;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease-in-out;
-}
-
-.nav-links a:hover {
   color: white;
 }
 
@@ -67,7 +39,7 @@ body {
   text-decoration: none;
 }
 
-/* Illustration */
+/* Illustration Bubble */
 .hero-image {
   flex: 1;
   display: flex;
@@ -82,31 +54,32 @@ body {
   box-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
 }
 
-/* Docsify Content Area */
+/* Docsify Content Styling */
 #app {
   padding: 2rem;
   background: linear-gradient(135deg, #0b234a, #0abfbc);
 }
 
-/* Code Block */
+/* Code Block Customization */
 pre, code {
   background-color: #1b1b1b !important;
   color: white !important;
   border-radius: 4px;
+  font-size: 0.95rem;
   font-family: 'Fira Code', monospace;
 }
 
-/* Responsive Top Nav */
+/* Ensure lists and text align cleanly */
+section, h2, h3, p, ul {
+  margin-bottom: 1.5rem;
+}
+
+ul {
+  padding-left: 1.5rem;
+}
+
+/* Responsive Text Sizes */
 @media (max-width: 768px) {
-  .top-nav {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .nav-links {
-    margin-top: 1rem;
-  }
-
   .hero {
     flex-direction: column;
     text-align: center;
@@ -114,5 +87,9 @@ pre, code {
 
   .hero-text, .hero-image {
     max-width: 100%;
+  }
+
+  .hero-text h1 {
+    font-size: 2.2rem;
   }
 }
