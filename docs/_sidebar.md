@@ -1,5 +1,5 @@
 * [Home](README.md)
-* [Vision](vision.md)
+* [Vision](VISION.md)
 * [Features](features.md)
 * [Contributors](contributors.md)
 * [Postmortem](postmortem.md)
