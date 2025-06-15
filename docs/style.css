@@ -1,69 +1,96 @@
 :root {
-  --bg: #1A1A1A;
-  --text: #F0F0F0;
-  --accent-teal: #004D61;
-  --accent-ruby: #822659;
-  --accent-green: #3E5641;
+  --bg-color: #1A1A1A;
+  --text-color: #F0F0F0;
+  --heading-color: #ffffff;
+  --link-color: #22d3ee;
+  --accent-ruby: #ec4899;
+  --accent-teal: #14b8a6;
+  --sidebar-bg: #121212;
+  --sidebar-highlight: #1f1f1f;
+  --code-bg: #2a2a2a;
+  --font-family: 'Segoe UI', 'Poppins', sans-serif;
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
   margin: 0;
-  display: flex;
+  padding: 0;
 }
 
-header {
-  background: var(--accent-teal);
-  padding: 1rem;
-  text-align: center;
+#main {
+  max-width: 1000px;
+  margin: auto;
+  padding: 2rem;
+  animation: fadeIn 0.6s ease-out;
 }
 
-nav {
-  width: 250px;
-  background: #111;
-  padding: 1rem;
+h1, h2, h3 {
+  color: var(--heading-color);
+  margin-top: 2.5rem;
 }
 
-nav a {
-  display: block;
-  color: var(--text);
-  padding: .5rem 0;
-  text-decoration: none;
+a {
+  color: var(--link-color);
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
-
-nav a:hover {
+a:hover {
   color: var(--accent-ruby);
 }
 
-main {
-  flex-grow: 1;
-  padding: 2rem;
+.sidebar {
+  background: var(--sidebar-bg);
 }
 
-section#demo {
-  margin-top: 2rem;
+.sidebar ul {
+  list-style: none;
+  padding-left: 0;
+}
+.sidebar ul li a {
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  display: block;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
+  background: var(--sidebar-highlight);
+  border-left: 3px solid var(--accent-teal);
+  color: var(--accent-teal);
+}
+
+blockquote {
+  border-left: 4px solid var(--accent-ruby);
+  background: #2e2e2e;
   padding: 1rem;
-  background: #222;
-  border-radius: 8px;
+  color: #ddd;
 }
 
-button, .btn {
-  background: var(--accent-ruby);
-  color: var(--text);
-  border: none;
-  padding: .75rem 1.5rem;
+code {
+  background: var(--code-bg);
+  padding: 0.2rem 0.4rem;
   border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+  font-family: 'Courier New', monospace;
 }
 
-button:hover, .btn:hover {
-  background: var(--accent-green);
+pre {
+  background: var(--code-bg);
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
 }
 
-video {
-  border: 2px solid var(--accent-teal);
-  border-radius: 4px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
