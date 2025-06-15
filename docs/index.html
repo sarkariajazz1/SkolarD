@@ -5,25 +5,14 @@
   <title>SkolarD – COMP 3350 Presentation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Docsify (no sidebar) -->
+  <!-- Docsify Dark Theme -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/dark.css" />
+
+  <!-- Custom Styles -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Top Navigation Bar -->
-  <nav class="top-nav">
-    <div class="nav-title">SkolarD</div>
-    <div class="nav-links">
-      <a href="#/">Overview</a>
-      <a href="#/vision">Vision</a>
-      <a href="#/users">Users</a>
-      <a href="#/features">Features</a>
-      <a href="#/team">Team</a>
-      <a href="#/postmortem">Postmortem</a>
-    </div>
-  </nav>
-
-  <!-- Hero Banner -->
+  <!-- Hero Section -->
   <section class="hero">
     <div class="hero-text">
       <h1>SkolarD</h1>
@@ -35,14 +24,14 @@
     </div>
   </section>
 
-  <!-- Docsify Content -->
+  <!-- Docsify Content Area -->
   <div id="app">Loading content...</div>
 
   <!-- Docsify Config -->
   <script>
     window.$docsify = {
       name: 'SkolarD',
-      loadSidebar: false, // disables side menu
+      loadSidebar: true,
       subMaxLevel: 2,
       homepage: 'README.md'
     };
