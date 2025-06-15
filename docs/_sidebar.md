@@ -1,4 +1,3 @@
-* [Home (README)](/../README.md)
 * [Vision](VISION.md)
 * [Features](features.md)
 * [Contributors](contributors.md)
@@ -6,3 +5,5 @@
 * [Known Issues](KnownIssues.md)
 * [Iteration Logs](ProjectIterationLogs.md)
 * [Coding Standards](JavaCodingStandards.md)
+* [Architecture](architecture/ARCHITECTURE.md)
+* [Retrospectives](retros/README.md)
