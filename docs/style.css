@@ -1,3 +1,4 @@
+/* Global Layout and Typography */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -5,55 +6,74 @@ body {
   color: white;
 }
 
-/* Top Nav Bar */
+/* Top Navbar */
 .top-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
   background-color: #0b234a;
+  padding: 1rem 2rem;
   border-bottom: 2px solid #00e59b;
 }
 
 .nav-title {
   font-size: 1.5rem;
   font-weight: bold;
-}
-
-.nav-links a {
-  color: #00e59b;
-  margin-left: 1.2rem;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.nav-links a:hover {
   color: white;
 }
 
-/* Docsify content wrapper */
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-btn {
+  background-color: #00e59b;
+  color: #000;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.nav-btn:hover {
+  background-color: #02c49b;
+}
+
+/* Docsify Main Content Area */
 #app {
   padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
   background: transparent;
 }
 
-/* Code block */
+/* Headings & Text Readability */
+h1, h2, h3, p, ul, li, strong, em, a {
+  color: white !important;
+}
+
+/* Code Styling */
 pre, code {
   background-color: #1b1b1b !important;
   color: white !important;
   font-family: 'Fira Code', monospace;
   border-radius: 5px;
+  padding: 0.5rem;
+  overflow-x: auto;
 }
 
-/* Responsive nav */
+/* Responsive Navbar */
 @media (max-width: 768px) {
   .top-nav {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .nav-links {
+  .nav-buttons {
+    flex-wrap: wrap;
+    gap: 0.5rem;
     margin-top: 1rem;
   }
 }
