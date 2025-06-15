@@ -4,34 +4,33 @@
   <meta charset="UTF-8" />
   <title>SkolarD – COMP 3350 Presentation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Docsify Dark Theme -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/dark.css" />
-
-  <!-- Custom Styles -->
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Docsify Theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
 </head>
 <body>
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-text">
-      <h1>SkolarD</h1>
-      <p>Your all-in-one peer tutoring platform — made for COMP 3350 Summer 2025</p>
-      <a class="get-started" href="#/">Explore the Project</a>
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="nav-title">SkolarD</div>
+    <div class="nav-links">
+      <a href="#/">Overview</a>
+      <a href="#/vision">Vision</a>
+      <a href="#/users">Users</a>
+      <a href="#/features">Features</a>
+      <a href="#/team">Team</a>
+      <a href="#/postmortem">Postmortem</a>
     </div>
-    <div class="hero-image">
-      <div class="mock-illustration"></div>
-    </div>
-  </section>
+  </nav>
 
-  <!-- Docsify Content Area -->
-  <div id="app">Loading content...</div>
+  <!-- App content -->
+  <div id="app">Loading project...</div>
 
   <!-- Docsify Config -->
   <script>
     window.$docsify = {
       name: 'SkolarD',
-      loadSidebar: true,
+      loadSidebar: false,
       subMaxLevel: 2,
       homepage: 'README.md'
     };
