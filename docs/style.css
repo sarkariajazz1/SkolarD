@@ -1,12 +1,13 @@
-/* Layout + Background */
-body {
+/* Global Layout */
+html, body, #app {
   margin: 0;
+  padding: 0;
   font-family: 'Segoe UI', Tahoma, sans-serif;
   background: linear-gradient(135deg, #0b234a, #00b4a8);
   color: white;
 }
 
-/* Top Nav */
+/* Top Navbar */
 .top-nav {
   display: flex;
   justify-content: space-between;
@@ -19,40 +20,47 @@ body {
 .nav-title {
   font-size: 1.5rem;
   font-weight: bold;
+  color: white;
 }
 
-.nav-buttons a {
-  color: #00e59b;
-  margin-left: 1rem;
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-btn {
+  background-color: #00e59b;
+  color: black;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
   text-decoration: none;
   font-weight: bold;
 }
 
-.nav-buttons a:hover {
-  text-decoration: underline;
+.nav-btn:hover {
+  background-color: #02c49b;
 }
 
-/* Page Content */
-main {
+/* Markdown Content */
+#app {
   padding: 2rem;
-  max-width: 800px;
+  max-width: 1000px;
   margin: auto;
 }
 
-section {
-  margin-bottom: 3rem;
-}
-
-h1 {
-  font-size: 1.8rem;
+h1, h2 {
+  color: white !important;
+  font-weight: bold;
   border-bottom: 2px solid #00e59b;
   padding-bottom: 0.3rem;
+  margin-top: 2rem;
 }
 
-ul {
-  padding-left: 1.2rem;
+h3, h4, p, li, a, strong, em {
+  color: white !important;
 }
 
+/* Demo Video Styling */
 .video-section {
   max-width: 1000px;
   margin: 2rem auto;
@@ -62,11 +70,10 @@ ul {
 
 .video-section h2 {
   font-size: 1.8rem;
-  color: white;
-  margin-bottom: 1rem;
   border-bottom: 2px solid #00e59b;
   display: inline-block;
   padding-bottom: 0.3rem;
+  margin-bottom: 1rem;
 }
 
 .video-wrapper {
@@ -74,7 +81,6 @@ ul {
   padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
-  max-width: 100%;
   border-radius: 8px;
 }
 
@@ -86,3 +92,11 @@ ul {
   height: 100%;
 }
 
+/* Code Blocks */
+pre, code {
+  background-color: #1b1b1b !important;
+  color: white !important;
+  border-radius: 5px;
+  font-family: 'Fira Code', monospace;
+  padding: 0.5rem;
+}
