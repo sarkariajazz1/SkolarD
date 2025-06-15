@@ -1,10 +1,17 @@
-/* General Reset and Background */
-html, body, #app {
+/* Base Gradient Background */
+html, body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', Tahoma, sans-serif;
-  background: linear-gradient(135deg, #0b234a, #00b4a8);
+  background: linear-gradient(135deg, #0b234a, #00b4a8) !important;
   color: white;
+  height: 100%;
+}
+
+/* Force consistent background for Docsify-rendered content */
+section, #app, .content {
+  background: transparent !important;
+  color: white !important;
 }
 
 /* Top Navigation Bar */
@@ -42,14 +49,7 @@ html, body, #app {
   background-color: #02c49b;
 }
 
-/* Main Content Area */
-#app {
-  padding: 2rem;
-  max-width: 1000px;
-  margin: auto;
-}
-
-/* Headings and Section Titles */
+/* Headings */
 h1, h2 {
   color: white !important;
   font-weight: bold;
@@ -63,22 +63,12 @@ h3, h4 {
   font-weight: bold;
 }
 
-/* Links */
-a {
-  color: #00e59b;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* Paragraphs and Lists */
-p, li, strong, em {
+/* Other Text Elements */
+p, li, strong, em, a {
   color: white !important;
 }
 
-/* Code Blocks and Inline Code */
+/* Code Blocks */
 pre, code {
   background-color: #1b1b1b !important;
   color: white !important;
@@ -88,7 +78,14 @@ pre, code {
   overflow-x: auto;
 }
 
-/* Responsive Navbar */
+/* Main Docsify App Container */
+#app {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* Responsive Nav */
 @media (max-width: 768px) {
   .top-nav {
     flex-direction: column;
