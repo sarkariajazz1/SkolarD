@@ -1,44 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8" />
-  <title>SkolarD – COMP 3350 Presentation</title>
+  <title>SkolarD Docs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Top Navbar -->
-  <nav class="top-nav">
-    <div class="nav-title">SkolarD</div>
-    <div class="nav-buttons">
-      <a href="#/overview.md" class="nav-btn">Overview</a>
-      <a href="#/vision.md" class="nav-btn">Vision</a>
-      <a href="#/postmortem.md" class="nav-btn">Postmortem</a>
-    </div>
-  </nav>
-
-  <!-- Project Demo Section -->
-  <section class="video-section">
-    <h2>🎥 Project Demo</h2>
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe>
-    </div>
-  </section>
-
-  <!-- Docsify App Mount -->
-  <div id="app">Loading content...</div>
-
-  <!-- Docsify Config -->
+  <div id="app"></div>
   <script>
     window.$docsify = {
-      name: 'SkolarD',
-      loadSidebar: false,
-      homepage: 'overview.md'
+      name: "SkolarD",
+      loadSidebar: true,
+      subMaxLevel: 2,
+      homepage: 'README.md'
     };
   </script>
-
-  <!-- Docsify Script -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
 </body>
 </html>
