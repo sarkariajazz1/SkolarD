@@ -4,39 +4,63 @@
   <meta charset="UTF-8" />
   <title>SkolarD – COMP 3350 Presentation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Docsify Theme (light base, but we override with custom dark-teal) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Top Navbar -->
+  <!-- Top Navigation -->
   <nav class="top-nav">
     <div class="nav-title">SkolarD</div>
     <div class="nav-buttons">
-      <a href="#/" class="nav-btn">Overview</a>
-      <a href="#/vision" class="nav-btn">Vision</a>
-      <a href="#/users" class="nav-btn">Users</a>
-      <a href="#/features" class="nav-btn">Features</a>
-      <a href="#/team" class="nav-btn">Team</a>
-      <a href="#/postmortem" class="nav-btn">Postmortem</a>
+      <a href="#overview">Overview</a>
+      <a href="#vision">Vision</a>
+      <a href="#users">Users</a>
+      <a href="#features">Features</a>
+      <a href="#team">Team</a>
+      <a href="#postmortem">Postmortem</a>
     </div>
   </nav>
 
-  <!-- Docsify App Mount Point -->
-  <div id="app">Loading project content...</div>
+  <!-- Main Content -->
+  <main>
+    <section id="overview">
+      <h1>Project Overview</h1>
+      <p>SkolarD is a tutoring platform built as a final-year capstone project for COMP 3350.</p>
+    </section>
 
-  <!-- Docsify Config -->
-  <script>
-    window.$docsify = {
-      name: 'SkolarD',
-      loadSidebar: false,
-      subMaxLevel: 2,
-      homepage: 'README.md'
-    };
-  </script>
+    <section id="vision">
+      <h1>Vision</h1>
+      <p>To create an accessible and intuitive tool for students to find and work with tutors.</p>
+    </section>
 
-  <!-- Docsify Script -->
-  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+    <section id="users">
+      <h1>Intended Users</h1>
+      <p>Students and tutors in academic institutions.</p>
+    </section>
+
+    <section id="features">
+      <h1>Key Features</h1>
+      <ul>
+        <li>Session booking and unbooking</li>
+        <li>Messaging system</li>
+        <li>Rating and feedback</li>
+      </ul>
+    </section>
+
+    <section id="team">
+      <h1>Team Members</h1>
+      <ul>
+        <li>Joshua Chuwang-Kwa</li>
+        <li>Matthew Yablonski</li>
+        <li>John Aguinaldo</li>
+        <li>Jaskaran Sarkaria</li>
+        <li>Caibaitong (Anton) Wang</li>
+      </ul>
+    </section>
+
+    <section id="postmortem">
+      <h1>Postmortem</h1>
+      <p>We learned a lot about collaboration, testing, and how to scope a real-world software system.</p>
+    </section>
+  </main>
 </body>
 </html>
