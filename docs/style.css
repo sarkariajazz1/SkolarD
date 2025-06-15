@@ -1,12 +1,13 @@
-/* Global Layout and Typography */
-body {
+/* General Reset and Background */
+html, body, #app {
   margin: 0;
+  padding: 0;
   font-family: 'Segoe UI', Tahoma, sans-serif;
   background: linear-gradient(135deg, #0b234a, #00b4a8);
   color: white;
 }
 
-/* Top Navbar */
+/* Top Navigation Bar */
 .top-nav {
   display: flex;
   justify-content: space-between;
@@ -41,20 +42,43 @@ body {
   background-color: #02c49b;
 }
 
-/* Docsify Main Content Area */
+/* Main Content Area */
 #app {
   padding: 2rem;
   max-width: 1000px;
   margin: auto;
-  background: transparent;
 }
 
-/* Headings & Text Readability */
-h1, h2, h3, p, ul, li, strong, em, a {
+/* Headings and Section Titles */
+h1, h2 {
+  color: white !important;
+  font-weight: bold;
+  border-bottom: 3px solid #00e59b;
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+}
+
+h3, h4 {
+  color: white !important;
+  font-weight: bold;
+}
+
+/* Links */
+a {
+  color: #00e59b;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Paragraphs and Lists */
+p, li, strong, em {
   color: white !important;
 }
 
-/* Code Styling */
+/* Code Blocks and Inline Code */
 pre, code {
   background-color: #1b1b1b !important;
   color: white !important;
