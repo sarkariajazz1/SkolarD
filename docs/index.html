@@ -10,21 +10,15 @@
   <header>
     <h1>✨ SkolarD ✨</h1>
     <p class="subtitle">Your all-in-one academic support platform</p>
-    <a href="https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders" class="cta-button">View on GitLab</a>
+    <a href="https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders" class="cta-button">
+      View on GitLab
+    </a>
   </header>
 
-  <main>
-    <!-- Navigation buttons shown after Docsify loads -->
-    <div id="nav-placeholder" style="display: none;">
-      <section class="navigation-buttons">
-        <a href="#/" class="nav-btn">🏠 Home</a>
-        <a href="#/vision" class="nav-btn">🌟 Vision</a>
-        <a href="#/features" class="nav-btn">🛠 Features</a>
-        <a href="#/contributors" class="nav-btn">👥 Contributors</a>
-        <a href="#/postmortem" class="nav-btn">📄 Postmortem</a>
-      </section>
-    </div>
+  <!-- Docsify Sidebar -->
+  <aside class="sidebar"></aside>
 
+  <main id="app">
     <section class="features">
       <h2>Why SkolarD?</h2>
       <ul>
@@ -59,12 +53,5 @@
     };
   </script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-
-  <!-- Show buttons after Docsify loads -->
-  <script>
-    window.addEventListener('load', () => {
-      document.getElementById('nav-placeholder').style.display = 'block';
-    });
-  </script>
 </body>
 </html>
