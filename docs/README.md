@@ -36,3 +36,13 @@ SkolarD was developed to feel like a real product from day one — not just a sc
 - 🎓 Students looking for quick academic help  
 - 👨‍🏫 Tutors managing multiple sessions and clients  
 - 🛠️ Teams building scalable desktop apps with clean architecture
+
+---
+
+## Student and Tutor Tutorials
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/GXKNo1-z4fg" allowfullscreen></iframe>
+  <iframe src="https://www.youtube.com/embed/Rxy4Y9YgpdQ" allowfullscreen></iframe>
+</div>
+
