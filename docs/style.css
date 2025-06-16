@@ -126,3 +126,18 @@ footer {
   font-size: 0.9rem;
   margin-top: 2rem;
 }
+
+/* ———————————————————————————————————— */
+/* Disable underlines & clicks on headers */
+/* ———————————————————————————————————— */
+h1, h2, h3, h4, h5, h6 {
+  text-decoration: none !important;
+  pointer-events: none;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: inherit !important;
+  text-decoration: none !important;
+  pointer-events: none !important;
+  cursor: default !important;
+}
