@@ -1,1 +1,16 @@
+# Postmortem
 
+## What went right in the development process?
+Our communication as a team throughout the entire project was really good. We held meetings regularly to give each other updates about what we had done, where we needed help, and to discuss what our next steps should be. We also made sure to help each other when any of us were having difficulties during development. We held longer meetings at the beginning each iteration to plan everything we wanted to accomplish during that iteration and about where we needed to improve based on the previous iteration. By the end of iteration 3 everyone had made important contributions to the development and testing of our application so that we had a good working app by the end of iteration 3.
+
+Overall, we were all committed to this project and did our best to finish the project strong after facing many challenges that arose throughout the project.
+
+## What went wrong in the development process?
+Although we had team meetings at the beginning of each iteration to plan what we wanted to accomplish, we did a poor job at planning for iteration 1 and 2. For both those iterations we overestimated how much we would get done and had incomplete features that were not ready for release. We also lacked sufficient testing for iteration 1 and had pretty much no testing done for iteration 2. While we did spend a good amount of time refactoring during iteration 2, we did not spend enough time implementing the features we planned to add. One of our key features intended for iteration 2 was messaging, which had to get pushed back because the UI was not ready. Unfortunately, our app at the end of iteration 1 and 2 did not look much different when compared to each other. We also did not really have any branching strategies during iteration 1 and most of our work was directly on our dev branch causing lots of conflicts when trying to push changes.
+
+After iteration 2 we did a much better job at implementing our planned features and testing the functionality of our app. There were still things from iteration 3 that needed to be fixed, such as our integration tests not always passing when our whole test suite is run, but there were significant improvements after iteration 2.
+
+## How did the project change from our initial vision or stories? Did it work out as predicted?
+Initially, one of the ways we wanted students to be able to filter tutors was based on teaching style. By the end of iteration 3 we decided to focus more on our rating system so that students could choose tutors based on quality and ended up not implementing teaching styles for tutors. Since we had the rating system that students could use when finding tutors, we decided to prioritize other features such as our student to tutor messaging. Teaching style is something we ended up cutting due to time constraints but could be added in the future. During development we also ended up pushing many of our now complete features to later iterations to insure that they would be working as intended when they were released.
+
+Since teaching style was one of the main things we had in our original vision statement, we updated our vision statement to properly describe the core functions of our app. Outside of teaching style, the rest of the project does not really differ from our original vision.
