@@ -141,9 +141,3 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
   pointer-events: none !important;
   cursor: default !important;
 }
-
-/* hide the very first list on every page (the old “sidebar” links) */
-#app > ul:first-of-type {
-  display: none;
-}
-
