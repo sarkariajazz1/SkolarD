@@ -1,5 +1,3 @@
-#  SkolarD
-
 ## Vision Statement
 SkolarD is a tutoring platform created to make it easier for post-secondary students to get help with their studies by booking in-person sessions with tutors. Its main goal is to offer students a convenient way to find support tailored specifically to the courses they’re taking. Whether a student is looking for help in a difficult class, preparing for an upcoming exam, or trying to stay ahead, SkolarD helps them find the right tutor at the right time. Students can search for tutors who are available at times that work for them, who have either the highest ratings on the platform or the strongest academic record in the course they need help with. This enables students to connect with tutors who have a deep understanding of the subject and can explain it effectively.
 
