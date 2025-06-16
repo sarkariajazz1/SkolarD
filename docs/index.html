@@ -7,18 +7,27 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
   <header>
     <h1>✨ SkolarD ✨</h1>
     <p class="subtitle">Your all-in-one academic support platform</p>
-    <a href="https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders" class="cta-button">
+    <a href="https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders"
+       class="cta-button">
       View on GitLab
     </a>
   </header>
 
-  <!-- Docsify Sidebar -->
-  <aside class="sidebar"></aside>
+  <!-- Navigation buttons -->
+  <nav class="navigation-buttons">
+    <a href="#/"         class="nav-btn">🏠 Home</a>
+    <a href="#/vision"   class="nav-btn">🌟 Vision</a>
+    <a href="#/features" class="nav-btn">🛠 Features</a>
+    <a href="#/contributors" class="nav-btn">👥 Contributors</a>
+    <a href="#/postmortem"   class="nav-btn">📄 Postmortem</a>
+  </nav>
 
   <main id="app">
+    <!-- Your static content; Docsify will swap in markdown pages when the hash changes -->
     <section class="features">
       <h2>Why SkolarD?</h2>
       <ul>
@@ -43,15 +52,15 @@
     <p>Made with ❤️ by the Decoders team</p>
   </footer>
 
-  <!-- Docsify Config -->
+  <!-- Docsify config (no sidebar) -->
   <script>
     window.$docsify = {
       name: "SkolarD",
-      loadSidebar: true,
       subMaxLevel: 2,
       homepage: 'README.md'
     };
   </script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+
 </body>
 </html>
