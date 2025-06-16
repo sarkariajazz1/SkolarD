@@ -1,7 +1,7 @@
 # SkolarD
 
 <div align="center">
-  <a href="https://gitlab.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders.git" target="_blank">
+  <a href="https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders" target="_blank">
     <img src="https://img.shields.io/badge/View%20Code%20on-GitLab-FF6C37?style=for-the-badge&logo=gitlab" alt="View on GitLab" />
   </a>
 </div>
@@ -44,6 +44,4 @@ SkolarD was developed to feel like a real product from day one — not just a sc
 
 - 🎓 Students looking for quick academic help  
 - 👨‍🏫 Tutors managing multiple sessions and clients  
-- 🛠️ Teams building scalable desktop apps with clear architecture
-
----
+- 🛠️ Teams building scalable desktop apps with clean architecture
