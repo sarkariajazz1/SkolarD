@@ -7,6 +7,10 @@
   --light: #f1f2f6;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', 'Poppins', sans-serif;
@@ -15,27 +19,11 @@ body {
   line-height: 1.7;
 }
 
-/* Push the main content over when the sidebar is visible */
-body {
-  display: flex;
-}
-.sidebar + main {
-  flex: 1;
-  padding: 3rem 2rem;
-  max-width: 1000px;
-  margin: auto;
-}
-
 header {
-  position: fixed;
-  top: 0;
-  left: 250px;      /* width of sidebar */
-  right: 0;
   text-align: center;
-  padding: 2rem 1rem;
+  padding: 4rem 1rem 2rem;
   background: linear-gradient(to right, var(--primary), var(--secondary));
   color: white;
-  z-index: 10;
 }
 
 header h1 {
@@ -49,6 +37,7 @@ header h1 {
 }
 
 .cta-button {
+  display: inline-block;
   padding: 0.8rem 1.6rem;
   background: var(--cta);
   color: white;
@@ -62,40 +51,40 @@ header h1 {
   background: #e67e22;
 }
 
-/* ========== Sidebar ========== */
-.sidebar {
-  width: 250px;
-  background: var(--light);
-  padding: 1rem;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  height: 100vh;
-  overflow-y: auto;
-  position: fixed;
-  top: 0;
-  left: 0;
+/* ========== Navigation Buttons ========== */
+.navigation-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 0 1rem;
 }
 
-/* Style the Docsify-generated links inside the sidebar */
-.sidebar .sidebar-nav a {
-  display: block;
-  padding: 0.5rem 0.75rem;
-  color: var(--text);
-  text-decoration: none;
-  border-radius: 4px;
-  margin-bottom: 0.25rem;
-}
-.sidebar .sidebar-nav a:hover {
-  background: var(--secondary);
+.nav-btn {
+  padding: 0.6rem 1.2rem;
+  background: var(--primary);
   color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  transition: background 0.3s ease;
+}
+.nav-btn:hover {
+  background: var(--secondary);
 }
 
 /* ========== Main Content ========== */
-/* Already handled by .sidebar + main selector above */
+main {
+  padding: 2rem 1rem;
+  max-width: 1000px;
+  margin: auto;
+}
 
 .features h2, .demo h2 {
   color: var(--primary);
   text-align: center;
-  margin-top: 6rem; /* to clear fixed header */
   margin-bottom: 2rem;
 }
 
@@ -106,7 +95,7 @@ header h1 {
 }
 
 .features li {
-  background: var(--bg);
+  background: var(--light);
   margin-bottom: 1rem;
   padding: 1rem;
   border-left: 6px solid var(--secondary);
@@ -135,6 +124,5 @@ footer {
   padding: 1rem;
   color: #777;
   font-size: 0.9rem;
-  margin-top: 4rem;
-  margin-left: 250px; /* clear sidebar */
+  margin-top: 2rem;
 }
