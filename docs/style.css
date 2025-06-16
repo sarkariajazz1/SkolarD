@@ -5,6 +5,7 @@
   --text: #2d3436;
   --cta: #fd9644;
   --light: #f1f2f6;
+  --accent-color: var(--primary);
 }
 
 body {
@@ -51,6 +52,29 @@ main {
   padding: 3rem 2rem;
   max-width: 1000px;
   margin: auto;
+}
+
+.navigation-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.nav-btn {
+  padding: 0.6rem 1.2rem;
+  background: var(--accent-color);
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  transition: background 0.3s ease;
+}
+
+.nav-btn:hover {
+  background: var(--secondary);
 }
 
 .features h2, .demo h2 {
