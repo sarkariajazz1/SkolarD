@@ -4,17 +4,52 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SkolarD</title>
-
-  <!-- Docsify Theme -->
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
-  <!-- Your Custom Styles -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Docsify will render into this -->
-  <div id="app"></div>
+  <header>
+    <h1>✨ SkolarD ✨</h1>
+    <p class="subtitle">Your all-in-one academic support platform</p>
+    <a href="https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders" class="cta-button">View on GitLab</a>
+  </header>
 
-  <!-- Docsify config -->
+  <main>
+    <!-- Navigation buttons shown after Docsify loads -->
+    <div id="nav-placeholder" style="display: none;">
+      <section class="navigation-buttons">
+        <a href="#/" class="nav-btn">🏠 Home</a>
+        <a href="#/vision" class="nav-btn">🌟 Vision</a>
+        <a href="#/features" class="nav-btn">🛠 Features</a>
+        <a href="#/contributors" class="nav-btn">👥 Contributors</a>
+        <a href="#/postmortem" class="nav-btn">📄 Postmortem</a>
+      </section>
+    </div>
+
+    <section class="features">
+      <h2>Why SkolarD?</h2>
+      <ul>
+        <li><strong>📚 Seamless Booking:</strong> Schedule and manage tutoring sessions with ease.</li>
+        <li><strong>💬 Built-in Chat:</strong> Talk to tutors and students in real time.</li>
+        <li><strong>⭐ Tutor Ratings:</strong> Leave feedback and choose the best fit for you.</li>
+        <li><strong>🔐 Secure:</strong> SHA-256 encrypted login and session data.</li>
+        <li><strong>🎯 Lightweight:</strong> Fast, intuitive desktop Java app built with care.</li>
+      </ul>
+    </section>
+
+    <section class="demo">
+      <h2>Watch the Demo</h2>
+      <div class="video-grid">
+        <iframe src="https://www.youtube.com/embed/GXKNo1-z4fg" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/Rxy4Y9YgpdQ" allowfullscreen></iframe>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Made with ❤️ by the Decoders team</p>
+  </footer>
+
+  <!-- Docsify Config -->
   <script>
     window.$docsify = {
       name: "SkolarD",
@@ -24,5 +59,12 @@
     };
   </script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+
+  <!-- Show buttons after Docsify loads -->
+  <script>
+    window.addEventListener('load', () => {
+      document.getElementById('nav-placeholder').style.display = 'block';
+    });
+  </script>
 </body>
 </html>
