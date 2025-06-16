@@ -1,27 +1,47 @@
-## Overview of Major Functionality
+## What SkolarD Can Do for You
 
-- **Login / Signup**  
-  Secure authentication flow for students, tutors, and support roles.
-
-- **Easy-to-use User Dashboards**  
-  Intuitive dashboards tailored for students and tutors to manage their sessions, messages, and ratings.
-
-- **Online Chat**  
-  Built-in messaging system allowing real-time communication between tutors and students.
-
-- **Comprehensive Real-time User Support**  
-  Integrated FAQ system and ticket submission for issue resolution and support tracking.
-
-- **Simple Tutoring Session Management**  
-  Book, reschedule, or cancel sessions easily through the session browser interface.
-
-- **Peer Rating of Tutors**  
-  Students can rate tutors after each session to maintain quality and accountability.
-
-- **Secure Payment System**  
-  Handles session fees securely through a placeholder payment processing setup.
-
-- **Encrypted User Details**  
-  All user credentials are securely stored using one-way SHA-256 hashing.
+### 📝 Easy Account Access
+- Sign up in seconds and get started right away.
+- Forgot your password? Reset it with just a few clicks.
 
 ---
+
+### 📆 Personalized Dashboards
+- **For Students:** See upcoming sessions, find available tutors, and review past lessons all in one place.
+- **For Tutors:** Manage your schedule, accept new bookings, and keep track of your ratings effortlessly.
+
+---
+
+### 💬 Instant Chat
+- Chat directly with tutors or students without leaving the app.
+- View your message history so you never lose a conversation.
+
+---
+
+### 🆘 Help & Support
+- Browse a handy FAQ to find quick answers.
+- Submit a support request anytime you need assistance.
+
+---
+
+### 📚 Smooth Session Booking
+- Book, reschedule, or cancel sessions in just a few taps.
+- Receive timely reminders so you always show up on time.
+
+---
+
+### ⭐ Honest Tutor Feedback
+- Rate your tutor after each session to help maintain quality.
+- Check out ratings from other students when choosing the right tutor.
+
+---
+
+### 💳 Simple Payments
+- Easily view session fees and complete your payment.
+- Access your payment history and receipts whenever you need them.
+
+---
+
+### 🔒 Privacy You Can Trust
+- Your personal details stay safe and private.
+- You have full control over your account settings and data.
