@@ -21,3 +21,34 @@ body {
   margin: 0;
   padding: 0;
 }
+
+h1, h2, h3 {
+  color: var(--heading-color);
+}
+
+a {
+  color: var(--accent-color);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--cta-color);
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
+  background: var(--sidebar-highlight);
+  border-left: 4px solid var(--accent-color);
+  color: var(--primary-color);
+}
+
+button, .btn, .cta {
+  background-color: var(--cta-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
