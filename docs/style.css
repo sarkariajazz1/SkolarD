@@ -143,27 +143,15 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
 }
 
 
-/* ——————————————————————————————— */
-/* Restyle the “first” UL (old nav) to look like plain text */
-/* ——————————————————————————————— */
-#app > ul:first-of-type {
-  margin: 0 0 2rem;           /* give a little breathing room */
-  padding-left: 1rem;        /* indent a touch if you like */
-  list-style-position: inside;
+/* ———————————————————————— */
+/* Hide the Docsify _sidebar.md injection */
+/* ———————————————————————— */
+.sidebar-nav {
+  display: none !important;
 }
 
-#app > ul:first-of-type li {
-  margin: 0.5rem 0;
-}
-
-#app > ul:first-of-type li a {
-  color: inherit;            /* same color as your text */
-  text-decoration: none;     /* no underline */
-  font-weight: 500;          /* match body weight or bump it up */
-  transition: color .2s;
-}
-
-#app > ul:first-of-type li a:hover {
-  color: var(--primary);     /* optional hover accent */
+/* In some versions of Docsify the sidebar is wrapped—just in case: */
+#app .sidebar-nav {
+  display: none !important;
 }
 
