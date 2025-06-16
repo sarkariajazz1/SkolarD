@@ -4,17 +4,144 @@
   <meta charset="UTF-8" />
   <title>SkolarD Docs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Docsify Theme -->
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
 
-  <!-- Custom background override -->
+  <!-- Custom Color Scheme -->
   <style>
+    :root {
+      --primary-color: #2C3E50;
+      --accent-color: #3498DB;
+      --secondary-color: #2ECC71;
+      --cta-color: #F39C12;
+      --bg-color: #F7F9F9;
+      --text-color: #333333;
+      --heading-color: #2C3E50;
+      --sidebar-bg: #ffffff;
+      --sidebar-highlight: #e0f0f8;
+      --code-bg: #f0f0f0;
+      --font-family: 'Segoe UI', 'Poppins', sans-serif;
+    }
+
     body, .content {
-      background-color: #f5fff5 !important;
+      background-color: var(--bg-color) !important;
+      color: var(--text-color);
+      font-family: var(--font-family);
+      font-size: 16px;
+      line-height: 1.8;
+      margin: 0;
+      padding: 0;
+    }
+
+    #main {
+      max-width: 1000px;
+      margin: auto;
+      padding: 2rem;
+      animation: fadeIn 0.5s ease;
+    }
+
+    h1, h2, h3 {
+      color: var(--heading-color);
+      margin-top: 2.5rem;
+    }
+
+    a {
+      color: var(--accent-color);
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--cta-color);
+    }
+
+    .sidebar {
+      background: var(--sidebar-bg);
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul li a {
+      color: var(--text-color);
+      padding: 0.5rem 1rem;
+      display: block;
+      text-decoration: none;
+      border-left: 4px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active {
+      background: var(--sidebar-highlight);
+      border-left: 4px solid var(--accent-color);
+      color: var(--primary-color);
+    }
+
+    code {
+      background: var(--code-bg);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent-color);
+      background: #eefaff;
+      padding: 0.5rem 1rem;
+      color: #555;
+      margin: 1.5rem 0;
+    }
+
+    hr {
+      margin: 3rem 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+
+    iframe {
+      width: 100%;
+      max-width: 800px;
+      height: 450px;
+      border: none;
+      border-radius: 12px;
+      margin: 2rem auto;
+      display: block;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    button, .btn, .cta {
+      background-color: var(--cta-color);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
+
 <body>
   <div id="app"></div>
+
   <script>
     window.$docsify = {
       name: "SkolarD",
