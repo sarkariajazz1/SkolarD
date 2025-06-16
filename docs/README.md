@@ -24,9 +24,6 @@ No clutter. No confusion. Just clean, efficient academic support.
 - 🛡️ **Secure Login & User Data Protection**  
   SHA-256 encrypted login ensures your information is always safe.
 
-- 🔄 **Dual Persistence System**  
-  Robust database support with real SQLite and an in-memory fallback for testing.
-
 ---
 
 ## 🧩 Built for Real Users
