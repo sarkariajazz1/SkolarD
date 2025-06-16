@@ -1,12 +1,3 @@
-## Project Demo
-
-<div class="video-container">
-  <iframe src="https://www.youtube.com/embed/GXKNo1-z4fg" allowfullscreen></iframe>
-  <iframe src="https://www.youtube.com/embed/Rxy4Y9YgpdQ" allowfullscreen></iframe>
-</div>
-
----
-
 ## Overview of Major Functionality
 
 - **Login / Signup**  
