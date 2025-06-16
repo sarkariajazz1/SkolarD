@@ -1,8 +1,8 @@
 ## Project Demo
 
 <div class="video-container">
-  <iframe src="https://www.youtube.com/embed/VIDEO_ID_1" allowfullscreen></iframe>
-  <iframe src="https://www.youtube.com/embed/VIDEO_ID_2" allowfullscreen></iframe>
+  <iframe src="https://youtu.be/GXKNo1-z4fg" allowfullscreen></iframe>
+  <iframe src="https://youtu.be/Rxy4Y9YgpdQ" allowfullscreen></iframe>
 </div>
 
 ---
