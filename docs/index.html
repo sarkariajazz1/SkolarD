@@ -14,13 +14,16 @@
   </header>
 
   <main>
-    <section class="navigation-buttons">
-      <a href="#/" class="nav-btn">🏠 Home</a>
-      <a href="#/vision" class="nav-btn">🌟 Vision</a>
-      <a href="#/features" class="nav-btn">🛠 Features</a>
-      <a href="#/contributors" class="nav-btn">👥 Contributors</a>
-      <a href="#/postmortem" class="nav-btn">📄 Postmortem</a>
-    </section>
+    <!-- Navigation buttons shown after Docsify loads -->
+    <div id="nav-placeholder" style="display: none;">
+      <section class="navigation-buttons">
+        <a href="#/" class="nav-btn">🏠 Home</a>
+        <a href="#/vision" class="nav-btn">🌟 Vision</a>
+        <a href="#/features" class="nav-btn">🛠 Features</a>
+        <a href="#/contributors" class="nav-btn">👥 Contributors</a>
+        <a href="#/postmortem" class="nav-btn">📄 Postmortem</a>
+      </section>
+    </div>
 
     <section class="features">
       <h2>Why SkolarD?</h2>
@@ -43,7 +46,6 @@
   </main>
 
   <footer>
-    <p>Made with ❤️ by the Decoders team</p>
   </footer>
 
   <!-- Docsify Config -->
@@ -56,5 +58,12 @@
     };
   </script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+
+  <!-- Show buttons after Docsify loads -->
+  <script>
+    window.addEventListener('load', () => {
+      document.getElementById('nav-placeholder').style.display = 'block';
+    });
+  </script>
 </body>
 </html>
