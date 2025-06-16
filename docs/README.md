@@ -43,3 +43,20 @@ SkolarD was developed to feel like a real product from day one — not just a sc
   <iframe src="https://www.youtube.com/embed/Rxy4Y9YgpdQ" allowfullscreen></iframe>
 </div>
 
+<style>
+.video-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.video-container iframe {
+  flex: 1 1 45%;
+  max-width: 560px;
+  height: 315px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+</style>
