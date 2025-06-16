@@ -1,5 +1,6 @@
-# SkolarD
-
+<h1 align="center" style="font-size: 3.2rem; color: #00bfa6; font-family: 'Segoe UI', 'Poppins', sans-serif;">
+  ✨ SkolarD ✨
+</h1>
 <div align="center">
   <a href="https://code.cs.umanitoba.ca/comp3350-summer2025/a01-g06-decoders" target="_blank">
     <img src="https://img.shields.io/badge/View%20Code%20on-GitLab-FF6C37?style=for-the-badge&logo=gitlab" alt="View on GitLab" />
