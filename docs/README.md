@@ -1,4 +1,4 @@
-<h1 align="center" style="font-size: 3.2rem; color: #00bfa6; font-family: 'Segoe UI', 'Poppins', sans-serif;">
+<h1 align="center" style="font-size: 3.2rem; color: #ff6b35; font-family: 'Segoe UI', 'Poppins', sans-serif;">
   ✨ SkolarD ✨
 </h1>
 <div align="center">
